@@ -1,0 +1,24 @@
+ul{
+    position: absolute;
+    z-index: 3;
+}
+
+li{
+    list-style: none;
+    padding: 5px;
+    border-bottom: solid 1px gray;
+    cursor: pointer;
+    width: 450px;
+    background-color: white;
+}
+
+li:hover{
+   background-color: lightskyblue;
+   color: white;
+}
+
+.container__document{
+    display: inline-block;
+    width: 100px;
+    height: auto;
+}

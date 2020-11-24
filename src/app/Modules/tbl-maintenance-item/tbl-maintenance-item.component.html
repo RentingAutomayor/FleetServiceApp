@@ -1,0 +1,46 @@
+<div class="container__table" id="container__table_items">
+    <h2>Artículos de mantenimiento</h2>
+    <button class="btn-add btn-info" (click)="insertMaintenanceItem()"><i class="fas fa-plus"></i></button>
+    <table class="table table-striped">
+        <thead>
+            <th class="col-number col-mobile-hide">#</th>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th class="col-mobile-hide">Tipo</th>
+            <th class="col-mobile-hide">Presentación</th>
+            <th class="col-mobile-hide">Precio de referencia</th>
+            <th class="col-mobile-hide">Acciones</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let i = index ;let item of lsMaintenanceItems | paginate: { itemsPerPage: 10, currentPage: p }">
+                <td>{{i+1}}</td>
+                <td>{{item.code}}</td>
+                <td>{{item.name | titlecase}}</td>
+                <td>{{item.type.name | titlecase}}</td>
+                <td>{{item.presentationUnit.longName | titlecase}}</td>
+                <td>{{item.referencePrice}}</td>
+                <td>
+                    <i class="fas fa-info-circle text-info" title="Más información"></i>
+                    <i class="fas fa-edit text-warning" (click)="updateMaintenanceItem(item)" title="Modificar"></i>
+                    <i class="fas fa-trash-alt text-danger" (click)="deleteMaintenanceItem(item)" title="Eliminar"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="paginationContainer">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>
+<div id="container__formMaintenanceItem">
+    <div class="card">
+        <div class="card-body">
+            <app-maintenance-item 
+                [countChanges]="oCountChanges" 
+                (maintenanceItemWasSetted)="saveMaintenanceItem()"
+                (maintenanceItemWasCanceled)="comeBackToTable()">
+            </app-maintenance-item>
+        </div>
+    </div>
+</div>
+
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

@@ -1,0 +1,22 @@
+<p>Líneas de vehículo</p>
+<div class="container__vehicleModels">
+    <div class="container__row">
+        <div 
+            class="container__type" 
+            [id]="getContainerTypeId(vehicleType.id)"  
+            *ngFor="let vehicleType of lsVehicleType">
+            <h6>{{vehicleType.name}}</h6>
+        </div> 
+    </div>    
+
+    <div class="container__model" [id]="getContainerModelId(vehicleModel.id)" *ngFor="let vehicleModel of lsVehicleModels">
+        <label class="container__checkbox">
+            <input 
+                type="checkbox" 
+                [id]="getIdChk(vehicleModel.id)"
+                (click)="setVehicleModel($event.target,vehicleModel)">
+            <span class="checkmark"></span>
+        </label>
+        <label [for]="getIdChk(vehicleModel.id)">{{ vehicleModel.shortName | uppercase }}</label>
+    </div>
+</div>

@@ -1,0 +1,100 @@
+<div class="container__formRoutine">
+    <div class="container__buttonClose">
+        <a (click)="cancelRoutine()"><i class="fas fa-times"></i></a>
+    </div>   
+    <form [formGroup]="frmMaintenanceRoutine">
+        <div class="container__row">
+            <div class="col">
+                <label>Nombre:</label>
+                <input type="text" class="form-control" formControlName="txtName" placeholder="Nombre ...">
+            </div>
+            <div class="col">
+                <app-frequency [countChanges]="countChanges"></app-frequency>
+            </div>
+            <div class="col">
+                <label>Precio de la rutina:</label>
+                <input type="number" class="form-control" formControlName="txtReferencePrice" placeholder="Precio ...">
+            </div>
+        </div>
+        <div class="container__row">       
+            <div class="col">
+              <app-vehicle-brand
+                [countChanges]="countChanges"
+                (vehicleBrandWasSetted)="setBrand()"></app-vehicle-brand>
+            </div>
+    
+            <div class="col">
+                <app-vehicle-type
+                [countChanges]="countChanges"
+                (vehicleTypeWasSetted)="setVehiclType()"></app-vehicle-type>
+            </div>
+    
+            <div class="col">
+                <app-vehicle-model 
+                    [countChanges]="countChanges"
+                    (vehicleModelWasSetted)="vehicleWasChanged()"></app-vehicle-model>
+                   
+            </div>
+        </div>     
+    </form>
+
+    <hr>
+
+    <table class="table table-striped">
+        <thead>
+            <th>#</th>
+            <th>-</th>
+            <th>Nombre</th>
+            <th>Presentación</th>
+            <th>Categoría</th>
+            <th>Cantidad</th>
+            <th>Precio unitario</th>
+            <th>Precio total</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let i = index; let mItem of lsMaintenanceItems">
+                <td>{{i + 1 }}</td>
+                <td>
+                    <label class="container__checkbox">
+                    <input 
+                        type="checkbox" 
+                        [id]="getCheckBoxId(mItem.id)" 
+                        (click)="pickItem($event.target,mItem)"/>
+                    <span class="checkmark"></span>
+                </label>
+                </td>
+                <td>
+                    <Label [for]="getCheckBoxId(mItem.id)">
+                        {{mItem.name | titlecase}}
+                    </Label>                    
+                </td>
+                <td>{{mItem.presentationUnit.shortName}}</td>
+                <td>{{mItem.category.name | titlecase }}</td>
+                <td><input type="number" class="txt-amount" [id]="getTextAmountId(mItem.id)"
+                        (input)="calculatePriceByItem($event.target,mItem)" [value]="0" disabled></td>
+                <td>{{mItem.referencePrice}}</td>
+                <td>
+                    <span [id]="getLabelId(mItem.id)" class="lbl-total-price"></span>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b class="bold">Total mantenimiento:</b></td>
+                <td><span id="lbl-total-routine" class="bold"></span></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="container__row_buttons">
+        
+        <button class="btn btn-success" (click)="saveMaintenanceRoutine()">Guardar rutina</button>  
+        <button class="btn btn-danger" (click)="cancelRoutine()">Cancelar</button>      
+    </div>
+</div>

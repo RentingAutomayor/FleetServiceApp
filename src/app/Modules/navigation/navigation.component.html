@@ -1,0 +1,22 @@
+<div class="container__menu" id="container__menu">
+    <a class="btnClose" (click)="closeMenu()">&times;</a>
+    <div class="container__user">
+        <div class="container__user-img">
+            <img src="../../../assets/user.png" alt="user">
+        </div>
+        <div class="container__user-info">
+            <span class="container__user-info-title">Bienvenido</span>
+            <span class="container__user-info-subtitle">usuario</span>
+        </div>
+    </div>
+    <hr>
+    <a id="nav-client" class="item-navigation" (click)="navigateTo('client')">Clientes</a>
+    <a id="nav-dealer" class="item-navigation" (click)="navigateTo('dealer')">Concesionarios</a>
+    <a id="nav-routine" class="item-navigation" (click)="navigateTo('routine')">Mantenimientos</a>
+    <a id="nav-contract" class="item-navigation" (click)="navigateTo('contract')">Contratos</a>
+    <!-- <a id="nav-contract" class="item-navigation" (click)="navigateTo('contract')">Contratos</a> -->
+</div>
+
+<button id="btnMenu" (click)="openMenu()">
+    <i class="fas fa-bars" title="Menú"></i>
+</button>

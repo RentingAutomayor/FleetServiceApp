@@ -1,0 +1,41 @@
+<div id="container__table">
+    <button class="btn-add btn-info" (click)="insertRoutine()"><i class="fas fa-plus"></i></button>
+    <table class="table table-striped">
+        <thead>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Línea</th>
+            <th>Frecuencia</th>
+            <th>Precio de referencia</th>
+            <th>Acciones</th>
+        </thead>
+        <tbody>
+            <tr
+                *ngFor="let i = index; let routine of lsMaintenanceRoutines  | paginate: { itemsPerPage: 10, currentPage: p }">
+                <td>{{ i + 1 }}</td>
+                <td>{{ routine.name }}</td>
+                <td>{{ routine.vehicleModel.shortName }}</td>
+                <td>{{ routine.frequency.name }}</td>
+                <td>{{ routine.referencePrice }}</td>
+                <td>
+                    <i class="fas fa-info-circle text-info" title="Más información"></i>
+                    <i class="fas fa-edit text-warning" (click)="updateRoutine(routine)" title="Modificar"></i>
+                    <i class="fas fa-trash-alt text-danger"  (click)="deleteRoutine(routine)" title="Eliminar"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="paginationContainer">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>
+<div id="container__maintenanceRoutine">
+    <app-maintenance-routine 
+        [countChanges]="oCountChanges"
+        (routineWasSaved) ="saveDataRoutine()"
+        (routinewasCanceled)="cancelRoutine()"
+        ></app-maintenance-routine>
+</div>
+
+
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

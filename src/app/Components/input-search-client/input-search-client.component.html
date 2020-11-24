@@ -1,0 +1,18 @@
+<form [formGroup]="frmSearchClient">
+    <label>Cliente:</label>
+    <input 
+        type="text" 
+        class="form-control"
+        formControlName="txtClient" 
+        placeholder="Cliente ..."
+        (input)="searchBydescription($event.target.value)"
+        >
+    <ul *ngIf="listIsvisible">
+        <li 
+            *ngFor="let client of lsClientSuggestion$ | async"
+            (click)="setClient(client)">
+            <span class="container__document">{{ client.document }}</span>
+            <span class="container__name">| {{client.name | titlecase }}</span>
+        </li>
+    </ul>
+</form>

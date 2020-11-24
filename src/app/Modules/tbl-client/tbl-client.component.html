@@ -1,0 +1,39 @@
+<app-navigation (showCloseMenu)="moveContent($event)"></app-navigation>
+
+<div id="container__content">
+    <h1>Clientes</h1>
+    <button class="btn-add btn-info" (click)="insertClient()"><i class="fas fa-plus"></i></button>
+    <table class="table table-striped">
+        <thead>
+            <th class="col-number col-mobile-hide">#</th>
+            <th>Documento</th>
+            <th>Razón social</th>
+            <th class="col-mobile-hide">Teléfono</th>
+            <th class="col-mobile-hide">Celular</th>
+            <th class="col-mobile-hide">Dirección</th>
+            <th class="col-mobile-hide">Ciudad</th>
+            <th class="col-mobile-hide">Acciones</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let i = index ;let client of lsClient | paginate: { itemsPerPage: 10, currentPage: p }">
+                <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
+                <td>{{ client.document }}</td>
+                <td>{{ client.name | titlecase }}</td>
+                <td class="col-mobile-hide">{{ client.phone }}</td>
+                <td class="col-mobile-hide">{{ client.cellphone }}</td>
+                <td class="col-mobile-hide">{{ client.address }}</td>
+                <td class="col-mobile-hide">{{ validateCityName(client.city) }}</td>
+                <td>
+                    <i class="fas fa-info-circle text-info" title="Más información"></i>
+                    <i class="fas fa-edit text-warning" (click)="updateClient(client.id)" title="Modificar"></i>
+                    <i class="fas fa-trash-alt text-danger" (click)="deleteClient(client)" title="Eliminar"></i>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+    <div class="paginationContainer">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

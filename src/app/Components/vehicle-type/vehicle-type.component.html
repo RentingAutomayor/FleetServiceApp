@@ -1,0 +1,7 @@
+<form [formGroup]="frmVehicleType">
+    <label>Tipo</label>
+    <select formControlName="cmbType" (change)="setType($event.target)" class="browser-default custom-select">
+        <option [value]="0">Seleccione ...</option>
+        <option *ngFor="let vehicleType of lsVehicleType" [value]="vehicleType.id">{{ vehicleType.name | titlecase }}</option>
+    </select>
+</form>

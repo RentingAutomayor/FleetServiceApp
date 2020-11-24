@@ -1,0 +1,7 @@
+<form [formGroup]="frmVehicleState">
+    <label>Estado</label>
+    <select formControlName="cmbState" (change)="setState($event.target)" class="browser-default custom-select">
+        <option [value]="0">Seleccione ...</option>
+        <option *ngFor="let state of lsStates" [value]="state.id">{{ state.name | titlecase }}</option>
+    </select>
+</form>

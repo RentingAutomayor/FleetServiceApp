@@ -1,0 +1,71 @@
+.container__row{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-row: 1fr;
+}
+.container__col{
+    padding: 10px;
+}
+.container__observation{
+    padding: 10px; 
+}
+
+.container__vehicleModel{
+    padding: 10px; 
+}
+
+.buttons__container{
+    display: flex;
+    justify-content: flex-end;   
+}
+
+.buttons__container button{
+  width: 200px;
+  margin-left: 10px;
+  margin-top: 20px;
+}
+
+.card-body{
+    padding: 10px;
+}
+
+.container__titles{
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+.container__titles button{
+    background-color: inherit;
+    float: left;
+    border:none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 20px;
+}
+
+.container__titles button:hover{
+    background-color: #ddd;
+}
+
+.container__titles button.active{
+    background-color: #ccc;
+}
+
+
+.tab_content{
+    padding: 20px 50px;
+    border: solid 1px #ccc;
+    border-top: none;
+}
+
+
+#container__content{
+    transition: margin-left 1s;
+    padding: 20px;
+    margin-left: 250px;
+    margin-top: -70px;
+}
+

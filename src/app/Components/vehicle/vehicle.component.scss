@@ -1,0 +1,40 @@
+.row__container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;  
+    margin-top: 10px; 
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+select{
+    cursor: pointer;
+}
+
+#container__buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+
+#container__buttons button{
+   margin-left: 10px;
+   margin-top: 20px;;
+   width: 150px;
+}
+
+
+@media only screen and (max-width: 600px){
+    .row__container{
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr;   
+        margin-top: 0px; 
+        margin-bottom: 0px;
+    }
+
+    .col{
+        margin-top: 10px; 
+        margin-bottom: 10px;
+    }
+}

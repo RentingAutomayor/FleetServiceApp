@@ -1,0 +1,30 @@
+.row__container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;  
+    margin-top: 10px; 
+    margin-bottom: 10px;
+}
+
+select{
+    cursor:pointer;
+}
+
+select > option{
+    cursor:pointer;
+}
+
+@media only screen and (max-width: 600px){
+    .row__container{
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;   
+        margin-top: 0px; 
+        margin-bottom: 0px;
+    }
+
+    .col{
+        margin-top: 10px; 
+        margin-bottom: 10px;
+    }
+}

@@ -1,0 +1,14 @@
+<form [formGroup]="frmDiscountType">
+    <label>Tipo de descuento:</label>
+    <select 
+        formControlName="cmbDiscount" 
+        class="browser-default custom-select"
+        (change)="setDiscountType($event.target)">
+        <option [value]="0" disabled>Seleccione ...</option>
+        <option 
+            *ngFor="let discount of lsDiscount"
+            [value]="discount.id">
+            {{discount.name | lowercase }}
+        </option>
+    </select>
+</form>

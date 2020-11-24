@@ -1,0 +1,43 @@
+<app-navigation (showCloseMenu)="moveContent($event)"></app-navigation>
+<div id="container__content">
+    <div class="container__tabPanel">
+        <div class="container__titles">
+            <button class="tab_link active" (click)="openTab($event,'basicData')">Datos básicos</button>
+            <button class="tab_link" (click)="openTab($event,'contact')">Contactos</button>
+            <button class="tab_link" (click)="openTab($event,'branch')">Sucursales</button>
+            <button class="tab_link" (click)="openTab($event,'priceByArticle')">Precios X Insumo</button>
+        </div>
+    </div>
+
+    <div class="tab_content tab_active" id="container__basicData">
+        <h1>Formulario ingreso de concesionarios</h1>
+        <div class="card">
+            <div class="car-body">
+                <app-person 
+                    [configComponent]="oConfigPersonComp"
+                    [personToUpdate]="oPersonToUpdate"
+                    [returnPath]="sReturnPath" 
+                    [formHasError]="bFormHasError" 
+                    [error]="errorMessage" 
+                    (personWasSetted)="SetDataToSaveDealer()"></app-person>
+            </div>
+        </div>
+    </div>
+
+
+     <div class="tab_content tab_inactive" id="container__contact">
+        <app-contact [isToDealer]="oIsToDealer" [dealerWasSaved]="oDealerWasSaved">
+        </app-contact>
+    </div>
+
+
+    <div class="tab_content tab_inactive" id="container__branch">
+        <app-branch [isToDealer]="oIsToDealer" [dealerWasSaved]="oDealerWasSaved">
+        </app-branch>
+    </div>
+
+    <div class="tab_content tab_inactive" id="container__priceByArticle">
+        <h1>Aqui va la información de los insumos y sus precios base por concesionario</h1>
+    </div>
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

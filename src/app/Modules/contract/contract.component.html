@@ -1,0 +1,119 @@
+<app-navigation (showCloseMenu)="moveContent($event)"></app-navigation>
+<div id="container__content">
+
+    <div class="container__tabPanel">
+        <div class="container__titles">
+            <button class="tab_link active" (click)="openTab($event,'basicData')">Datos del contrato</button>
+            <button class="tab_link" (click)="openTab($event,'vehicleModels')">Líneas contratadas</button>
+            <button class="tab_link" (click)="openTab($event,'vehicles')">Vehículos</button>
+        </div>
+    </div>
+
+    <form [formGroup]="frmContract">
+        <div class="tab_content tab_active" id="container__basicData">
+            <div class="container__row">
+                <div class="container__col">
+                    <app-input-search-client 
+                    (clientWasSetted)="setClientSelected()">
+                    </app-input-search-client>
+                </div>
+                <div class="container__col">
+                    <app-input-search-dealer 
+                    (dealerWasSetted)="setDealerSelected()">
+                    </app-input-search-dealer>
+                </div>
+            </div>
+            <div class="container__row">
+                <div class="container__col">
+                    <label>Nombre del contrato</label>
+                    <input type="text" formControlName="txtContractName" class="form-control"
+                        placeholder="Nombre del contrato ...">
+                </div>
+                <div class="container__col">
+                    <app-contract-state></app-contract-state>
+                </div>
+            </div>
+            <div class="container__row">
+                <div class="container__col">
+                    <label>Cantidad de mantenimientos contratados:</label>
+                    <input type="number" formControlName="txtAmountOfMaintenances" class="form-control"
+                        placeholder="Cantidad de mantenimientos contratados ...">
+                </div>
+                <div class="container__col">
+                    <label>Duración:</label>
+                    <input type="number" formControlName="txtDuration" class="form-control"
+                        placeholder="Duración del contrato ..." (input)="calculateEndingDate()">
+                </div>
+            </div>
+            <div class="container__row">
+                <div class="container__col">
+                    <label>Fecha de inicio:</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        formControlName="txtStartingDate" 
+                        [bsValue]="dtStartingDate"
+                        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
+                        placeholder="fecha de inicio ..." 
+                        (onHidden)="calculateEndingDate()" 
+                        bsDatepicker>
+                </div>
+                <div class="container__col">
+                    <label>Fecha de finalización:</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        formControlName="txtEndingDate"
+                        placeholder="fecha de finalización ..." 
+                        [bsValue]="dtEndingDate"
+                        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }" 
+                        bsDatepicker
+                        disabled>
+                </div>
+            </div>
+            <div class="container__row">
+                <div class="container__col">
+                    <app-contract-discount-type></app-contract-discount-type>
+                </div>
+                <div class="container__col">
+                    <label>Valor del descuento:</label>
+                    <input type="number" formControlName="txtDiscountValue" class="form-control"
+                        placeholder="valor del descuento ...">
+                </div>
+            </div>
+            <div class="container__observation">
+                <label>Observaciones: </label>
+                <textarea class="form-control" formControlName="txtObservation" cols="30" rows="2">
+        </textarea>
+            </div>
+
+        </div>
+        <div class="tab_content tab_inactive" id="container__vehicleModels">
+            <app-check-list-vehicle-type [countChanges]="countChanges" (vehicleTypeWasSelected)="setListVehicleTypes()">
+            </app-check-list-vehicle-type>
+            <app-check-list-vehicle-model [countChanges]="countChanges"
+                (vehicleModelsWasSetted)="setLisVehicleModels()">
+            </app-check-list-vehicle-model>
+        </div>
+        <div class="tab_content tab_inactive" id="container__vehicles">
+            <label>Cantidad de vehículos contratados</label>
+            <input 
+                class="form-control" 
+                type="number" 
+                formControlName = "txtAmountVehicles"
+                placeholder="cantidad de vehículos contratados">
+            <hr>
+
+            <app-tbl-check-vehicles [countChanges]="countChanges">
+            </app-tbl-check-vehicles>
+
+        </div>
+
+        <div class="buttons__container" id="container__buttons">
+            <button type="button" class="btn btn-danger">Cancelar</button>
+            <button type="button" class="btn btn-success" (click)="saveContract()">Guardar</button>
+        </div>
+    </form>
+
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

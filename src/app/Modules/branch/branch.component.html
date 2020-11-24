@@ -1,0 +1,55 @@
+<h2 id="titleComponentBranch"></h2>
+
+<button class="btn-add btn-info" (click)="insertBranch()" id="btnAddBranch"><i class="fas fa-plus"></i></button>
+
+<div class="container__infoError" id="cont_error_add_branch">
+    <span>{{ getErrorDescription() }}</span>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <th class="col-number col-mobile-hide">#</th>
+        <th>Nombre</th>
+        <th class="col-mobile-hide">Teléfono</th>
+        <th class="col-mobile-hide">Celular</th>
+        <th class="col-mobile-hide">Dirección</th>
+        <th class="col-mobile-hide">Ciudad</th>
+        <th>Acciones</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let i = index ;let branch of lsBranchs | paginate: { itemsPerPage: 10, currentPage: p }">
+            <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
+            <td>{{ branch.name | titlecase }}</td>
+            <td class="col-mobile-hide">{{ branch.phone }}</td>
+            <td class="col-mobile-hide">{{ branch.cellphone }}</td>
+            <td class="col-mobile-hide">{{ branch.address }}</td>
+            <td class="col-mobile-hide">{{ validateCityName(branch.city) | titlecase }}</td>
+            <td>
+                <i class="fas fa-info-circle text-info" title="Más información"></i>
+                <i class="fas fa-edit text-warning" (click)="updateContact(branch)" title="Modificar"></i>
+                <i class="fas fa-trash-alt text-danger" (click)="deleteBranch(branch)" title="Eliminar"></i>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="paginationContainer">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+</div>
+
+<div id="container__formBranch">
+    <div class="overlay">
+        <div class="card">
+            <div class="card-body">
+                <app-person 
+                [configComponent]="oConfigPersonComp" 
+                [countContact] = "oCountBranch"  
+                [oCountChanges] = "oCountChangesCity"
+                [personToUpdate] = "oPersonToUpdate" 
+                (personWasSetted)="saveBranch()"
+                (personWasCanceled)="comeBackToTable()"></app-person>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

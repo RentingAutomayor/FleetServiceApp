@@ -1,0 +1,33 @@
+.container__row{
+    display: flex;
+    flex-direction: row;
+    padding-left: 20px;
+}
+
+.container__type{
+    border-left:solid 1px #ccc;
+    padding-left: 20px;
+    width: 400px;    
+}
+
+.container__model{
+    display: grid;
+    grid-template-columns: 25px 1fr;
+    grid-template-rows: 1fr;
+    cursor: pointer;
+    padding: 2px 5px;
+    margin-left: 10px;
+}
+
+.container__model label{
+    margin-left: 5px;
+    cursor: pointer;  
+}
+
+label{
+    font-size: 16px !important;
+}
+
+.container__model input{  
+    cursor: pointer;
+}

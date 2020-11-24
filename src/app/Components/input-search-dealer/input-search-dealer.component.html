@@ -1,0 +1,18 @@
+<form [formGroup]="frmSearchDealer">
+    <label>Concesionario:</label>
+    <input 
+        type="text" 
+        class="form-control"
+        formControlName="txtDealer" 
+        placeholder="Concesionario ..."
+        (input)="searchBydescription($event.target.value)"
+        >
+    <ul *ngIf="listIsvisible">
+        <li 
+            *ngFor="let dealer of lsDealerSuggestion$ | async"
+            (click)="setDealer(dealer)">
+            <span class="container__document">{{ dealer.document }}</span>
+            <span class="container__name">| {{dealer.name | titlecase }}</span>
+        </li>
+    </ul>
+</form>

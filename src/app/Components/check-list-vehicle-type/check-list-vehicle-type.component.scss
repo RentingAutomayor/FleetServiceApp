@@ -1,0 +1,25 @@
+.container__row{
+    display: flex;
+    flex-direction: row;
+}
+
+.container__type{
+    display: grid;
+    grid-template-columns: 25px 1fr;
+    grid-template-rows: 1fr;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin-left: 10px;
+    width: 120px;
+}
+
+.container__type label{
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+
+.container__type input{  
+    cursor: pointer;
+}
+

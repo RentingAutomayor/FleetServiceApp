@@ -1,0 +1,37 @@
+<div class="container__table">
+    <table class="table table-striped">
+        <thead>
+            <th>#</th>
+            <th>Placa</th>
+            <th>Modelo</th>
+            <th>Kilometraje</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let vehicle of lsVehicles; let i = index">
+                <td>{{i+1}}</td>
+                <td>
+                    <div class="container__licensePlate">
+                        <label class="container__checkbox" [for]="getIdChk(vehicle.id)">           
+                            <input 
+                                type="checkbox" 
+                                [id]="getIdChk(vehicle.id)"
+                                (click)="setVehicleToContract($event.target,vehicle)">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label [for]="getIdChk(vehicle.id)">
+                            {{vehicle.licensePlate}}
+                        </label>
+                    </div>                  
+                </td>
+                <td>{{vehicle.vehicleModel.shortName}}</td>
+                <td>{{vehicle.mileage}}</td>
+                <td>{{vehicle.vehicleState.name}}</td>
+                <td>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

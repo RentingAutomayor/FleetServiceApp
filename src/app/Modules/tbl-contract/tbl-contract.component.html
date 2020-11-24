@@ -1,0 +1,41 @@
+<app-navigation (showCloseMenu)="moveContent($event)"></app-navigation>
+
+<div id="container__content">
+    <h1>Contratos</h1>
+    <button class="btn-add btn-info" (click)="insertContract()"><i class="fas fa-plus"></i></button>
+    <table class="table table-striped">
+        <thead>
+            <th>#</th>
+            <th>Código</th>
+            <th>Cliente</th>
+            <th>Concesionario</th>
+            <th>Plazo</th>
+            <th title="Mantenimientos contratados">M-C</th>
+            <th title="Vehículos contratados">V-C</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let i = index ;let contract of lsContracts | paginate: { itemsPerPage: 10, currentPage: p }">
+                <td>{{ (i + 1) }}</td>
+                <td>{{ contract.code }}</td>
+                <td>{{ contract.client.name | titlecase }}</td>
+                <td>{{ contract.dealer.name | titlecase }}</td>
+                <td>{{ contract.duration }}</td>
+                <td>{{ contract.amountOfMaintenances }}</td>
+                <td>{{ contract.amountVehicles }}</td>
+                <td>{{ contract.contractState.name | titlecase }}</td>
+                <td>
+                    <i class="fas fa-info-circle text-info" title="Más información"></i>
+                    <i class="fas fa-edit text-warning" (click)="updateContract(contract)" title="Modificar"></i>
+                    <i class="fas fa-trash-alt text-danger" title="Eliminar"></i>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+    <div class="paginationContainer">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

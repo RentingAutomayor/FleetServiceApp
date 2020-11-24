@@ -1,0 +1,15 @@
+<form [formGroup]="frmContractState">
+    <label>Estado del contrato:</label>
+    <select 
+        formControlName="cmbStates" 
+        class="browser-default custom-select"
+        (change)="setContractState($event.target)">
+
+        <option [value]="0" disabled>Seleccione ...</option>
+        <option *ngFor="let state of lsStates" 
+                [title]="state.description" 
+                [value]="state.id">
+            {{state.name | titlecase }}
+        </option>
+    </select>
+</form>

@@ -1,0 +1,9 @@
+.container__licensePlate{
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    grid-template-rows: 1fr;
+}
+
+.container__licensePlate label{
+    cursor: pointer;
+}

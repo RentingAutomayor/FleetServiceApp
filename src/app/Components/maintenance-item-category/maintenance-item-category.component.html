@@ -1,0 +1,10 @@
+<form [formGroup]="frmCategory">
+    <label>Categoría</label>
+    <select formControlName="cmbCategory" 
+        class="browser-default custom-select"
+        (change)="setCategory($event.target)">
+        <option [value]="0" disabled>Seleccione ...</option>
+        <option *ngFor="let category of lsCategory" 
+            [value]="category.id">{{ category.name | titlecase }}</option>
+    </select>
+</form>

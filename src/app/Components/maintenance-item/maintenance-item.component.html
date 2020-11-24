@@ -1,0 +1,67 @@
+<form [formGroup]="frmMaintenanceItem">
+    <div class="container__buttonClose">
+        <a (click)="comeBack()"><i class="fas fa-times"></i></a>
+    </div>  
+    <legend>Datos del artículo de mantenimiento</legend>
+    <hr>
+    <div id="container__maintenanceItem">
+        <div class="row__container">
+            <div class="col">
+                <label>Código</label>
+                <input type="text" class="form-control" formControlName="txtCode" placeholder="Código ...">
+            </div>
+            <div class="col">
+                <label>Nombre</label>
+                <input type="text" class="form-control" formControlName="txtName" placeholder="Nombre ...">
+            </div>
+            <div class="col">
+                <label>Descripción</label>
+                <input type="text" class="form-control" formControlName="txtDescription" placeholder="Descripción ...">
+            </div>
+        </div>
+        <div class="row__container">
+            <div class="col">
+                <app-presentation-unit [countChanges]="countChanges"></app-presentation-unit>
+            </div>
+            <div class="col">
+                <app-type-of-maintenance-item [countChanges]="countChanges"></app-type-of-maintenance-item>
+            </div>
+            <div class="col">
+                <label>Precio de referencia</label>
+                <input type="number" class="form-control" formControlName="txtReferencePrice" placeholder="Precio ...">
+            </div>
+        </div>
+        <div class="row__container">
+            <div class="col">
+                <app-vehicle-brand 
+                [countChanges]="countChanges" 
+                (vehicleBrandWasSetted)="setBrand()">
+                </app-vehicle-brand>
+            </div>
+            <div class="col">
+                <app-maintenance-item-category
+                [countChanges] = "countChanges">
+                </app-maintenance-item-category>
+            </div>
+        </div>
+        <hr>
+        <div class="container__groups">           
+            <app-check-list-vehicle-type
+            [countChanges] = "countChanges"
+            (vehicleTypeWasSelected)="setListVehicleTypes()">                
+            </app-check-list-vehicle-type>        
+        </div>
+        <hr>
+        <div class="container__groups">
+            <app-check-list-vehicle-model
+                [countChanges] = "countChanges"
+                (vehicleModelsWasSetted)="setLisVehicleModels()">
+            </app-check-list-vehicle-model>
+        </div>
+        <hr>
+        <div class="buttons__container" id="container__buttons">
+            <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
+            <button type="button" class="btn btn-success" (click)="setDataMaintenanceItem()">Guardar</button>
+        </div>
+    </div>
+</form>

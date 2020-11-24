@@ -1,0 +1,79 @@
+<div class="container__person">
+    <form [formGroup]="formPerson">
+        <div class="row__container" id="container__document">
+            <div class="col" *ngIf="configComponent.kindOfDocumentIsVisible">
+                <label for="#">Tipo de documento:</label>
+                <select class="browser-default custom-select"
+                    formControlName = "cmbKindOfDocument"
+                >
+                    <option disabled>Seleccione ... </option>
+                </select>
+            </div>
+            <div class="col" *ngIf="configComponent.documentIsVisible">
+                <label for="">Documento:</label>
+                <input type="number" class="form-control" placeholder="Documento ..."
+                    formControlName = "txtDocument"
+                >
+            </div>
+        </div>
+        <div class="row__container" id="container__name">
+            <div class="col" *ngIf="configComponent.nameIsVisible">
+                <label for="#">Nombre:</label>
+                <input type="text" class="form-control" placeholder="Nombre ..."
+                    formControlName = "txtName">
+            </div>
+            <div class="col" *ngIf="configComponent.lastNameIsVisible">
+                <label for="">Apellido:</label>
+                <input type="text" class="form-control" placeholder="Apellido..."
+                    formControlName = "txtLastName">
+            </div>
+        </div>
+        <div class="row__container" id="container__phone">
+            <div class="col" *ngIf="configComponent.phoneIsVisible">
+                <label for="#">Teléfono:</label>
+                <input type="number" class="form-control" placeholder="Teléfono ..."
+                    formControlName = "txtPhone">
+            </div>
+            <div class="col" *ngIf="configComponent.cellphoneIsVisible">
+                <label for="">Celular:</label>
+                <input type="number" class="form-control" placeholder="Celular..."
+                    formControlName = "txtCellPhone">
+            </div>
+        </div>
+        <div class="row__container" id="container__email">
+            <div class="col" *ngIf="configComponent.emailIsVisible">
+                <label for="#">Email:</label>
+                <input type="email" class="form-control" placeholder="Email ..."
+                    formControlName = "txtEmail">
+            </div>
+            <div class="col" *ngIf="configComponent.websiteIsVisible">
+                <label for="">Sitio Web:</label>
+                <input type="text" class="form-control" placeholder="Sitio web..."
+                    formControlName = "txtWebsite">
+            </div>
+        </div>
+        <div class="row__container"  id="container__address">
+            <div class="col" *ngIf="configComponent.addressIsVisible">
+                <label for="#">Dirección:</label>
+                <input type="text" class="form-control" placeholder="Dirección ..."
+                    formControlName = "txtAddress">
+            </div>
+            <div  *ngIf="configComponent.jobTitleIsVisible">
+                <app-job-title [jobTitleSelected]="oJobTitleSelected"></app-job-title>
+            </div>            
+        </div>    
+        <div *ngIf="configComponent.cityIsVisible">
+            <app-city 
+                [countChanges]="oCountChanges"
+                [city]="oCity">
+            </app-city>
+        </div> 
+        <div  class="container__error" *ngIf="formHasError">
+            <p><span class="error"> * {{error}} *</span></p>
+        </div>
+        <div class="buttons__container" id="container__buttons" >
+            <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
+            <button type="button" class="btn btn-success" (click)="setDataPerson()">Guardar</button>
+        </div>  
+    </form>
+</div>

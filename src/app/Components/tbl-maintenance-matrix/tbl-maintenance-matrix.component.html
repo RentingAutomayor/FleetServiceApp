@@ -1,0 +1,67 @@
+<h3>Matrices mantenimiento</h3>
+<!--filters-->
+<div class="container__filter">
+    <div class="container__row">
+        <div class="col">
+            <app-vehicle-brand
+              [countChanges]="countChanges"
+              (vehicleBrandWasSetted)="setBrand()"></app-vehicle-brand>
+          </div>
+  
+          <div class="col">
+              <app-vehicle-type
+              [countChanges]="countChanges"
+              (vehicleTypeWasSetted)="setVehiclType()"></app-vehicle-type>
+          </div>
+  
+          <div class="col">
+              <app-vehicle-model 
+                  [countChanges]="countChanges"
+                  (vehicleModelWasSetted)="setVehicleModel()"></app-vehicle-model>
+                 
+          </div>
+    </div>
+   <br>
+    <hr>
+   <br>
+</div>
+<!--Table content-->
+<div class="container__table_matrix">
+    <table class="table table-striped">
+        <thead class="row_frequency">
+            <th>Actividades</th>
+            <th>
+                <img 
+                    class="arrow inactive col_frequency" 
+                    src="../../../assets/arrow_back.png" 
+                    alt="arrow_back"
+                    (click)="showOtherRoutines()">
+            </th>
+            <th *ngFor="let frequency of lsFrequency" [class]="getClass(frequency.shortName)">
+                {{frequency.shortName}}
+            </th>
+            <th>
+                <img 
+                    class="arrow active col_frequency" 
+                    src="../../../assets/arrow_next.png" 
+                    alt="arrow_next"
+                    (click)="showOtherRoutines()">
+            </th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of lsMaintenanceItems" class="row_frequency">
+                <td>{{ item.name | titlecase }}</td>
+                <td></td>
+                <td *ngFor="let frequency of lsFrequency" [class]="getClass(frequency.shortName)">
+                    <label class="container__checkbox">
+                        <input type="checkbox" [id]="getChkId(item.id,frequency.id)">
+                        <span class="checkmark"></span>
+                    </label>                    
+                </td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

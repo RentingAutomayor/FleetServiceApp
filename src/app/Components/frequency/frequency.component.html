@@ -1,0 +1,8 @@
+<form [formGroup]="frmFrequency">
+    <label>Frecuencia</label>
+    <select formControlName="cmbFrequency" (change)="setFrequency($event.target)" class="browser-default custom-select">
+        <option [value]="0">Seleccione ...</option>
+        <option *ngFor="let frequency of lsFrequency" [value]="frequency.id">{{ frequency.name | titlecase }}</option>
+    </select>
+</form>
+

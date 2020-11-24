@@ -1,0 +1,48 @@
+<app-navigation (showCloseMenu)="moveContent($event)"></app-navigation>
+<div id="container__content">
+    <div class="container__tabPanel">
+        <div class="container__titles">
+            <button class="tab_link active" (click)="openTab($event,'basicData')">Datos básicos</button>
+            <button class="tab_link" (click)="openTab($event,'contact')">Contactos</button>
+            <button class="tab_link" (click)="openTab($event,'branch')">Sucursales</button>
+            <button class="tab_link" (click)="openTab($event,'vehicles')">Vehículos</button>
+            <button class="tab_link" (click)="openTab($event,'financialInformation')">Información financiera</button>
+        </div>
+    </div>
+
+    <div class="tab_content tab_active" id="container__basicData">
+        <h1>Formulario ingreso de clientes</h1>
+        <div class="card">
+            <div class="car-body">
+                <app-person 
+                [configComponent]="oConfigPersonComp" 
+                [formHasError]="bFormHasError" 
+                [error]="errorMessage"                    
+                [returnPath]="sReturnPath" 
+                [personToUpdate]="oPersonToUpdate"
+                (personWasSetted)="SetDataToSaveClient()"></app-person>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab_content tab_inactive" id="container__contact">
+        <app-contact [isToClient]="oIsToClient" [clientWasSaved]="oClientWasSaved">
+        </app-contact>
+    </div>
+
+    <div class="tab_content tab_inactive" id="container__branch">
+        <app-branch [isToClient]="oIsToClient" [clientWasSaved]="oClientWasSaved">
+        </app-branch>
+    </div>
+
+    <div class="tab_content tab_inactive" id="container__vehicles">
+        <app-vehicles-by-client [clientWasSaved]="oClientWasSaved"></app-vehicles-by-client>
+    </div> 
+
+    <div class="tab_content tab_inactive" id="container__financialInformation">
+        <h1>Aqui va la información del cupo</h1>
+    </div>
+
+    
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

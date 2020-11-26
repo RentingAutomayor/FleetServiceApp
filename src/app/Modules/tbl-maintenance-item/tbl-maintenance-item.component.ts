@@ -12,7 +12,7 @@ import { VehicleService } from 'src/app/Services/vehicle.service';
 })
 export class TblMaintenanceItemComponent implements OnInit {
   isAwaiting: boolean;
-  p: Number = 1;
+  pag: Number = 1;
   oCountChanges: number;
   lsMaintenanceItems: MaintenanceItem[];
   isToUpdate:boolean;

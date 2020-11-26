@@ -56,7 +56,7 @@ export class TblClientComponent implements OnInit {
       let oClientDB = await this.clientService.getClientById(pId);
       this.clientService.setClientToUpdate(oClientDB);      
       this.isAwaiting = false;
-      this.router.navigate(['/Client']);
+      this.router.navigate(["/MasterClients/Client"]);
     }catch(err){
       console.error(err.error.Message);
       alert(err.error.Message);
@@ -82,7 +82,7 @@ export class TblClientComponent implements OnInit {
   }
 
   insertClient(){
-    this.router.navigate(["/Client"]);
+    this.router.navigate(["/MasterClients/Client"]);
   }
 
   moveContent(event:any){

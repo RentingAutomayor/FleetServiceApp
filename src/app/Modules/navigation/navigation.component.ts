@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NavigationService } from '../../Services/navigation.service';
 import { Router } from '@angular/router';
 
@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss']
 })
-export class NavigationComponent implements OnInit {
+export class NavigationComponent implements OnInit{
   containerMenu: HTMLDivElement;
   @Output() showCloseMenu = new EventEmitter<boolean>();
   constructor(
@@ -17,18 +17,22 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit(): void {
     this.initComponents();
+    this.validateItemActive();
   }
 
   initComponents() {
     this.containerMenu = document.querySelector("#container__menu");
-    this.validateItemActive();
+   
   }
 
   validateItemActive(){
     let itemNav = this.navigationService.getItemActive();
-    this.turnOffItems();
-
-    if(itemNav != null){
+    console.log("item a activar....",itemNav);
+    //let itemNav = this.itemNavigation;
+    //this.turnOffItems();
+    //console.log("NavigationComponent",itemNav);
+    
+    if(itemNav != null && itemNav != ""){
       this.activateItem(itemNav);
     }
   }
@@ -44,10 +48,10 @@ export class NavigationComponent implements OnInit {
   }
 
   navigateTo(itemNav: string) {
-    
-    this.turnOffItems();
-    this.navigationService.setItemActive(itemNav);
+    //this.turnOffItems();
     this.activateItem(itemNav);
+    this.navigationService.setItemActive(itemNav);
+    
 
     switch (itemNav) {
       case 'client':
@@ -68,9 +72,12 @@ export class NavigationComponent implements OnInit {
   }
 
   activateItem(pItemNav:string){
-    let item = `#nav-${pItemNav}`;    
-    let itemNavigation: HTMLLinkElement = document.querySelector(item);    
-    itemNavigation.classList.add("item-nav-active");
+    let item = `nav-${pItemNav}`;   
+    let itemNavigation = document.getElementById(item);   
+    console.log(itemNavigation); 
+    //itemNavigation.classList.add("item-nav-active");
+    //itemNavigation.style.backgroundColor = "#0f4c75";
+    itemNavigation.setAttribute("style","background-color: #0f4c75;")
   }
 
   turnOffItems(){

@@ -88,7 +88,12 @@ export class CheckListVehicleTypeComponent implements OnInit,OnChanges {
       });
     }
     catch(error){
-      console.error(error);
+      console.warn("[Puede que no exista una lista de tipo de vehículos aún]");
+      setTimeout(() => {
+        this.lsVehicleTypeSelected = this.vehicleService.getListVehicleTypeSelected();
+        //console.warn("Intenta de nuevo mostrar información", this.lsVehicleTypeSelected);        
+        this.showDataInForm(this.lsVehicleTypeSelected);
+      },800);
     }
   }
 

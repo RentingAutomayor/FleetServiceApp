@@ -55,7 +55,8 @@ export class TblContractComponent implements OnInit {
 
   insertContract(){
     this.isToUpdate = false;
-    this.router.navigate(['/Contract']);
+    this.contractService.setContract(null);
+    this.router.navigate(['/MasterContracts/Contract']);
   }
 
   async updateContract(pContract:Contract){
@@ -65,10 +66,27 @@ export class TblContractComponent implements OnInit {
       this.isAwaiting = false;
       console.log("[tbl-contract contract-to-update]: ",oContractToUpdate);
       this.contractService.setContract(oContractToUpdate);
-      this.router.navigate(['/Contract']);
+      this.router.navigate(['/MasterContracts/Contract']);
     } catch (error) {
       console.error(error);
     }     
+  }
+
+  async deleteContract(pContract: Contract){
+    try{
+      if(confirm("¿Está seguro que desea elminar este contrato?, al hacerlo se eliminará toda la información relacionada")){
+        this.isAwaiting = true;
+        let rta = await this.contractService.delete(pContract);
+        this.isAwaiting = false;
+        if(rta.response){
+          alert(rta.message);
+          this.getListContracts();
+        }
+      }
+    }catch(error){
+      console.error(error);
+      alert(error);
+    }
   }
 
 

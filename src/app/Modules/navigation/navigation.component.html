@@ -10,10 +10,10 @@
         </div>
     </div>
     <hr>
-    <a id="nav-client" class="item-navigation" (click)="navigateTo('client')">Clientes</a>
-    <a id="nav-dealer" class="item-navigation" (click)="navigateTo('dealer')">Concesionarios</a>
-    <a id="nav-routine" class="item-navigation" (click)="navigateTo('routine')">Mantenimientos</a>
-    <a id="nav-contract" class="item-navigation" (click)="navigateTo('contract')">Contratos</a>
+    <a id="nav-client" class="item-navigation" [routerLink]="['/MasterClients']"  routerLinkActive="item-nav-active">Clientes</a>
+    <a id="nav-dealer" class="item-navigation" [routerLink]="['/MasterDealers']"  routerLinkActive="item-nav-active">Concesionarios</a>
+    <a id="nav-routine" class="item-navigation" [routerLink]="['/ItemsAndRoutines']"  routerLinkActive="item-nav-active">Mantenimientos</a>
+    <a id="nav-contract" class="item-navigation" [routerLink]="['/MasterContracts']"  routerLinkActive="item-nav-active">Contratos</a>
     <!-- <a id="nav-contract" class="item-navigation" (click)="navigateTo('contract')">Contratos</a> -->
 </div>
 

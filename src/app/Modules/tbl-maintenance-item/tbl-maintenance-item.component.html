@@ -12,7 +12,7 @@
             <th class="col-mobile-hide">Acciones</th>
         </thead>
         <tbody>
-            <tr *ngFor="let i = index ;let item of lsMaintenanceItems | paginate: { itemsPerPage: 10, currentPage: p }">
+            <tr *ngFor="let i = index ;let item of lsMaintenanceItems | paginate: { itemsPerPage: 10, currentPage: pag }">
                 <td>{{i+1}}</td>
                 <td>{{item.code}}</td>
                 <td>{{item.name | titlecase}}</td>
@@ -28,7 +28,7 @@
         </tbody>
     </table>
     <div class="paginationContainer">
-        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+        <pagination-controls (pageChange)="pag = $event"></pagination-controls>
     </div>
 </div>
 <div id="container__formMaintenanceItem">

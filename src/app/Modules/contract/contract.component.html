@@ -1,4 +1,6 @@
-<app-navigation (showCloseMenu)="moveContent($event)"></app-navigation>
+<app-navigation 
+    (showCloseMenu)="moveContent($event)">
+</app-navigation>
 <div id="container__content">
 
     <div class="container__tabPanel">
@@ -14,11 +16,13 @@
             <div class="container__row">
                 <div class="container__col">
                     <app-input-search-client 
+                    [countChanges]="countChanges" 
                     (clientWasSetted)="setClientSelected()">
                     </app-input-search-client>
                 </div>
                 <div class="container__col">
                     <app-input-search-dealer 
+                    [countChanges]="countChanges" 
                     (dealerWasSetted)="setDealerSelected()">
                     </app-input-search-dealer>
                 </div>
@@ -30,7 +34,8 @@
                         placeholder="Nombre del contrato ...">
                 </div>
                 <div class="container__col">
-                    <app-contract-state></app-contract-state>
+                    <app-contract-state
+                        [countChanges]="countChanges"></app-contract-state>
                 </div>
             </div>
             <div class="container__row">
@@ -41,8 +46,12 @@
                 </div>
                 <div class="container__col">
                     <label>Duración:</label>
-                    <input type="number" formControlName="txtDuration" class="form-control"
-                        placeholder="Duración del contrato ..." (input)="calculateEndingDate()">
+                    <input 
+                        type="number" 
+                        formControlName="txtDuration" 
+                        class="form-control"
+                        placeholder="Duración del contrato ..." 
+                        (input)="calculateEndingDate()">
                 </div>
             </div>
             <div class="container__row">
@@ -73,7 +82,8 @@
             </div>
             <div class="container__row">
                 <div class="container__col">
-                    <app-contract-discount-type></app-contract-discount-type>
+                    <app-contract-discount-type
+                        [countChanges]="countChanges"></app-contract-discount-type>
                 </div>
                 <div class="container__col">
                     <label>Valor del descuento:</label>
@@ -89,9 +99,12 @@
 
         </div>
         <div class="tab_content tab_inactive" id="container__vehicleModels">
-            <app-check-list-vehicle-type [countChanges]="countChanges" (vehicleTypeWasSelected)="setListVehicleTypes()">
+            <app-check-list-vehicle-type 
+                [countChanges]="countChanges" 
+                (vehicleTypeWasSelected)="setListVehicleTypes()">
             </app-check-list-vehicle-type>
-            <app-check-list-vehicle-model [countChanges]="countChanges"
+            <app-check-list-vehicle-model 
+                [countChanges]="countChanges"
                 (vehicleModelsWasSetted)="setLisVehicleModels()">
             </app-check-list-vehicle-model>
         </div>
@@ -110,7 +123,7 @@
         </div>
 
         <div class="buttons__container" id="container__buttons">
-            <button type="button" class="btn btn-danger">Cancelar</button>
+            <button type="button" class="btn btn-danger" (click)="comeBackTable()">Cancelar</button>
             <button type="button" class="btn btn-success" (click)="saveContract()">Guardar</button>
         </div>
     </form>

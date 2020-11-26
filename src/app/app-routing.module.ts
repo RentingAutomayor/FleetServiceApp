@@ -10,13 +10,13 @@ import { TblContractComponent } from './Modules/tbl-contract/tbl-contract.compon
 
 
 
-const routes: Routes = [{ path: 'Client', component: ClientComponent },
+const routes: Routes = [{ path: 'MasterClients/Client', component: ClientComponent },
 { path: 'MasterClients', component: TblClientComponent },
-{ path: 'Dealer', component: DealerComponent },
+{ path: 'MasterDealers/Dealer', component: DealerComponent },
 { path: 'MasterDealers', component: TblDealerComponent },
 { path: 'ItemsAndRoutines', component: ItemsAndRoutinesComponent},
 { path: 'MasterContracts' , component: TblContractComponent},
-{ path: 'Contract' , component:ContractComponent},
+{ path: 'MasterContracts/Contract' , component:ContractComponent},
 { path: '', redirectTo: '/MasterClients', pathMatch: 'full' }
 ];
 

@@ -1,4 +1,5 @@
-<app-navigation (showCloseMenu)="moveContent($event)"></app-navigation>
+<app-navigation 
+    (showCloseMenu)="moveContent($event)"></app-navigation>
 
 <div id="container__content">
     <h1>Contratos</h1>
@@ -28,7 +29,7 @@
                 <td>
                     <i class="fas fa-info-circle text-info" title="Más información"></i>
                     <i class="fas fa-edit text-warning" (click)="updateContract(contract)" title="Modificar"></i>
-                    <i class="fas fa-trash-alt text-danger" title="Eliminar"></i>
+                    <i class="fas fa-trash-alt text-danger" (click)="deleteContract(contract)" title="Eliminar"></i>
                 </td>
             </tr>
         </tbody>

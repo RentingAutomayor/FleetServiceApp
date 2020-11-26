@@ -46,7 +46,7 @@ export class TblDealerComponent implements OnInit {
       let oDealerDB = await this.dealerService.getDealerById(pId);
       this.dealerService.setDealerToUpdate(oDealerDB);
       this.isAwaiting = false;
-      this.router.navigate(['/Dealer']);
+      this.router.navigate(["/MasterDealers/Dealer"]);
     }catch(err){
       console.error(err.error.Message);
       alert(err.error.Message);
@@ -84,7 +84,8 @@ export class TblDealerComponent implements OnInit {
   }
 
   insertDealer(){
-    this.router.navigate(["/Dealer"]);
+    this.dealerService.setDealerToUpdate(null);
+    this.router.navigate(["/MasterDealers/Dealer"]);
   }
 
   validateCityName(pCity:City):string{

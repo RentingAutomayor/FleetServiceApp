@@ -11,6 +11,8 @@ import { Dealer } from 'src/app/Models/Dealer';
 import { DealerService } from '../../Services/dealer.service';
 import { ContractService } from '../../Services/contract.service';
 import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { Router } from '@angular/router';
+import { VehicleType } from 'src/app/Models/VehicleType';
 
 @Component({
   selector: 'app-contract',
@@ -36,7 +38,8 @@ export class ContractComponent implements OnInit {
     private vehicleService: VehicleService,
     private dealerService: DealerService,
     private datePipe: DatePipe,
-    private contractService:ContractService
+    private contractService:ContractService,
+    private router:Router
   ) {
     let now = new Date();
     let monthfuture = new Date(now.getFullYear(),now.getMonth() + 1,now.getDay());
@@ -71,8 +74,16 @@ export class ContractComponent implements OnInit {
     this.contractToUpdate = this.contractService.getContract();
     if(this.contractToUpdate != null && this.contractToUpdate != undefined){
       this.isToUpdate = true;
+      this.setDataInForm(this.contractToUpdate);
     }else{
       this.isToUpdate = false;
+      this.clientService.setClientSelected(null);
+      this.dealerService.setDealerSelected(null);
+      this.contractService.setContractStateSelected(null);
+      this.contractService.setDiscountTypeSelected(null);
+      this.vehicleService.setListVehicleTypeSelected(null);
+      this.vehicleService.setListVehicleModelsSelected(null);
+      this.vehicleService.setListVehiclesSelected(null);
     }
   }
 
@@ -150,12 +161,28 @@ export class ContractComponent implements OnInit {
     console.log("Si está reconociendo el evento");
     console.log(txtStartingDate.value);
 
-    let pStartingDate = txtStartingDate.value;
+    let dTmp = txtStartingDate.value;
+    console.log("Sin formato",dTmp)
+    let pStartingDate = null;
+
+    try {
+      console.log("Sin error");
+      console.log(dTmp.toISOString().substring(0,10));
+      pStartingDate = this.formatDate(dTmp.toISOString().substring(0,10));
+    } catch (error) {
+      console.log("Con error");
+      dTmp = `${txtStartingDate.value}`;
+      console.log(dTmp.substr(0,10));
+      pStartingDate = this.formatDate(dTmp.substr(0,10));
+    }
+      
+    //let pStartingDate = txtStartingDate.value;
+    console.log("Con formato",pStartingDate);
+
     console.log("[contract-component]: ",pStartingDate);
     let duration = txtDuration.value;
     
-    
-    let endingDate = new Date(pStartingDate.getFullYear(),pStartingDate.getMonth(),(pStartingDate.getDate()));    
+    let endingDate = new Date(pStartingDate.getFullYear(),(pStartingDate.getMonth() - 1),(pStartingDate.getDate()));    
     endingDate.setMonth(endingDate.getMonth() + duration);
    
      let strEndDate = endingDate.toISOString().substring(0,10);
@@ -164,9 +191,61 @@ export class ContractComponent implements OnInit {
    
   }
 
+  setDataInForm(pContract:Contract){
+    let {txtContractName, txtAmountOfMaintenances,txtDuration,txtStartingDate,txtEndingDate,txtObservation,txtDiscountValue, txtAmountVehicles} = this.frmContract.controls;    txtContractName.setValue(pContract.name);
+    txtAmountOfMaintenances.setValue(pContract.amountOfMaintenances);
+    txtDuration.setValue(pContract.duration);
+    txtStartingDate.setValue(pContract.startingDate);
+    
+    this.dtStartingDate = this.formatDate(pContract.startingDate.toString().substr(0,10));
+    txtEndingDate.setValue(pContract.endingDate);
+    this.dtEndingDate =  this.formatDate(pContract.endingDate.toString().substr(0,10));
+
+    txtObservation.setValue(pContract.observation);
+    txtDiscountValue.setValue(pContract.discountValue);
+    txtAmountVehicles.setValue(pContract.amountVehicles);
+    let lsVehicleType = this.getVehicletypesByContract(pContract.lsVehicleModels);
+    this.clientService.setClientSelected(pContract.client);
+    this.dealerService.setDealerSelected(pContract.dealer);
+
+    this.contractService.setContractStateSelected(pContract.contractState);
+    this.contractService.setDiscountTypeSelected(pContract.discountType);
+
+
+    this.vehicleService.setListVehicleTypeSelected(lsVehicleType);
+    this.vehicleService.setListVehicleModelsSelected(pContract.lsVehicleModels);
+    this.vehicleService.setListVehiclesSelected(pContract.lsVehicles);
+
+    this.countChanges += 1;
+  }
+
+  getVehicletypesByContract(lsVehicleModel:VehicleModel[]):VehicleType[]{
+    let lsVehicletype: VehicleType[] = [];
+
+    lsVehicleModel.forEach(vm => {
+      let vehicleType = vm.type;
+      let existsType  = lsVehicletype.find(vt => vt.id == vehicleType.id);
+
+      if(!existsType){
+        console.log("Añade tipo de vehículo");
+        lsVehicletype.push(vehicleType);
+      }
+    });
+
+    console.log(lsVehicletype);
+    return lsVehicletype;
+  }
+
 
   saveContract(){
     let {txtContractName, txtAmountOfMaintenances,txtDuration,txtStartingDate,txtEndingDate,txtObservation,txtDiscountValue, txtAmountVehicles} = this.frmContract.controls;
+    
+    if(this.contractToUpdate != null && this.contractToUpdate != undefined){
+      this.contract.id = this.contractToUpdate.id;
+      this.contract.code = this.contractToUpdate.code;
+      this.contract.consecutive = this.contractToUpdate.consecutive;
+    }
+    
     this.contract.client = new Client();
     this.contract.client = this.clientService.getClientSelected();
 
@@ -190,7 +269,8 @@ export class ContractComponent implements OnInit {
     console.warn("[Contrato a guardar]");
     //console.log(this.contract);
 
-    this.saveData(this.contract);    
+    this.saveData(this.contract); 
+    
   } 
 
   async saveData(pContract:Contract){
@@ -205,10 +285,28 @@ export class ContractComponent implements OnInit {
       this.isAwaiting = false;
       if (rta.response){
         alert(rta.message);
+        this.router.navigate(['/MasterContracts']);
       }
     } catch (error) {
       this.isAwaiting = false;
       console.error(error);
     }
+  }
+
+  comeBackTable(){
+    this.router.navigate(['/MasterContracts']);
+  }
+
+  formatDate(sDate:string):Date{
+    console.log(sDate);
+
+    let year = parseInt(sDate.substring(0,4));
+    let month = parseInt(sDate.substring(5,7));
+    let day = parseInt(sDate.substring(8,10));
+
+    console.log(year,month,day);
+    let dateToReturn = new Date(year,month,day);
+    console.log(dateToReturn);
+    return dateToReturn;
   }
 }

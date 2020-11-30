@@ -179,11 +179,11 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     let { txtName, txtReferencePrice } = this.frmMaintenanceRoutine.controls;
     txtName.setValue(pRoutine.name);
     txtReferencePrice.setValue(pRoutine.referencePrice);
-    this.maintenanceRoutineService.setFrecuencySelected(pRoutine.frequency);
-    this.vehicleService.setVehicleModelSelected(pRoutine.vehicleModel);
 
+    this.maintenanceRoutineService.setFrecuencySelected(pRoutine.frequency);   
     this.vehicleService.setBrandSelected(pRoutine.vehicleModel.brand);
     this.vehicleService.setVehicleTypeSelected(pRoutine.vehicleModel.type);
+    this.vehicleService.setVehicleModelSelected(pRoutine.vehicleModel);
 
     this.maintenanceItemService.getItemsByVehicleModel(pRoutine.vehicleModel.id)
       .then((data) => {

@@ -5,6 +5,7 @@ import { Person } from 'src/app/Models/Person';
 import { ResponseApi } from 'src/app/Models/ResponseAPI';
 import { DealerService } from '../../Services/dealer.service';
 import { PersonService } from '../../Services/person.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dealer',
@@ -25,7 +26,8 @@ export class DealerComponent implements OnInit {
 
   constructor(
     private dealerService: DealerService,
-    private personService: PersonService
+    private personService: PersonService,
+    private router:Router
   ) {
     this.sReturnPath = "/MasterDealers";
     this.oIsToDealer = true;
@@ -139,6 +141,10 @@ export class DealerComponent implements OnInit {
     this.oPersonToUpdate.id = pDealer.id;
     this.oPersonToUpdate.document = pDealer.document;
     this.oPersonToUpdate.name = pDealer.name.toLocaleLowerCase();    
+  }
+
+  returnToTable(){
+    this.router.navigate([this.sReturnPath]);
   }
 
 

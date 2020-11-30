@@ -37,7 +37,9 @@
     </div>
 
     <div class="tab_content tab_inactive" id="container__priceByArticle">
-        <h1>Aqui va la información de los insumos y sus precios base por concesionario</h1>
+        <app-tbl-prices-by-dealer
+        (pricesWasCanceled)="returnToTable()"
+        ></app-tbl-prices-by-dealer>
     </div>
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

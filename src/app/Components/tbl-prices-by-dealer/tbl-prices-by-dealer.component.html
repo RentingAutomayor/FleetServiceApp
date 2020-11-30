@@ -1,0 +1,40 @@
+<div class="container__table" id="container__table_items">
+    <h2>Precios por artículo de mantenimiento</h2>
+    <table class="table table-striped">
+        <thead>
+            <th class="col-number col-mobile-hide">#</th>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th class="col-mobile-hide">Tipo</th>
+            <th class="col-mobile-hide">Presentación</th>
+            <th class="col-mobile-hide">Precio de referencia</th>
+            <th class="col-mobile-hide">Precio del concesionario</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let i = index ;let item of lsMaintenanceItems | paginate: { itemsPerPage: 100, currentPage: pag }">
+                <td>{{i+1}}</td>
+                <td>{{item.code}}</td>
+                <td>{{item.name | titlecase}}</td>
+                <td>{{item.type.name | titlecase}}</td>
+                <td>{{item.presentationUnit.longName | titlecase}}</td>
+                <td>{{item.referencePrice}}</td>
+                <td>
+                    <input 
+                        class="form-control"
+                        type="number" 
+                        [id]="getInputId(item.id)">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="paginationContainer">
+        <pagination-controls (pageChange)="pag = $event"></pagination-controls>
+    </div>
+    <div class="buttons__container" id="container__buttons">
+        <button type="button" class="btn btn-danger" (click)="cancelPrices()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="savePrices()">Guardar precios</button>
+    </div>
+</div>
+
+
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

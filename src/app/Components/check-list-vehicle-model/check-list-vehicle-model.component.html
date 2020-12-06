@@ -1,22 +1,26 @@
 <p>Líneas de vehículo</p>
 <div class="container__vehicleModels">
     <div class="container__row">
-        <div 
+        <div
+            *ngFor="let vehicleType of lsVehicleType;let index = index"
             class="container__type" 
-            [id]="getContainerTypeId(vehicleType.id)"  
-            *ngFor="let vehicleType of lsVehicleType">
-            <h6>{{vehicleType.name}}</h6>
-        </div> 
-    </div>    
+            [id]="getContainerTypeId(vehicleType.id)">
+            <h6>{{vehicleType.name}}</h6>            
+        </div>
+    </div>
 
-    <div class="container__model" [id]="getContainerModelId(vehicleModel.id)" *ngFor="let vehicleModel of lsVehicleModels">
+     <div 
+        *ngFor="let vehicleModel of lsVehicleModels; let last=last"
+        class="container__model" 
+        [id]="getContainerModelId(vehicleModel.id)"
+        >
         <label class="container__checkbox">
-            <input 
-                type="checkbox" 
-                [id]="getIdChk(vehicleModel.id)"
+            <input type="checkbox" [id]="getIdChk(vehicleModel.id)"
                 (click)="setVehicleModel($event.target,vehicleModel)">
             <span class="checkmark"></span>
         </label>
-        <label [for]="getIdChk(vehicleModel.id)">{{ vehicleModel.shortName | uppercase }}</label>
-    </div>
+        <label [for]="getIdChk(vehicleModel.id)">
+            {{ vehicleModel.shortName | uppercase }}  {{ last ? showVehicleModelsByContainer(last) : '' }}            
+        </label>    
+    </div> 
 </div>

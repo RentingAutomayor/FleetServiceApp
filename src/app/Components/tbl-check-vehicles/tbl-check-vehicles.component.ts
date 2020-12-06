@@ -120,10 +120,10 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
       });
     } catch (error) {
       console.warn(error);
-      // setTimeout(() => {
-      //   this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected();
-      //   this.checkVehiclesSelected(this.lsVehiclesSelected);
-      // },800);
+      setTimeout(() => {
+        this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected();
+        this.checkVehiclesSelected(this.lsVehiclesSelected);
+      },800);
     }    
   }
 

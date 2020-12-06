@@ -1,0 +1,11 @@
+<form [formGroup]="frmMovementType">
+    <label>Tipo de movimiento</label>
+    <select formControlName="cmbMovementType" 
+        (change)="setMovementType($event.target)" 
+        class="browser-default custom-select">
+        <option [value]="0">Seleccione ...</option>
+        <option *ngFor="let movementType of lsMovementType" [value]="movementType.id">
+            {{ movementType.name | titlecase }}</option>
+    </select>
+</form>
+

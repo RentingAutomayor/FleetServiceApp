@@ -49,13 +49,14 @@
             </th>
         </thead>
         <tbody>
-            <tr *ngFor="let item of lsMaintenanceItems" class="row_frequency">
-                <td>{{ item.name | titlecase }}</td>
+            <tr *ngFor="let item of lsMaintenanceItems ; let last = last" class="row_frequency">
+                <td>{{ item.name | titlecase }} {{ last ? chekItems() :'' }}</td>
                 <td></td>
-                <td *ngFor="let frequency of lsFrequency" [class]="getClass(frequency.shortName)">
+                <td *ngFor="let frequency of lsFrequency" 
+                    [class]="getClass(frequency.shortName)">
                     <label class="container__checkbox">
                         <input type="checkbox" [id]="getChkId(item.id,frequency.id)">
-                        <span class="checkmark"></span>
+                        <span class="checkmark"></span>                      
                     </label>                    
                 </td>
                 <td></td>

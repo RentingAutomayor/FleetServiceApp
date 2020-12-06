@@ -7,34 +7,33 @@
             <th>Nombre</th>
             <th class="col-mobile-hide">Tipo</th>
             <th class="col-mobile-hide">Presentación</th>
-            <th class="col-mobile-hide">Precio de referencia</th>
             <th class="col-mobile-hide">Precio del concesionario</th>
+            <th class="col-mobile-hide">Precio del contrato</th>
         </thead>
         <tbody>
-            <tr *ngFor="let i = index ;let item of lsMaintenanceItems | paginate: { itemsPerPage: 100, currentPage: pag }">
+            <tr *ngFor="let i = index ;let item of lsMaintenanceItems">
                 <td>{{i+1}}</td>
                 <td>{{item.code}}</td>
                 <td>{{item.name | titlecase}}</td>
                 <td>{{item.type.name | titlecase}}</td>
                 <td>{{item.presentationUnit.longName | titlecase}}</td>
-                <td>{{item.referencePrice}}</td>
+                <td>{{setDealerPriceIntoTable(item.id)}}</td>
                 <td>
                     <input 
                         class="form-control"
                         type="number" 
                         step="0.01"
-                        [id]="getInputId(item.id)">
+                        [id]="getInputId(item.id)"
+                        [value]="setContractPriceIntoTable(item.id)">
                 </td>
             </tr>
         </tbody>
     </table>
-    <div class="paginationContainer">
-        <pagination-controls (pageChange)="pag = $event"></pagination-controls>
-    </div>
-    <div class="buttons__container" id="container__buttons">
+    
+    <!-- <div class="buttons__container" id="container__buttons">
         <button type="button" class="btn btn-danger" (click)="cancelPrices()">Cancelar</button>
         <button type="button" class="btn btn-success" (click)="savePrices()">Guardar precios</button>
-    </div>
+    </div> -->
 </div>
 
 

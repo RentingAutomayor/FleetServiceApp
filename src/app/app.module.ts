@@ -47,6 +47,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TblContractComponent } from './Modules/tbl-contract/tbl-contract.component';
 import { TblPricesByDealerComponent } from './Components/tbl-prices-by-dealer/tbl-prices-by-dealer.component';
+import { TblPricesByContractComponent } from './Components/tbl-prices-by-contract/tbl-prices-by-contract.component';
+import { MovementTypeComponent } from './Components/movement-type/movement-type.component';
+import { MovementComponent } from './Modules/movement/movement.component';
+import { TblMovementsComponent } from './Modules/tbl-movements/tbl-movements.component';
 
 
 
@@ -89,7 +93,11 @@ import { TblPricesByDealerComponent } from './Components/tbl-prices-by-dealer/tb
     InputSearchDealerComponent,
     TblCheckVehiclesComponent,
     TblContractComponent,
-    TblPricesByDealerComponent
+    TblPricesByDealerComponent,
+    TblPricesByContractComponent,
+    MovementTypeComponent,
+    MovementComponent,
+    TblMovementsComponent
   ],
   imports: [
     BrowserModule,

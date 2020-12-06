@@ -224,7 +224,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
       chkItem.checked = true;
       txtAmount.disabled = false;
       txtAmount.value = pItem.amount.toString();
-      lblPrice.textContent = (parseFloat(pItem.referencePrice.toString()) * parseInt(pItem.amount.toString())).toString();
+      lblPrice.textContent = (parseFloat(pItem.referencePrice.toString()) * parseFloat(pItem.amount.toString())).toString();
     } catch (error) {
       console.error(error);
     }

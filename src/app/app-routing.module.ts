@@ -7,6 +7,10 @@ import { TblDealerComponent } from './Modules/tbl-dealer/tbl-dealer.component';
 import { ItemsAndRoutinesComponent } from './Modules/items-and-routines/items-and-routines.component';
 import { ContractComponent } from './Modules/contract/contract.component';
 import { TblContractComponent } from './Modules/tbl-contract/tbl-contract.component'; 
+import { TblMovementsComponent } from './Modules/tbl-movements/tbl-movements.component';
+import { MovementComponent } from './Modules/movement/movement.component';
+import { CheckListVehicleModelComponent } from './Components/check-list-vehicle-model/check-list-vehicle-model.component';
+
 
 
 
@@ -17,6 +21,9 @@ const routes: Routes = [{ path: 'MasterClients/Client', component: ClientCompone
 { path: 'ItemsAndRoutines', component: ItemsAndRoutinesComponent},
 { path: 'MasterContracts' , component: TblContractComponent},
 { path: 'MasterContracts/Contract' , component:ContractComponent},
+{ path: 'MasterMovements' , component:TblMovementsComponent},
+{ path: 'MasterMovements/Movement' , component:MovementComponent},
+{ path: 'checkvm', component: CheckListVehicleModelComponent},
 { path: '', redirectTo: '/MasterClients', pathMatch: 'full' }
 ];
 

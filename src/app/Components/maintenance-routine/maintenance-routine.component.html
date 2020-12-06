@@ -70,8 +70,13 @@
                 </td>
                 <td>{{mItem.presentationUnit.shortName}}</td>
                 <td>{{mItem.category.name | titlecase }}</td>
-                <td><input type="number" class="txt-amount" [id]="getTextAmountId(mItem.id)"
-                        (input)="calculatePriceByItem($event.target,mItem)" [value]="0" disabled></td>
+                <td><input 
+                        type="number" 
+                        class="txt-amount" 
+                        step="0.01"
+                        [id]="getTextAmountId(mItem.id)"
+                        (input)="calculatePriceByItem($event.target,mItem)" 
+                        [value]="0" disabled></td>
                 <td>{{mItem.referencePrice}}</td>
                 <td>
                     <span [id]="getLabelId(mItem.id)" class="lbl-total-price"></span>

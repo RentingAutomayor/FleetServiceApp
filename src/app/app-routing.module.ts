@@ -11,6 +11,7 @@ import { TblContractComponent } from './Modules/tbl-contract/tbl-contract.compon
 
 
 const routes: Routes = [{ path: 'MasterClients/Client', component: ClientComponent },
+// { path: ' ', component: AppComponent },
 { path: 'MasterClients', component: TblClientComponent },
 { path: 'MasterDealers/Dealer', component: DealerComponent },
 { path: 'MasterDealers', component: TblDealerComponent },

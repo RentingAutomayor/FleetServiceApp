@@ -10,6 +10,7 @@ import { TblContractComponent } from './Modules/tbl-contract/tbl-contract.compon
 import { TblMovementsComponent } from './Modules/tbl-movements/tbl-movements.component';
 import { MovementComponent } from './Modules/movement/movement.component';
 import { CheckListVehicleModelComponent } from './Components/check-list-vehicle-model/check-list-vehicle-model.component';
+import { QuotaManagementComponent } from './Modules/quota-management/quota-management.component';
 
 
 
@@ -23,6 +24,7 @@ const routes: Routes = [{ path: 'MasterClients/Client', component: ClientCompone
 { path: 'MasterContracts/Contract' , component:ContractComponent},
 { path: 'MasterMovements' , component:TblMovementsComponent},
 { path: 'MasterMovements/Movement' , component:MovementComponent},
+{ path: 'QuotaManagement', component: QuotaManagementComponent},
 { path: 'checkvm', component: CheckListVehicleModelComponent},
 { path: '', redirectTo: '/MasterClients', pathMatch: 'full' }
 ];

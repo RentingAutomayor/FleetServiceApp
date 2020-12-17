@@ -51,6 +51,7 @@ import { TblPricesByContractComponent } from './Components/tbl-prices-by-contrac
 import { MovementTypeComponent } from './Components/movement-type/movement-type.component';
 import { MovementComponent } from './Modules/movement/movement.component';
 import { TblMovementsComponent } from './Modules/tbl-movements/tbl-movements.component';
+import { QuotaManagementComponent } from './Modules/quota-management/quota-management.component';
 
 
 
@@ -97,7 +98,8 @@ import { TblMovementsComponent } from './Modules/tbl-movements/tbl-movements.com
     TblPricesByContractComponent,
     MovementTypeComponent,
     MovementComponent,
-    TblMovementsComponent
+    TblMovementsComponent,
+    QuotaManagementComponent
   ],
   imports: [
     BrowserModule,

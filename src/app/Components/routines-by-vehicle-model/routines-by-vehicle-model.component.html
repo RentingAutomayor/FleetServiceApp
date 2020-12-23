@@ -1,0 +1,7 @@
+<form [formGroup]="frmRoutineByVehicleModel">
+    <label>Rutina de mantenimiento</label>
+    <select formControlName="cmbRoutineByVehicleModel" (change)="setRoutine($event.target)" class="browser-default custom-select">
+        <option [value]="0">Seleccione ...</option>
+        <option *ngFor="let routine of lsRoutine" [value]="routine.id">{{ routine.name | uppercase }}</option>
+    </select>
+</form>

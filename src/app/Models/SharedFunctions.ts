@@ -18,8 +18,8 @@ export class SharedFunction {
             intPart = sData.substr(0,indexDecimalSeparator);
             decimalPart = sData.substr(indexDecimalSeparator,sData.length);
 
-            console.log(`Int part : ${intPart}`);
-            console.log(`Decimal part: ${decimalPart}`);
+            //console.log(`Int part : ${intPart}`);
+            //console.log(`Decimal part: ${decimalPart}`);
         }else{
             intPart = sData.substr(0,sData.length);
         }
@@ -30,7 +30,7 @@ export class SharedFunction {
         let amountDigit = aReverse.length;
         let amountCommas = Math.floor(amountDigit / 3);     
 
-        console.log(`Cantidad de comas a poner: ${parseInt(amountCommas.toString())}`);        
+        //console.log(`Cantidad de comas a poner: ${parseInt(amountCommas.toString())}`);        
         
         for(let i = 0; i < amountCommas; i ++){
             let lastIndex = 0;
@@ -58,7 +58,7 @@ export class SharedFunction {
             formattedNumber = formattedNumber + decimalPart;
         }
 
-        console.log(`numberFormmated: ${formattedNumber}`);
+        //console.log(`numberFormmated: ${formattedNumber}`);
        
         return formattedNumber;
     }

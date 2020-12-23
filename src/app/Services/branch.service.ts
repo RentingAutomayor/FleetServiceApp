@@ -12,6 +12,9 @@ export class BranchService {
   private  HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
+
+  private branchSelected: Branch;
+
   constructor(
     private http:HttpClient
   ) { 
@@ -36,5 +39,13 @@ export class BranchService {
   async delete(pBranch:Branch):Promise<ResponseApi>{
     let urlDeleteBranch = `${this.URL_API}/Delete`;
     return this.http.post<ResponseApi>(urlDeleteBranch,pBranch,this.HttpOptions).toPromise();
+  }
+
+  setBranchSelected(pBranch:Branch){
+    this.branchSelected = pBranch;
+  }
+
+  getBranchSelected():Branch{
+    return this.branchSelected;
   }
 }

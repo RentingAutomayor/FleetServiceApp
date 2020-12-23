@@ -11,6 +11,8 @@ import { TblMovementsComponent } from './Modules/tbl-movements/tbl-movements.com
 import { MovementComponent } from './Modules/movement/movement.component';
 import { CheckListVehicleModelComponent } from './Components/check-list-vehicle-model/check-list-vehicle-model.component';
 import { QuotaManagementComponent } from './Modules/quota-management/quota-management.component';
+import { WorkOrderManagerComponent } from './Modules/work-order-manager/work-order-manager.component';
+import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
 
 
 
@@ -25,6 +27,8 @@ const routes: Routes = [{ path: 'MasterClients/Client', component: ClientCompone
 { path: 'MasterMovements' , component:TblMovementsComponent},
 { path: 'MasterMovements/Movement' , component:MovementComponent},
 { path: 'QuotaManagement', component: QuotaManagementComponent},
+{ path: 'WorkOrderManagement', component: WorkOrderManagerComponent},
+{ path: 'DashboardClient', component: DashboardClientComponent},
 { path: 'checkvm', component: CheckListVehicleModelComponent},
 { path: '', redirectTo: '/MasterClients', pathMatch: 'full' }
 ];

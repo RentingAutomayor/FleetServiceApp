@@ -87,6 +87,19 @@ export class VehicleService {
     return this.http.post<ResponseApi>(urlDeleteVehicle, pVehicle, this.HttpOptions).toPromise();
   }
 
+
+  getVehiclesByLicensePlate(licensePlate:string): Observable<Vehicle[]>{
+    if (!licensePlate.trim()) {
+      return of([]);
+    }
+    let urlGetVehiclesByLicensePlate = `${this.URL_API}/GetVehiclesByLicensePlate?pLicensePlate=${licensePlate}`;
+
+    return this.http.get<Vehicle[]>(urlGetVehiclesByLicensePlate)
+      .pipe(
+        catchError(this.handleError<Vehicle[]>('getVehiclesByLicensePlate', []))
+      );
+  }
+
   setListVehicleTypeSelected(pLsTypes: VehicleType[]) {
     this.lsVehicleTypeSelected = pLsTypes;
   }

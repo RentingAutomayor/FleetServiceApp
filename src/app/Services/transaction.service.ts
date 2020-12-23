@@ -26,4 +26,10 @@ export class TransactionService {
     let urlTodaytransactions = `${this.URL_API}/GetTodayTransactions`;
     return this.http.get<Transaction[]>(urlTodaytransactions).toPromise();
   }
+
+  async getTransactionsToApprove(client_id:number): Promise<Transaction[]>{
+    let urlGetTransactions = `${this.URL_API}/GetTransactionsToApproveByClient?client_id=${client_id}`;
+    return this.http.get<Transaction[]>(urlGetTransactions).toPromise();
+  }
+  
 }

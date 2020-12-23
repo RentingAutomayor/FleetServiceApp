@@ -1,0 +1,26 @@
+.container__row{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: 1fr;
+    justify-content: space-between;
+}
+
+.container__col{
+    padding: 10px;   
+}
+
+label{
+    cursor: pointer;
+}
+
+
+.buttons__container{
+    display: flex;
+    justify-content: flex-end;   
+}
+
+button{
+    width: 250px;
+    margin-left: 10px;
+    margin-top: 20px;
+}

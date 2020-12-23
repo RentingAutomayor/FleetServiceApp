@@ -26,6 +26,11 @@ export class QuotaService {
      return this.http.get<Client[]>(urlClientsWithoutQuota).toPromise();
    }
 
+   async getFinancialInformationByClient(client_id: number): Promise<FinancialInformation>{
+    let urlGetFinancialInformation = `${this.URL_API}/GetFinancialInformationByClient?client_id=${client_id}`; 
+    return this.http.get<FinancialInformation>(urlGetFinancialInformation).toPromise();
+   }
+
    async validatePaymentVsConsumedQuota(pClient_id:Number,  paymentValue: Number):Promise<ResponseApi>{
      let urlValidatePayment = `${this.URL_API}/ValidatePaymentVsConsumedQuota?pClient_id=${pClient_id}&paymentValue=${paymentValue}`
      return this.http.get<ResponseApi>(urlValidatePayment).toPromise();

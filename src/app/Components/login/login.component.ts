@@ -26,6 +26,14 @@ export class LoginComponent implements OnInit {
       );
 
     this.Access = true;
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  
+  loginUser(){
+
   }
 
 }

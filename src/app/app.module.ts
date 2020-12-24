@@ -47,7 +47,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TblContractComponent } from './Modules/tbl-contract/tbl-contract.component';
 import { TblPricesByDealerComponent } from './Components/tbl-prices-by-dealer/tbl-prices-by-dealer.component';
-import { LoginComponent } from './Components/login/login.component';
 import { TblPricesByContractComponent } from './Components/tbl-prices-by-contract/tbl-prices-by-contract.component';
 import { MovementTypeComponent } from './Components/movement-type/movement-type.component';
 import { MovementComponent } from './Modules/movement/movement.component';
@@ -59,6 +58,7 @@ import { InputSearchVehicleComponent } from './Components/input-search-vehicle/i
 import { BranchByDealerComponent } from './Components/branch-by-dealer/branch-by-dealer.component';
 import { RoutinesByVehicleModelComponent } from './Components/routines-by-vehicle-model/routines-by-vehicle-model.component';
 import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
+import { LoginComponent } from './Components/login/login.component';
 
 
 
@@ -113,7 +113,8 @@ import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-c
     InputSearchVehicleComponent,
     BranchByDealerComponent,
     RoutinesByVehicleModelComponent,
-    DashboardClientComponent
+    DashboardClientComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

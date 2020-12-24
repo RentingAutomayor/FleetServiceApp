@@ -1,4 +1,5 @@
 <div *ngIf="!Access" class="container center-block border border-black">
+<div class="container center-block border border-black">
     <form class="form p-4">
         <div class="form-group">
             <label for="user">User</label>
@@ -14,3 +15,4 @@
 </div>
 
 <router-outlet *ngIf="Access"></router-outlet>
+</div>

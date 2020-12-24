@@ -13,6 +13,8 @@ export class VehicleStateComponent implements OnInit ,OnChanges{
   lsStates: VehicleState[];
   frmVehicleState: FormGroup;
   vehicleToUpdate:Vehicle;
+  stateSelected: VehicleState;
+
   @Input() countChanges: number;
   constructor(
     private vehicleService:VehicleService
@@ -26,9 +28,10 @@ export class VehicleStateComponent implements OnInit ,OnChanges{
     for (let change in changes) {
       //console.log("[componente vehicle Model]: ", change);
       if (change == "countChanges") {
-        this.vehicleToUpdate = this.vehicleService.getVehicleToUpdate();
-        if (this.vehicleToUpdate != null) {         
-          this.setDataInFields();
+        //this.vehicleToUpdate = this.vehicleService.getVehicleToUpdate();
+        this.stateSelected = this.vehicleService.getVehicleStateSelected();
+        if (this.stateSelected != null) {         
+          this.setDataInFields(this.stateSelected);
         } else {
           this.clearDataFields();
         }
@@ -49,9 +52,15 @@ export class VehicleStateComponent implements OnInit ,OnChanges{
     this.vehicleService.setVehicleStateSelected(vehicleState);
   }
 
-  async setDataInFields(){
-    this.lsStates = await this.vehicleService.getVehicleStates();
-    this.frmVehicleState.controls.cmbState.setValue(this.vehicleToUpdate.vehicleState.id);
+  async setDataInFields(vehicleState:VehicleState){
+    //console.log("[Vehicle State - state selected] : ", vehicleState);
+    this.vehicleService.getVehicleStates()
+    .then( data => {
+      this.lsStates = data;
+      setTimeout(() => {
+        this.frmVehicleState.controls.cmbState.setValue(vehicleState.id);
+      },300);      
+    });    
   }
 
   clearDataFields(){

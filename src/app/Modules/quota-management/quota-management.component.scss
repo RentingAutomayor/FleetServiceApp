@@ -1,0 +1,136 @@
+#container__content{
+    margin-top: -70px ;
+}
+
+.container__cards{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-row: 1fr;
+    justify-content: space-around;  
+}
+
+.container__cards .card{
+    cursor: pointer;
+    color:#f9fcfb;
+    font-weight: bold;
+}
+
+.card-body{
+    display: flex;
+    justify-content: space-between;
+}
+
+.container__field{
+    margin-top: 5px;
+}
+
+.container__createQuota{    
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 3fr;      
+}
+
+.container__row a{
+    position: relative;
+    float: right;
+}
+
+.container__buttonClose{
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.overlay{
+    display: grid;
+    grid-template-columns: repeat(3fr);
+    grid-template-rows: repeat(3fr);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(6, 129, 230, 0.1);    
+    border-radius: 15px;
+    align-items: center;
+    justify-items: center;
+    z-index: 5000;
+    width: 100%;
+    height: 100%;
+}
+
+.buttons__container{
+    display: flex;
+    justify-content: flex-end;   
+}
+
+button{
+    width: 250px;
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+
+#container__QuotaManager{
+    display: none;
+}
+
+#container__freeUpQuota{
+    display: none;
+}
+
+#container__addQuota{
+    display: none;
+}
+
+#container__cancelQuota{
+    display: none;
+}
+
+.selection__indicator{
+    width: 100%;
+    height: 10px;
+}
+.dark-green{
+   
+    background-color: #26a69a;
+}
+
+.dark-red{
+    background-color:#e80015;
+}
+
+.dark-yellow{
+    background-color:#e69900;
+}
+
+.quantity{
+    width: 30px;
+    height: 30px;
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#indicator__clientsWithoutQuota{
+    display: none;
+}
+#container__clientsWithoutQuota {
+    display: none;
+}
+
+#indicator__transactions{
+    display: none;
+}
+#container__transactions {
+    display: none;
+}
+
+.container__tab{
+    margin-top: 50px ;
+}
+
+h3{
+    margin-bottom: 50px;
+}

@@ -1,0 +1,40 @@
+<div class="container__table" id="container__table_items">
+    <h2>Precios por artículo de mantenimiento</h2>
+    <table class="table table-striped">
+        <thead>
+            <th class="col-number col-mobile-hide">#</th>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th class="col-mobile-hide">Tipo</th>
+            <th class="col-mobile-hide">Presentación</th>
+            <th class="col-mobile-hide">Precio del concesionario</th>
+            <th class="col-mobile-hide">Precio del contrato</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let i = index ;let item of lsMaintenanceItems">
+                <td>{{i+1}}</td>
+                <td>{{item.code}}</td>
+                <td>{{item.name | titlecase}}</td>
+                <td>{{item.type.name | titlecase}}</td>
+                <td>{{item.presentationUnit.longName | titlecase}}</td>
+                <td>{{setDealerPriceIntoTable(item.id)}}</td>
+                <td>
+                    <input 
+                        class="form-control"
+                        type="number" 
+                        step="0.01"
+                        [id]="getInputId(item.id)"
+                        [value]="setContractPriceIntoTable(item.id)">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <!-- <div class="buttons__container" id="container__buttons">
+        <button type="button" class="btn btn-danger" (click)="cancelPrices()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="savePrices()">Guardar precios</button>
+    </div> -->
+</div>
+
+
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

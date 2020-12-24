@@ -41,6 +41,16 @@ export class ContractService {
     return this.http.get<Contract>(urlGetById).toPromise();
   }
 
+  async getLastContractByClientAndDealer(pClient_id:number,pDealer_id: number){
+    let urlGetLastContract = `${this.URL_API}/getLastContractByClientAndDealer?pClient_id=${pClient_id}&pDealer_id=${pDealer_id}`;
+    return this.http.get<Contract>(urlGetLastContract).toPromise();
+  }
+
+  async getContractByVehicleId(pVehicle_id:number):Promise<Contract>{
+    let urlGetContractByVehicle = `${this.URL_API}/GetContractByVehicleId?vehicle_id=${pVehicle_id}`;
+    return this.http.get<Contract>(urlGetContractByVehicle).toPromise();
+  }
+
   async insert(pContract: Contract): Promise<ResponseApi> {
     let urlInsert = `${this.URL_API}/Insert`;
     return this.http.post<ResponseApi>(urlInsert, pContract, this.HttpOptions).toPromise();

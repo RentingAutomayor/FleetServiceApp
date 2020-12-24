@@ -1,0 +1,18 @@
+<form [formGroup]="frmSearchVehicle">
+    <label>Placa:</label>
+    <input 
+        type="text" 
+        class="form-control"
+        formControlName="txtLicensePlate" 
+        placeholder="Placa ..."
+        (input)="searchBydescription($event.target.value)"
+        >
+    <ul *ngIf="listIsvisible">
+        <li 
+            *ngFor="let vehicle of lsVehicleSuggestion$ | async"
+            (click)="setVehicle(vehicle)">
+            <span class="container__licensePlate">{{ vehicle.licensePlate | uppercase }}</span>
+            <span class="container__vehicleModel">| {{ vehicle.vehicleModel.shortName | titlecase }}</span>
+        </li>
+    </ul>
+</form>

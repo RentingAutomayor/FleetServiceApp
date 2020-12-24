@@ -48,6 +48,17 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TblContractComponent } from './Modules/tbl-contract/tbl-contract.component';
 import { TblPricesByDealerComponent } from './Components/tbl-prices-by-dealer/tbl-prices-by-dealer.component';
 import { LoginComponent } from './Components/login/login.component';
+import { TblPricesByContractComponent } from './Components/tbl-prices-by-contract/tbl-prices-by-contract.component';
+import { MovementTypeComponent } from './Components/movement-type/movement-type.component';
+import { MovementComponent } from './Modules/movement/movement.component';
+import { TblMovementsComponent } from './Modules/tbl-movements/tbl-movements.component';
+import { QuotaManagementComponent } from './Modules/quota-management/quota-management.component';
+import { WorkOrderComponent } from './Components/work-order/work-order.component';
+import { WorkOrderManagerComponent } from './Modules/work-order-manager/work-order-manager.component';
+import { InputSearchVehicleComponent } from './Components/input-search-vehicle/input-search-vehicle.component';
+import { BranchByDealerComponent } from './Components/branch-by-dealer/branch-by-dealer.component';
+import { RoutinesByVehicleModelComponent } from './Components/routines-by-vehicle-model/routines-by-vehicle-model.component';
+import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
 
 
 
@@ -91,7 +102,18 @@ import { LoginComponent } from './Components/login/login.component';
     TblCheckVehiclesComponent,
     TblContractComponent,
     TblPricesByDealerComponent,
-    LoginComponent
+    LoginComponent,
+    TblPricesByContractComponent,
+    MovementTypeComponent,
+    MovementComponent,
+    TblMovementsComponent,
+    QuotaManagementComponent,
+    WorkOrderComponent,
+    WorkOrderManagerComponent,
+    InputSearchVehicleComponent,
+    BranchByDealerComponent,
+    RoutinesByVehicleModelComponent,
+    DashboardClientComponent
   ],
   imports: [
     BrowserModule,

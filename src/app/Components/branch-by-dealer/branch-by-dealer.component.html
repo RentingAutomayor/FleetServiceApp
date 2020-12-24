@@ -1,0 +1,7 @@
+<form [formGroup]="frmBranch">
+    <label>Sucursal</label>
+    <select formControlName="cmbBranch" (change)="setBranch($event.target)" class="browser-default custom-select">
+        <option [value]="0">Seleccione ...</option>
+        <option *ngFor="let branch of lsBranch" [value]="branch.id">{{ branch.name | uppercase }}</option>
+    </select>
+</form>

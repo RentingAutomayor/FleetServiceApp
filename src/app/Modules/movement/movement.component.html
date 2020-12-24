@@ -1,0 +1,41 @@
+<app-navigation></app-navigation>
+<div id="container__content">
+
+    <div class="container__tabPanel">
+        <div class="container__titles">
+            <button class="tab_link active" (click)="openTab($event,'basicData')">Datos del movimiento</button>
+
+        </div>
+    </div>
+    <form [formGroup]="frmMovement">
+        <div class="tab_content" id="container__basicData">
+
+            <div class="row__container">
+                <div class="col">
+                    <label>Nombre</label>
+                    <input type="text" 
+                        formControlName="txtName" 
+                        class="form-control" 
+                        placeholder="Nombre ...">
+                </div>
+                <div class="col">
+                    <app-movement-type
+                        [countChanges]="countChanges">
+                    </app-movement-type>
+                </div>
+            </div>
+
+            <div class="row__container__single">
+                <label>Descripción</label>
+                <textarea formControlName="txtDescription" 
+                    class="form-control" cols="10" rows="2"></textarea>
+            </div>
+        </div>
+    </form>
+
+    <div class="buttons__container" id="container__buttons">
+        <button type="button" class="btn btn-danger" (click)="comeBackTable()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="saveMovement()">Guardar</button>
+    </div>
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

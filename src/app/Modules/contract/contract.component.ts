@@ -23,6 +23,7 @@ export class ContractComponent implements OnInit {
   frmContract: FormGroup;
   @Input() countChanges: number;
   @Output() contractWasSetted = new EventEmitter<boolean>();
+  oChangeDealer:number;
 
   contract: Contract;
   contractToUpdate:Contract;
@@ -30,6 +31,7 @@ export class ContractComponent implements OnInit {
   dtStartingDate:Date;
   dtEndingDate:Date;
   isToUpdate:boolean;
+  oGetPricesOfContract:number;
   
 
   isAwaiting:boolean;
@@ -62,6 +64,8 @@ export class ContractComponent implements OnInit {
   }
 
   async initComponents() {
+    this.oChangeDealer = 0;
+    this.oGetPricesOfContract = 0;
     this.isToUpdate = false;
     this.isAwaiting = false;
     this.contract = new Contract();
@@ -153,6 +157,7 @@ export class ContractComponent implements OnInit {
   setDealerSelected(){
     this.contract.dealer = new Dealer();
     this.contract.dealer = this.dealerService.getDealerSelected();
+    this.oChangeDealer += 1;
   }
 
   calculateEndingDate(){
@@ -281,11 +286,16 @@ export class ContractComponent implements OnInit {
         rta = await this.contractService.update(pContract);
       }else{
         rta = await this.contractService.insert(pContract);
+        let lastContract = await this.contractService.getLastContractByClientAndDealer(pContract.client.id,pContract.dealer.id);
+        this.contractService.setContract(lastContract);
       }
+
+      
       this.isAwaiting = false;
       if (rta.response){
-        alert(rta.message);
-        this.router.navigate(['/MasterContracts']);
+        //alert(rta.message);
+        this.oGetPricesOfContract += 1; 
+        //this.router.navigate(['/MasterContracts']);
       }
     } catch (error) {
       this.isAwaiting = false;

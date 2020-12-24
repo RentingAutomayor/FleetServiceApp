@@ -1,0 +1,28 @@
+<app-navigation></app-navigation>
+<div id="container__content">
+    <h1>Movimientos</h1>
+    <button class="btn-add btn-info" (click)="insertMovement()"><i class="fas fa-plus"></i></button>
+    <table class="table table-striped">
+        <thead>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Tipo</th>
+            <th>Acciones</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let movement of lsMovements; let i = index">
+                <td>{{ i + 1}}</td>
+                <td>{{ movement.name | titlecase }}</td>
+                <td>{{ movement.description | titlecase}}</td>
+                <td [title]="movement.type.description">{{ movement.type.name | titlecase }}</td>
+                <td>
+                    <i class="fas fa-info-circle text-info" title="Más información"></i>
+                    <i class="fas fa-edit text-warning" (click)="updateMovement(movement.id)" title="Modificar"></i>
+                    <i class="fas fa-trash-alt text-danger" (click)="deleteMovement(movement)" title="Eliminar"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

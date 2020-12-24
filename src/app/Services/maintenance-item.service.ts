@@ -6,6 +6,7 @@ import { MaintenanceItem } from '../Models/MaintenanceItem';
 import { ResponseApi } from '../Models/ResponseAPI';
 import { Category } from '../Models/Category';
 import { PricesByDealer } from '../Models/PricesByDealer';
+import { PricesByContract } from '../Models/PricesByContract';
 
 @Injectable({
   providedIn: 'root'
@@ -112,6 +113,17 @@ export class MaintenanceItemService {
   async insert(pItem:MaintenanceItem):Promise<ResponseApi>{
     let urlInsert = `${this.URL_API}/Insert`;
     return this.http.post<ResponseApi>(urlInsert,pItem,this.HttpOptions).toPromise();
+  }
+
+
+  async getPricesByContract(pContract_id:number):Promise<PricesByContract>{
+    let urlGetPrices = `${this.URL_API}/GetPricesByContract?pContract_id=${pContract_id}`;
+    return this.http.get<PricesByContract>(urlGetPrices).toPromise();
+  }
+
+  async setPricesByContract(pricesByContract:PricesByContract):Promise<ResponseApi>{
+    let urlSetPrices = `${this.URL_API}/SetPricesByContract`;
+    return this.http.post<ResponseApi>(urlSetPrices,pricesByContract,this.HttpOptions).toPromise();
   }
 
   async update(pItem:MaintenanceItem):Promise<ResponseApi>{

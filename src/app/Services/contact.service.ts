@@ -1,7 +1,6 @@
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Contact } from '../Models/Contact';
-import { Contract } from '../Models/Contract';
 import { ResponseApi } from '../Models/ResponseAPI';
 
 @Injectable({

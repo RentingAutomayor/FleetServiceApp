@@ -102,10 +102,10 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     this.isToUpdate = true;  
     this.isAwaiting = true;
     let routineToUpdate = await this.maintenanceRoutineService.getMaintenanceRoutineByID(pRoutine.id);
-    console.log(routineToUpdate);
-    this.oCountChanges += 1; 
+    console.log(routineToUpdate);    
     this.isAwaiting = false;
     this.maintenanceRoutineService.setRoutine(routineToUpdate);
+    this.oCountChanges += 1; 
     this.hideTable();
   }
 

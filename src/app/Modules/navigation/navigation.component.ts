@@ -10,14 +10,30 @@ import { Router } from '@angular/router';
 export class NavigationComponent implements OnInit{
   containerMenu: HTMLDivElement;
   @Output() showCloseMenu = new EventEmitter<boolean>();
-  constructor(
-    private navigationService: NavigationService,
-    private router: Router
-  ) { }
+  constructor(private navigationService: NavigationService,
+              private router: Router) {
+                    this.loadApp();
+   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     this.initComponents();
     this.validateItemActive();
+  }
+
+  session: any;
+  moduleFathers: any[] = [];
+  loadApp(){    
+    this.session = JSON.parse(localStorage.getItem('sessionUser'))    
+    if (this.session == null) {      
+      this.router.navigate(['Login']);      
+    }
+    this.session.group.modules.forEach(element => {
+      if (element.id_moduleF == 0) {
+        this.moduleFathers.push(element);  
+      }      
+    });    
+
+    console.log(this.moduleFathers);
   }
 
   initComponents() {

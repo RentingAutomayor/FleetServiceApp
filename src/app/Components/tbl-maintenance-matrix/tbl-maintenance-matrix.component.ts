@@ -102,16 +102,21 @@ export class TblMaintenanceMatrixComponent implements OnInit {
   }
 
   clearCheckBoxSelected(){
-    this.lsMaintenanceItems.forEach(item => {
-      this.lsFrequency.forEach(frequency => {
-        if(item.type.id == this.TIPO_MANO_DE_OBRA){
-          let idCheck = `#${this.getChkId(item.id,frequency.id)}`;
-          //console.log("item to check: ", idCheck);
-          let itemCheck: HTMLInputElement = document.querySelector(idCheck);
-          itemCheck.checked = false;
-        }
+    try{
+      this.lsMaintenanceItems.forEach(item => {
+        this.lsFrequency.forEach(frequency => {
+          if(item.type.id == this.TIPO_MANO_DE_OBRA){
+            let idCheck = `#${this.getChkId(item.id,frequency.id)}`;
+            //console.log("item to check: ", idCheck);
+            let itemCheck: HTMLInputElement = document.querySelector(idCheck);
+            itemCheck.checked = false;
+          }
+        });
       });
-    });
+    }catch(error){
+      setTimeout(()=> { this.clearCheckBoxSelected() },800);
+    }
+    
   }
 
   getClass(frequency:string): string{

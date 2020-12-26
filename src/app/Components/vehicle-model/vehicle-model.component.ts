@@ -84,9 +84,13 @@ export class VehicleModelComponent implements OnInit, OnChanges {
     }   
   }
 
-  async setDataInFields(pVehicleModel: VehicleModel) {
-     let { cmbVehicleModel } = this.frmVehicleModel.controls;    
-     cmbVehicleModel.setValue(pVehicleModel.id);
+  async setDataInFields(pVehicleModel: VehicleModel) {    
+     setTimeout(() => {
+      let { cmbVehicleModel } = this.frmVehicleModel.controls;  
+      console.log("[vm component]", pVehicleModel, this.lsVehicleModel)  ;
+      cmbVehicleModel.setValue(pVehicleModel.id);
+     }, 300);
+     
      this.vehicleModelWasSetted.emit(true);
   }
 

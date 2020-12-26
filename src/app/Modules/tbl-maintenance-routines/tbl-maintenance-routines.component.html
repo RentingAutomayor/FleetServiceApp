@@ -11,7 +11,7 @@
         </thead>
         <tbody>
             <tr
-                *ngFor="let i = index; let routine of lsMaintenanceRoutines  | paginate: { itemsPerPage: 10, currentPage: p }">
+                *ngFor="let i = index; let routine of lsMaintenanceRoutines  | paginate: { itemsPerPage: 20, currentPage: p }">
                 <td>{{ i + 1 }}</td>
                 <td>{{ routine.name }}</td>
                 <td>{{ routine.vehicleModel.shortName }}</td>

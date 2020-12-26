@@ -6,14 +6,17 @@
         </div>
         <div class="container__user-info">
             <span class="container__user-info-title">Bienvenido</span>
-            <span class="container__user-info-subtitle">usuario</span>
+            <span class="container__user-info-subtitle">{{ session.user }}</span>
         </div>
     </div>
     <hr>
-    <a id="nav-client" class="item-navigation" [routerLink]="['/MasterClients']"  routerLinkActive="item-nav-active">Clientes</a>
-    <a id="nav-dealer" class="item-navigation" [routerLink]="['/MasterDealers']"  routerLinkActive="item-nav-active">Concesionarios</a>
-    <a id="nav-routine" class="item-navigation" [routerLink]="['/ItemsAndRoutines']"  routerLinkActive="item-nav-active">Mantenimientos</a>
-    <a id="nav-contract" class="item-navigation" [routerLink]="['/MasterContracts']"  routerLinkActive="item-nav-active">Contratos</a>
+
+
+    <a *ngFor="let module of moduleFathers" id="{{ module.moduleDescription }}" class="item-navigation" [routerLink]="[module.path]" routerLinkActive="item-nav-active">{{ module.moduleName }}</a>
+    <!-- <a id="nav-client" class="item-navigation" [routerLink]="['/MasterClients']" routerLinkActive="item-nav-active">Clientes</a>
+    <a id="nav-dealer" class="item-navigation" [routerLink]="['/MasterDealers']" routerLinkActive="item-nav-active">Concesionarios</a>
+    <a id="nav-routine" class="item-navigation" [routerLink]="['/ItemsAndRoutines']" routerLinkActive="item-nav-active">Mantenimientos</a>
+    <a id="nav-contract" class="item-navigation" [routerLink]="['/MasterContracts']" routerLinkActive="item-nav-active">Contratos</a> -->
     <!-- <a id="nav-contract" class="item-navigation" (click)="navigateTo('contract')">Contratos</a> -->
 </div>
 

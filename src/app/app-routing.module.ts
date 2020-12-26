@@ -7,10 +7,13 @@ import { TblDealerComponent } from './Modules/tbl-dealer/tbl-dealer.component';
 import { ItemsAndRoutinesComponent } from './Modules/items-and-routines/items-and-routines.component';
 import { ContractComponent } from './Modules/contract/contract.component';
 import { TblContractComponent } from './Modules/tbl-contract/tbl-contract.component'; 
+import { LoginComponent } from './Components/login/login.component';
 
 
 
 const routes: Routes = [{ path: 'MasterClients/Client', component: ClientComponent },
+// { path: ' ', component: AppComponent },
+{ path: 'Login', component: LoginComponent }, 
 { path: 'MasterClients', component: TblClientComponent },
 { path: 'MasterDealers/Dealer', component: DealerComponent },
 { path: 'MasterDealers', component: TblDealerComponent },

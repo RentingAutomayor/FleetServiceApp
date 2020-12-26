@@ -46,6 +46,7 @@ import { DatePipe } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TblContractComponent } from './Modules/tbl-contract/tbl-contract.component';
+import { TblPricesByDealerComponent } from './Components/tbl-prices-by-dealer/tbl-prices-by-dealer.component';
 import { LoginComponent } from './Components/login/login.component';
 
 
@@ -89,6 +90,7 @@ import { LoginComponent } from './Components/login/login.component';
     InputSearchDealerComponent,
     TblCheckVehiclesComponent,
     TblContractComponent,
+    TblPricesByDealerComponent,
     LoginComponent
   ],
   imports: [

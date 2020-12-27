@@ -1,18 +1,22 @@
-<div *ngIf="!Access" class="container center-block border border-black">
-<div class="container center-block border border-black">
-    <form class="form p-4">
-        <div class="form-group">
-            <label for="user">User</label>
-            <input [(ngModel)]="loginUserData.user" name="user" type="text" class="form-control" id="user" placeholder="user">
+<div class="container" *ngIf="!Access">
+    <div class="row align-items-center vh-100">
+        <div class="col-6 mx-auto">
+            <div *ngIf="!Access" class="border border-black">
+                <form class="form p-4">
+                    <div class="form-group">
+                        <label for="user">User</label>
+                        <input [(ngModel)]="loginUserData.user" name="user" type="text" class="form-control" id="user" placeholder="user">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input [(ngModel)]="loginUserData.password" name="password" type="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+                    <button (click)='loginUser()' class=" btn btn-outline-success my-2 my-sm-0 " type="button ">Login</button>
+                </form>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input [(ngModel)]="loginUserData.password" name="password" type="password" class="form-control" id="password" placeholder="Password">
-        </div>
-        <button (click)='loginUser()' class=" btn btn-outline-success my-2 my-sm-0 " type="button ">Login</button>
-    </form>
-
+    </div>
 </div>
 
-<router-outlet *ngIf="Access"></router-outlet>
-</div>
+
+<router-outlet *ngIf="Access"> </router-outlet>

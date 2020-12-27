@@ -82,7 +82,8 @@ export class TblMaintenanceMatrixComponent implements OnInit {
     lsRoutines.forEach( routine => {
       try {
         routine.lsItems.forEach(item => {
-          try{      
+          try{
+      
             if(item.type.id == this.TIPO_MANO_DE_OBRA){
               let idCheck = this.getChkId(item.id,routine.frequency.id);
               //console.log("item to check: ", idCheck);
@@ -125,7 +126,8 @@ export class TblMaintenanceMatrixComponent implements OnInit {
   }
 
   showOtherRoutines(){
-    let aColum = document.getElementsByClassName('col_frequency');    
+    let aColum = document.getElementsByClassName('col_frequency');;
+    
     for(let i = 0 ; i < aColum.length; i++){
         if(aColum[i].classList.contains('inactive')){
           aColum[i].classList.remove('inactive');
@@ -135,10 +137,6 @@ export class TblMaintenanceMatrixComponent implements OnInit {
           aColum[i].classList.add('inactive');
         }
     }
-  }
-
-  chekItems(){
-    console.log('Último item');
   }
 
     

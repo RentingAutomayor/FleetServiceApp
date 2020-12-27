@@ -9,6 +9,7 @@ import { LoginService } from '../../Services/login.service';
 export class LoginComponent implements OnInit {
 
   loginUserData = { user: '', password: ''};
+  mensajeErrorLogin = '';
   Access = false;
 
   constructor(private loginService: LoginService) { }
@@ -17,23 +18,16 @@ export class LoginComponent implements OnInit {
   }
 
   loginUser(){
-    console.log(this.loginUserData);
 
     this.loginService.loginUser(this.loginUserData)
-      .subscribe(
-        res => console.log(res),
-        err => console.log(err)
-      );
-
-    this.Access = true;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-  
-  loginUser(){
-
+      .subscribe( (user: any) => {
+        if (user != null) {
+          localStorage.setItem('sessionUser', JSON.stringify(user));
+          this.Access = true ;
+        }else{
+          this.mensajeErrorLogin = 'El usuario no fue encontrado';  
+        }
+      });   
   }
 
 }

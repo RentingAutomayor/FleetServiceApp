@@ -13,12 +13,14 @@ import { CheckListVehicleModelComponent } from './Components/check-list-vehicle-
 import { QuotaManagementComponent } from './Modules/quota-management/quota-management.component';
 import { WorkOrderManagerComponent } from './Modules/work-order-manager/work-order-manager.component';
 import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
+import { LoginComponent } from './Components/login/login.component';
 
 
 
 
 const routes: Routes = [{ path: 'MasterClients/Client', component: ClientComponent },
 // { path: ' ', component: AppComponent },
+{ path: 'Login', component: LoginComponent },
 { path: 'MasterClients', component: TblClientComponent },
 { path: 'MasterDealers/Dealer', component: DealerComponent },
 { path: 'MasterDealers', component: TblDealerComponent },

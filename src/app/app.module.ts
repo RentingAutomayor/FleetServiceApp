@@ -58,6 +58,7 @@ import { InputSearchVehicleComponent } from './Components/input-search-vehicle/i
 import { BranchByDealerComponent } from './Components/branch-by-dealer/branch-by-dealer.component';
 import { RoutinesByVehicleModelComponent } from './Components/routines-by-vehicle-model/routines-by-vehicle-model.component';
 import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
+import { LoginComponent } from './Components/login/login.component';
 
 
 
@@ -101,6 +102,7 @@ import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-c
     TblCheckVehiclesComponent,
     TblContractComponent,
     TblPricesByDealerComponent,
+    LoginComponent,
     TblPricesByContractComponent,
     MovementTypeComponent,
     MovementComponent,
@@ -111,7 +113,8 @@ import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-c
     InputSearchVehicleComponent,
     BranchByDealerComponent,
     RoutinesByVehicleModelComponent,
-    DashboardClientComponent
+    DashboardClientComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

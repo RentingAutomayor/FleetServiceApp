@@ -18,6 +18,7 @@ import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-c
 
 
 const routes: Routes = [{ path: 'MasterClients/Client', component: ClientComponent },
+// { path: ' ', component: AppComponent },
 { path: 'MasterClients', component: TblClientComponent },
 { path: 'MasterDealers/Dealer', component: DealerComponent },
 { path: 'MasterDealers', component: TblDealerComponent },

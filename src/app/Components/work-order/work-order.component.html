@@ -1,4 +1,7 @@
 <form [formGroup]="frmWorkOrder">
+    <div class="container__buttonClose">
+        <a (click)="closeWorkOrder()"><i class="fas fa-times"></i></a>
+    </div>   
     <legend>Datos del vehículo</legend>
     <div class="alert alert-primary" role="alert">
         ¡ No se te olvide actualizar el kilometraje del vehículo !
@@ -150,7 +153,7 @@
         </tfoot>
     </table>
     <div class="buttons__container" id="container__buttons">
-        <button type="button" class="btn btn-danger">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="closeWorkOrder()">Cancelar</button>
         <button type="button" class="btn btn-success" (click)="saveWorkOrder()">Guardar</button>
     </div>
 </form>

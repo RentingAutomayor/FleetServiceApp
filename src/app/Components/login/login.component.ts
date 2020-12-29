@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   }
 
   loginUser(){
-
+    debugger;
     this.loginService.loginUser(this.loginUserData)
       .subscribe( (user: any) => {
         if (user != null) {

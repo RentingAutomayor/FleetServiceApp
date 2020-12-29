@@ -49,7 +49,7 @@ export class DashboardClientComponent implements OnInit {
 
     //TODO CHANGE THIS FOR THE CLIENT LOGGED
     this.client = new Client();
-    this.client.id = 3;
+    this.client.id = 2;
     this.client.name = "ruq";
 
     this.sharedFunctions = new SharedFunction();

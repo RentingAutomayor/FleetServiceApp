@@ -1,7 +1,5 @@
-<button id="btnMenu" (click)="openMenu()">
-    <i class="fas fa-bars" title="Menú"></i>
+
 <div class="container__menu" id="container__menu">
-    <a class="btnClose" (click)="closeMenu()">&times;</a>
     <div class="container__user">
         <div class="container__user-img">
             <img src="../../../assets/user.png" alt="user">
@@ -12,14 +10,7 @@
         </div>
     </div>
     <hr>
-
-
     <a *ngFor="let module of moduleFathers" id="{{ module.moduleDescription }}" class="item-navigation" [routerLink]="[module.path]" routerLinkActive="item-nav-active">{{ module.moduleName }}</a>
-    <!-- <a id="nav-client" class="item-navigation" [routerLink]="['/MasterClients']" routerLinkActive="item-nav-active">Clientes</a>
-    <a id="nav-dealer" class="item-navigation" [routerLink]="['/MasterDealers']" routerLinkActive="item-nav-active">Concesionarios</a>
-    <a id="nav-routine" class="item-navigation" [routerLink]="['/ItemsAndRoutines']" routerLinkActive="item-nav-active">Mantenimientos</a>
-    <a id="nav-contract" class="item-navigation" [routerLink]="['/MasterContracts']" routerLinkActive="item-nav-active">Contratos</a> -->
-    <!-- <a id="nav-contract" class="item-navigation" (click)="navigateTo('contract')">Contratos</a> -->
 </div>
 
 <button id="btnMenu" (click)="openMenu()">

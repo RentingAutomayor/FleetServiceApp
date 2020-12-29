@@ -1,0 +1,40 @@
+#container__workOrder{
+    display: none;
+}
+
+
+.tag-error{
+    display: flex;
+    flex-direction: row;
+    background-color: #ea2c62;
+    padding: 8px 20px;
+    color: #fff;
+    border-radius: 20px;
+    width: 150px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tag-active{
+    display: flex;
+    flex-direction: row;
+    background-color: #ade498;
+    padding: 8px 40px;
+    color: #fff;
+    border-radius: 20px;
+    width: 150px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tag-pending{
+    display: flex;
+    flex-direction: row;
+    background-color:#f0e050;
+    padding: 8px 40px;
+    color: #fff;
+    border-radius: 20px;
+    width: 150px;
+    align-items: center;
+    justify-content: center;
+}

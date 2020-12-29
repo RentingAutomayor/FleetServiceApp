@@ -31,5 +31,12 @@ export class TransactionService {
     let urlGetTransactions = `${this.URL_API}/GetTransactionsToApproveByClient?client_id=${client_id}`;
     return this.http.get<Transaction[]>(urlGetTransactions).toPromise();
   }
+
+
+  async getTransactionsByDealer(dealer_id:number): Promise<Transaction[]>{
+    let urlGetTransactions = `${this.URL_API}/GetTransactionsByDealer?dealer_id=${dealer_id}`;
+    return this.http.get<Transaction[]>(urlGetTransactions).toPromise();
+  }
+  
   
 }

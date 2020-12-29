@@ -1,36 +1,50 @@
 <app-navigation></app-navigation>
 <div id="container__content">
     <h1>Órdenes de trabajo</h1>
-    <!-- <button class="btn-add btn-info"><i class="fas fa-plus"></i></button>
-    <table class="table table-striped">
-        <thead>
-            <th>#</th>
-            <th>Consecutivo</th>
-            <th>Placa</th>
-            <th>Línea</th>
-            <th>Cliente</th>
-            <th>Mantenimiento</th>
-            <th>Sucursal
-            </th>
-            <th>Acciones</th>
-        </thead>
-        <tbody>
-             <tr *ngFor="let movement of lsMovements; let i = index">  
-            <tr>
-                <td>
-                    <i class="fas fa-info-circle text-info" title="Más información"></i>
-                    <i class="fas fa-edit text-warning"  title="Modificar"></i>
-                    <i class="fas fa-trash-alt text-danger" title="Eliminar"></i>
-                </td>
-            </tr>
-        </tbody>
-    </table> -->
-    <div class="card">
-        <div class="card-body">
-            <app-work-order></app-work-order>
+    <div id="container__table_workOrder">
+        <button class="btn-add btn-info" (click)="openWorkOrder()"><i class="fas fa-plus"></i></button>
+        <table class="table table-striped">
+            <thead>
+                <th>#</th>
+                <th>Consecutivo</th>
+                <th>Placa</th>
+                <th>Línea</th>
+                <th>Cliente</th>
+                <th>Mantenimiento</th>
+                <th>Sucursal
+                <th>Estado</th>
+                <th>Acciones</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let workOrder of lsWorkOrderByDealer; let i = index">
+                    <td>{{ i + 1}}</td>
+                    <td>{{ workOrder.consecutive }}</td>
+                    <td>{{ workOrder.headerDetails.vehicle.licensePlate }}</td>
+                    <td>{{ workOrder.headerDetails.vehicle.vehicleModel.shortName }}</td>
+                    <td>{{ workOrder.client.name }}</td>
+                    <td>{{ workOrder.headerDetails.maintenanceRoutine.name }}</td>
+                    <td>{{ workOrder.headerDetails.branch.name | uppercase}}</td>
+                    <td><span [id]="getSpanStateId(workOrder.id)">{{ validateState(workOrder.transactionState,
+                            workOrder.id) }}</span></td>
+                    <td>
+                        <i class="fas fa-info-circle text-info" title="Más información"></i>
+                        <i class="fas fa-trash-alt text-danger" title="Eliminar"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="container__workOrder">
+        <div class="card">
+            <div class="card-body">
+                <app-work-order 
+                (workOrderWasSaved)="getListWorkOrders()"    
+                (workOrderWasCanceled)="closeWorkOrder()"></app-work-order>
+            </div>
         </div>
     </div>
     
+
 </div>
 
 

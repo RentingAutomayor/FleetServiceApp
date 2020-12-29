@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ClientService } from 'src/app/Services/client.service';
 import { VehicleService } from 'src/app/Services/vehicle.service';
 import { ContractService } from 'src/app/Services/contract.service';
@@ -24,6 +24,7 @@ import { TransactionObservation } from 'src/app/Models/TransactionObservation';
 import { QuotaService } from '../../Services/quota.service';
 
 
+
 @Component({
   selector: 'app-work-order',
   templateUrl: './work-order.component.html',
@@ -46,6 +47,8 @@ export class WorkOrderComponent implements OnInit {
   vehicleSelected:Vehicle;
   ORDEN_DE_TRABAJO = 4;
   isAwaiting: boolean;
+  @Output() workOrderWasCanceled= new EventEmitter<boolean>();
+  @Output() workOrderWasSaved = new EventEmitter<boolean>();
 
   constructor(
     private ClientService: ClientService,
@@ -357,6 +360,7 @@ export class WorkOrderComponent implements OnInit {
             let rta = response;
             if(rta.response){
               alert(rta.message);
+              this.workOrderWasSaved.emit(true);
             }
           });         
         }else{
@@ -406,6 +410,13 @@ export class WorkOrderComponent implements OnInit {
     let numberToTransform = event.target.value.toString().replace(/\,/g, '');
     console.log(this.formatNumberToString(numberToTransform));
     event.target.value = this.formatNumberToString(numberToTransform);
+  }
+
+  closeWorkOrder(){
+    if(confirm("¿está seguro que desea cerrar la orden de trabajo?, sí lo realiza se perderan todos los cambios consignados acá")){
+      this.clearFrmWorkOrder();
+      this.workOrderWasCanceled.emit(true);
+    }
   }
 
 

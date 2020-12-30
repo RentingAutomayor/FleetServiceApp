@@ -1,0 +1,18 @@
+.container__row{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-template-rows: 1fr;
+}
+
+.container__col{
+  padding: 0 10px 0 10px;
+}
+
+
+td{
+    text-align: center;
+}
+
+th{
+    text-align: center;
+}

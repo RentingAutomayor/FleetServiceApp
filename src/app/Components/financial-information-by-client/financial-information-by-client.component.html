@@ -1,0 +1,63 @@
+<h3>Información del cupo</h3>
+<br>
+<form [formGroup]="frmQuota">
+    <div class="container__row">
+        <div class="container__col">
+            <label>Cupo aprobado</label>
+            <input type="text" class="form-control" formControlName="txtApprovedQuota" placeholder="cupo aprobado ..." disabled>
+        </div>
+        <div class="container__col">
+            <label>Cupo disponible</label>
+            <input type="text" class="form-control" formControlName="txtCurrentQuota" placeholder="cupo disponible ..." disabled>
+        </div>
+        <div class="container__col">
+            <label>Cupo consumido</label>
+            <input type="text" class="form-control" formControlName="txtConsumedQuota" placeholder="cupo consumido ..." disabled>
+        </div>
+        <div class="container__col">
+            <label>Cupo en tránsito</label>
+            <input type="text" class="form-control" formControlName="txtInTransitQuota"  placeholder="cupo en tránsito ..." disabled>
+        </div>
+    </div>
+</form>
+<br>
+<br>
+<h3>Transacciones que afectaron cupo</h3>
+<br>
+<table class="table table-striped">
+    <thead>
+        <th>#</th>
+        <th>Consecutivo</th>
+        <th>Movimiento</th>
+        <th>Estado</th>
+        <th>Fecha</th>
+        <th>Valor</th>   
+        <th>Cupo disponible inicial</th>
+        <th>Cupo consumido inicial</th>
+        <th>Cupo en tránsito inicial</th>
+        <th>Cupo disponible final</th>
+        <th>Cupo consumido final</th>
+        <th>Cupo en tránsito final</th>  
+        <th>Acciones</th>      
+    </thead>
+    <tbody>
+        <tr *ngFor="let logTrx of lsTransactionByClient; let i = index">
+            <td>{{ i + 1}}</td>
+            <td>{{ logTrx.transaction.consecutive }}</td>
+            <td>{{ logTrx.transaction.movement.name | titlecase }}</td>
+            <td>{{ getState(logTrx.transaction.transactionState) | titlecase }}</td>
+            <td>{{ logTrx.transaction.registrationDate | date: 'yyyy/MM/dd' }}</td>
+            <td>{{ formatNumber(logTrx.transaction.value) }}</td>
+            <td>{{ formatNumber(logTrx.initValues.currentQuota) }}</td>
+            <td>{{ formatNumber(logTrx.initValues.consumedQuota) }}</td>
+            <td>{{ formatNumber(logTrx.initValues.inTransitQuota) }}</td>
+            <td>{{ formatNumber(logTrx.endValues.currentQuota) }}</td>
+            <td>{{ formatNumber(logTrx.endValues.consumedQuota) }}</td>
+            <td>{{ formatNumber(logTrx.endValues.inTransitQuota) }}</td>
+            <td>
+                <i class="fas fa-info-circle text-info" title="Más información"></i>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

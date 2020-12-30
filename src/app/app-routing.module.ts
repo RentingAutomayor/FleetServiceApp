@@ -14,6 +14,7 @@ import { QuotaManagementComponent } from './Modules/quota-management/quota-manag
 import { WorkOrderManagerComponent } from './Modules/work-order-manager/work-order-manager.component';
 import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
 import { LoginComponent } from './Components/login/login.component';
+import { FinancialInformationByClientComponent } from './Components/financial-information-by-client/financial-information-by-client.component';
 
 
 
@@ -32,7 +33,7 @@ const routes: Routes = [{ path: 'MasterClients/Client', component: ClientCompone
 { path: 'QuotaManagement', component: QuotaManagementComponent},
 { path: 'WorkOrderManagement', component: WorkOrderManagerComponent},
 { path: 'DashboardClient', component: DashboardClientComponent},
-{ path: 'checkvm', component: CheckListVehicleModelComponent},
+{ path: 'check', component: FinancialInformationByClientComponent},
 { path: '', redirectTo: '/MasterClients', pathMatch: 'full' }
 ];
 

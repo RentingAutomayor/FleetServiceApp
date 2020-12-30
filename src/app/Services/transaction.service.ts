@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient , HttpHeaders } from '@angular/common/http'; 
 import { Transaction } from '../Models/Transaction';
 import { ResponseApi } from '../Models/ResponseAPI';
+import { LogTransaction } from '../Models/LogTransaction';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,12 @@ export class TransactionService {
     let urlGetTransactions = `${this.URL_API}/GetTransactionsByDealer?dealer_id=${dealer_id}`;
     return this.http.get<Transaction[]>(urlGetTransactions).toPromise();
   }
+
+  async getTransactionsByClient(client_id:number): Promise<LogTransaction[]>{
+    let urlGetTransactions = `${this.URL_API}/GetTransactionsByClient?client_id=${client_id}`;
+    return this.http.get<LogTransaction[]>(urlGetTransactions).toPromise();
+  }
+  
   
   
 }

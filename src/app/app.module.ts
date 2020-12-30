@@ -59,6 +59,7 @@ import { BranchByDealerComponent } from './Components/branch-by-dealer/branch-by
 import { RoutinesByVehicleModelComponent } from './Components/routines-by-vehicle-model/routines-by-vehicle-model.component';
 import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
 import { LoginComponent } from './Components/login/login.component';
+import { FinancialInformationByClientComponent } from './Components/financial-information-by-client/financial-information-by-client.component';
 
 
 
@@ -114,7 +115,8 @@ import { LoginComponent } from './Components/login/login.component';
     BranchByDealerComponent,
     RoutinesByVehicleModelComponent,
     DashboardClientComponent,
-    LoginComponent
+    LoginComponent,
+    FinancialInformationByClientComponent
   ],
   imports: [
     BrowserModule,

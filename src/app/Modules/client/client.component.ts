@@ -34,6 +34,7 @@ export class ClientComponent implements OnInit {
     private cityService:CityService,
     private router:Router
   ) { 
+    this.loadApp();
     this.bFormHasError = false;
     this.errorMessage = "";
     this.isAwaiting = false;
@@ -43,6 +44,29 @@ export class ClientComponent implements OnInit {
 
   ngOnInit(): void {
     this.initComponents();
+  }
+
+  session : any = {};
+  modules : any[] = [];
+  loadApp(){    
+    this.session = JSON.parse(localStorage.getItem('sessionUser'))   
+    if (this.session == null) {      
+      this.router.navigate(['Login']);      
+    }
+    console.log(this.session);
+    this.session.group.modules.forEach(element => {
+      if (element.id_moduleF == 1) {
+        this.modules.push(element);  
+      }      
+    }); 
+  }
+
+  activateModule(id: number){
+    if (this.modules.find(a => a.id_module == id)) {
+      return true;
+    }else{
+      return false;
+    }
   }
 
   initComponents(){    

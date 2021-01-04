@@ -2,7 +2,7 @@
 
 <div id="container__content">
     <h1>Clientes</h1>
-    <button class="btn-add btn-info" (click)="insertClient()"><i class="fas fa-plus"></i></button>
+    <button *ngIf="activateAction(1)" class="btn-add btn-info" (click)="insertClient()"><i class="fas fa-plus"></i></button>
     <table class="table table-striped">
         <thead>
             <th class="col-number col-mobile-hide">#</th>
@@ -24,9 +24,9 @@
                 <td class="col-mobile-hide">{{ client.address }}</td>
                 <td class="col-mobile-hide">{{ validateCityName(client.city) }}</td>
                 <td>
-                    <i class="fas fa-info-circle text-info" title="Más información"></i>
-                    <i class="fas fa-edit text-warning" (click)="updateClient(client.id)" title="Modificar"></i>
-                    <i class="fas fa-trash-alt text-danger" (click)="deleteClient(client)" title="Eliminar"></i>
+                    <i *ngIf="activateAction(2)" class="fas fa-info-circle text-info" title="Más información"></i>
+                    <i *ngIf="activateAction(3)" class="fas fa-edit text-warning" (click)="updateClient(client.id)" title="Modificar"></i>
+                    <i *ngIf="activateAction(4)" class="fas fa-trash-alt text-danger" (click)="deleteClient(client)" title="Eliminar"></i>
                 </td>
             </tr>
         </tbody>

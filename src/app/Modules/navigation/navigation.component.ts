@@ -23,17 +23,15 @@ export class NavigationComponent implements OnInit{
   session: any;
   moduleFathers: any[] = [];
   loadApp(){    
-    this.session = JSON.parse(localStorage.getItem('sessionUser'))    
+    this.session = JSON.parse(localStorage.getItem('sessionUser'))  
     if (this.session == null) {      
-      this.router.navigate(['Login']);      
+      this.router.navigate(['']);      
     }
     this.session.group.modules.forEach(element => {
       if (element.id_moduleF == 0) {
         this.moduleFathers.push(element);  
       }      
     });    
-
-    console.log(this.moduleFathers);
   }
 
   initComponents() {
@@ -102,6 +100,12 @@ export class NavigationComponent implements OnInit{
       itemsNavigation[i].classList.remove("item-nav-active");;
     }
 
+  }
+
+  logout(){
+    localStorage.clear();    
+    sessionStorage.clear();
+    this.router.navigate(['']);   
   }
 
 

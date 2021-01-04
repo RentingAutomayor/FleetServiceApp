@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../../Services/login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -10,21 +11,33 @@ export class LoginComponent implements OnInit {
 
   loginUserData = { user: '', password: ''};
   mensajeErrorLogin = '';
+  session : any = {};
   Access = false;
 
-  constructor(private loginService: LoginService) { }
+  constructor(private loginService: LoginService, private router: Router) {
+    this.session = JSON.parse(localStorage.getItem('sessionUser'))       
+    if (this.session == null) {      
+      this.Access = false;     
+    }else{
+      this.Access = true;    
+      this.router.navigate([this.session.group.modules[0].path]);  
+    }
+   }
 
   ngOnInit(): void {
   }
 
-  loginUser(){
+  loginUser(){    
+    this.mensajeErrorLogin = '';
     this.loginService.loginUser(this.loginUserData)
-      .subscribe( (user: any) => {
-        if (user != null) {
-          localStorage.setItem('sessionUser', JSON.stringify(user));
+      .subscribe( (user: any) => {    
+        if (user != null && user.idUser != 0) {
           this.Access = true ;
+          localStorage.setItem('sessionUser', JSON.stringify(user));       
+          this.session = JSON.parse(localStorage.getItem('sessionUser'))     
+          this.router.navigate([this.session.group.modules[0].path]);  
         }else{
-          this.mensajeErrorLogin = 'El usuario no fue encontrado';  
+          this.mensajeErrorLogin = 'La clave o el usuario son incorrectos';  
         }
       });   
   }

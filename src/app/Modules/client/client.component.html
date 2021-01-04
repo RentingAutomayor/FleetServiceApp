@@ -3,6 +3,7 @@
     <div class="container__tabPanel">
         <div class="container__titles">
             <button class="tab_link active" (click)="openTab($event,'basicData')">Datos básicos</button>
+            <!-- <button *ngFor="let module of modules" class="tab_link" (click)="openTab($event,'{{ module.moduleDescription }}')">{{ module.moduleName}}</button> -->
             <button class="tab_link" (click)="openTab($event,'contact')">Contactos</button>
             <button class="tab_link" (click)="openTab($event,'branch')">Sucursales</button>
             <button class="tab_link" (click)="openTab($event,'vehicles')">Vehículos</button>
@@ -14,13 +15,7 @@
         <h1>Formulario ingreso de clientes</h1>
         <div class="card">
             <div class="car-body">
-                <app-person 
-                [configComponent]="oConfigPersonComp" 
-                [formHasError]="bFormHasError" 
-                [error]="errorMessage"                    
-                [returnPath]="sReturnPath" 
-                [personToUpdate]="oPersonToUpdate"
-                (personWasSetted)="SetDataToSaveClient()"></app-person>
+                <app-person [configComponent]="oConfigPersonComp" [formHasError]="bFormHasError" [error]="errorMessage" [returnPath]="sReturnPath" [personToUpdate]="oPersonToUpdate" (personWasSetted)="SetDataToSaveClient()"></app-person>
             </div>
         </div>
     </div>
@@ -37,14 +32,14 @@
 
     <div class="tab_content tab_inactive" id="container__vehicles">
         <app-vehicles-by-client [clientWasSaved]="oClientWasSaved"></app-vehicles-by-client>
-    </div> 
+    </div>
 
     <div class="tab_content tab_inactive" id="container__financialInformation">
         <app-financial-information-by-client>
-            
+
         </app-financial-information-by-client>
     </div>
 
-    
+
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

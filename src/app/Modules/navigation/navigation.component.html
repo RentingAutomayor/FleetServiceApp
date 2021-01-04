@@ -1,4 +1,3 @@
-
 <div class="container__menu" id="container__menu">
     <div class="container__user">
         <div class="container__user-img">
@@ -11,6 +10,7 @@
     </div>
     <hr>
     <a *ngFor="let module of moduleFathers" id="{{ module.moduleDescription }}" class="item-navigation" [routerLink]="[module.path]" routerLinkActive="item-nav-active">{{ module.moduleName }}</a>
+    <a [routerLink]="" (click)="logout()"><i class="fas fa-sign-out-alt" title="Salir">Salir</i></a>
 </div>
 
 <button id="btnMenu" (click)="openMenu()">

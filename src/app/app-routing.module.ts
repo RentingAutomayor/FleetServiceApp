@@ -34,7 +34,7 @@ const routes: Routes = [{ path: 'MasterClients/Client', component: ClientCompone
 { path: 'WorkOrderManagement', component: WorkOrderManagerComponent},
 { path: 'DashboardClient', component: DashboardClientComponent},
 { path: 'check', component: FinancialInformationByClientComponent},
-{ path: '', redirectTo: '/MasterClients', pathMatch: 'full' }
+{ path: '', redirectTo: '/Login', pathMatch: 'full' }
 ];
 
 @NgModule({

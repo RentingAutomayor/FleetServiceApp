@@ -12,7 +12,9 @@ import { NavigationService } from '../../Services/navigation.service';
 })
 export class TblClientComponent implements OnInit {
   lsClient: Client[];
+  actions: any[] = [] ;
   isAwaiting:boolean;
+  session: any;
    //pagination
    p:number = 1;
   
@@ -21,12 +23,31 @@ export class TblClientComponent implements OnInit {
     private router: Router,
     private navigationService: NavigationService
   ) {
+      this.loadApp(); 
       this.isAwaiting = false;
    }
 
 
   ngOnInit(): void {
-    this.initComponents();
+    this.initComponents();   
+  }
+
+  
+  loadApp(){    
+    debugger;
+    this.session = JSON.parse(localStorage.getItem('sessionUser'))   
+    if (this.session == null) {      
+      this.router.navigate(['']);      
+    }
+    this.actions = this.session.group.modules.find(module => module.id_module == 1).actions;  
+  }
+
+  activateAction(id: number){
+    if (this.actions.find(a => a.id_action == id)) {
+      return true;
+    }else{
+      return false;
+    }
   }
 
   async initComponents(){

@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ClientService {
-  private URL_API =  "/API_FleetService/api/Client/";
+  private URL_API =  "https://localhost:44318/api/Client/";
   private  HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };

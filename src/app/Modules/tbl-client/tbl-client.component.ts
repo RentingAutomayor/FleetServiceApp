@@ -35,7 +35,7 @@ export class TblClientComponent implements OnInit {
   
   loadApp(){    
     debugger;
-    this.session = JSON.parse(localStorage.getItem('sessionUser'))   
+    this.session = JSON.parse(sessionStorage.getItem('sessionUser'))   
     if (this.session == null) {      
       this.router.navigate(['']);      
     }

@@ -49,7 +49,7 @@ export class ClientComponent implements OnInit {
   session : any = {};
   modules : any[] = [];
   loadApp(){    
-    this.session = JSON.parse(localStorage.getItem('sessionUser'))   
+    this.session = JSON.parse(sessionStorage.getItem('sessionUser'))   
     if (this.session == null) {      
       this.router.navigate(['Login']);      
     }

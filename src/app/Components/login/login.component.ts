@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
   Access = false;
 
   constructor(private loginService: LoginService, private router: Router) {
-    this.session = JSON.parse(localStorage.getItem('sessionUser'))       
+    this.session = JSON.parse(sessionStorage.getItem('sessionUser'))       
     if (this.session == null) {      
       this.Access = false;     
     }else{
@@ -33,8 +33,8 @@ export class LoginComponent implements OnInit {
       .subscribe( (user: any) => {    
         if (user != null && user.idUser != 0) {
           this.Access = true ;
-          localStorage.setItem('sessionUser', JSON.stringify(user));       
-          this.session = JSON.parse(localStorage.getItem('sessionUser'))     
+          sessionStorage.setItem('sessionUser', JSON.stringify(user));       
+          this.session = JSON.parse(sessionStorage.getItem('sessionUser'))     
           this.router.navigate([this.session.group.modules[0].path]);  
         }else{
           this.mensajeErrorLogin = 'La clave o el usuario son incorrectos';  

@@ -276,7 +276,8 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   }
 
   setVehiclType(){
-    this.countChanges += 1;
+    this.countChanges += 1;+
+    console.log("cambia el tipo");
   }
 
 }

@@ -33,9 +33,12 @@ export class VehicleModelComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
       //console.log("[componente vehicle Model]: ", change);
-      if (change == "countChanges") {              
+      if (change == "countChanges") {    
+        console.log("[Vehicle model component]");
         this.oBrand = this.vehicleService.getBrandSelected();
+        console.log(this.oBrand);
         this.oVehicleType = this.vehicleService.getVehicleTypeSelected();
+        console.log(this.oVehicleType);
         this.filterVehicleModels( this.oBrand, this.oVehicleType);      
         this.vehicleModelToUpdate = this.vehicleService.getVehicleModelSelected();       
         if (this.vehicleModelToUpdate != null) {         
@@ -69,6 +72,8 @@ export class VehicleModelComponent implements OnInit, OnChanges {
   filterVehicleModels(pBrand: Brand, pVehicleType:VehicleType){
     let idBrand = (pBrand !== null && pBrand !== undefined)? pBrand.id: 0;
     let idType = (pVehicleType !== null && pVehicleType !== undefined)?pVehicleType.id: 0;
+    console.log("[vehicle model component]");
+    console.log(`Id brand ${idBrand} id type ${idType}`);
     this.getDataToLists(idBrand,idType);
   }
  

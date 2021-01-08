@@ -50,6 +50,8 @@ export class ItemsAndRoutinesComponent implements OnInit {
     //console.log(containerToShow);
 
     containerToShow.setAttribute("style", "display:block");
+    this.vehicleService.setBrandSelected(null);
+    this.vehicleService.setVehicleTypeSelected(null);
   }
 
   hideContainerTabs() {

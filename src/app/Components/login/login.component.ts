@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../../Services/login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,10 @@ export class LoginComponent implements OnInit {
   mensajeErrorLogin = '';
   Access = false;
 
-  constructor(private loginService: LoginService) { }
+  constructor(
+    private loginService: LoginService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
   }
@@ -22,7 +26,7 @@ export class LoginComponent implements OnInit {
       .subscribe( (user: any) => {
         if (user != null) {
           localStorage.setItem('sessionUser', JSON.stringify(user));
-          this.Access = true ;
+          this.router.navigate(["/Home"]);
         }else{
           this.mensajeErrorLogin = 'El usuario no fue encontrado';  
         }

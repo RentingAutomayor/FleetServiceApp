@@ -10,9 +10,13 @@
         </div>
     </div>
     <hr>
-    <a *ngFor="let module of moduleFathers" id="{{ module.moduleDescription }}" class="item-navigation" [routerLink]="[module.path]" routerLinkActive="item-nav-active">{{ module.moduleName }}</a>
+    <a class="item-navigation" 
+        routerLink="/Home" 
+        routerLinkActive="item-nav-active">Inicio</a>    
+  
+    <a *ngFor="let module of moduleFathers" 
+        id="{{module.moduleDescription}}" 
+        class="item-navigation" 
+        routerLink="{{module.path}}" 
+        routerLinkActive="item-nav-active">{{ module.moduleName }}</a>
 </div>
-
-<button id="btnMenu" (click)="openMenu()">
-    <i class="fas fa-bars" title="Menú"></i>
-</button>

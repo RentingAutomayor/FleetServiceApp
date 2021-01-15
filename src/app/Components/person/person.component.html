@@ -1,19 +1,14 @@
 <div class="container__person">
     <form [formGroup]="formPerson">
-        <div class="row__container" id="container__document">
-            <div class="col" *ngIf="configComponent.kindOfDocumentIsVisible">
-                <label for="#">Tipo de documento:</label>
-                <select class="browser-default custom-select"
-                    formControlName = "cmbKindOfDocument"
-                >
-                    <option disabled>Seleccione ... </option>
-                </select>
-            </div>
+        <div class="row__container" id="container__document">            
             <div class="col" *ngIf="configComponent.documentIsVisible">
                 <label for="">Documento:</label>
-                <input type="number" class="form-control" placeholder="Documento ..."
-                    formControlName = "txtDocument"
-                >
+                <input type="number" class="form-control" placeholder="Documento ..." formControlName = "txtDocument">              
+            </div>
+
+            <div class="col" *ngIf="configComponent.documentIsVisible">
+                <label for="">Dígito de verificación:</label>
+                <input type="number" class="form-control" placeholder="Dígito de verificación ...">                
             </div>
         </div>
         <div class="row__container" id="container__name">

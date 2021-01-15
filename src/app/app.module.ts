@@ -15,7 +15,7 @@ import { ImgLoadingComponent } from './Components/img-loading/img-loading.compon
 import { NgxPaginationModule } from 'ngx-pagination';
 import { TblClientComponent } from './Modules/tbl-client/tbl-client.component';
 import { BranchComponent } from './Modules/branch/branch.component';
-import { NavigationComponent } from './Modules/navigation/navigation.component';
+
 import { TblDealerComponent } from './Modules/tbl-dealer/tbl-dealer.component';
 import { DealerComponent } from './Modules/dealer/dealer.component';
 import { VehicleModelComponent } from './Components/vehicle-model/vehicle-model.component';
@@ -60,6 +60,10 @@ import { RoutinesByVehicleModelComponent } from './Components/routines-by-vehicl
 import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
 import { LoginComponent } from './Components/login/login.component';
 import { FinancialInformationByClientComponent } from './Components/financial-information-by-client/financial-information-by-client.component';
+import { LayoutComponent } from './layout/layout.component';
+
+import { NavigationComponent } from './Modules/navigation/navigation.component';
+import { HomeComponent } from './home/home.component';
 
 
 
@@ -116,7 +120,9 @@ import { FinancialInformationByClientComponent } from './Components/financial-in
     RoutinesByVehicleModelComponent,
     DashboardClientComponent,
     LoginComponent,
-    FinancialInformationByClientComponent
+    FinancialInformationByClientComponent,
+    LayoutComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

@@ -5,11 +5,6 @@
                 <label for="">Documento:</label>
                 <input type="number" class="form-control" placeholder="Documento ..." formControlName = "txtDocument">              
             </div>
-
-            <div class="col" *ngIf="configComponent.documentIsVisible">
-                <label for="">Dígito de verificación:</label>
-                <input type="number" class="form-control" placeholder="Dígito de verificación ...">                
-            </div>
         </div>
         <div class="row__container" id="container__name">
             <div class="col" *ngIf="configComponent.nameIsVisible">

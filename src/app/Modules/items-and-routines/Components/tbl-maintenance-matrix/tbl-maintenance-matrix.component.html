@@ -50,7 +50,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let item of lsMaintenanceItems" class="row_frequency">
-                <td>{{ item.name | titlecase }}</td>
+                <td>{{ item.name | slice:0:50 | titlecase }}</td>
                 <td></td>
                 <td *ngFor="let frequency of lsFrequency" 
                     [class]="getClass(frequency.shortName)">

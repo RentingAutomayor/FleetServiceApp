@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Client } from 'src/app/Models/Client';
 import { LogTransaction } from 'src/app/Models/LogTransaction';
 import { SharedFunction } from 'src/app/Models/SharedFunctions';
@@ -6,7 +7,7 @@ import { Transaction } from 'src/app/Models/Transaction';
 import { TransactionState } from 'src/app/Models/TransactionState';
 import { TransactionService } from 'src/app/SharedComponents/Services/Transaction/transaction.service';
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service';
-import { FormGroup, FormControl } from '@angular/forms';
+
 import { QuotaService } from 'src/app/Modules/quota-management/Services/Quota/quota.service';
 import { FinancialInformation } from 'src/app/Models/FinancialInformation';
 

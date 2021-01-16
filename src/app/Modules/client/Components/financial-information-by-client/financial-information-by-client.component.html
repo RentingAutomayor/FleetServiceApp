@@ -32,12 +32,8 @@
         <th>Estado</th>
         <th>Fecha</th>
         <th>Valor</th>   
-        <th>Cupo disponible inicial</th>
-        <th>Cupo consumido inicial</th>
-        <th>Cupo en tránsito inicial</th>
-        <th>Cupo disponible final</th>
-        <th>Cupo consumido final</th>
-        <th>Cupo en tránsito final</th>  
+        <th>Cupo disponible inicial</th>       
+        <th>Cupo disponible final</th>       
         <th>Acciones</th>      
     </thead>
     <tbody>
@@ -48,12 +44,8 @@
             <td>{{ getState(logTrx.transaction.transactionState) | titlecase }}</td>
             <td>{{ logTrx.transaction.registrationDate | date: 'yyyy/MM/dd' }}</td>
             <td>{{ formatNumber(logTrx.transaction.value) }}</td>
-            <td>{{ formatNumber(logTrx.initValues.currentQuota) }}</td>
-            <td>{{ formatNumber(logTrx.initValues.consumedQuota) }}</td>
-            <td>{{ formatNumber(logTrx.initValues.inTransitQuota) }}</td>
-            <td>{{ formatNumber(logTrx.endValues.currentQuota) }}</td>
-            <td>{{ formatNumber(logTrx.endValues.consumedQuota) }}</td>
-            <td>{{ formatNumber(logTrx.endValues.inTransitQuota) }}</td>
+            <td>{{ formatNumber(logTrx.initValues.currentQuota) }}</td>          
+            <td>{{ formatNumber(logTrx.endValues.currentQuota) }}</td>           
             <td>
                 <i class="fas fa-info-circle text-info" title="Más información"></i>
             </td>

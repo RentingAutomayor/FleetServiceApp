@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { Dealer } from 'src/app/Models/Dealer';
 import { Person } from 'src/app/Models/Person';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from '../../../../Models/ResponseApi';
 import { DealerService } from '../../Services/Dealer/dealer.service';
 import { PersonService } from '../../../../SharedComponents/Services/Person/person.service';
 import { Router } from '@angular/router';

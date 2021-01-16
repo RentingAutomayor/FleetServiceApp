@@ -10,7 +10,7 @@ import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service
 import { Dealer } from 'src/app/Models/Dealer';
 import { DealerService } from '../../../dealer/Services/Dealer/dealer.service';
 import { ContractService } from '../../Services/Contract/contract.service';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { Router } from '@angular/router';
 import { VehicleType } from 'src/app/Models/VehicleType';
 

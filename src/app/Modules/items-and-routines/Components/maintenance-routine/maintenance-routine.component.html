@@ -77,7 +77,7 @@
                         [id]="getTextAmountId(mItem.id)"
                         (input)="calculatePriceByItem($event.target,mItem)" 
                         [value]="0" disabled></td>
-                <td>{{mItem.referencePrice}}</td>
+                <td>{{mItem.referencePrice | currency}}</td>
                 <td>
                     <span [id]="getLabelId(mItem.id)" class="lbl-total-price"></span>
                 </td>

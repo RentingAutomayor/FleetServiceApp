@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, OnInit } from '@angular/core';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { Vehicle } from 'src/app/Models/Vehicle';
 import { VehicleService } from '../../Services/Vehicle/vehicle.service';
 import { ClientService } from '../../Services//Client/client.service';

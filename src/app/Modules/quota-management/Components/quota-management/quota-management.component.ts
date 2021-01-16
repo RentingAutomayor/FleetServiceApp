@@ -11,7 +11,7 @@ import { QuotaService } from '../../Services/Quota/quota.service';
 import { MovementService } from '../../../movement/Services/Movement/movement.service';
 import { reject, values } from 'lodash';
 import { transcode } from 'buffer';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { FinancialInformation } from 'src/app/Models/FinancialInformation';
 import { SharedFunction } from 'src/app/Models/SharedFunctions';
 

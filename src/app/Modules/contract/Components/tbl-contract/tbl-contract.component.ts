@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Contract } from 'src/app/Models/Contract';
 import { ContractService } from '../../Services/Contract/contract.service';
 import { Router } from '@angular/router';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from 'src/app/Models/ResponseApi';
 
 
 @Component({

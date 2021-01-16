@@ -15,10 +15,10 @@
             <tr *ngFor="let i = index ;let item of lsMaintenanceItems | paginate: { itemsPerPage: 100, currentPage: pag }">
                 <td>{{i+1}}</td>
                 <td>{{item.code}}</td>
-                <td>{{item.name | titlecase}}</td>
+                <td>{{item.name | titlecase | slice:0:50 }}</td>
                 <td>{{item.type.name | titlecase}}</td>
                 <td>{{item.presentationUnit.longName | titlecase}}</td>
-                <td>{{item.referencePrice}}</td>
+                <td>{{item.referencePrice | currency}}</td>
                 <td>
                     <i class="fas fa-info-circle text-info" title="Más información"></i>
                     <i class="fas fa-edit text-warning" (click)="updateMaintenanceItem(item)" title="Modificar"></i>

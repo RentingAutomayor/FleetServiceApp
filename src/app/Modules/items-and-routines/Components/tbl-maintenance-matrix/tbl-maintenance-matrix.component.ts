@@ -9,7 +9,7 @@ import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service
 @Component({
   selector: 'app-tbl-maintenance-matrix',
   templateUrl: './tbl-maintenance-matrix.component.html',
-  styleUrls: ['./tbl-maintenance-matrix.component.scss', '../../../../../assets/styles/app.scss']
+  styleUrls: ['./tbl-maintenance-matrix.component.scss', '../../../../../assets/styles/checkbox.scss']
 })
 export class TblMaintenanceMatrixComponent implements OnInit {
   isAwaiting: boolean;

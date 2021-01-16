@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Frequency } from '../../../../Models/Frequency';
-import { ResponseApi } from '../../../../Models/ResponseAPI';
+import { ResponseApi } from '../../../../Models/ResponseApi';
 import { MaintenanceRoutine } from '../../../../Models/MaintenanceRoutine';
 @Injectable({
   providedIn: 'root'

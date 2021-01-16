@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MaintenanceRoutine } from 'src/app/Models/MaintenanceRoutine';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/maintenance-routine.service';
 
 @Component({

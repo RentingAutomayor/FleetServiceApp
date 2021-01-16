@@ -3,7 +3,7 @@ import { Client } from 'src/app/Models/Client';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { PersonService } from '../../../../SharedComponents/Services/Person/person.service';
 import { ClientService } from '../../Services/Client/client.service';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { Person } from 'src/app/Models/Person';
 import { Router } from '@angular/router';
 import { CityService } from '../../../../SharedComponents/Services/City/city.service';

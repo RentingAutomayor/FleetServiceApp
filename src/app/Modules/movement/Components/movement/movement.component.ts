@@ -3,7 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 
 import { Router } from '@angular/router';
 import { Movement } from 'src/app/Models/Movement';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { MovementService } from '../../Services/Movement/movement.service';
 
 @Component({

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ContractState } from '../../../../Models/ContractState';
 import { DiscountType } from '../../../../Models/DiscountType';
-import { ResponseApi } from '../../../../Models/ResponseAPI';
+import { ResponseApi } from '../../../../Models/ResponseApi';
 import { Contract } from '../../../../Models/Contract';
 
 @Injectable({

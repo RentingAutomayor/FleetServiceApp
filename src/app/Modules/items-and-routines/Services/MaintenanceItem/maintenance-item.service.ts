@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { PresentationUnit } from '../../../../Models/PresentationUnit';
 import { TypeOfMaintenanceItem } from '../../../../Models/TypeOfMaintenanceItem';
 import { MaintenanceItem } from '../../../../Models/MaintenanceItem';
-import { ResponseApi } from '../../../../Models/ResponseAPI';
+import { ResponseApi } from '../../../../Models/ResponseApi';
 import { Category } from '../../../../Models/Category';
 import { PricesByDealer } from '../../../../Models/PricesByDealer';
 import { PricesByContract } from '../../../../Models/PricesByContract';

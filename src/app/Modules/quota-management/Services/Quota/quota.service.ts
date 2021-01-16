@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Client } from '../../../../Models/Client';
 import { FinancialInformation } from '../../../../Models/FinancialInformation';
-import { ResponseApi } from '../../../../Models/ResponseAPI';
+import { ResponseApi } from '../../../../Models/ResponseApi';
 
 @Injectable({
   providedIn: 'root'

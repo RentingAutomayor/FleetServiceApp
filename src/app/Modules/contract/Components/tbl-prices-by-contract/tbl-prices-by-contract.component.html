@@ -14,10 +14,10 @@
             <tr *ngFor="let i = index ;let item of lsMaintenanceItems">
                 <td>{{i+1}}</td>
                 <td>{{item.code}}</td>
-                <td>{{item.name | titlecase}}</td>
+                <td>{{item.name | titlecase | slice:0:40 }}</td>
                 <td>{{item.type.name | titlecase}}</td>
                 <td>{{item.presentationUnit.longName | titlecase}}</td>
-                <td>{{setDealerPriceIntoTable(item.id)}}</td>
+                <td>{{setDealerPriceIntoTable(item.id) | currency }}</td>
                 <td>
                     <input 
                         class="form-control"

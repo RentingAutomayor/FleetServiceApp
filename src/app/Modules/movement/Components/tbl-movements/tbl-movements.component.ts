@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-tbl-movements',
   templateUrl: './tbl-movements.component.html',
-  styleUrls: ['./tbl-movements.component.scss', '../../../../../assets/styles/app.scss']
+  styleUrls: ['./tbl-movements.component.scss']
 })
 export class TblMovementsComponent implements OnInit {
   lsMovements: Movement[];

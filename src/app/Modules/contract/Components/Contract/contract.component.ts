@@ -49,7 +49,6 @@ export class ContractComponent implements OnInit {
     this.dtEndingDate = now;
     this.frmContract = new FormGroup({
       txtContractName: new FormControl(''),
-      txtAmountOfMaintenances: new FormControl(''),
       txtDuration: new FormControl(''),
       txtStartingDate: new FormControl(now,[]),
       txtEndingDate: new FormControl(monthfuture,[]),
@@ -197,8 +196,8 @@ export class ContractComponent implements OnInit {
   }
 
   setDataInForm(pContract:Contract){
-    let {txtContractName, txtAmountOfMaintenances,txtDuration,txtStartingDate,txtEndingDate,txtObservation,txtDiscountValue, txtAmountVehicles} = this.frmContract.controls;    txtContractName.setValue(pContract.name);
-    txtAmountOfMaintenances.setValue(pContract.amountOfMaintenances);
+    let {txtContractName,txtDuration,txtStartingDate,txtEndingDate,txtObservation,txtDiscountValue, txtAmountVehicles} = this.frmContract.controls;    txtContractName.setValue(pContract.name);
+    
     txtDuration.setValue(pContract.duration);
     txtStartingDate.setValue(pContract.startingDate);
     
@@ -243,7 +242,7 @@ export class ContractComponent implements OnInit {
 
 
   saveContract(){
-    let {txtContractName, txtAmountOfMaintenances,txtDuration,txtStartingDate,txtEndingDate,txtObservation,txtDiscountValue, txtAmountVehicles} = this.frmContract.controls;
+    let {txtContractName,txtDuration,txtStartingDate,txtEndingDate,txtObservation,txtDiscountValue, txtAmountVehicles} = this.frmContract.controls;
     
     if(this.contractToUpdate != null && this.contractToUpdate != undefined){
       this.contract.id = this.contractToUpdate.id;
@@ -258,7 +257,6 @@ export class ContractComponent implements OnInit {
     this.contract.dealer = this.dealerService.getDealerSelected();
 
     this.contract.name = txtContractName.value;
-    this.contract.amountOfMaintenances = txtAmountOfMaintenances.value;
     this.contract.amountVehicles = txtAmountVehicles.value;
     this.contract.duration = txtDuration.value;
     this.contract.startingDate = txtStartingDate.value;

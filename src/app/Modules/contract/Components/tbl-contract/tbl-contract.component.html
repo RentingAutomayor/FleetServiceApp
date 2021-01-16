@@ -8,9 +8,8 @@
             <th>Código</th>
             <th>Cliente</th>
             <th>Concesionario</th>
-            <th>Plazo</th>
-            <th title="Mantenimientos contratados">M-C</th>
-            <th title="Vehículos contratados">V-C</th>
+            <th>Plazo en meses</th>            
+            <th title="Vehículos contratados">Veh. contratados</th>
             <th>Estado</th>
             <th>Acciones</th>
         </thead>
@@ -20,8 +19,7 @@
                 <td>{{ contract.code }}</td>
                 <td>{{ contract.client.name | titlecase }}</td>
                 <td>{{ contract.dealer.name | titlecase }}</td>
-                <td>{{ contract.duration }}</td>
-                <td>{{ contract.amountOfMaintenances }}</td>
+                <td>{{ contract.duration }}</td>                
                 <td>{{ contract.amountVehicles }}</td>
                 <td>{{ contract.contractState.name | titlecase }}</td>
                 <td>

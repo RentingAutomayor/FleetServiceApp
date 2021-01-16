@@ -6,7 +6,7 @@ import { TransactionService } from '../../../../SharedComponents/Services/Transa
 @Component({
   selector: 'app-work-order-manager',
   templateUrl: './work-order-manager.component.html',
-  styleUrls: ['./work-order-manager.component.scss', '../../../../../assets/styles/app.scss']
+  styleUrls: ['./work-order-manager.component.scss']
 })
 export class WorkOrderManagerComponent implements OnInit {
   isAwaiting: boolean;

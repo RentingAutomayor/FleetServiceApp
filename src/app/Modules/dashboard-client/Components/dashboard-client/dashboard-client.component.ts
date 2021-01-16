@@ -13,7 +13,7 @@ import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
 @Component({
   selector: 'app-dashboard-client',
   templateUrl: './dashboard-client.component.html',
-  styleUrls: ['./dashboard-client.component.scss', '../../../../../assets/styles/app.scss']
+  styleUrls: ['./dashboard-client.component.scss']
 })
 export class DashboardClientComponent implements OnInit {
   isAwaiting:boolean;

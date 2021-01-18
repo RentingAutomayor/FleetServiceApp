@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     this.loginService.loginUser(this.loginUserData)
       .subscribe( (user: any) => {
         if (user != null) {
-          localStorage.setItem('sessionUser', JSON.stringify(user));
+          sessionStorage.setItem('sessionUser', JSON.stringify(user));
           this.router.navigate(["/Home"]);
         }else{
           this.mensajeErrorLogin = 'El usuario no fue encontrado';  

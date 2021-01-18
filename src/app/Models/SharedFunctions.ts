@@ -4,6 +4,8 @@ export class SharedFunction {
     
     formatNumberToString(oData:Number){
         
+       
+
         let sData = oData.toString();
         
         let intPart = '';

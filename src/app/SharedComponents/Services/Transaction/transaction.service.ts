@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient , HttpHeaders } from '@angular/common/http'; 
 import { Transaction } from '../../../Models/Transaction';
-import { ResponseApi } from '../../../Models/ResponseAPI';
+import { ResponseApi } from '../../../Models/ResponseApi';
 import { LogTransaction } from '../../../Models/LogTransaction';
 
 @Injectable({

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Contact } from '../../../Models/Contact';
-import { ResponseApi } from '../../../Models/ResponseAPI';
+import { ResponseApi } from '../../../Models/ResponseApi';
 
 @Injectable({
   providedIn: 'root'

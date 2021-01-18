@@ -1,19 +1,31 @@
-<form [formGroup]="frmVehicle">
-
+<form [formGroup]="frmVehicle" (ngSubmit)="saveVehicle()">
     <div class="row__container" id="container__identyfy">
        
         <div class="col">
             <label for="">Placa:</label>
-            <input type="text" class="form-control" 
+            <input type="text" 
+                class="form-control" 
                 placeholder="Placa ..."
-                formControlName = "txtLicensePlate">
+                formControlName="licensePlate">
+
+            <div class="error" *ngIf="licensePlateField.errors && (licensePlateField.touched || licensePlateField.dirty)">
+                <p *ngIf="licensePlateField.hasError('required')">* La placa es un campo requerido</p>
+                <p *ngIf="licensePlateField.hasError('minlength')">* La cantidad de caracteres para la placa no es válida</p>
+                <p *ngIf="licensePlateField.hasError('maxlength')">* La cantidad de caracteres permitida para la placa es máximo de 6</p>
+            </div>
         </div>
 
         <div class="col">
             <label for="">VIN:</label>
             <input type="text" class="form-control" 
                 placeholder="VIN ..."
-                formControlName = "txtChasisCode">
+                formControlName = "chasisCode">
+
+            <div class="error" *ngIf="chasisCodeField.errors && (chasisCodeField.touched || chasisCodeField.dirty)">
+                <p *ngIf="chasisCodeField.hasError('required')">* El código del chasis es un campo requerido</p>
+                <p *ngIf="chasisCodeField.hasError('minlength')">* La cantidad de caracteres para el código del chasis no es válida</p>
+                <p *ngIf="chasisCodeField.hasError('maxlength')">* La cantidad de caracteres permitida para el código del chasis es máximo de 17</p>
+            </div>
         </div>
 
         <div class="col">
@@ -49,16 +61,18 @@
     <div class="row__container" id="container__otherInformation">
         <div class="col">
             <label for="">Modelo:</label>
-            <input type="number" class="form-control" 
+            <input type="text" class="form-control" 
                 placeholder="Modelo ..."
-                formControlName = "txtYear">
+                formControlName = "year"
+                (keypress)="valitateTyping($event,'numbers')">
         </div>  
 
         <div class="col">
             <label for="">Kilometraje:</label>
-            <input type="number" class="form-control" 
+            <input type="text" class="form-control" 
                 placeholder="Kilometraje ..."
-                formControlName = "txtMileage">
+                formControlName = "mileage"
+                (keypress)="valitateTyping($event,'numbers')">
         </div>      
 
     </div>
@@ -67,6 +81,6 @@
     </div>
     <div class="buttons__container" id="container__buttons" >
         <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-        <button type="button" class="btn btn-success" (click)="saveVehicle()">Guardar</button>
+        <button type="submit" class="btn btn-success"  [disabled]="frmVehicle.invalid">Guardar</button>
     </div>  
 </form>

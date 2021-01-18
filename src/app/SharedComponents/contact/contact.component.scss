@@ -4,14 +4,20 @@
      height: 50px;     
     cursor: pointer;
     position: relative;
-    left: 90%;
+    left: 95%;
     margin-bottom: 20px;
-    top: 40px;
+    top: 20px;
     outline: none;
     text-align: center;
     font-size: 24px;
     border: none;
     z-index: 1700;
+}
+
+#container__header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 i{
@@ -22,8 +28,8 @@ i{
 #container__formContact{
     display: none;
 }
-.card-body{
-    width: 700px;
+.card{
+    width: 900px;
 }
 
 .overlay{

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Transaction } from 'src/app/Models/Transaction';
 import { TransactionState } from 'src/app/Models/TransactionState';
 import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service';
+import { SessionUser } from 'src/app/Models/SessionUser';
 
 @Component({
   selector: 'app-work-order-manager',
@@ -22,14 +23,19 @@ export class WorkOrderManagerComponent implements OnInit {
 
   async initComponents() {
     this.isAwaiting = false;
-    this.getTransactionByDealer(1);
+    let dealer_id = this.getDealerId();
+    this.getTransactionByDealer(dealer_id);
+  }
+
+  getDealerId():number{
+    let userSession :SessionUser = JSON.parse(sessionStorage.getItem('sessionUser'));
+    return userSession.company.id;
   }
 
   async getTransactionByDealer(dealer_id: number) {
-    try {
-      let idDealer = 1;
+    try {    
       this.isAwaiting = true;
-      this.transactionService.getTransactionsByDealer(idDealer).then(dataTrx => { this.lsWorkOrderByDealer = dataTrx });
+      this.transactionService.getTransactionsByDealer(dealer_id).then(dataTrx => { this.lsWorkOrderByDealer = dataTrx });
       this.isAwaiting = false;
     } catch (error) {
       console.warn(error);
@@ -86,7 +92,7 @@ export class WorkOrderManagerComponent implements OnInit {
 
   getListWorkOrders(){
     //TODO: change this for the user logged configuration;
-    this.getTransactionByDealer(1);
+    this.getTransactionByDealer(this.getDealerId());
     this.closeWorkOrder();
   }
 }

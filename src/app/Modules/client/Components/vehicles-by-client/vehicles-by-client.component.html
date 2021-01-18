@@ -43,8 +43,12 @@
 </div>
  
 <div id="container__formVehicle">
-    <div class="overlay">
+    <div class="overlay">       
         <div class="card">
+            <div class="card-header" id="container__header">
+                <h3 class="card-title">Datos del vehículo</h3>
+                <a (click)="comeBackToTable()" class="buttonClose"><i class="fas fa-times"></i></a>
+            </div>
             <div class="card-body">
                <app-vehicle
                 (vehicleWasSaved)="saveVehicle()"

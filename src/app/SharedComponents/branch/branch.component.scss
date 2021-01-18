@@ -79,12 +79,24 @@ i{
 }
 
 .card-body{
-    width: 700px;
+    width: 900px;
 }
 
 
 #container__formBranch{
     display:none;
+}
+
+
+#container__header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+i{
+    margin: 0 3px;
+    cursor: pointer;
 }
 
 

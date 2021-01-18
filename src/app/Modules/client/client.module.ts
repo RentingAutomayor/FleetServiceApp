@@ -1,6 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 import { TblClientComponent } from './Components/tbl-client/tbl-client.component';
@@ -9,10 +9,11 @@ import { FinancialInformationByClientComponent } from './Components/financial-in
 import { VehicleComponent } from './Components/vehicle/vehicle.component';
 import { VehiclesByCLientComponent } from './Components/vehicles-by-client/vehicles-by-client.component';
 import { VehicleStateComponent } from './Components/vehicle-state/vehicle-state.component';
-
+import { TblContractsByClientComponent } from './Components/tbl-contracts-by-client/tbl-contracts-by-client.component';
 
 import { ClientRoutingModule } from './client-routing.module';
 import { SharedModule } from 'src/app/SharedComponents/shared.module';
+
 
 @NgModule({
     declarations: [
@@ -21,12 +22,12 @@ import { SharedModule } from 'src/app/SharedComponents/shared.module';
         FinancialInformationByClientComponent,
         VehicleComponent,
         VehiclesByCLientComponent,
-        VehicleStateComponent
+        VehicleStateComponent,
+        TblContractsByClientComponent
     ],
     imports: [
         CommonModule,
-        SharedModule,
-        FormsModule,
+        SharedModule,        
         ReactiveFormsModule,
         ClientRoutingModule,
     ], schemas: [

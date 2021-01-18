@@ -13,14 +13,19 @@ select{
 
 #container__buttons{
     display: flex;
-    flex-direction: row;
-    justify-content: right;
+    justify-content: flex-end;   
 }
 
+
 #container__buttons button{
-   margin-left: 10px;
-   margin-top: 20px;;
-   width: 150px;
+    width: 250px;
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+.error{
+    color: red;
+    margin-top: 10px;
 }
 
 

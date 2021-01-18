@@ -59,7 +59,7 @@ export class VehicleStateComponent implements OnInit ,OnChanges{
       this.lsStates = data;
       setTimeout(() => {
         this.frmVehicleState.controls.cmbState.setValue(vehicleState.id);
-      },300);      
+      },500);      
     });    
   }
 

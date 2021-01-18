@@ -1,9 +1,10 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, EventEmitter, Input, OnInit, Output , OnChanges, SimpleChange, SimpleChanges} from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Vehicle } from 'src/app/Models/Vehicle';
 import { VehicleModel } from 'src/app/Models/VehicleModel';
 import { VehicleService } from '../../Services/Vehicle/vehicle.service';
+import { InputValidator } from 'src/app/Utils/InputValidator';
+import { SharedFunction } from 'src/app/Models/SharedFunctions' ;
 
 @Component({
   selector: 'app-vehicle',
@@ -19,18 +20,43 @@ export class VehicleComponent implements OnInit, OnChanges {
   @Output() vehicleWasCancel = new  EventEmitter<boolean>();
   @Input() countVehicle: number;  
   oCountChanges:number;
-  
+  sharedFunction:SharedFunction
 
   constructor(
-    private vehicleService: VehicleService
+    private vehicleService: VehicleService,
+    private formBuilder: FormBuilder
+
   ) { 
-    this.frmVehicle = new FormGroup({
-      txtLicensePlate : new FormControl(''),
-      txtChasisCode: new FormControl(''),
-      txtYear: new FormControl(''),
-      txtMileage: new FormControl('')
-    });
+    this.buildFormVehicle();
+    this.sharedFunction = new SharedFunction();
   }
+
+  buildFormVehicle(){
+    this.frmVehicle = this.formBuilder.group({
+      licensePlate : ['', [Validators.required ,Validators.minLength(6),Validators.maxLength(6)]],
+      chasisCode: ['', [Validators.required ,Validators.minLength(10),Validators.maxLength(17)]],
+      year: [''],
+      mileage: ['']
+    })
+  }
+
+  get licensePlateField(){
+    return this.frmVehicle.get('licensePlate');
+  }
+
+  get chasisCodeField(){
+    return this.frmVehicle.get('chasisCode');
+  }
+
+  get yearField(){
+    return this.frmVehicle.get('year');
+  }
+
+  get mileageField(){
+    return this.frmVehicle.get('mileage');
+  }
+
+
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
       try {
@@ -67,6 +93,7 @@ export class VehicleComponent implements OnInit, OnChanges {
 
   saveVehicle(){
     let oVehicle = this.setDataVehicle();
+    console.log(oVehicle);
     this.saveData(oVehicle);
   }
 
@@ -75,12 +102,19 @@ export class VehicleComponent implements OnInit, OnChanges {
     if(this.vehicleToUpdate != null){
       oVehicle.id = this.vehicleToUpdate.id;
     }
-    oVehicle.licensePlate = this.frmVehicle.controls.txtLicensePlate.value;
-    oVehicle.chasisCode = this.frmVehicle.controls.txtChasisCode.value;
+
+    let partialVehicle: Partial<Vehicle>;
+    partialVehicle = this.frmVehicle.value;
+
+    oVehicle.licensePlate = partialVehicle.licensePlate.toUpperCase();
+    oVehicle.chasisCode = partialVehicle.chasisCode;
+    oVehicle.year = partialVehicle.year;
+    oVehicle.mileage = partialVehicle.mileage;
+
     oVehicle.vehicleState = this.vehicleService.getVehicleStateSelected();
     oVehicle.vehicleModel = this.vehicleService.getVehicleModelSelected();
-    oVehicle.year = this.frmVehicle.controls.txtYear.value;
-    oVehicle.mileage = this.frmVehicle.controls.txtMileage.value;
+    
+    console.log(oVehicle);
     return oVehicle;
   }
 
@@ -91,10 +125,7 @@ export class VehicleComponent implements OnInit, OnChanges {
   }
 
   setDataInForm(pVehicle:Vehicle){
-    this.frmVehicle.controls.txtLicensePlate.setValue(pVehicle.licensePlate);
-    this.frmVehicle.controls.txtChasisCode.setValue(pVehicle.chasisCode);
-    this.frmVehicle.controls.txtYear.setValue(pVehicle.year);
-    this.frmVehicle.controls.txtMileage.setValue(pVehicle.mileage); 
+    this.frmVehicle.patchValue(pVehicle);
     this.vehicleService.setBrandSelected(pVehicle.vehicleModel.brand); 
     this.vehicleService.setVehicleTypeSelected(pVehicle.vehicleModel.type);
     this.vehicleService.setVehicleModelSelected(pVehicle.vehicleModel);
@@ -103,10 +134,7 @@ export class VehicleComponent implements OnInit, OnChanges {
   }
 
   cleanFormData(){
-    this.frmVehicle.controls.txtLicensePlate.setValue('');
-    this.frmVehicle.controls.txtChasisCode.setValue('');
-    this.frmVehicle.controls.txtYear.setValue('');
-    this.frmVehicle.controls.txtMileage.setValue(''); 
+    this.frmVehicle.reset();
     this.vehicleService.setBrandSelected(null);    
     this.vehicleService.setVehicleTypeSelected(null);
     this.vehicleService.setVehicleModelSelected(null);
@@ -123,6 +151,10 @@ export class VehicleComponent implements OnInit, OnChanges {
   }
   comeBack(){
     this.vehicleWasCancel.emit(true);
+  }
+
+  valitateTyping(event:any, type:string){
+    InputValidator.validateTyping(event,type);   
   }
 
 }

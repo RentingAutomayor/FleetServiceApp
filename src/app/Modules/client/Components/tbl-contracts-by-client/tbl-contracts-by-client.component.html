@@ -1,0 +1,27 @@
+<h3>Contratos</h3>
+<table class="table table-striped">
+    <thead>
+        <th>#</th>
+        <th>Código</th>
+        <th>Concesionario</th>
+        <th>Plazo en meses</th>            
+        <th title="Vehículos contratados">Veh. contratados</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let contract of lsContracts; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ contract.code }}</td>
+            <td>{{ contract.dealer.name | titlecase }}</td>
+            <td>{{ contract.duration }}</td>
+            <td>{{ contract.amountVehicles }}</td>
+            <td>{{ contract.contractState.name | titlecase }}</td>
+            <td>
+                <i class="fas fa-info-circle text-info" title="Más información"></i>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

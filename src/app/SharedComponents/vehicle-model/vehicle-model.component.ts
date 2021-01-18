@@ -94,7 +94,7 @@ export class VehicleModelComponent implements OnInit, OnChanges {
       let { cmbVehicleModel } = this.frmVehicleModel.controls;  
       console.log("[vm component]", pVehicleModel, this.lsVehicleModel)  ;
       cmbVehicleModel.setValue(pVehicleModel.id);
-     }, 300);
+     }, 500);
      
      this.vehicleModelWasSetted.emit(true);
   }

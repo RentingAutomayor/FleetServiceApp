@@ -46,12 +46,18 @@ export class FinancialInformationByClientComponent implements OnInit {
     this.isAwaiting = false;
     
     this.oClient = this.clientService.getClientToUpdate();
+
     this.sharedFunctions = new SharedFunction();
     
-    this.isAwaiting = true;
-    this.getQuotaByClient(this.oClient.id);
-    this.getTransactionsByClient( this.oClient.id);    
-    this.isAwaiting = false;
+ 
+    if(this.oClient != null){
+      this.isAwaiting = true;
+      this.getQuotaByClient(this.oClient.id);
+      this.getTransactionsByClient( this.oClient.id);    
+      this.isAwaiting = false;
+    }
+    
+   
   }
 
   async getTransactionsByClient(client_id : number){
@@ -69,7 +75,9 @@ export class FinancialInformationByClientComponent implements OnInit {
     try {
       this.quotaService.getFinancialInformationByClient(client_id).then( infoClient => {
         this.financialInformationByClient = infoClient;
-        this.setFinancialInformationByClient(this.financialInformationByClient);
+        if(this.financialInformationByClient){
+          this.setFinancialInformationByClient(this.financialInformationByClient);
+        }        
       });
     } catch (error) {
       console.warn(error);

@@ -51,6 +51,11 @@ export class ContractService {
     return this.http.get<Contract>(urlGetContractByVehicle).toPromise();
   }
 
+  async getContractByClientId(client_id:number): Promise<Contract[]>{
+    let urlGetContractByClient = `${this.URL_API}/GetContractsByClient?client_id=${client_id}`;
+    return this.http.get<Contract[]>(urlGetContractByClient).toPromise();
+  }
+
   async insert(pContract: Contract): Promise<ResponseApi> {
     let urlInsert = `${this.URL_API}/Insert`;
     return this.http.post<ResponseApi>(urlInsert, pContract, this.HttpOptions).toPromise();

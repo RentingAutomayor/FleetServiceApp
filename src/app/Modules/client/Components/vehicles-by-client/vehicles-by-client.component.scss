@@ -22,8 +22,8 @@ i{
 #container__formVehicle{
     display: none;
 }
-.card-body{
-    width: 800px;
+.card{
+    width: 1000px;
 }
 
 .overlay{
@@ -84,6 +84,12 @@ $arrow-color:#ebd4d4;
 
 .error{
     background-color: #fa1616 ;
+}
+
+#container__header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 @media screen and (max-width:600px){

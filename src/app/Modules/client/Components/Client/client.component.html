@@ -5,13 +5,16 @@
             <button class="tab_link" (click)="openTab($event,'contact')">Contactos</button>
             <button class="tab_link" (click)="openTab($event,'branch')">Sucursales</button>
             <button class="tab_link" (click)="openTab($event,'vehicles')">Vehículos</button>
+            <button class="tab_link" (click)="openTab($event,'contracts')">Contratos asociados</button>            
             <button class="tab_link" (click)="openTab($event,'financialInformation')">Información financiera</button>
         </div>
     </div>
 
-    <div class="tab_content tab_active" id="container__basicData">
-        <h1>Formulario ingreso de clientes</h1>
+    <div class="tab_content tab_active" id="container__basicData">        
         <div class="card">
+            <div class="card-header">
+                <h3>Datos del cliente</h3>
+            </div>
             <div class="car-body">
                 <app-person 
                 [configComponent]="oConfigPersonComp" 
@@ -24,9 +27,13 @@
         </div>
     </div>
 
-    <div class="tab_content tab_inactive" id="container__contact">
-        <app-contact [isToClient]="oIsToClient" [clientWasSaved]="oClientWasSaved">
-        </app-contact> 
+    <div class="tab_content tab_inactive" id="container__contact">  
+        
+        <div class="container__table__contact">
+            <app-contact [isToClient]="oIsToClient" [clientWasSaved]="oClientWasSaved">
+            </app-contact> 
+        </div>
+        
     </div>
 
     <div class="tab_content tab_inactive" id="container__branch">
@@ -38,9 +45,14 @@
         <app-vehicles-by-client [clientWasSaved]="oClientWasSaved"></app-vehicles-by-client>
     </div> 
 
+    <div class="tab_content tab_inactive" id="container__contracts">
+        <app-tbl-contracts-by-client
+        [client_id]="(this.oClientToUpdate != null) ? this.oClientToUpdate.id : 0">            
+        </app-tbl-contracts-by-client>        
+    </div> 
+
     <div class="tab_content tab_inactive" id="container__financialInformation">
-        <app-financial-information-by-client>
-            
+        <app-financial-information-by-client>            
         </app-financial-information-by-client>
     </div>
 

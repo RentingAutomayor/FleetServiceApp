@@ -37,6 +37,10 @@ button{
     color: red;   
 }
 
+.error > p {
+    margin-top: 10px;
+}
+
 .container__error{
     padding-top: 20px;
     text-align: center;

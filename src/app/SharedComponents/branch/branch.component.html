@@ -39,10 +39,14 @@
 <div id="container__formBranch">
     <div class="overlay">
         <div class="card">
+            <div class="card-header" id="container__header">
+                <h3 class="card-title">Sucursal</h3>
+                <a (click)="comeBackToTable()" class="buttonClose"><i class="fas fa-times"></i></a>
+            </div>
             <div class="card-body">
                 <app-person 
                 [configComponent]="oConfigPersonComp" 
-                [countContact] = "oCountBranch"  
+                [countContact] = "oCountBranch"
                 [oCountChanges] = "oCountChangesCity"
                 [personToUpdate] = "oPersonToUpdate" 
                 (personWasSetted)="saveBranch()"

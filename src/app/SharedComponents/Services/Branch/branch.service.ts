@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient,HttpHeaders} from '@angular/common/http'
 import { Branch } from '../../../Models/Branch';
-import { ResponseApi } from '../../../Models/ResponseAPI';
+import { ResponseApi } from '../../../Models/ResponseApi';
 
 @Injectable({
   providedIn: 'root'

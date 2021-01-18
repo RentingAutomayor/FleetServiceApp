@@ -1,13 +1,15 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder,FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { Person } from 'src/app/Models/Person';
 import { PersonService } from '../Services/Person/person.service';
 import { CityService } from '../Services/City/city.service';
 import { JobTitleService } from '../Services/JobTitle/job-title.service';
 import { City } from 'src/app/Models/City';
-import { Router } from '@angular/router';
+import { Event, Router } from '@angular/router';
 import { JobTitle } from 'src/app/Models/JobTitle';
+import { InputValidator } from 'src/app/Utils/InputValidator';
+
 
 @Component({
   selector: 'app-person',
@@ -23,58 +25,99 @@ export class PersonComponent implements OnInit, OnChanges {
   @Input() personToUpdate: Person;
   @Input() returnPath: string;
   @Input() countContact: number;
+  
+  @Input() configRenderComponent: ConfigPersonComponent;
   @Output() personWasSetted = new EventEmitter<boolean>();
   @Output() personWasCanceled = new EventEmitter<boolean>();
   formPerson: FormGroup;
   oCity: City;
   oJobTitleSelected: JobTitle;
-
+  oInputvalidator: InputValidator;
+  
+  isContact:boolean = true;
 
   constructor(
     private personService: PersonService,
     private cityService: CityService,
     private jobTitleService: JobTitleService,
-    private router: Router
-  ) {
-    this.formPerson = new FormGroup({
-      cmboKindOfDocument: new FormControl('Seleccione ...'),
-      txtDocument: new FormControl(''),
-      txtName: new FormControl(''),
-      txtLastName: new FormControl(''),
-      txtPhone: new FormControl(''),
-      txtCellPhone: new FormControl(''),
-      txtEmail: new FormControl(''),
-      txtWebsite: new FormControl(''),
-      txtAddress: new FormControl('')
-    });
-
+    private router: Router,
+    private formBuilder: FormBuilder
+  ) {  
     this.configComponent = new ConfigPersonComponent();
+    this.configRenderComponent = new ConfigPersonComponent();
     this.isRequiredDataComponent = false;
     this.formHasError = false;
 
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  buildPersonForm(configComponent:ConfigPersonComponent){
 
+    try {
+      if(configComponent.documentIsVisible){
+        this.formPerson = this.formBuilder.group({     
+          document : ['',[ Validators.required, Validators.minLength(8), Validators.maxLength(10) ]],
+          name: ['', [Validators.required]],
+          lastname:[''],
+          phone: [''],
+          cellphone: ['',[ Validators.minLength(10), Validators.maxLength(10) ]],
+          email: ['',[ Validators.email ]],
+          website: [''],
+          address: ['']
+        });  
+
+        this.formPerson.get('document').valueChanges.subscribe(val => {
+          console.log(val)
+          console.log(this.documentField.errors);
+        });
+      }else{
+        this.formPerson = this.formBuilder.group({     
+          name: ['', [Validators.required]],
+          lastname:[''],
+          phone: [''],
+          cellphone: ['',[ Validators.minLength(10), Validators.maxLength(10) ]],
+          email: ['',[ Validators.email ]],
+          website: [''],
+          address: ['']
+        });  
+      }
+    } catch (error) {
+      console.warn('No se ha detectado una consiguración para el componente de persona');
+    }
+
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.buildPersonForm(this.configComponent);
     for (let change in changes) {
       try {
-       //console.log(changes);
+        console.log(changes);
+        if (change == "configRenderComponent") {
+          this.configComponent = this.configRenderComponent;
+          this.renderComponent();
+        }
+
+        if (change == 'configComponent') {
+          this.buildPersonForm(this.configComponent);
+        }
+
         if (change == "countContact") {
           this.cleanFormData();
           this.personToUpdate = this.personService.getPersonToUpdate();
-          if(this.personToUpdate != null){
+          if (this.personToUpdate != null) {
             this.setDataInForm(this.personToUpdate);
-          } else{
+          } else {
             this.cleanFormData();
             this.oCity = null;
-          }         
-        }        
+          }
+        }
+
       } catch (err) {
         console.error(err);
         continue;
       }
     }
   }
+
 
   ngOnInit(): void {
     this.initComponents();
@@ -88,7 +131,7 @@ export class PersonComponent implements OnInit, OnChanges {
       console.log("Existe algo en memoria");
       console.log(this.personToUpdate);
       this.setDataInForm(this.personToUpdate);
-    }
+    }    
   }
 
 
@@ -98,6 +141,8 @@ export class PersonComponent implements OnInit, OnChanges {
     let containerPhone = document.querySelector("#container__phone");
     let containerEmail = document.querySelector("#container__email");
     let containerAddress = document.querySelector("#container__address");
+
+    console.log(this.configComponent);
 
     if (!this.configComponent.kindOfDocumentIsVisible || !this.configComponent.documentIsVisible) {
       containerDocument.classList.remove("row__container");
@@ -114,9 +159,14 @@ export class PersonComponent implements OnInit, OnChanges {
       containerPhone.classList.add("row__container_single");
     }
 
-    if (!this.configComponent.emailIsVisible || !this.configComponent.websiteIsVisible) {
-      containerEmail.classList.remove("row__container");
-      containerEmail.classList.add("row__container_single");
+
+    if (this.configComponent.websiteIsVisible && this.configComponent.emailIsVisible) {
+       console.warn("Validación de visibilidad de container Email");
+       console.warn(` email: ${this.configComponent.emailIsVisible}  website: ${this.configComponent.websiteIsVisible }`)
+       containerEmail.classList.remove("row__container_single" );
+       containerEmail.classList.add("row__container");
+
+       console.log(containerEmail);
     }
 
     if (!this.configComponent.addressIsVisible || !this.configComponent.jobTitleIsVisible) {
@@ -125,16 +175,8 @@ export class PersonComponent implements OnInit, OnChanges {
     }
   }
 
-  setDataInForm(pPerson: Person) {
-    console.warn(pPerson);    
-    this.formPerson.controls.txtDocument.setValue(pPerson.document);        
-    this.formPerson.controls.txtName.setValue(pPerson.name);
-    this.formPerson.controls.txtLastName.setValue(pPerson.lastname);
-    this.formPerson.controls.txtPhone.setValue(pPerson.phone);
-    this.formPerson.controls.txtCellPhone.setValue(pPerson.cellphone);
-    this.formPerson.controls.txtEmail.setValue(pPerson.email);
-    this.formPerson.controls.txtWebsite.setValue(pPerson.website);
-    this.formPerson.controls.txtAddress.setValue(pPerson.address);
+  setDataInForm(pPerson: Person) {       
+    this.formPerson.patchValue(pPerson);
     if(pPerson.city != null){
       this.oCity = pPerson.city;
     }else{
@@ -145,61 +187,23 @@ export class PersonComponent implements OnInit, OnChanges {
   }
 
   cleanFormData() {
-    this.formPerson.controls.txtDocument.setValue("");
-    this.formPerson.controls.txtName.setValue("");
-    this.formPerson.controls.txtLastName.setValue("");
-    this.formPerson.controls.txtPhone.setValue("");
-    this.formPerson.controls.txtCellPhone.setValue("");
-    this.formPerson.controls.txtEmail.setValue("");
-    this.formPerson.controls.txtWebsite.setValue("");
-    this.formPerson.controls.txtAddress.setValue("");
+    this.formPerson.reset();  
     this.cityService.setSelectedCity(null);
     this.oJobTitleSelected = new JobTitle();
     this.oJobTitleSelected.id = 0;
     this.oJobTitleSelected.description = '';
   }
 
-  setDataPerson() {
-    this.formHasError = false;
-    this.error = "";
+  setDataPerson(event:any) {
+    event.preventDefault();
 
-    let objPerson = new Person();
+    let objPerson: Person;
 
-    if(this.personToUpdate != null){
+    objPerson = this.formPerson.value;
+
+     if(this.personToUpdate != null){
       objPerson.id = this.personToUpdate.id;
       console.warn("Detecta información de cliente para actualizar");
-    }
-
-    if (this.configComponent.documentIsVisible) {
-      objPerson.document = this.formPerson.controls.txtDocument.value;
-    }
-
-    if (this.configComponent.nameIsVisible) {
-      objPerson.name = this.formPerson.controls.txtName.value;
-    }
-
-    if (this.configComponent.lastNameIsVisible) {
-      objPerson.lastname = this.formPerson.controls.txtLastName.value;
-    }
-
-    if (this.configComponent.phoneIsVisible) {
-      objPerson.phone = this.formPerson.controls.txtPhone.value;
-    }
-
-    if (this.configComponent.cellphoneIsVisible) {
-      objPerson.cellphone = this.formPerson.controls.txtCellPhone.value;
-    }
-
-    if (this.configComponent.emailIsVisible) {
-      objPerson.email = this.formPerson.controls.txtEmail.value;
-    }
-
-    if (this.configComponent.websiteIsVisible) {
-      objPerson.website = this.formPerson.controls.txtWebsite.value;
-    }
-
-    if (this.configComponent.addressIsVisible) {
-      objPerson.address = this.formPerson.controls.txtAddress.value;
     }
 
     if (this.configComponent.cityIsVisible) {
@@ -228,12 +232,32 @@ export class PersonComponent implements OnInit, OnChanges {
     this.personWasCanceled.emit(true);
 
   }
-  searchPerson(value: any) {
 
+  get documentField(){
+    return this.formPerson.get('document');
   }
 
-  pasteEvent(event, data) {
-
+  get nameField(){
+    return this.formPerson.get('name');
   }
 
+  get lastnameField(){
+    return this.formPerson.get('lastname');
+  }
+
+  get phoneField(){
+    return this.formPerson.get('phone');
+  }
+
+  get cellphoneField(){
+    return this.formPerson.get('cellphone');
+  }
+
+  get emailField(){
+    return this.formPerson.get('email');
+  }
+
+  validateTyping(event:any, type:string){
+    InputValidator.validateTyping(event,type);
+  }
 }

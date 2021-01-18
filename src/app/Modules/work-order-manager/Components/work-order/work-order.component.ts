@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service';
 import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.service';
 import { ContractService } from 'src/app/Modules/contract/Services/Contract/contract.service';
@@ -22,6 +22,8 @@ import { Vehicle } from 'src/app/Models/Vehicle';
 import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service';
 import { TransactionObservation } from 'src/app/Models/TransactionObservation';
 import { QuotaService } from '../../../quota-management/Services/Quota/quota.service';
+import { SessionUser } from 'src/app/Models/SessionUser';
+import { DealerService } from 'src/app/Modules/dealer/Services/Dealer/dealer.service';
 
 
 
@@ -30,7 +32,7 @@ import { QuotaService } from '../../../quota-management/Services/Quota/quota.ser
   templateUrl: './work-order.component.html',
   styleUrls: ['./work-order.component.scss', '../../../../../assets/styles/checkbox.scss']
 })
-export class WorkOrderComponent implements OnInit {
+export class WorkOrderComponent implements OnInit, OnChanges {
   oCountChanges:number;
   frmWorkOrder: FormGroup;
   dealer: Dealer;
@@ -59,7 +61,8 @@ export class WorkOrderComponent implements OnInit {
     private maintenanceItemService :MaintenanceItemService ,
     private movementService:MovementService,
     private transactionService: TransactionService,
-    private quotaService:QuotaService
+    private quotaService:QuotaService,
+    private dealerService:DealerService
   ) { 
     this.frmWorkOrder = new FormGroup({
       txtYear: new FormControl(''),
@@ -77,21 +80,31 @@ export class WorkOrderComponent implements OnInit {
       txtInTransitQuota: new FormControl('')
     });
 
-    this.dealer = new Dealer();
-    this.dealer.id = 1;
-    this.dealer.document = "123456789";
-    this.dealer.name ="Autoniza";
+   
+   
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.getDealer();
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
+    this.getDealer();
     this.initComponents();
+  }
+
+  getDealer(){
+    let userSession :SessionUser = JSON.parse(sessionStorage.getItem('sessionUser'));
+    this.dealerService.getDealerById(userSession.company.id)
+    .then( dealer => {
+      this.dealer = dealer;
+      this.frmWorkOrder.controls.txtDealer.setValue(this.dealer.name.toUpperCase());
+    });    
   }
 
   initComponents(){
     this.oCountChanges = 0;
     this.isAwaiting = false;
-    this.sharedFunctions = new SharedFunction();
-    this.frmWorkOrder.controls.txtDealer.setValue(this.dealer.name.toUpperCase());
+    this.sharedFunctions = new SharedFunction();   
     this.getLsMovements();
   }
 

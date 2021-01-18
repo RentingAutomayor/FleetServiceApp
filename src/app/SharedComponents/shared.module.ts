@@ -1,6 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 import { BranchComponent } from './branch/branch.component';
@@ -37,7 +37,6 @@ import { VehicleTypeComponent } from './vehicle-type/vehicle-type.component';
   ],
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule
   ],
@@ -55,7 +54,8 @@ import { VehicleTypeComponent } from './vehicle-type/vehicle-type.component';
     PersonComponent,
     VehicleBrandComponent,
     VehicleModelComponent,
-    VehicleTypeComponent
+    VehicleTypeComponent,
+    NgxPaginationModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

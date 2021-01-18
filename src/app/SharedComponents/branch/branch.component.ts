@@ -4,7 +4,7 @@ import { City } from 'src/app/Models/City';
 import { Client } from 'src/app/Models/Client';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { Person } from 'src/app/Models/Person';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { BranchService } from '../Services/Branch/branch.service';
 import { ClientService } from '../../Modules/client/Services/Client/client.service';
 import { PersonService } from '../Services/Person/person.service';
@@ -37,13 +37,17 @@ export class BranchComponent implements OnInit, OnChanges {
   oCountBranch: number;
   oCountChangesCity:number;
 
+
   constructor(
     private branchService: BranchService,
     private clientService: ClientService,
     private personService: PersonService,
     private cityService: CityService,
     private dealerService: DealerService
-  ) { }
+  ) { 
+
+    
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {

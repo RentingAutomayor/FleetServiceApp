@@ -15,6 +15,8 @@ import { DashboardClientComponent } from './Modules/dashboard-client/Components/
 import { LoginComponent } from './Modules/Login/Components/login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 
+import { ClientGuardianGuard } from 'src/app/Guardians/client-guardian/client-guardian.guard';
+
 const routes: Routes = [
   {
     path: '',
@@ -32,64 +34,36 @@ const routes: Routes = [
   },
   {
     path: 'MasterClients',
-    component: LayoutComponent,
-    children: [
-      { path: '', component: TblClientComponent },
-      { path: 'Client', component: ClientComponent },
-    ]
+    canActivate: [ClientGuardianGuard],
+    loadChildren: () =>  import('../app/Modules/client/client.module').then(m => m.ClientModule)
   },
   {
     path: 'MasterDealers',
-    component: LayoutComponent,
-    children: [
-      { path: '', component: TblDealerComponent },
-      { path: 'Dealer', component: DealerComponent },
-    ]
+    loadChildren: () => import('../app/Modules/dealer/dealer.module').then(m => m.DealerModule)
   },
   {
     path: 'ItemsAndRoutines',
-    component: LayoutComponent,
-    children: [
-      { path: '', component: ItemsAndRoutinesComponent },
-    ]
-  },
-  {
-    path: 'MasterContracts',
-    component: LayoutComponent,
-    children: [
-      { path: '', component: TblContractComponent },
-      { path: 'Contract', component: ContractComponent },
-    ]
+    loadChildren: () => import('../app/Modules/items-and-routines/items-and-routines.module').then(m => m.ItemsAndRoutinesModule)   
   },
   {
     path: 'MasterMovements',
-    component: LayoutComponent,
-    children: [
-      { path: '', component: TblMovementsComponent },
-      { path: 'Movement', component: MovementComponent },
-    ]
+    loadChildren: () => import('../app/Modules/movement/movement.module').then(m => m.MovementModule)   
   },
+  {
+    path: 'MasterContracts',
+    loadChildren: () => import('../app/Modules/contract/contract.module').then(m => m.ContractModule)    
+  }, 
   {
     path: 'QuotaManagement',
-    component: LayoutComponent,
-    children: [
-      { path: '', component: QuotaManagementComponent },
-    ]
+    loadChildren: () => import('../app/Modules/quota-management/quota-management.module').then(m => m.QuotaManagementModule)  
   },
-
   {
     path: 'WorkOrderManagement',
-    component: LayoutComponent,
-    children: [
-      { path: '', component: WorkOrderManagerComponent },
-    ]
+    loadChildren: ()=> import('../app/Modules/work-order-manager/work-order-manager.module').then(m=> m.WorkOrderManagerModule)   
   },
   {
     path: 'DashboardClient',
-    component: LayoutComponent,
-    children: [
-      { path: '', component: DashboardClientComponent },
-    ]
+    loadChildren: () => import('../app/Modules/dashboard-client/dashboard-client.module').then(m => m.DashboardClientModule)   
   },
 ];
 

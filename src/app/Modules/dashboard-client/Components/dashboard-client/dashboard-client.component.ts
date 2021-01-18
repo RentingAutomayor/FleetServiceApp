@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Client } from 'src/app/Models/Client';
 import { Movement } from 'src/app/Models/Movement';
@@ -8,7 +8,7 @@ import { TransactionService } from '../../../../SharedComponents/Services/Transa
 import { MovementService } from '../../../movement/Services/Movement/movement.service';
 import { TransactionDetail } from 'src/app/Models/transactionDetail';
 import { TransactionObservation } from 'src/app/Models/TransactionObservation';
-import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
+import { SessionUser } from 'src/app/Models/SessionUser';
 
 @Component({
   selector: 'app-dashboard-client',
@@ -26,6 +26,8 @@ export class DashboardClientComponent implements OnInit {
   lsMovements: Movement[];
   APROBACION_ORDEN_DE_TRABAJO = 5;
   CANCELACION_ORDEN_DE_TRABAJO = 6;
+
+  
 
   constructor(
     private transactionService: TransactionService,
@@ -49,12 +51,16 @@ export class DashboardClientComponent implements OnInit {
 
     //TODO CHANGE THIS FOR THE CLIENT LOGGED
     this.client = new Client();
-    this.client.id = 3;
-    this.client.name = "ruq";
+    this.client.id = this.getClientId();   
 
     this.sharedFunctions = new SharedFunction();
     this.getMovementList();
     this.getTransactionsToApprove(this.client.id);
+  }
+
+  getClientId():number{
+    let userSession :SessionUser = JSON.parse(sessionStorage.getItem('sessionUser'));
+    return userSession.company.id;
   }
 
   async getTransactionsToApprove(client_id: number){

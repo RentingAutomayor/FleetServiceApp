@@ -6,7 +6,7 @@ import { ContactService } from '../Services/Contact/contact.service';
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service';
 import { Person } from 'src/app/Models/Person';
 import { Contact } from 'src/app/Models/Contact';
-import { ResponseApi } from 'src/app/Models/ResponseAPI';
+import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { JobTitle } from 'src/app/Models/JobTitle';
 import { JobTitleService } from '../Services/JobTitle/job-title.service';
 import { Dealer } from 'src/app/Models/Dealer';
@@ -160,6 +160,7 @@ export class ContactComponent implements OnInit, OnChanges {
     this.oConfigPersonComp.phoneIsVisible = true;
     this.oConfigPersonComp.cellphoneIsVisible = true;
     this.oConfigPersonComp.emailIsVisible = true;
+    this.oConfigPersonComp.websiteIsVisible = false;
     this.oConfigPersonComp.addressIsVisible = true;
     this.oConfigPersonComp.jobTitleIsVisible = true;
 

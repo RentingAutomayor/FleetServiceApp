@@ -1,8 +1,8 @@
-<h2 id="titleComponent"></h2>
+<h3 id="titleComponent"></h3>
 
-<button class="btn-add btn-info" id="btnAddContact" (click)="insertContact()"><i class="fas fa-plus"></i></button>   
-
-<div class="container__infoError" id="cont_error_add_contact">    
+<button class="btn-add btn-info" id="btnAddContact" (click)="insertContact()"><i class="fas fa-plus"></i></button>
+<!--This is a message when there isn't a client-->
+<div class="container__infoError" id="cont_error_add_contact">
     <span>{{ getErrorDescription() }}</span>
 </div>
 
@@ -19,13 +19,13 @@
         <th>Acciones</th>
     </thead>
     <tbody>
-        <tr *ngFor="let i = index ;let contact of lsContacts | paginate: { itemsPerPage: 5, currentPage: p }" >
+        <tr *ngFor="let i = index ;let contact of lsContacts | paginate: { itemsPerPage: 5, currentPage: p }">
             <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
             <td>{{ contact.name | titlecase }}</td>
             <td>{{ contact.lastname | titlecase }}</td>
             <td class="col-mobile-hide">{{ contact.phone }}</td>
             <td class="col-mobile-hide">{{ contact.cellphone }}</td>
-            <td class="col-mobile-hide">{{ contact.email  }}</td>
+            <td class="col-mobile-hide">{{ contact.email }}</td>
             <td class="col-mobile-hide">{{ contact.address }}</td>
             <td class="col-mobile-hide">{{ validateJobTitle(contact.jobTitle) | titlecase }}</td>
             <td>
@@ -34,7 +34,7 @@
                 <i class="fas fa-trash-alt text-danger" (click)="deleteContact(contact)" title="Eliminar"></i>
             </td>
         </tr>
-    </tbody>    
+    </tbody>
 </table>
 <div class="paginationContainer">
     <pagination-controls (pageChange)="p = $event"></pagination-controls>
@@ -43,13 +43,14 @@
 <div id="container__formContact">
     <div class="overlay">
         <div class="card">
+            <div class="card-header" id="container__header">
+                <h3 class="card-title">Contacto</h3>
+                <a (click)="comeBackToTable()" class="buttonClose"><i class="fas fa-times"></i></a>
+            </div>
             <div class="card-body">
-                <app-person 
-                [configComponent]="oConfigPersonComp"  
-                [countContact] = "oCountContact"  
-                [personToUpdate] = "oPersonToUpdate"          
-                (personWasSetted)="saveContact()"                
-                (personWasCanceled) = "comeBackToTable()" ></app-person>
+                <app-person [configComponent]="oConfigPersonComp" [countContact]="oCountContact"
+                    [personToUpdate]="oPersonToUpdate" (personWasSetted)="saveContact()"
+                    (personWasCanceled)="comeBackToTable()"></app-person>
             </div>
         </div>
     </div>
@@ -57,5 +58,3 @@
 
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>
-
-

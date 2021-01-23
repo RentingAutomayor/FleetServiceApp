@@ -2,7 +2,8 @@
     <label>Tipo</label>
     <select formControlName="cmbType" 
             class="browser-default custom-select"
-            (change)="setType($event.target)">
+            (change)="setType($event.target)"
+            (focusout)="focusoutType()">
         <option [value]="0" disabled>Seleccione ...</option>
         <option *ngFor="let typeOfItem of lsType" 
             [value]="typeOfItem.id">

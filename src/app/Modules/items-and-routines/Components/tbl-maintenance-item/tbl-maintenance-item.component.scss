@@ -4,3 +4,13 @@
 .card-body{
     width: 1000px;
 }
+
+.container__filter{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-row: 1fr ;
+}
+
+.container__filter > div{
+    padding: 0px 10px;
+}

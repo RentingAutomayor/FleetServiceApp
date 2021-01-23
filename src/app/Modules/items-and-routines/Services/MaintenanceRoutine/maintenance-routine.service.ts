@@ -39,8 +39,8 @@ export class MaintenanceRoutineService {
     return this.http.get<Frequency[]>(urGetFrequency).toPromise();
   }
 
-  async getMaintenanceRoutines(): Promise<MaintenanceRoutine[]> {
-    let urGetRoutines = `${this.URL_API}/GetMaintenanceRoutines`;
+  async getMaintenanceRoutines(vehicleModel_id:number = 0,frequency_id: number = 0): Promise<MaintenanceRoutine[]> {
+    let urGetRoutines = `${this.URL_API}/GetMaintenanceRoutines?vehicleModel_id=${vehicleModel_id}&frequency_id=${frequency_id}`;
     return this.http.get<MaintenanceRoutine[]>(urGetRoutines).toPromise();
   }
 
@@ -52,6 +52,11 @@ export class MaintenanceRoutineService {
   async getMaintenanceRoutineByModel(pModel_id:number): Promise<MaintenanceRoutine[]> {
     let urGetRoutines = `${this.URL_API}/GetMaintenanceRoutineByModelId?model_id=${pModel_id}`;
     return this.http.get<MaintenanceRoutine[]>(urGetRoutines).toPromise();
+  }
+
+  async ValidateRoutineAndFrequency(vehicleModel_id:number,frequency_id:number): Promise<ResponseApi>{
+    let urlValidateRoutine = `${this.URL_API}/ValidateRoutineAndFrequency?vehicleModel_id=${vehicleModel_id}&frequency_id=${frequency_id}`;
+    return this.http.get<ResponseApi>(urlValidateRoutine).toPromise();
   }
 
   async insert(pRoutine: MaintenanceRoutine): Promise<ResponseApi> {

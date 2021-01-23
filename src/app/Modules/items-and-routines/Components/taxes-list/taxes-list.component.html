@@ -1,0 +1,42 @@
+<div class="container__content">
+    <div>
+        <h6>¿Maneja impuestos?</h6>
+    </div>
+    <div class="container__handleTax">
+        <div class="container__input">
+            <label class="container__checkbox" for="chkYes">
+                <input type="checkbox" id="chkYes" (click)="activateTaxes(true)">
+                <span class="checkmark"></span>
+            </label>
+            <label for="chkYes">
+                <span class="tax-description">Si</span>
+            </label>
+        </div>
+        <div class="container__input">
+            <label class="container__checkbox" for="chkNo">
+                <input type="checkbox" id="chkNo" (click)="activateTaxes(false)">
+                <span class="checkmark"></span>
+            </label>
+            <label for="chkNo">
+                <span class="tax-description">No</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="container__taxes">
+        <div class="row__container_tax" *ngIf="itemHandleTax">
+            <div *ngFor="let tax of lsTaxes" class="container__tax">
+                <label class="container__checkbox" [for]="getTaxContainerId(tax.id)">
+                    <input type="checkbox" 
+                        [id]="getTaxContainerId(tax.id)"
+                        (click)="AddOrRemoveTaxToList($event,tax)">
+                    <span class="checkmark"></span>
+                </label>
+                <label [for]="getTaxContainerId(tax.id)">
+                    <span class="tax-description">{{ tax.name | uppercase }}</span>
+                </label>
+
+            </div>
+        </div>
+    </div>
+</div>

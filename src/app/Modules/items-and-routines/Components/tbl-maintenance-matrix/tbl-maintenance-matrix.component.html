@@ -55,7 +55,7 @@
                 <td *ngFor="let frequency of lsFrequency" 
                     [class]="getClass(frequency.shortName)">
                     <label class="container__checkbox">
-                        <input type="checkbox" [id]="getChkId(item.id,frequency.id)">
+                        <input type="checkbox" [id]="getChkId(item.id,frequency.id)" disabled>
                         <span class="checkmark"></span>                      
                     </label>                    
                 </td>

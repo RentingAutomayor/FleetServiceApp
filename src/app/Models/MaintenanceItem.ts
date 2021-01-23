@@ -1,5 +1,7 @@
 import { Category } from './Category';
+import { Dealer } from './Dealer';
 import { PresentationUnit } from './PresentationUnit';
+import { Tax } from './Tax';
 import { TypeOfMaintenanceItem } from './TypeOfMaintenanceItem';
 import { VehicleModel } from './VehicleModel';
 import { VehicleType } from './VehicleType';
@@ -17,5 +19,8 @@ export class MaintenanceItem {
     public referencePrice: number;
     public amount:number;
     public state: boolean;
+    public handleTax: boolean;
+    public lsTaxes: Tax[];
+    public dealer: Dealer;
     public registrationDate: Date;
 }

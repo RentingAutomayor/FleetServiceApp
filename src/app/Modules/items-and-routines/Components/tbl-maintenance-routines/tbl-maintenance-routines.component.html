@@ -1,4 +1,17 @@
 <div id="container__table">
+    <h2>Rutinas de mantenimiento</h2>  
+    <div class="container__filter">
+        <div>
+            <app-vehicle-model
+                (VehicleModelWasSelected)="filterByVehicleModel($event)">
+            </app-vehicle-model>
+        </div>
+        <div>
+            <app-frequency
+                (frequencyWasSelected)="filterByFrequency($event)">
+            </app-frequency>
+        </div>        
+    </div>  
     <button class="btn-add btn-info" (click)="insertRoutine()"><i class="fas fa-plus"></i></button>
     <table class="table table-striped">
         <thead>
@@ -6,7 +19,7 @@
             <th>Nombre</th>
             <th>Línea</th>
             <th>Frecuencia</th>
-            <th>Precio de referencia</th>
+            <th>Precio de referencia con impuestos</th>
             <th>Acciones</th>
         </thead>
         <tbody>
@@ -16,7 +29,7 @@
                 <td>{{ routine.name }}</td>
                 <td>{{ routine.vehicleModel.shortName }}</td>
                 <td>{{ routine.frequency.name }}</td>
-                <td>{{ routine.referencePrice }}</td>
+                <td>{{ routine.referencePrice | currency }}</td>
                 <td>
                     <i class="fas fa-info-circle text-info" title="Más información"></i>
                     <i class="fas fa-edit text-warning" (click)="updateRoutine(routine)" title="Modificar"></i>

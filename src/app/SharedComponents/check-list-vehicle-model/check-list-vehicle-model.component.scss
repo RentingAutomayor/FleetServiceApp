@@ -31,3 +31,9 @@ label{
 .container__model input{  
     cursor: pointer;
 }
+
+.container__checkbox input:disabled ~ .checkmark{
+    border: solid 1px #686d76;
+    background-color: #ccc !important;
+    border-radius: 5px;
+}

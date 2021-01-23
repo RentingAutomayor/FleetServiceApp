@@ -18,6 +18,7 @@ import { VehicleBrandComponent } from './vehicle-brand/vehicle-brand.component';
 import { VehicleModelComponent } from './vehicle-model/vehicle-model.component';
 import { VehicleTypeComponent } from './vehicle-type/vehicle-type.component';
 
+
 @NgModule({
   declarations: [
     BranchComponent,
@@ -57,6 +58,7 @@ import { VehicleTypeComponent } from './vehicle-type/vehicle-type.component';
     VehicleTypeComponent,
     NgxPaginationModule
   ],
+  
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],

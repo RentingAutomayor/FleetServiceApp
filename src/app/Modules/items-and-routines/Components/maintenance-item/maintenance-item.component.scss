@@ -26,7 +26,19 @@ button{
     margin-left: 10px;
 }
 
+#container__header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
+label{
+    cursor: pointer;
+}
+
+.container__buttonClose{
+    margin-top: 10px ;
+}
 
 @media only screen and (max-width: 600px){
     form{
@@ -49,4 +61,81 @@ button{
     button{
         width: 150px;
     }
+}
+
+.tax-description{
+    margin-left: 25px;
+}
+
+.container_handle_taxes{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.container__check{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 60px;
+}
+
+
+.row__container_tax{
+    display: flex;
+    flex-direction: row; 
+    padding-left: 10px;
+}
+
+.container__tax{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;   
+    padding: 2px 5px;
+    margin-left: 10px;
+    width: auto;
+}
+
+.error{
+    color: red;
+    margin-top: 10px;
+}
+
+
+
+$arrow-size:10px;
+$arrow-color:#ebd4d4;
+
+%arrow {
+    &:before {
+      position: absolute;
+      content: "";
+      display:block;
+      width:0;
+      height:0;
+      left:50%;
+      margin-left: -$arrow-size;
+      margin-top:-($arrow-size*2)-10px;
+      border: $arrow-size solid transparent;
+      border-bottom: $arrow-size solid $arrow-color;
+     
+      
+    }
+  }
+
+.container__infoError{
+    background-color: $arrow-color;
+    cursor: pointer;
+    position: absolute;
+    padding: 10px 15px;
+    z-index: 50;    
+    width: 200px;
+    height: auto;
+    border-radius: 20px;
+    right: 3%;
+    margin-top: 30px;
+    -webkit-box-shadow: 10px 10px 17px -7px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 17px -7px rgba(0,0,0,0.75);
+    box-shadow: 10px 10px 17px -7px rgba(0,0,0,0.75);
+    @extend %arrow;
 }

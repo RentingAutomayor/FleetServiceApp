@@ -19,6 +19,7 @@ export class VehicleModelComponent implements OnInit, OnChanges {
   vehicleToUpdate: Vehicle;
   @Input() countChanges: number;
   @Output() vehicleModelWasSetted = new EventEmitter<boolean>();
+  @Output() VehicleModelWasSelected = new EventEmitter<VehicleModel>();
 
   constructor(
     private vehicleService: VehicleService
@@ -84,6 +85,7 @@ export class VehicleModelComponent implements OnInit, OnChanges {
     if(vehicleModel != null){
       this.vehicleService.setVehicleModelSelected(vehicleModel);
       this.vehicleModelWasSetted.emit(true);
+      this.VehicleModelWasSelected.emit(vehicleModel);
     }else{
       this.vehicleService.setVehicleModelSelected(null);
     }   

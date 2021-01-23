@@ -15,6 +15,9 @@ import { TypeOfMaintenanceItemComponent } from './Components/type-of-maintenance
 
 import { SharedModule } from 'src/app/SharedComponents/shared.module';
 import { ItemsAndRoutinesRoutingModule } from './items-and-routines-routing.module';
+import { CalculateTaxesPipe } from './pipes/calculate-taxes.pipe';
+import { CalculateTotalPricePipe } from './pipes/calculate-total-price.pipe';
+import { TaxesListComponent } from './Components/taxes-list/taxes-list.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +31,9 @@ import { ItemsAndRoutinesRoutingModule } from './items-and-routines-routing.modu
     TblMaintenanceMatrixComponent,
     TblMaintenanceRoutinesComponent,
     TypeOfMaintenanceItemComponent,
+    CalculateTaxesPipe,
+    CalculateTotalPricePipe,
+    TaxesListComponent,
   ],
   imports: [
     CommonModule,
@@ -35,6 +41,6 @@ import { ItemsAndRoutinesRoutingModule } from './items-and-routines-routing.modu
     ReactiveFormsModule,
     SharedModule,
     ItemsAndRoutinesRoutingModule 
-  ]
+  ],
 })
 export class ItemsAndRoutinesModule { }

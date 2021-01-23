@@ -1,0 +1,33 @@
+.container__content{
+    margin-left: 20px;
+}
+.container__handleTax{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.container__taxes{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    border-left: #ccc solid 1px;
+    margin-left: 20px;
+    padding-left: 10px;
+}
+
+.container__input{
+    display: flex;
+    flex-direction: row;
+    width: 70px;
+}
+
+.container__input input{
+    cursor: pointer;
+}
+
+
+.tax-description{
+    cursor: pointer;
+    margin-left: 25px;
+}

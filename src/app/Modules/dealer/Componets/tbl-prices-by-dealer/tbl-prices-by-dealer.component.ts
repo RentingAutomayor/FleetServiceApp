@@ -54,7 +54,7 @@ export class TblPricesByDealerComponent implements OnInit,OnChanges {
   async getListMaintenanceItems(){
     try {
       this.isAwaiting = true;
-      this.lsMaintenanceItems = await this.maintenanceItemService.getMaintenanceItems();
+      this.lsMaintenanceItems = await this.maintenanceItemService.getMaintenanceItems(0);
       this.isAwaiting = false;
     } catch (error) {
       console.warn(error);

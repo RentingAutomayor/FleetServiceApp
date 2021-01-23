@@ -7,6 +7,8 @@ import { ResponseApi } from '../../../../Models/ResponseApi';
 import { Category } from '../../../../Models/Category';
 import { PricesByDealer } from '../../../../Models/PricesByDealer';
 import { PricesByContract } from '../../../../Models/PricesByContract';
+import { Tax } from 'src/app/Models/Tax';
+
 
 @Injectable({
   providedIn: 'root'
@@ -65,8 +67,10 @@ export class MaintenanceItemService {
     this.itemToUpdate = pItem;
   }
 
-  async getMaintenanceItems():Promise<MaintenanceItem[]>{
-    let urlGetMaintenanceItems = `${this.URL_API}/Get`;
+
+
+  async getMaintenanceItems(dealer_id:number):Promise<MaintenanceItem[]>{
+    let urlGetMaintenanceItems = `${this.URL_API}/Get?dealer_id=${dealer_id}`;
     return this.http.get<MaintenanceItem[]>(urlGetMaintenanceItems).toPromise();
   }
 
@@ -124,6 +128,11 @@ export class MaintenanceItemService {
   async setPricesByContract(pricesByContract:PricesByContract):Promise<ResponseApi>{
     let urlSetPrices = `${this.URL_API}/SetPricesByContract`;
     return this.http.post<ResponseApi>(urlSetPrices,pricesByContract,this.HttpOptions).toPromise();
+  }
+
+  async getTaxesList():Promise<Tax[]>{
+    let urlListTaxes = `${this.URL_API}/GetTaxesList`;
+    return this.http.get<Tax[]>(urlListTaxes).toPromise();
   }
 
   async update(pItem:MaintenanceItem):Promise<ResponseApi>{

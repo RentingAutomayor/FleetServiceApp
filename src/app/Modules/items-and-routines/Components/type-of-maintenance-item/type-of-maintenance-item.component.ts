@@ -1,4 +1,4 @@
-import { Component, Input, OnInit ,OnChanges, SimpleChange, SimpleChanges} from '@angular/core';
+import { Component, Input, OnInit ,OnChanges, SimpleChange, SimpleChanges, Output, EventEmitter} from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem';
 import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service';
@@ -13,6 +13,9 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
   lsType: TypeOfMaintenanceItem[];
   lsTypeToUpdate: TypeOfMaintenanceItem;
   @Input() countChanges:number;
+  @Output() lostFocus = new EventEmitter<boolean>();
+  @Output() chageType = new EventEmitter<boolean>();
+
   constructor(
     private maintenanceItemService:MaintenanceItemService
   ) { 
@@ -51,6 +54,7 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
   setType(event:any){
     let typeOfItem = this.lsType.find(tp => tp.id == event.value);
     this.maintenanceItemService.settypeOfItem(typeOfItem);
+    this.chageType.emit(true);
   }
 
   setDataInForm(pType:TypeOfMaintenanceItem){
@@ -61,4 +65,7 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
     this.frmType.controls.cmbType.setValue(0);
   }
 
+  focusoutType(){
+    this.lostFocus.emit(true);
+  }
 }

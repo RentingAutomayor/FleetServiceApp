@@ -14,6 +14,7 @@ export class VehicleTypeComponent implements OnInit,OnChanges {
   oType: VehicleType;
   @Input() countChanges:number;
   @Output() vehicleTypeWasSetted = new EventEmitter<boolean>();
+  
 
   constructor(
     private vehicleService: VehicleService

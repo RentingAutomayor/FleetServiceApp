@@ -1,3 +1,13 @@
 #container__maintenanceRoutine{
    display: none;
 }
+
+.container__filter{
+   display: grid;
+   grid-template-columns: repeat(3,1fr);
+   grid-template-rows: 1fr;
+}
+
+.container__filter > div{
+   padding: 0px 10px;
+}

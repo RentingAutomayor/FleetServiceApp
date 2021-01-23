@@ -1,5 +1,16 @@
 <div class="container__table" id="container__table_items">
     <h2>Artículos de mantenimiento</h2>
+    <div class="container__filter">        
+        <div>
+            <app-type-of-maintenance-item (chageType)="filterItems()">
+            </app-type-of-maintenance-item>
+        </div>
+        <div>
+            <label>Nombre / Código: </label>
+            <input type="text" placeholder="Nombre" class="form-control" 
+            (input)="filterItemsByDescription($event)">
+        </div>        
+    </div>
     <button class="btn-add btn-info" (click)="insertMaintenanceItem()"><i class="fas fa-plus"></i></button>
     <table class="table table-striped">
         <thead>
@@ -8,7 +19,9 @@
             <th>Nombre</th>
             <th class="col-mobile-hide">Tipo</th>
             <th class="col-mobile-hide">Presentación</th>
-            <th class="col-mobile-hide">Precio de referencia</th>
+            <th class="col-mobile-hide">Valor sin impuestos</th>
+            <th class="col-mobile-hide">Valor Impuetos</th>
+            <th class="col-mobile-hide">Valor con impuestos</th>
             <th class="col-mobile-hide">Acciones</th>
         </thead>
         <tbody>
@@ -19,6 +32,8 @@
                 <td>{{item.type.name | titlecase}}</td>
                 <td>{{item.presentationUnit.longName | titlecase}}</td>
                 <td>{{item.referencePrice | currency}}</td>
+                <td>{{ item | calculateTaxes | currency }}</td>
+                <td>{{ item | calculateTotalPrice | currency }}</td>
                 <td>
                     <i class="fas fa-info-circle text-info" title="Más información"></i>
                     <i class="fas fa-edit text-warning" (click)="updateMaintenanceItem(item)" title="Modificar"></i>
@@ -31,16 +46,12 @@
         <pagination-controls (pageChange)="pag = $event"></pagination-controls>
     </div>
 </div>
-<div id="container__formMaintenanceItem">
-    <div class="card">
-        <div class="card-body">
-            <app-maintenance-item 
-                [countChanges]="oCountChanges" 
-                (maintenanceItemWasSetted)="saveMaintenanceItem()"
-                (maintenanceItemWasCanceled)="comeBackToTable()">
-            </app-maintenance-item>
-        </div>
-    </div>
+<div id="container__formMaintenanceItem">   
+    <app-maintenance-item 
+        [countChanges]="oCountChanges" 
+        (maintenanceItemWasSetted)="saveMaintenanceItem()"
+        (maintenanceItemWasCanceled)="comeBackToTable()">
+    </app-maintenance-item>    
 </div>
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

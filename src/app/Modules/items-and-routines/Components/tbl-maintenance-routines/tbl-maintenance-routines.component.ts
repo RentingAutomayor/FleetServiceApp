@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Frequency } from 'src/app/Models/Frequency';
 import { MaintenanceRoutine } from 'src/app/Models/MaintenanceRoutine';
 import { ResponseApi } from 'src/app/Models/ResponseApi';
+import { VehicleModel } from 'src/app/Models/VehicleModel';
 import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/maintenance-routine.service';
 
 @Component({
@@ -16,9 +18,15 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   containerFromRoutine: HTMLDivElement;
   isToUpdate: boolean;
   oCountChanges:number;
+  frequency_id: number;
+  vehicleModel_id: number;
+
   constructor(
     private maintenanceRoutineService: MaintenanceRoutineService
-  ) { }
+  ) { 
+    this.frequency_id = 0;
+    this.vehicleModel_id = 0;
+  }
 
   ngOnInit(): void {
     this.initComponents();
@@ -112,7 +120,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   async deleteRoutine(pRoutine: MaintenanceRoutine) {
     try {
       if (confirm("¿Está seguro que desea eliminar esta rutina de mantenimiento?")) {
-        this.isAwaiting = true;
+        this.isAwaiting = true;      
         let rta = await this.maintenanceRoutineService.delete(pRoutine);
         this.isAwaiting = false;
         if (rta.response) {
@@ -123,6 +131,48 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     } catch (err) {
       console.error(err.error.Message);
       alert(err.error.Message);
+    }
+  }
+
+  async filterByVehicleModel(vehicleModel:VehicleModel){
+    try{
+      this.isAwaiting = true;
+
+      if(vehicleModel != null){
+        this.vehicleModel_id = vehicleModel.id;
+      }else{
+        this.vehicleModel_id = 0;
+      }
+     
+      this.maintenanceRoutineService.getMaintenanceRoutines( this.vehicleModel_id )
+      .then( lsMaintenanceRoutines =>{
+        this.lsMaintenanceRoutines = lsMaintenanceRoutines
+        this.isAwaiting = false;
+      })
+      
+    }catch(error){
+      console.warn(error);
+    }
+    
+  }
+
+  async filterByFrequency(frequency: Frequency){
+    try {
+      this.isAwaiting = true;
+
+      if(frequency != null){
+        this.frequency_id = frequency.id;
+      }else{
+        this.frequency_id = 0;
+      }
+     
+      this.maintenanceRoutineService.getMaintenanceRoutines(0 , this.frequency_id)
+      .then( lsMaintenanceRoutines =>{
+        this.lsMaintenanceRoutines = lsMaintenanceRoutines
+        this.isAwaiting = false;
+      })
+    } catch (error) {
+      console.warn(error);
     }
   }
 }

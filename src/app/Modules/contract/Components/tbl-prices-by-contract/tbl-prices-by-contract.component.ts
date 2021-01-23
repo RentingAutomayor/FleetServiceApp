@@ -30,6 +30,8 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     private dealerService: DealerService,
     private contractService: ContractService
   ) { }
+
+  
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
       if(change == "getPricesOfContract"){
@@ -73,7 +75,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
   async getListMaintenanceItems() {
     try {
       this.isAwaiting = true;
-      this.lsMaintenanceItems = await this.maintenanceItemService.getMaintenanceItems();
+      this.lsMaintenanceItems = await this.maintenanceItemService.getMaintenanceItems(0);
       this.isAwaiting = false;
     } catch (error) {
       console.warn(error);

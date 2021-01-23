@@ -15,7 +15,8 @@
         [id]="getContainerModelId(vehicleModel.id)"
         >
         <label class="container__checkbox">
-            <input type="checkbox" [id]="getIdChk(vehicleModel.id)"
+            <input type="checkbox" 
+                [id]="getIdChk(vehicleModel.id)"
                 (click)="setVehicleModel($event.target,vehicleModel)">
             <span class="checkmark"></span>
         </label>

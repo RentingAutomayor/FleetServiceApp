@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FormGroup,FormControl } from '@angular/forms';
 import { Frequency } from 'src/app/Models/Frequency';
 import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/maintenance-routine.service';
@@ -14,6 +14,7 @@ export class FrequencyComponent implements OnInit, OnChanges {
   lsFrequency:Frequency[];
   @Input() countChanges: number;
   frequencytoUpdate:Frequency;
+  @Output() frequencyWasSelected = new EventEmitter<Frequency>();
 
   constructor(
     private maintenanceRoutineService: MaintenanceRoutineService
@@ -47,6 +48,7 @@ export class FrequencyComponent implements OnInit, OnChanges {
   setFrequency(event:any){
     let oFrequency = this.lsFrequency.find(fq => fq.id == event.value) 
     this.maintenanceRoutineService.setFrecuencySelected(oFrequency);
+    this.frequencyWasSelected.emit(oFrequency);
   }
 
   setDataInForm(pFrequency:Frequency){

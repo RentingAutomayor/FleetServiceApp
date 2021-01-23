@@ -53,9 +53,10 @@
      display: block;
  }
 
+
  .container__checkbox input:disabled ~ .checkmark{
     border: solid 1px #686d76;
-    background-color: #ccc;
+    //background-color: #ccc;
     border-radius: 5px;
 }
 

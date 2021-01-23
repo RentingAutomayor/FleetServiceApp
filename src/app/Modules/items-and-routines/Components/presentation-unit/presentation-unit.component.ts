@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { PresentationUnit } from 'src/app/Models/PresentationUnit';
 import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service';
@@ -13,6 +13,8 @@ export class PresentationUnitComponent implements OnInit,OnChanges {
   frmPresentationUnit: FormGroup;
   presentationUnitToUpdate: PresentationUnit
   @Input() countChanges: number;
+  @Output() lostFocus = new EventEmitter<boolean>();
+
   constructor(
     private maintenanceItemService: MaintenanceItemService
   ) { 
@@ -61,6 +63,10 @@ export class PresentationUnitComponent implements OnInit,OnChanges {
 
   setDataInForm(pPresentation:PresentationUnit){
     this.frmPresentationUnit.controls.cmbPresentationUnit.setValue(pPresentation.id);
+  }
+
+  presentationUnitFocusOut(){
+    this.lostFocus.emit(true);
   }
 
 

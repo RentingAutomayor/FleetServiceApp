@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Client } from 'src/app/Models/Client';
 import { Contract } from 'src/app/Models/Contract';
 import { ContractState } from 'src/app/Models/ContractState';
@@ -13,13 +13,18 @@ import { ContractService } from '../../Services/Contract/contract.service';
 import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { Router } from '@angular/router';
 import { VehicleType } from 'src/app/Models/VehicleType';
+import { SecurityValidators } from 'src/app/Models/SecurityValidators';
+import { Company } from 'src/app/Models/Company';
+import { CompanyType } from 'src/app/Models/CompanyType';
+import { InputValidator } from 'src/app/Utils/InputValidator';
+
 
 @Component({
   selector: 'app-contract',
   templateUrl: './contract.component.html',
   styleUrls: ['./contract.component.scss']
 })
-export class ContractComponent implements OnInit {
+export class ContractComponent implements OnInit , OnChanges{
   frmContract: FormGroup;
   @Input() countChanges: number;
   @Output() contractWasSetted = new EventEmitter<boolean>();
@@ -32,6 +37,8 @@ export class ContractComponent implements OnInit {
   dtEndingDate:Date;
   isToUpdate:boolean;
   oGetPricesOfContract:number;
+  disableDealerField: boolean;
+  company: Company;
   
 
   isAwaiting:boolean;
@@ -41,28 +48,65 @@ export class ContractComponent implements OnInit {
     private dealerService: DealerService,
     private datePipe: DatePipe,
     private contractService:ContractService,
-    private router:Router
+    private router:Router,
+    private formBuilder:FormBuilder
   ) {
     let now = new Date();
     let monthfuture = new Date(now.getFullYear(),now.getMonth() + 1,now.getDay());
     this.dtStartingDate = now;
     this.dtEndingDate = now;
-    this.frmContract = new FormGroup({
-      txtContractName: new FormControl(''),
-      txtDuration: new FormControl(''),
-      txtStartingDate: new FormControl(now,[]),
-      txtEndingDate: new FormControl(monthfuture,[]),
-      txtDiscountValue: new FormControl(''),
-      txtObservation: new FormControl(''),
-      txtAmountVehicles : new FormControl('')
-    });
+    this.buildContractForm();
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.validateCompanyLogged();
   }
 
   ngOnInit(): void {
     this.initComponents();
   }
 
+  buildContractForm(){
+    this.frmContract = this.formBuilder.group({
+      contractName: [''],
+      duration: ['',[Validators.required]],
+      startingDate: ['',[Validators.required]],
+      endingDate: ['',[Validators.required]],
+      discountValue: ['', [Validators.required]],
+      observation: [''],
+      amountVehicles:['',[Validators.required]]
+    });
+  }
+
+  get contractNameField(){
+    return this.frmContract.get('contractName');
+  }
+
+  get durationField(){
+    return this.frmContract.get('duration');
+  }
+
+  get startingDateField(){
+    return this.frmContract.get('startingDate');
+  }
+
+  get endingDateField(){
+    return this.frmContract.get('endingDate');
+  }
+
+  get discountValueField(){
+    return this.frmContract.get('discountValue');
+  }
+
+  get observationField(){
+    return this.frmContract.get('observation');
+  }
+
+  get amountVehiclesField(){
+    return this.frmContract.get('amountVehicles');
+  }
+
   async initComponents() {
+    this.validateCompanyLogged();
     this.oChangeDealer = 0;
     this.oGetPricesOfContract = 0;
     this.isToUpdate = false;
@@ -71,6 +115,29 @@ export class ContractComponent implements OnInit {
     this.countChanges = 0;
     this.hideContainerTabs();
     this.validateContractToUpdate();
+  }
+
+  async validateCompanyLogged(){
+    try {
+      this.company = SecurityValidators.validateUserAndCompany();
+      switch (this.company.type){
+        case CompanyType.DEALER:          
+            this.disableDealerField = true;
+            this.dealerService.getDealerById(this.company.id)
+            .then( dataDealer => {
+              this.dealerService.setDealerSelected(dataDealer);
+              this.countChanges += 1 ;
+            });
+          break
+          case CompanyType.CLIENT:
+            break;
+          default:
+            this.disableDealerField = false;
+            break;
+      }
+    } catch (error) {
+      console.warn(error);
+    }
   }
 
   validateContractToUpdate(){
@@ -160,12 +227,12 @@ export class ContractComponent implements OnInit {
   }
 
   calculateEndingDate(){
-    let { txtDuration,txtStartingDate ,txtEndingDate} = this.frmContract.controls;
+    let { duration ,startingDate ,endingDate} = this.frmContract.controls;
     
     console.log("Si está reconociendo el evento");
-    console.log(txtStartingDate.value);
+    console.log(startingDate.value);
 
-    let dTmp = txtStartingDate.value;
+    let dTmp = startingDate.value;
     console.log("Sin formato",dTmp)
     let pStartingDate = null;
 
@@ -175,47 +242,34 @@ export class ContractComponent implements OnInit {
       pStartingDate = this.formatDate(dTmp.toISOString().substring(0,10));
     } catch (error) {
       console.log("Con error");
-      dTmp = `${txtStartingDate.value}`;
+      dTmp = `${startingDate.value}`;
       console.log(dTmp.substr(0,10));
       pStartingDate = this.formatDate(dTmp.substr(0,10));
     }
-      
-    //let pStartingDate = txtStartingDate.value;
     console.log("Con formato",pStartingDate);
 
     console.log("[contract-component]: ",pStartingDate);
-    let duration = txtDuration.value;
+    let durationTmp = duration.value;
     
-    let endingDate = new Date(pStartingDate.getFullYear(),(pStartingDate.getMonth() - 1),(pStartingDate.getDate()));    
-    endingDate.setMonth(endingDate.getMonth() + duration);
+    let endingDateTmp = new Date(pStartingDate.getFullYear(),(pStartingDate.getMonth() - 1),(pStartingDate.getDate()));    
+    endingDateTmp.setMonth(endingDateTmp.getMonth() + durationTmp);
    
-     let strEndDate = endingDate.toISOString().substring(0,10);
-     this.dtEndingDate = endingDate;
-     console.log(strEndDate,endingDate); 
+     let strEndDate = endingDateTmp.toISOString().substring(0,10);
+     this.dtEndingDate = endingDateTmp;
+     console.log(strEndDate,endingDateTmp); 
    
   }
 
   setDataInForm(pContract:Contract){
-    let {txtContractName,txtDuration,txtStartingDate,txtEndingDate,txtObservation,txtDiscountValue, txtAmountVehicles} = this.frmContract.controls;    txtContractName.setValue(pContract.name);
-    
-    txtDuration.setValue(pContract.duration);
-    txtStartingDate.setValue(pContract.startingDate);
-    
-    this.dtStartingDate = this.formatDate(pContract.startingDate.toString().substr(0,10));
-    txtEndingDate.setValue(pContract.endingDate);
-    this.dtEndingDate =  this.formatDate(pContract.endingDate.toString().substr(0,10));
 
-    txtObservation.setValue(pContract.observation);
-    txtDiscountValue.setValue(pContract.discountValue);
-    txtAmountVehicles.setValue(pContract.amountVehicles);
+    this.frmContract.patchValue(pContract);    
+    this.dtStartingDate = this.formatDate(pContract.startingDate.toString().substr(0,10));
+    this.dtEndingDate =  this.formatDate(pContract.endingDate.toString().substr(0,10));
     let lsVehicleType = this.getVehicletypesByContract(pContract.lsVehicleModels);
     this.clientService.setClientSelected(pContract.client);
     this.dealerService.setDealerSelected(pContract.dealer);
-
     this.contractService.setContractStateSelected(pContract.contractState);
     this.contractService.setDiscountTypeSelected(pContract.discountType);
-
-
     this.vehicleService.setListVehicleTypeSelected(lsVehicleType);
     this.vehicleService.setListVehicleModelsSelected(pContract.lsVehicleModels);
     this.vehicleService.setListVehiclesSelected(pContract.lsVehicles);
@@ -242,7 +296,8 @@ export class ContractComponent implements OnInit {
 
 
   saveContract(){
-    let {txtContractName,txtDuration,txtStartingDate,txtEndingDate,txtObservation,txtDiscountValue, txtAmountVehicles} = this.frmContract.controls;
+
+    this.contract = this.frmContract.value;
     
     if(this.contractToUpdate != null && this.contractToUpdate != undefined){
       this.contract.id = this.contractToUpdate.id;
@@ -256,21 +311,13 @@ export class ContractComponent implements OnInit {
     this.contract.dealer = new Dealer();
     this.contract.dealer = this.dealerService.getDealerSelected();
 
-    this.contract.name = txtContractName.value;
-    this.contract.amountVehicles = txtAmountVehicles.value;
-    this.contract.duration = txtDuration.value;
-    this.contract.startingDate = txtStartingDate.value;
-    this.contract.endingDate = txtEndingDate.value;
-    this.contract.discountValue = txtDiscountValue.value;
-    this.contract.observation = txtObservation.value;
-
     this.contract.contractState = this.contractService.getContractStateSelected();
     this.contract.discountType = this.contractService.getDiscountTypeSelected();
     this.contract.lsVehicleModels = this.vehicleService.getListVehicleModelsSelected();
     this.contract.lsVehicles = this.vehicleService.getListVehiclesSelected();
 
     console.warn("[Contrato a guardar]");
-    //console.log(this.contract);
+    console.log(this.contract);
 
     this.saveData(this.contract); 
     
@@ -288,10 +335,9 @@ export class ContractComponent implements OnInit {
         this.contractService.setContract(lastContract);
       }
 
-      
       this.isAwaiting = false;
       if (rta.response){
-        //alert(rta.message);
+        alert(rta.message);
         this.oGetPricesOfContract += 1; 
         //this.router.navigate(['/MasterContracts']);
       }
@@ -316,5 +362,9 @@ export class ContractComponent implements OnInit {
     let dateToReturn = new Date(year,month,day);
     console.log(dateToReturn);
     return dateToReturn;
+  }
+
+  validateNumbers(event:any){
+    return InputValidator.validateTyping(event,'numbers');
   }
 }

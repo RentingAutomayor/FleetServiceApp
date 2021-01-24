@@ -3,6 +3,9 @@ import { Contract } from 'src/app/Models/Contract';
 import { ContractService } from '../../Services/Contract/contract.service';
 import { Router } from '@angular/router';
 import { ResponseApi } from 'src/app/Models/ResponseApi';
+import { SecurityValidators } from 'src/app/Models/SecurityValidators';
+import { Company } from 'src/app/Models/Company';
+import { CompanyType } from 'src/app/Models/CompanyType';
 
 
 @Component({
@@ -15,6 +18,7 @@ export class TblContractComponent implements OnInit {
   p:number = 1;
   lsContracts: Contract[];
   isToUpdate:boolean;
+  companyStorage:Company;
 
   constructor(
     private contractService:ContractService,
@@ -25,7 +29,17 @@ export class TblContractComponent implements OnInit {
     this.initComponents();
   }
 
+  validateCompany(){
+    try {
+      this.companyStorage = SecurityValidators.validateUserAndCompany();
+    } catch (error) {
+      console.warn(error);
+    }
+    
+  }
+
   async initComponents(){
+    this.validateCompany();
     this.isToUpdate = false;
     this.isAwaiting = false;
     this.getListContracts();
@@ -34,7 +48,19 @@ export class TblContractComponent implements OnInit {
   async getListContracts(){
     try{
       this.isAwaiting = true;
-      this.lsContracts = await this.contractService.getContracts();
+
+      switch(this.companyStorage.type){
+        case CompanyType.DEALER:
+          this.lsContracts = await this.contractService.getContracts(this.companyStorage.id);
+        break;
+        case CompanyType.CLIENT:
+          this.lsContracts = await this.contractService.getContracts(0,this.companyStorage.id);
+        break;
+        default:
+          this.lsContracts = await this.contractService.getContracts();
+          break;
+      }
+     
       this.isAwaiting = false;
     }catch(error){  
       console.error(error);

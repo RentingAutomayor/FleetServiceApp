@@ -77,8 +77,6 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.initComponents();
-    console.log("[routineIsValid]",this.routineIsValid);
-    console.log("[fieldName.invalid]",this.fieldName.invalid);
   }
 
   async initComponents() {

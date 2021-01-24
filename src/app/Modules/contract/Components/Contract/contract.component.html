@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <form [formGroup]="frmContract">
+    <form [formGroup]="frmContract" (ngSubmit)="saveContract()">
         <div class="tab_content tab_active" id="container__basicData">
             <div class="container__row">
                 <div class="container__col">
@@ -17,15 +17,20 @@
                     </app-input-search-client>
                 </div>
                 <div class="container__col">
-                    <app-input-search-dealer [countChanges]="countChanges" (dealerWasSetted)="setDealerSelected()">
+                    <app-input-search-dealer 
+                        [countChanges]="countChanges" 
+                        [disableField]="disableDealerField"
+                        (dealerWasSetted)="setDealerSelected()">
                     </app-input-search-dealer>
                 </div>
             </div>
             <div class="container__row">
                 <div class="container__col">
-                    <label>Nombre del contrato</label>
-                    <input type="text" formControlName="txtContractName" class="form-control"
-                        placeholder="Nombre del contrato ...">
+                    <label>Código de referencia del contrato</label>
+                    <input type="text" 
+                        formControlName="contractName" 
+                        class="form-control"
+                        placeholder="Nombre del contrato ...">                   
                 </div>
                 <div class="container__col">
                     <app-contract-state [countChanges]="countChanges"></app-contract-state>
@@ -34,25 +39,45 @@
             <div class="container__row">
                 <div class="container__col">
                     <label>Cantidad de vehículos contratados</label>
-                    <input class="form-control" type="number" formControlName="txtAmountVehicles"
+                    <input class="form-control" 
+                        type="text" 
+                        formControlName="amountVehicles"
+                        (keypress)="validateNumbers($event)"
                         placeholder="cantidad de vehículos contratados">
+
+                        <div class="error" *ngIf="amountVehiclesField.invalid && (amountVehiclesField.touched || amountVehiclesField.dirty) ">
+                            <p *ngIf="amountVehiclesField.hasError('required')">* La cantidad de vehículos es requerida</p>
+                        </div>
                 </div>
                 <div class="container__col">
                     <label>Duración en meses:</label>
-                    <input type="number" formControlName="txtDuration" class="form-control"
-                        placeholder="Duración del contrato ..." (input)="calculateEndingDate()">
+                    <input type="number" 
+                        formControlName="duration" 
+                        class="form-control"
+                        placeholder="Duración del contrato ..." 
+                        (keypress)="validateNumbers($event)"
+                        (input)="calculateEndingDate()">
+                    
+                    <div class="error" *ngIf="durationField.invalid && (durationField.touched || durationField.dirty) ">
+                        <p *ngIf="durationField.hasError('required')">* La duración del contrato es requerida</p>
+                    </div>  
                 </div>
             </div>
             <div class="container__row">
                 <div class="container__col">
                     <label>Fecha de inicio:</label>
-                    <input type="text" class="form-control" formControlName="txtStartingDate" [bsValue]="dtStartingDate"
+                    <input type="text" class="form-control" 
+                        formControlName="startingDate" [bsValue]="dtStartingDate"
                         [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
                         placeholder="fecha de inicio ..." (onHidden)="calculateEndingDate()" bsDatepicker>
+
+                    <div class="error" *ngIf="startingDateField.invalid && (startingDateField.touched || startingDateField.dirty) ">
+                        <p *ngIf="startingDateField.hasError('required')">* La fecha inicial del contrato es requerida</p>
+                    </div>
                 </div>
                 <div class="container__col">
                     <label>Fecha de finalización:</label>
-                    <input type="text" class="form-control" formControlName="txtEndingDate"
+                    <input type="text" class="form-control" formControlName="endingDate"
                         placeholder="fecha de finalización ..." [bsValue]="dtEndingDate"
                         [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }" bsDatepicker
                         disabled>
@@ -64,13 +89,22 @@
                 </div>
                 <div class="container__col">
                     <label>Valor del descuento:</label>
-                    <input type="number" formControlName="txtDiscountValue" class="form-control"
-                        placeholder="valor del descuento ...">
+                    <input 
+                        type="number" 
+                        formControlName="discountValue" 
+                        class="form-control"
+                        placeholder="valor del descuento ..."
+                        (keypress)="validateNumbers($event)">
+                        
+                    <div class="error" *ngIf="discountValueField.invalid && (discountValueField.touched || discountValueField.dirty) ">
+                        <p *ngIf="discountValueField.hasError('required')">* El valor del descuento que debe aplicarse al contrato es requerido</p>
+                    </div>
+                        
                 </div>
             </div>
             <div class="container__observation">
                 <label>Observaciones: </label>
-                <textarea class="form-control" formControlName="txtObservation" cols="30" rows="2">
+                <textarea class="form-control" formControlName="observation" cols="30" rows="2">
         </textarea>
             </div>
 
@@ -96,7 +130,15 @@
 
         <div class="buttons__container" id="container__buttons">
             <button type="button" class="btn btn-danger" (click)="comeBackTable()">Cancelar</button>
-            <button type="button" class="btn btn-success" (click)="saveContract()">Guardar</button>
+            <button type="submit" class="btn btn-success" [disabled]="frmContract.invalid">Guardar</button>
+        </div>
+
+        <div>
+            <div class="container__infoError" id="cont_error_add_contract"
+                *ngIf="frmContract.invalid">
+                <span>No se puede guardar el contrato debido a que el formulario no cumple con
+                    los datos requeridos</span>
+            </div>
         </div>
     </form>
 

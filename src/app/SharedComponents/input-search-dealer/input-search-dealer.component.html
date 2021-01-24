@@ -5,8 +5,7 @@
         class="form-control"
         formControlName="txtDealer" 
         placeholder="Concesionario ..."
-        (input)="searchBydescription($event.target.value)"
-        >
+        (input)="searchBydescription($event.target.value)"/>
     <ul *ngIf="listIsvisible">
         <li 
             *ngFor="let dealer of lsDealerSuggestion$ | async"

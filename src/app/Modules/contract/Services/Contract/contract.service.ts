@@ -31,8 +31,8 @@ export class ContractService {
     return this.http.get<DiscountType[]>(urlGetDiscounts).toPromise();
   }
 
-  async getContracts(): Promise<Contract[]>{
-    let urlGetContracts = `${this.URL_API}/Get`;
+  async getContracts(dealer_id:number = 0,client_id:number = 0): Promise<Contract[]>{
+    let urlGetContracts = `${this.URL_API}/Get?dealer_id=${dealer_id}&client_id=${client_id}`;
     return this.http.get<Contract[]>(urlGetContracts).toPromise();
   }
 

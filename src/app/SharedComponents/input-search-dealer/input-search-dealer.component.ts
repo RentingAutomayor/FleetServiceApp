@@ -17,6 +17,7 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
   listIsvisible: boolean;
   dealerSelected: Dealer;
   @Input() countChanges:number;
+  @Input() disableField: boolean;
   @Output() dealerWasSetted = new EventEmitter<boolean>();
 
   constructor(
@@ -25,9 +26,13 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
     this.frmSearchDealer = new FormGroup({
       txtDealer: new FormControl('')
     });
-   }
+
+    this.disableField = false;
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
+      console.log("[DisabledFieldDealer]",this.disableField);
       if(change == "countChanges"){
         this.dealerSelected = this.dealerService.getDealerSelected();
         if(this.dealerSelected != null && this.dealerSelected != undefined){
@@ -42,6 +47,9 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
   }
 
   async initComponents(){
+    if(this.disableField){
+      this.frmSearchDealer.controls.txtDealer.disable();
+    }
     this.countChanges = 0;
     this.listIsvisible = false;
     this.lsDealerSuggestion$ = this.description.pipe(

@@ -102,15 +102,21 @@ tr{
     cursor: pointer;
 }
 .tag-error{
+    display: block;
     background-color: #ea2c62;
-    padding: 8px 20px;
+    padding: 8px 5px;
     color: #fff;
     border-radius: 20px;
+    width: 100px;
+    text-align: center;
 }
 
 .tag-active{
+    display: block;
     background-color: #ade498;
-    padding: 8px 40px;
+    padding: 8px 5px;
     color: #fff;
     border-radius: 20px;
+    width: 100px;
+    text-align: center;
 }

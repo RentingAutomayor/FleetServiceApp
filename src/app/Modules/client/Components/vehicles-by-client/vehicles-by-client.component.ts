@@ -164,7 +164,7 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
     let idElement = `#state_${vehicle_id}`;
     let tag: HTMLElement = document.querySelector(idElement);
     switch(state_name.toUpperCase()){
-      case 'SINIESTRADO':
+      case 'INACTIVO':
         tag.classList.add("tag-error");
         break;
         case 'ACTIVO':

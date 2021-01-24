@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Contract } from 'src/app/Models/Contract';
 import { ContractState } from 'src/app/Models/ContractState';
@@ -15,6 +15,7 @@ export class ContractStateComponent implements OnInit, OnChanges {
   lsStates: ContractState[];
   contractStateSelected: ContractState;
   @Input() countChanges:number;
+  @Output() contractStateWasSelected = new EventEmitter<ContractState>();
   
   constructor(
     private contractService: ContractService
@@ -29,6 +30,7 @@ export class ContractStateComponent implements OnInit, OnChanges {
         this.contractStateSelected = this.contractService.getContractStateSelected();
         if(this.contractStateSelected != null && this.contractStateSelected != undefined){
           this.setDataInForm(this.contractStateSelected);
+          this.contractStateWasSelected.emit(this.contractStateSelected);
         }
       }
     }
@@ -48,14 +50,22 @@ export class ContractStateComponent implements OnInit, OnChanges {
     }
   }
 
-  setContractState(event:any){
-    let oStateTemp = this.lsStates.find(st => st.id = event.value);
+  setContractState(event:any){    
+    let valueOption = event.value;
+    let oStateTemp = this.lsStates.find(st => st.id == valueOption);    
+    this.contractStateSelected = oStateTemp;
     this.contractService.setContractStateSelected(oStateTemp);
+    this.contractStateWasSelected.emit(this.contractStateSelected);
   }
 
   setDataInForm(state: ContractState){
     let { cmbStates } = this.frmContractState.controls;
+    this.contractStateSelected = state;
     cmbStates.setValue(state.id);
+  }
+
+  loseFocus(){
+    this.contractStateWasSelected.emit(this.contractStateSelected);
   }
 
 }

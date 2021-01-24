@@ -6,6 +6,7 @@
         formControlName="txtClient" 
         placeholder="Cliente ..."
         (input)="searchBydescription($event.target.value)"
+        (focusout) ="loseFocus()"
         >
     <ul *ngIf="listIsvisible">
         <li 

@@ -1,4 +1,7 @@
 <div class="container__table">
+    <div class="alert alert-warning" role="alert">
+        <H6 *ngIf="lsVehiclesEmty">* Recuerde que si no aparece ninguna placa del cliente puede ser debido a que estas tienen un estado inactivo ó ya están asociadas a un contrato con estado activo *</H6>
+    </div>
     <table class="table table-striped">
         <thead>
             <th>#</th>
@@ -17,7 +20,7 @@
                             <input 
                                 type="checkbox" 
                                 [id]="getIdChk(vehicle.id)"
-                                (click)="setVehicleToContract($event.target,vehicle)">
+                                (click)="setVehicleToContract($event,vehicle)">
                             <span class="checkmark"></span>
                         </label>
                         <label [for]="getIdChk(vehicle.id)">

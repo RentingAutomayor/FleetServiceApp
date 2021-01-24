@@ -3,7 +3,8 @@
     <select 
         formControlName="cmbDiscount" 
         class="browser-default custom-select"
-        (change)="setDiscountType($event.target)">
+        (change)="setDiscountType($event.target)"
+        (focusout)="lostFocus()">
         <option [value]="0" disabled>Seleccione ...</option>
         <option 
             *ngFor="let discount of lsDiscount"

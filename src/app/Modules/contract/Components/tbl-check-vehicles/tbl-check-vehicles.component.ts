@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, ɵConsole } from '@angular/core';
 import { Client } from 'src/app/Models/Client';
 import { Vehicle } from 'src/app/Models/Vehicle';
 import { VehicleModel } from 'src/app/Models/VehicleModel';
 import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service';
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service';
+import { Contract } from 'src/app/Models/Contract';
 
 
 @Component({
@@ -17,7 +18,10 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
   @Input() clientToFilter:Client;
   @Input() lsVehicleModelsToFilter: VehicleModel[]=[];
   @Input() countChanges:number;
+  @Input() amountAllowed: number;
+  @Input() contractToFilter:Contract;
   sModels:string;
+  lsVehiclesEmty:boolean;
 
   
   constructor(
@@ -39,8 +43,25 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
           this.lsVehiclesSelected =this.vehicleService.getListVehiclesSelected();    
           if(this.lsVehiclesSelected != null && this.lsVehiclesSelected != undefined){
             this.checkVehiclesSelected(this.lsVehiclesSelected);
-          }              
+            this.lsVehiclesEmty = false;
+          }else{
+            this.lsVehiclesEmty = true;
+          }  
+
           break;
+        case "amountAllowed":
+          this.lsVehiclesSelected =this.vehicleService.getListVehiclesSelected();    
+          if(this.lsVehiclesSelected != null && this.lsVehiclesSelected != undefined){
+            this.checkVehiclesSelected(this.lsVehiclesSelected);
+            this.lsVehiclesEmty = false;
+          }else{
+            this.lsVehiclesEmty = true;
+          }     
+          break;
+        case "contractToFilter":
+         this.getVehicles();
+          break;
+
       }    
 
     }
@@ -79,7 +100,10 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
   async getVehicles(){
     try{
       if(this.clientToFilter != null && this.clientToFilter != undefined && this.sModels != ""){
-        this.lsVehicles = await this.vehicleService.getVehiclesByClientAndModel(this.clientToFilter.id,this.sModels);
+        let contract_id = (this.contractToFilter != null && this.contractToFilter != undefined)? this.contractToFilter.id:0;
+        console.log("[TBL CHECK VEHICLES]");
+        console.log(`cliente a filtrar ${this.clientToFilter.id} Modelos: ${this.sModels}  Contrato: ${contract_id}`);
+        this.lsVehicles = await this.vehicleService.getVehiclesByClientAndModel(this.clientToFilter.id,this.sModels, contract_id);
         console.log("[tbl-chk-veh -- lsVehicles]:",this.lsVehicles);
       }else{
         this.lsVehicles = [];
@@ -94,11 +118,20 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
   }
 
   setVehicleToContract(event: any,pVehicle:Vehicle){
-    if(event.checked){
+    if(event.target.checked){
       if(this.lsVehiclesSelected == null && this.lsVehiclesSelected  == undefined){
         this.lsVehiclesSelected = [];
       }
-      this.lsVehiclesSelected.push(pVehicle);
+      console.log("[TBL CHECK VEHICLES]");
+      console.log(`[Vehículos asociados hasta el momento] ${this.lsVehiclesSelected.length }`);
+
+      if(this.lsVehiclesSelected.length < this.amountAllowed  ){
+        this.lsVehiclesSelected.push(pVehicle);
+      }else{
+        alert(`No se puede adicionar este vehículo, puesto que el contrato sólo tiene configurado un máximo de ${this.amountAllowed} vehículos`);
+        event.preventDefault();
+      }
+      
     }else{
       let vehicle = this.lsVehiclesSelected.find(vh => vh.id == pVehicle.id);
       let index = this.lsVehiclesSelected.indexOf(vehicle);
@@ -113,17 +146,20 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
 
   checkVehiclesSelected(lsVehicles:Vehicle[]){
     try {
-      lsVehicles.forEach(vh => {
-        let idCheck = `#${this.getIdChk(vh.id)}`;
-        let vehicleCheckbox: HTMLInputElement = document.querySelector(idCheck);
-        vehicleCheckbox.checked = true;
-      });
+      setTimeout(() => {
+        lsVehicles.forEach(vh => {
+          let idCheck = `#${this.getIdChk(vh.id)}`;
+          let vehicleCheckbox: HTMLInputElement = document.querySelector(idCheck);
+          vehicleCheckbox.checked = true;
+        });
+      }, 500)
+     
     } catch (error) {
       console.warn(error);
-      // setTimeout(() => {
-      //   this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected();
-      //   this.checkVehiclesSelected(this.lsVehiclesSelected);
-      // },800);
+      setTimeout(() => {
+        this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected();
+        this.checkVehiclesSelected(this.lsVehiclesSelected);
+      },800);
     }    
   }
 

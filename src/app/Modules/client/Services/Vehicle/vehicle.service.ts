@@ -67,8 +67,8 @@ export class VehicleService {
     return this.http.get<Vehicle[]>(urlGetVehiclesByClient).toPromise();
   }
 
-  async getVehiclesByClientAndModel(pClient_id: number,sModels:string): Promise<Vehicle[]>{  
-    let urlVehiclesByClientAndModel = `${this.URL_API}/GetVehiclesByClientAndModel?pClient_id=${pClient_id}&sModels=${sModels}`;
+  async getVehiclesByClientAndModel(pClient_id: number,sModels:string,contract_id: number = 0): Promise<Vehicle[]>{  
+    let urlVehiclesByClientAndModel = `${this.URL_API}/GetVehiclesByClientAndModel?pClient_id=${pClient_id}&sModels=${sModels}&contract_id=${contract_id}`;
     return this.http.get<Vehicle[]>(urlVehiclesByClientAndModel).toPromise();     
   }
 

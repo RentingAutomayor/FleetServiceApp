@@ -1,4 +1,4 @@
-import { Component, Input, OnInit ,OnChanges, SimpleChanges} from '@angular/core';
+import { Component, Input, OnInit ,OnChanges, SimpleChanges, Output, EventEmitter} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DiscountType } from 'src/app/Models/DiscountType';
 import { ContractService} from '../../Services/Contract/contract.service';
@@ -13,6 +13,7 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
   lsDiscount: DiscountType[];
   discountSelected: DiscountType;
   @Input() countChanges:number;
+  @Output() discountWasSelected = new EventEmitter<DiscountType>();
 
   constructor(
     private contractService: ContractService
@@ -28,6 +29,7 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
         this.discountSelected = this.contractService.getDiscountTypeSelected();
         if(this.discountSelected != null && this.discountSelected != undefined){
           this.setDataInForm(this.discountSelected);
+          this.discountWasSelected.emit(this.discountSelected);
         }        
       }
     }
@@ -48,11 +50,17 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
 
   setDiscountType(event:any){
     let oDiscountTmp = this.lsDiscount.find(ds => ds.id == event.value);
+    this.discountSelected = oDiscountTmp;
     this.contractService.setDiscountTypeSelected(oDiscountTmp);
+    this.discountWasSelected.emit(this.discountSelected);
   }
 
   setDataInForm(pDiscount:DiscountType){
     let { cmbDiscount } = this.frmDiscountType.controls;
     cmbDiscount.setValue(pDiscount.id);
+  }
+
+  lostFocus(){
+    this.discountWasSelected.emit(this.discountSelected);
   }
 }

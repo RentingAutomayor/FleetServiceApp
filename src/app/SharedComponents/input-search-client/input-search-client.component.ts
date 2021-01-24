@@ -54,6 +54,9 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
 
   searchBydescription(sDescription:string){
     console.log(sDescription);
+    if(sDescription == ""){
+      this.clientService.setClientSelected(null);
+    }
     this.listIsvisible = true;
     this.description.next(sDescription);    
   }
@@ -64,6 +67,7 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
 
   setClient(pClient:Client){    
     console.log(pClient);
+    this.clientSelected = pClient;
     this.setDataInForm(pClient);
     this.listIsvisible = false;
     this.clientService.setClientSelected(pClient);
@@ -73,5 +77,9 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
   setDataInForm(pClient:Client){
     let {txtClient} = this.frmSearchClient.controls;
     txtClient.setValue(this.getClientDescription(pClient));
+  }
+
+  loseFocus(){
+    this.clientWasSetted.emit(true);
   }
 }

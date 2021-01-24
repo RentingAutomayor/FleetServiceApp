@@ -3,7 +3,8 @@
     <select 
         formControlName="cmbStates" 
         class="browser-default custom-select"
-        (change)="setContractState($event.target)">
+        (change)="setContractState($event.target)"
+        (focusout)="loseFocus()">
 
         <option [value]="0" disabled>Seleccione ...</option>
         <option *ngFor="let state of lsStates" 

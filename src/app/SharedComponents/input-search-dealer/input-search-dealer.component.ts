@@ -37,6 +37,7 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
         this.dealerSelected = this.dealerService.getDealerSelected();
         if(this.dealerSelected != null && this.dealerSelected != undefined){
           this.setDataInForm(this.dealerSelected);
+          this.dealerWasSetted.emit(true);
         }
       }      
     }
@@ -61,6 +62,9 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
 
   searchBydescription(sDescription:string){
     this.listIsvisible = true;
+    if(sDescription == ""){
+      this.dealerService.setDealerSelected(null);
+    }
     this.description.next(sDescription);
   }
 
@@ -77,6 +81,10 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
 
   setDataInForm(pDealer: Dealer){
     let {txtDealer} = this.frmSearchDealer.controls;
-    txtDealer.setValue(this.getDealerDescription(pDealer));
+    txtDealer.setValue(this.getDealerDescription(pDealer));   
+  }
+
+  loseFocus(){
+    this.dealerWasSetted.emit(true);
   }
 }

@@ -44,6 +44,7 @@ export class ContractComponent implements OnInit, OnChanges {
   dealerFieldIsInvalid: boolean;
   contracStateFieldIsInvalid: boolean;
   discountFieldIsInvalid: boolean;
+  discountType: DiscountType;
 
 
   isAwaiting: boolean;
@@ -433,6 +434,7 @@ export class ContractComponent implements OnInit, OnChanges {
     if(discountType == null || discountType == undefined){
       this.discountFieldIsInvalid = true;
     }else{
+      this.discountType = discountType;
       this.discountFieldIsInvalid = false;
     }
   }

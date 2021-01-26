@@ -1,7 +1,7 @@
 import { Client } from './Client';
 import { MaintenanceItem } from './MaintenanceItem';
 import { Movement } from './Movement';
-import { TransactionDetail } from './transactionDetail';
+import { TransactionDetail } from './TransactionDetail';
 import { TransactionObservation } from './TransactionObservation';
 import { TransactionState } from './TransactionState';
 

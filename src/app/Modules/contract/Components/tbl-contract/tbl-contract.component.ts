@@ -34,8 +34,7 @@ export class TblContractComponent implements OnInit {
       this.companyStorage = SecurityValidators.validateUserAndCompany();
     } catch (error) {
       console.warn(error);
-    }
-    
+    }    
   }
 
   async initComponents(){

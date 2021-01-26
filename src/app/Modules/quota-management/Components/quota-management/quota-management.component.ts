@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Client } from 'src/app/Models/Client';
 import { Movement } from 'src/app/Models/Movement';
 import { Transaction } from 'src/app/Models/Transaction';
-import { TransactionDetail } from 'src/app/Models/transactionDetail';
+import { TransactionDetail } from 'src/app/Models/TransactionDetail';
 import { TransactionObservation } from 'src/app/Models/TransactionObservation';
 import { TransactionState } from 'src/app/Models/TransactionState';
 import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service';

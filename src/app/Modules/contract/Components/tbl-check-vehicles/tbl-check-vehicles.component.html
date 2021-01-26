@@ -1,6 +1,6 @@
 <div class="container__table">
-    <div class="alert alert-warning" role="alert">
-        <H6 *ngIf="lsVehiclesEmty">* Recuerde que si no aparece ninguna placa del cliente puede ser debido a que estas tienen un estado inactivo ó ya están asociadas a un contrato con estado activo *</H6>
+    <div class="alert alert-warning" role="alert" *ngIf="lsVehiclesEmty">
+        <H6>* Recuerde que si no aparece ninguna placa del cliente puede ser debido a que estas tienen un estado inactivo ó ya están asociadas a un contrato con estado activo *</H6>
     </div>
     <table class="table table-striped">
         <thead>

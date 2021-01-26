@@ -17,7 +17,7 @@ import { SharedFunction } from 'src/app/Models/SharedFunctions';
 import { Transaction } from 'src/app/Models/Transaction';
 import { MovementService } from '../../../movement/Services/Movement/movement.service';
 import { Movement } from 'src/app/Models/Movement';
-import { TransactionDetail } from 'src/app/Models/transactionDetail';
+import { TransactionDetail } from 'src/app/Models/TransactionDetail';
 import { Vehicle } from 'src/app/Models/Vehicle';
 import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service';
 import { TransactionObservation } from 'src/app/Models/TransactionObservation';

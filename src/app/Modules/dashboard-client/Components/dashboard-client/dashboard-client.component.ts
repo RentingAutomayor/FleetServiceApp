@@ -6,7 +6,7 @@ import { SharedFunction } from 'src/app/Models/SharedFunctions';
 import { Transaction } from 'src/app/Models/Transaction';
 import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service';
 import { MovementService } from '../../../movement/Services/Movement/movement.service';
-import { TransactionDetail } from 'src/app/Models/transactionDetail';
+import { TransactionDetail } from 'src/app/Models/TransactionDetail';
 import { TransactionObservation } from 'src/app/Models/TransactionObservation';
 import { SessionUser } from 'src/app/Models/SessionUser';
 

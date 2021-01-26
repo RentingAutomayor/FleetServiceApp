@@ -150,8 +150,12 @@
         </div>
 
         <div class="tab_content tab_inactive" id="container__prices">
-            <!-- <app-tbl-prices-by-contract [changeDealer]="oChangeDealer" [getPricesOfContract]="oGetPricesOfContract">
-            </app-tbl-prices-by-contract> -->
+            <app-tbl-prices-by-contract 
+                [changeDealer]="oChangeDealer" 
+                [getPricesOfContract]="oGetPricesOfContract"
+                [discountType]="discountType"
+                [discountValue]="discountValueField.value">
+            </app-tbl-prices-by-contract> 
         </div>
 
         <div class="buttons__container" id="container__buttons">

@@ -10,6 +10,7 @@
     </div>
     <hr>
     <a *ngFor="let module of moduleFathers" id="{{ module.moduleDescription }}" class="item-navigation" [routerLink]="[module.path]" routerLinkActive="item-nav-active">{{ module.moduleName }}</a>
+    <a *ngIf="administrative" id="admin" class="item-navigation" [routerLink]="['/Admin']" routerLinkActive="item-nav-active">Administracion</a>
     <a [routerLink]="" (click)="logout()"><i class="fas fa-sign-out-alt" title="Salir">Salir</i></a>
 </div>
 

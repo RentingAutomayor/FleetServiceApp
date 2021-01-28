@@ -1,0 +1,20 @@
+<div class="container__action">
+    <form [formGroup]="formAction">
+        <div class="row__container" id="container__name">
+            <div class="col">
+                <label for="#">Nombre:</label>
+                <input type="text" class="form-control" placeholder="Nombre ..." formControlName="txtName" required>
+            </div>
+            <div class="col">
+                <label for="">Descripcion:</label>
+                <input type="text" class="form-control" placeholder="Descripcion ..." formControlName="txtDescription">
+            </div>
+        </div>
+        <div class="buttons__container" id="container__buttons">
+            <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
+            <button type="button" class="btn btn-success" (click)="setDataAction()">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

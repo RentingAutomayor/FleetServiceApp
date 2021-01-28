@@ -21,6 +21,7 @@ export class NavigationComponent implements OnInit{
   }
 
   session: any;
+  administrative: boolean = false;
   moduleFathers: any[] = [];
   loadApp(){    
     this.session = JSON.parse(sessionStorage.getItem('sessionUser'))  
@@ -31,7 +32,12 @@ export class NavigationComponent implements OnInit{
       if (element.id_moduleF == 0) {
         this.moduleFathers.push(element);  
       }      
-    });    
+    });   
+    
+    if (this.session.profile == "0") {
+      this.administrative = true;
+    }
+    
   }
 
   initComponents() {

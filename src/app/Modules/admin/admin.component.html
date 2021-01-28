@@ -1,0 +1,133 @@
+<app-navigation (showCloseMenu)="moveContent($event)"></app-navigation>
+<div id="container__content">
+    <div class="container__tabPanel">
+        <div class="container__titles">
+            <button class="tab_link active" (click)="openTab($event,'users')">Usuarios</button>
+            <button class="tab_link" (click)="openTab($event,'groups')">Grupos</button>
+            <button class="tab_link" (click)="openTab($event,'actions')">Acciones</button>
+        </div>
+    </div>
+
+    <div class="tab_content tab_active" id="container__users">
+        <button class="btn-add btn-info" (click)="insertUser()"><i class="fas fa-plus"></i></button>
+        <table class="table table-striped">
+            <thead>
+                <th class="col-number col-mobile-hide">#</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Perfil</th>
+                <th>Usuario</th>
+                <th>Grupo</th>
+                <th class="col-mobile-hide">Acciones</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let i = index ;let user of lsUsers | paginate: { itemsPerPage: 10, currentPage: p }">
+                    <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
+                    <td>{{ user.usr_firstName | titlecase }}</td>
+                    <td>{{ user.usr_lastName | titlecase }}</td>
+                    <td>{{ user.profile}}</td>
+                    <td>{{ user.usr_name }}</td>
+                    <td>{{ user.group.grp_name}}</td>
+                    <td>
+                        <i class="fas fa-info-circle text-info" title="Más información"></i>
+                        <i class="fas fa-edit text-warning" (click)="updateAction(user.usr_id)" title="Modificar"></i>
+                        <i class="fas fa-trash-alt text-danger" (click)="deleteUser(user)" title="Eliminar"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="paginationContainer">
+            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+        </div>
+
+        <div id="container__formUser">
+            <div class="overlay">
+                <div class="card">
+                    <div class="card-body-float">
+                        <app-users (userWasCanceled)="comeBackToTable($event)">
+                        </app-users>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab_content tab_inactive" id="container__groups">
+        <button class="btn-add btn-info" (click)="insertGroup()"><i class="fas fa-plus"></i></button>
+        <table class="table table-striped">
+            <thead>
+                <th class="col-number col-mobile-hide">#</th>
+                <th>Grupo</th>
+                <th>Descripcion</th>
+                <th class="col-mobile-hide">Acciones</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let i = index ;let group of lsGroups | paginate: { itemsPerPage: 10, currentPage: p }">
+                    <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
+                    <td>{{ group.groupName }}</td>
+                    <td>{{ group.description | titlecase }}</td>
+                    <td>
+                        <i class="fas fa-info-circle text-info" title="Más información"></i>
+                        <i class="fas fa-edit text-warning" (click)="updateAction(group.id_group)" title="Modificar"></i>
+                        <i class="fas fa-trash-alt text-danger" (click)="deleteGroup(group)" title="Eliminar"></i>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+        <div class="paginationContainer">
+            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+        </div>
+
+        <div id="container__formGroup">
+            <div class="overlay">
+                <div class="card">
+                    <div class="card-body-float">
+                        <app-groups (groupWasCanceled)="comeBackToTable($event)">
+                        </app-groups>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab_content tab_inactive" id="container__actions">
+        <button class="btn-add btn-info" (click)="insertAction()"><i class="fas fa-plus"></i></button>
+        <table class="table table-striped">
+            <thead>
+                <th class="col-number col-mobile-hide">#</th>
+                <th>Accion</th>
+                <th>Descripcion</th>
+                <th class="col-mobile-hide">Acciones</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let i = index ;let action of lsActions | paginate: { itemsPerPage: 10, currentPage: p }">
+                    <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
+                    <td>{{ action.act_name | titlecase }}</td>
+                    <td>{{ action.act_description | titlecase }}</td>
+                    <td>
+                        <i class="fas fa-info-circle text-info" title="Más información"></i>
+                        <i class="fas fa-edit text-warning" (click)="updateAction(action.id)" title="Modificar"></i>
+                        <i class="fas fa-trash-alt text-danger" (click)="deleteAction(action)" title="Eliminar"></i>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+        <div class="paginationContainer">
+            <pagination-controls (pageChange)="ap = $event"></pagination-controls>
+        </div>
+        <div id="container__formAction">
+            <div class="overlay">
+                <div class="card">
+                    <div class="card-body-float">
+                        <app-actions (actionWasCanceled)="comeBackToTable($event)" (actionWasSetted)="saveAction($event)">
+                        </app-actions>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

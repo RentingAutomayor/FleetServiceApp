@@ -1,0 +1,32 @@
+<div class="container__group">
+    <form [formGroup]="formUser">
+        <div class="row__container" id="container__name">
+            <div class="col">
+                <label for="#">Nombres:</label>
+                <input type="text" class="form-control" placeholder="Nombres ..." formControlName="txtNames">
+            </div>
+            <div class="col">
+                <label for="">Apellidos:</label>
+                <input type="text" class="form-control" placeholder="Apellidos ..." formControlName="txtLastNames">
+            </div>
+        </div>
+        <div class="row__container">
+            <div class="col">
+                <label for="#">Usuario:</label>
+                <input type="text" class="form-control" placeholder="Usuario ..." formControlName="txtNames">
+            </div>
+            <!-- <div class="col">
+                <label for="">Contraseña:</label>
+                <input type="text" class="form-control" placeholder="Contraseña ..." formControlName="txtLastNames">
+            </div> -->
+            <div class="col">
+                <label for="">Grupo:</label>
+                <input type="text" class="form-control" placeholder="Grupo ..." formControlName="txtLastNames">
+            </div>
+        </div>
+        <div class="buttons__container" id="container__buttons">
+            <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
+            <button type="button" class="btn btn-success" (click)="setDataUser()">Guardar</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,18 @@
+<div class="container__group">
+    <form [formGroup]="formGroup">
+        <div class="row__container" id="container__name">
+            <div class="col">
+                <label for="#">Nombre:</label>
+                <input type="text" class="form-control" placeholder="Nombre ..." formControlName="txtName">
+            </div>
+            <div class="col">
+                <label for="">Descripcion:</label>
+                <input type="text" class="form-control" placeholder="Descripcion ..." formControlName="txtLastName">
+            </div>
+        </div>
+        <div class="buttons__container" id="container__buttons">
+            <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
+            <button type="button" class="btn btn-success" (click)="setDataGroup()">Guardar</button>
+        </div>
+    </form>
+</div>

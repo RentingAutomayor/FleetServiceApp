@@ -15,6 +15,7 @@ import { WorkOrderManagerComponent } from './Modules/work-order-manager/work-ord
 import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
 import { LoginComponent } from './Components/login/login.component';
 import { FinancialInformationByClientComponent } from './Components/financial-information-by-client/financial-information-by-client.component';
+import { AdminComponent } from './Modules/admin/admin.component';
 
 
 
@@ -22,6 +23,7 @@ import { FinancialInformationByClientComponent } from './Components/financial-in
 const routes: Routes = [{ path: 'MasterClients/Client', component: ClientComponent },
 // { path: ' ', component: AppComponent },
 { path: 'Login', component: LoginComponent },
+{ path: 'Admin', component: AdminComponent },
 { path: 'MasterClients', component: TblClientComponent },
 { path: 'MasterDealers/Dealer', component: DealerComponent },
 { path: 'MasterDealers', component: TblDealerComponent },

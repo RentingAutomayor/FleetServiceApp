@@ -60,6 +60,10 @@ import { RoutinesByVehicleModelComponent } from './Components/routines-by-vehicl
 import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-client.component';
 import { LoginComponent } from './Components/login/login.component';
 import { FinancialInformationByClientComponent } from './Components/financial-information-by-client/financial-information-by-client.component';
+import { AdminComponent } from './Modules/admin/admin.component';
+import { ActionsComponent } from './Modules/actions/actions.component';
+import { GroupsComponent } from './Modules/groups/groups.component';
+import { UsersComponent } from './Modules/users/users.component';
 
 
 
@@ -116,7 +120,11 @@ import { FinancialInformationByClientComponent } from './Components/financial-in
     RoutinesByVehicleModelComponent,
     DashboardClientComponent,
     LoginComponent,
-    FinancialInformationByClientComponent
+    FinancialInformationByClientComponent,
+    AdminComponent,
+    ActionsComponent,
+    GroupsComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,

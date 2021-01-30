@@ -2,6 +2,7 @@ import { Client } from './Client';
 import { ContractState } from './ContractState';
 import { Dealer } from './Dealer';
 import { DiscountType } from './DiscountType';
+import { MaintenanceItem } from './MaintenanceItem';
 import { Vehicle } from './Vehicle';
 import { VehicleModel } from './VehicleModel';
 
@@ -24,5 +25,6 @@ export class Contract{
     public  state: boolean;
     public  lsVehicleModels: VehicleModel[];
     public  lsVehicles: Vehicle[];
+    public  lsMaintenanceItems: MaintenanceItem[];
     public  registrationDate: Date;
 }

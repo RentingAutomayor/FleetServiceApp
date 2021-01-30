@@ -18,6 +18,7 @@ import { Company } from 'src/app/Models/Company';
 import { CompanyType } from 'src/app/Models/CompanyType';
 import { InputValidator } from 'src/app/Utils/InputValidator';
 import { DiscountType } from 'src/app/Models/DiscountType';
+import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
 
 
 @Component({
@@ -45,6 +46,7 @@ export class ContractComponent implements OnInit, OnChanges {
   contracStateFieldIsInvalid: boolean;
   discountFieldIsInvalid: boolean;
   discountType: DiscountType;
+  lsMaintenanceItemsTemp: MaintenanceItem[];
 
 
   isAwaiting: boolean;
@@ -66,6 +68,7 @@ export class ContractComponent implements OnInit, OnChanges {
     this.dealerFieldIsInvalid = false;
     this.contracStateFieldIsInvalid = false;
     this.discountFieldIsInvalid = false;
+    this.lsMaintenanceItemsTemp = [];
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.validateCompanyLogged();
@@ -321,47 +324,50 @@ export class ContractComponent implements OnInit, OnChanges {
 
     try {
       if (this.frmContract.valid) {
-
-
         this.contract = this.frmContract.value;
+        this.oGetPricesOfContract += 1;
+        setTimeout(()=>{
+          if (this.contractToUpdate != null && this.contractToUpdate != undefined) {
+            this.contract.id = this.contractToUpdate.id;
+            this.contract.code = this.contractToUpdate.code;
+            this.contract.consecutive = this.contractToUpdate.consecutive;
+          }
+  
+          this.contract.client = new Client();
+          this.contract.client = this.clientService.getClientSelected();
+  
+          if (this.contract.client == null || this.contract.client == undefined) {
+            this.clientFieldIsInvalid = true;
+            throw ("Error guardando el contrato. Se debe seleccionar un cliente");
+          }
+  
+          this.contract.dealer = new Dealer();
+          this.contract.dealer = this.dealerService.getDealerSelected();
+  
+          if (this.contract.dealer == null || this.contract.dealer == undefined) {
+            this.dealerFieldIsInvalid = true;
+            throw ("Error guardando el contrato. Se debe seleccionar un concesionario");
+          }
+  
+          this.contract.contractState = this.contractService.getContractStateSelected();
+          this.contract.discountType = this.contractService.getDiscountTypeSelected();
+  
+  
+          this.contract.lsVehicleModels = (this.vehicleService.getListVehicleModelsSelected() != null)?this.vehicleService.getListVehicleModelsSelected():[];
+          this.contract.lsVehicles = (this.vehicleService.getListVehiclesSelected() != null)?this.vehicleService.getListVehiclesSelected():[];
+  
+          if(this.contract.lsVehicles.length > this.contract.amountVehicles){
+            throw("No se puede guardar el contrato. verifique la cantidad de vehículos seleccionados dentro del mismo");
+          }
+  
+          console.warn("[Contrato a guardar]");
+          console.log(this.contract);
+  
+          this.saveData(this.contract);
 
-        if (this.contractToUpdate != null && this.contractToUpdate != undefined) {
-          this.contract.id = this.contractToUpdate.id;
-          this.contract.code = this.contractToUpdate.code;
-          this.contract.consecutive = this.contractToUpdate.consecutive;
-        }
-
-        this.contract.client = new Client();
-        this.contract.client = this.clientService.getClientSelected();
-
-        if (this.contract.client == null || this.contract.client == undefined) {
-          this.clientFieldIsInvalid = true;
-          throw ("Error guardando el contrato. Se debe seleccionar un cliente");
-        }
-
-        this.contract.dealer = new Dealer();
-        this.contract.dealer = this.dealerService.getDealerSelected();
-
-        if (this.contract.dealer == null || this.contract.dealer == undefined) {
-          this.dealerFieldIsInvalid = true;
-          throw ("Error guardando el contrato. Se debe seleccionar un concesionario");
-        }
-
-        this.contract.contractState = this.contractService.getContractStateSelected();
-        this.contract.discountType = this.contractService.getDiscountTypeSelected();
-
-
-        this.contract.lsVehicleModels = (this.vehicleService.getListVehicleModelsSelected() != null)?this.vehicleService.getListVehicleModelsSelected():[];
-        this.contract.lsVehicles = (this.vehicleService.getListVehiclesSelected() != null)?this.vehicleService.getListVehiclesSelected():[];
-
-        if(this.contract.lsVehicles.length > this.contract.amountVehicles){
-          throw("No se puede guardar el contrato. verifique la cantidad de vehículos seleccionados dentro del mismo");
-        }
-
-        console.warn("[Contrato a guardar]");
-        console.log(this.contract);
-
-        this.saveData(this.contract);
+        
+        },500)
+       
       }
     } catch (error) {
       console.warn(error);
@@ -383,12 +389,12 @@ export class ContractComponent implements OnInit, OnChanges {
         let lastContract = await this.contractService.getLastContractByClientAndDealer(pContract.client.id, pContract.dealer.id);
         this.contractService.setContract(lastContract);
       }
-
-      this.isAwaiting = false;
+     
       if (rta.response) {
         alert(rta.message);
-        this.oGetPricesOfContract += 1;
+        
         this.router.navigate(['/MasterContracts']);
+        this.isAwaiting = false;
       }
     } catch (error) {
       this.isAwaiting = false;
@@ -436,6 +442,14 @@ export class ContractComponent implements OnInit, OnChanges {
     }else{
       this.discountType = discountType;
       this.discountFieldIsInvalid = false;
+    }
+  }
+
+  setItemsByContract(lsMaintenanceItems: MaintenanceItem[]){
+    try {
+      this.contract.lsMaintenanceItems = (lsMaintenanceItems != null && lsMaintenanceItems != undefined)?lsMaintenanceItems:[];
+    } catch (error) {
+      console.warn(error);
     }
   }
 }

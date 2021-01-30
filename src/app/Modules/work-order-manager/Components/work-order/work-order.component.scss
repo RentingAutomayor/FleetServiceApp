@@ -36,3 +36,70 @@ button{
     float: right;
 
 }
+
+#container__header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 20px;
+}
+
+
+.error{
+    color: red;
+    margin-top: 10px;
+}
+
+
+
+$arrow-size:10px;
+$arrow-color:#ebd4d4;
+
+%arrow {
+    &:before {
+      position: absolute;
+      content: "";
+      display:block;
+      width:0;
+      height:0;
+      left:50%;
+      margin-left: -$arrow-size;
+      margin-top:-($arrow-size*2)-10px;
+      border: $arrow-size solid transparent;
+      border-bottom: $arrow-size solid $arrow-color;
+     
+      
+    }
+  }
+
+.container__infoError{
+    background-color: $arrow-color;
+    cursor: pointer;
+    position: absolute;
+    padding: 10px 15px;
+    z-index: 50;    
+    width: 200px;
+    height: auto;
+    border-radius: 20px;
+    right: 3%;
+    margin-top: 30px;
+    -webkit-box-shadow: 10px 10px 17px -7px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 17px -7px rgba(0,0,0,0.75);
+    box-shadow: 10px 10px 17px -7px rgba(0,0,0,0.75);
+    @extend %arrow;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+.last-row{
+    border-top: solid 2px black;
+    border-bottom: solid 1px black;
+}
+
+#container__header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

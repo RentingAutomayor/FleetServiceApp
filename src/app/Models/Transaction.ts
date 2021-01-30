@@ -8,7 +8,10 @@ import { TransactionState } from './TransactionState';
 export class Transaction{
     public id: number;
     public consecutive: number;
+    public code:string;
     public movement: Movement;
+    public valueWithoutTaxes: number;
+	public taxesValue: number;
     public value:number;
     public client: Client;
     public transactionState: TransactionState;

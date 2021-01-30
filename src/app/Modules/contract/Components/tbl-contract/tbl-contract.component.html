@@ -5,7 +5,8 @@
     <table class="table table-striped">
         <thead>
             <th>#</th>
-            <th>Código</th>
+            <th>Código interno</th>
+            <th>Código referencia</th>
             <th>Cliente</th>
             <th>Concesionario</th>
             <th>Plazo en meses</th>            
@@ -17,6 +18,7 @@
             <tr *ngFor="let i = index ;let contract of lsContracts | paginate: { itemsPerPage: 10, currentPage: p }">
                 <td>{{ (i + 1) }}</td>
                 <td>{{ contract.code }}</td>
+                <td>{{ contract.name | uppercase }}</td>
                 <td>{{ contract.client.name | titlecase }}</td>
                 <td>{{ contract.dealer.name | titlecase }}</td>
                 <td>{{ contract.duration }}</td>                

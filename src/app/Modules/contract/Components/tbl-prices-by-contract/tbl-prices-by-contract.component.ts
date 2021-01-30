@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
 import { Dealer } from 'src/app/Models/Dealer';
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
 import { MaintenanceItemService } from '../../../items-and-routines/Services/MaintenanceItem/maintenance-item.service';
@@ -28,6 +28,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
   @Input() changeDealer: number;
   @Input() discountType: DiscountType;
   @Input() discountValue: number;
+  @Output() lsMaintenanceItemsWasSetted = new EventEmitter<MaintenanceItem[]>();
   sharedFunction: SharedFunction
 
   constructor(
@@ -36,6 +37,8 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     private contractService: ContractService
   ) { 
     this.lsMaintenanceItems = [];
+    this.pricesByDealer = new PricesByDealer()
+    this.pricesByDealer.lsMaintenanceItems = [];
     this.discountValue = 0;
     this.discountType = new DiscountType();
     this.sharedFunction = new SharedFunction();
@@ -50,7 +53,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
       switch(change){
         case "getPricesOfContract":
-           //this.setPricesByContract();
+           this.setPricesByContract();
           break;
         case "changeDealer":
             this.dealerSelected = this.dealerService.getDealerSelected();
@@ -59,7 +62,8 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
             }
           break;
         case "discountValue":
-           
+        case "discountType":
+          this.getInfoToShowTable();
           break;
       }
      
@@ -101,6 +105,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     this.getListMaintenanceItems();
     this.getPricesByDealer();    
     this.getPricesByContract();
+    this.setValuesIntoTable();
   }
 
   async getListMaintenanceItems() {
@@ -123,8 +128,15 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
       this.isAwaiting = true;
       let dealer_id = (this.dealerSelected != null)? this.dealerSelected.id:0;
       this.pricesByDealer = await this.maintenanceItemService.getPricesByDealer(dealer_id);
-      console.log("[prices by contract-- prices by dealer] : ", this.pricesByDealer);
+      console.log("[prices by contract-- prices by dealer] : ", this.pricesByDealer);     
+      this.isAwaiting = false;
+    } catch (error) {
+      console.warn(error);
+    }
+  }
 
+  setValuesIntoTable(){
+    try {
       setTimeout(() =>{
         this.lsMaintenanceItems.forEach(item => {
 
@@ -146,19 +158,19 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
           this.setTaxesValue(item.id, taxesValue);
           this.setTotalValue(item.id,totalByItem)
         })
-      },800);
-
-      this.isAwaiting = false;
+      },1500);
     } catch (error) {
-      console.warn(error);
+      console.warn(error);      
     }
   }
 
   async getPricesByContract() {
     try {
+   
       this.contractSelected = this.contractService.getContract();
+      let contract_id = (this.contractSelected != null && this.contractSelected != undefined)? this.contractSelected.id : 0;
       this.isAwaiting = true;
-      this.pricesByContract = await this.maintenanceItemService.getPricesByContract(this.contractSelected.id);
+      this.pricesByContract = await this.maintenanceItemService.getPricesByContract(contract_id);
       console.log("[prices by contract] : ", this.pricesByContract);
       this.isAwaiting = false;
     } catch (error) {
@@ -201,40 +213,23 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     try {
       let contractPrice = '0';
 
-      if (this.pricesByContract.lsMaintenanceItems != null && this.pricesByContract.lsMaintenanceItems != undefined && this.pricesByContract.lsMaintenanceItems.length > 0) {
-        let itemContrat = this.pricesByContract.lsMaintenanceItems.find(item => item.id == itemId);
-        let valueToShow = '';
-        if(itemContrat == null){
-          let itemDealer = this.pricesByDealer.lsMaintenanceItems.find(item => item.id == itemId);          
-          if(itemDealer == null){
-            //This case appear when someone create a new product
-            let item = this.lsMaintenanceItems.find(mi => mi.id == itemId);
-            valueToShow = (item != null)?item.referencePrice.toString():'0';
-          }else{
-            valueToShow = itemDealer.referencePrice.toString();
-          }
+      if (this.pricesByDealer.lsMaintenanceItems != null && this.pricesByDealer.lsMaintenanceItems != undefined && this.pricesByDealer.lsMaintenanceItems.length > 0) {
+        //Reference price by dealer
+        let itemDealer = this.pricesByDealer.lsMaintenanceItems.find(item => item.id == itemId);
+        let valueToShow = '0';
+        if(itemDealer == null){
+          //This case appear when someone create a new product
+          let item = this.lsMaintenanceItems.find(mi => mi.id == itemId);
+          valueToShow = (item != null)?item.referencePrice.toString():'0';
         }else{
-          valueToShow = itemContrat.referencePrice.toString();
+          valueToShow = itemDealer.referencePrice.toString();
         }
-        contractPrice = valueToShow
+        contractPrice = valueToShow;
       } else {
-        if (this.pricesByDealer.lsMaintenanceItems != null && this.pricesByDealer.lsMaintenanceItems != undefined && this.pricesByDealer.lsMaintenanceItems.length > 0) {
-          //Reference price by dealer
-          let itemDealer = this.pricesByDealer.lsMaintenanceItems.find(item => item.id == itemId);
-          let valueToShow = '0';
-          if(itemDealer == null){
-            //This case appear when someone create a new product
-            let item = this.lsMaintenanceItems.find(mi => mi.id == itemId);
-            valueToShow = (item != null)?item.referencePrice.toString():'0';
-          }else{
-            valueToShow = itemDealer.referencePrice.toString();
-          }
-          contractPrice = valueToShow;
-        } else {
-          if (this.lsMaintenanceItems != null && this.lsMaintenanceItems != undefined) {
-            let item = this.lsMaintenanceItems.find(item => item.id == itemId);
-            contractPrice = item.referencePrice.toString();
-          }
+        //Reference price by item
+        if (this.lsMaintenanceItems != null && this.lsMaintenanceItems != undefined) {
+          let item = this.lsMaintenanceItems.find(item => item.id == itemId);
+          contractPrice = item.referencePrice.toString();
         }
       }
      
@@ -280,8 +275,10 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
   setTotalValue(item_id:number,totalValue:number){
     try {
+      //console.log(`[setTotalValue] : ${totalValue}`);
       let idLblTotal = `#${this.getLabeTotalId(item_id)}`;
       let labelTotal: HTMLSpanElement  = document.querySelector(idLblTotal);
+
       let totalFormatted = this.sharedFunction.formatNumberToString(parseFloat(totalValue.toFixed(2)))
       labelTotal.innerText = totalFormatted;
     } catch (error) {
@@ -301,8 +298,8 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
           discount = this.discountValue;
           break;
       }
-      console.log(`[calculateDiscount] ContractPrice =  ${contractPrice} DiscountValue = ${this.discountValue}  DiscountType = ${this.discountType.name}`);
-      console.log(discount)
+      //console.log(`[calculateDiscount] ContractPrice =  ${contractPrice} DiscountValue = ${this.discountValue}  DiscountType = ${this.discountType.name}`);
+      //console.log(discount)
       return discount;
     } catch (error) {
       return 0;
@@ -339,13 +336,13 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
       this.pricesByContract.lsMaintenanceItems.forEach(item => {
         let idElement = `#${this.getLabelContractPrice(item.id)}`;
-        let inputElement: HTMLInputElement = document.querySelector(idElement);
-        item.referencePrice = parseFloat(inputElement.value);
+        let inputElement: HTMLSpanElement = document.querySelector(idElement);
+        let valueFormmated = inputElement.innerText.toString().replace(/,/g,'');
+        item.referencePrice = parseFloat(valueFormmated);
       });
 
       console.log(this.pricesByContract);
-
-      this.savePricesInDB(this.pricesByContract);
+      this.lsMaintenanceItemsWasSetted.emit(this.pricesByContract.lsMaintenanceItems)
 
     } catch (error) {
       console.log(error)
@@ -353,18 +350,4 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
 
   }
-
-  async savePricesInDB(priceBycontract: PricesByContract) {
-    try {
-      this.isAwaiting = true;
-      let rta = await this.maintenanceItemService.setPricesByContract(priceBycontract);
-      this.isAwaiting = false;
-      if (rta.response) {
-        alert("Se ha guardado la información del contrato: " + priceBycontract.contract.code);
-      }
-    } catch (error) {
-      console.warn(error);
-    }
-  }
-
 }

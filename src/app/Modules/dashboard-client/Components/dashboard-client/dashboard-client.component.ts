@@ -26,6 +26,7 @@ export class DashboardClientComponent implements OnInit {
   lsMovements: Movement[];
   APROBACION_ORDEN_DE_TRABAJO = 5;
   CANCELACION_ORDEN_DE_TRABAJO = 6;
+  trx_id: number;
 
   
 
@@ -40,6 +41,8 @@ export class DashboardClientComponent implements OnInit {
     this.frmCancelTrx = new FormGroup({
       txtObservationCancelation: new FormControl('')
     })
+
+    this.trx_id = 0;
   }
 
   ngOnInit(): void {
@@ -99,7 +102,8 @@ export class DashboardClientComponent implements OnInit {
   }
 
   setTransaction(trx: Transaction){
-    this.transactionSelected = trx
+    this.transactionSelected = trx;
+    this.trx_id = trx.id;    
   }
 
   async approveWorkOrder(){

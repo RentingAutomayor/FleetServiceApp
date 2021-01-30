@@ -43,6 +43,11 @@ export class TransactionService {
     let urlGetTransactions = `${this.URL_API}/GetTransactionsByClient?client_id=${client_id}`;
     return this.http.get<LogTransaction[]>(urlGetTransactions).toPromise();
   }
+
+  async getTransactionById(trx_id:number): Promise<Transaction>{
+    let urlGetTransaction = `${this.URL_API}/GetTransactionById?trx_id=${trx_id}`;
+    return this.http.get<Transaction>(urlGetTransaction).toPromise();
+  }
   
   
   

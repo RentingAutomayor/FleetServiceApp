@@ -1,29 +1,32 @@
 
 <div id="container__content">
-    <h1>Órdenes de trabajo</h1>
+    
     <div id="container__table_workOrder">
+        <h1>Órdenes de trabajo</h1>
         <button class="btn-add btn-info" (click)="openWorkOrder()"><i class="fas fa-plus"></i></button>
         <table class="table table-striped">
             <thead>
                 <th>#</th>
-                <th>Consecutivo</th>
-                <th>Placa</th>
-                <th>Línea</th>
+                <th>Código</th>
+                <th>Placa</th>                
                 <th>Cliente</th>
                 <th>Mantenimiento</th>
-                <th>Sucursal
+                <th>Sucursal</th>
+                <th>Fecha</th>
+                <th>Valor</th>
                 <th>Estado</th>
                 <th>Acciones</th>
             </thead>
             <tbody>
                 <tr *ngFor="let workOrder of lsWorkOrderByDealer; let i = index">
                     <td>{{ i + 1}}</td>
-                    <td>{{ workOrder.consecutive }}</td>
-                    <td>{{ workOrder.headerDetails.vehicle.licensePlate }}</td>
-                    <td>{{ workOrder.headerDetails.vehicle.vehicleModel.shortName }}</td>
+                    <td>{{ (workOrder.code!=null)?workOrder.code:'' }}</td>
+                    <td>{{ workOrder.headerDetails.vehicle.licensePlate }}</td>                   
                     <td>{{ workOrder.client.name }}</td>
                     <td>{{ workOrder.headerDetails.maintenanceRoutine.name }}</td>
                     <td>{{ workOrder.headerDetails.branch.name | uppercase}}</td>
+                    <td>{{ workOrder.registrationDate | date:'yyyy/MM/dd' }}</td>
+                    <td>{{ workOrder.value | currency}}</td>
                     <td><span [id]="getSpanStateId(workOrder.id)">{{ validateState(workOrder.transactionState,
                             workOrder.id) }}</span></td>
                     <td>
@@ -34,14 +37,10 @@
             </tbody>
         </table>
     </div>
-    <div id="container__workOrder">
-        <div class="card">
-            <div class="card-body">
-                <app-work-order 
-                (workOrderWasSaved)="getListWorkOrders()"    
-                (workOrderWasCanceled)="closeWorkOrder()"></app-work-order>
-            </div>
-        </div>
+    <div id="container__workOrder">       
+        <app-work-order 
+        (workOrderWasSaved)="getListWorkOrders()"    
+        (workOrderWasCanceled)="closeWorkOrder()"></app-work-order>        
     </div>
     
 

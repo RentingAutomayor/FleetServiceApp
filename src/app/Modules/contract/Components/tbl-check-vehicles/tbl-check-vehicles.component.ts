@@ -40,7 +40,7 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
           this.clientToFilter = this.clientService.getClientSelected(); 
           this.lsVehicleModelsToFilter = this.vehicleService.getListVehicleModelsSelected();
           this.setModelsString(); 
-          this.lsVehiclesSelected =this.vehicleService.getListVehiclesSelected();    
+          this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected();    
           if(this.lsVehiclesSelected != null && this.lsVehiclesSelected != undefined){
             this.checkVehiclesSelected(this.lsVehiclesSelected);
             this.lsVehiclesEmty = false;

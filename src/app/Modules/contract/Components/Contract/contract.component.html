@@ -154,7 +154,8 @@
                 [changeDealer]="oChangeDealer" 
                 [getPricesOfContract]="oGetPricesOfContract"
                 [discountType]="discountType"
-                [discountValue]="discountValueField.value">
+                [discountValue]="discountValueField.value"
+                (lsMaintenanceItemsWasSetted)="setItemsByContract($event)">
             </app-tbl-prices-by-contract> 
         </div>
 

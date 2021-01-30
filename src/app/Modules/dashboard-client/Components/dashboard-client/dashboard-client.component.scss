@@ -77,3 +77,14 @@ table{
     border: none;
     z-index: 55;
 }
+
+
+.container__header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.container__buttonClose{
+    margin-top: 10px ;
+}

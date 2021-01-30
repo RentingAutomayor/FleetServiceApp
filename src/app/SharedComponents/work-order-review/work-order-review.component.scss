@@ -1,0 +1,20 @@
+.container__row{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: 1fr;
+    justify-content: space-between;
+}
+
+.container__col{
+    padding: 10px;   
+}
+
+
+.bold{
+    font-weight: bold;
+}
+
+.last-row{
+    border-top: solid 2px black;
+}
+

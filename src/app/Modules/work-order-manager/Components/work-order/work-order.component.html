@@ -1,160 +1,190 @@
-<form [formGroup]="frmWorkOrder">
-    <div class="container__buttonClose">
-        <a (click)="closeWorkOrder()"><i class="fas fa-times"></i></a>
-    </div>   
-    <legend>Datos del vehículo</legend>
-    <div class="alert alert-primary" role="alert">
-        ¡ No se te olvide actualizar el kilometraje del vehículo !
-    </div>
-    <div class="container__row">
-        <div class="container__col">
-            <app-input-search-vehicle (vehicleWasSetted)="SetDataInForm()"></app-input-search-vehicle>
+<div class="card">
+    <form [formGroup]="frmWorkOrder">
+        
+        <div class="card-header" id="container__header">
+            <legend>Nueva orden de trabajo</legend>
+            <div class="container__buttonClose">
+                <a (click)="closeWorkOrder()"><i class="fas fa-times"></i></a>
+            </div>
         </div>
-        <div class="container__col">
-            <label>Modelo</label>
-            <input type="number" class="form-control" formControlName="txtYear" placeholder="Modelo" disabled>
-        </div>
-        <div class="container__col">
-            <label>Kilometraje</label>
-            <input type="text" class="form-control" 
-            (input)=formatMileageToString($event)
-            formControlName="txtMileage" placeholder="Kilometraje">
-        </div>
-    </div>
+        <div class="card-body">
+            <legend>Datos del vehículo</legend>
+            <div class="alert alert-primary" role="alert">
+                ¡ No se te olvide actualizar el kilometraje del vehículo !
+            </div>
+            <div class="container__row">
+                <div class="container__col">
+                    <app-input-search-vehicle (vehicleWasSetted)="SetDataInForm()"></app-input-search-vehicle>
+                </div>
+                <div class="container__col">
+                    <label>Modelo</label>
+                    <input type="number" class="form-control" formControlName="txtYear" placeholder="Modelo" disabled>
+                </div>
+                <div class="container__col">
+                    <label>Kilometraje</label>
+                    <input type="text" class="form-control" (input)=formatMileageToString($event)
+                        formControlName="txtMileage" placeholder="Kilometraje">
+                </div>
+            </div>
 
-    <div class="container__row">
-        <div class="container__col">
-            <label>Marca</label>
-            <input type="text" class="form-control" formControlName="txtBrand" placeholder="Marca" disabled>
-        </div>
+            <div class="container__row">
+                <div class="container__col">
+                    <label>Marca</label>
+                    <input type="text" class="form-control" formControlName="txtBrand" placeholder="Marca" disabled>
+                </div>
 
-        <div class="container__col">
-            <label>Tipo</label>
-            <input type="text" class="form-control" formControlName="txtVehicleType" placeholder="Tipo" disabled>
-        </div>
+                <div class="container__col">
+                    <label>Tipo</label>
+                    <input type="text" class="form-control" formControlName="txtVehicleType" placeholder="Tipo"
+                        disabled>
+                </div>
 
-        <div class="container__col">
-            <label>Línea</label>
-            <input type="text" class="form-control" formControlName="txtVehicleModel" placeholder="Línea" disabled>
-        </div>
-    </div>
-    <hr>
-    <legend>Datos del cliente</legend>
-    <div class="container__row">
-        <div class="container__col">
-            <label>Documento</label>
-            <input type="text" class="form-control" formControlName="txtClientDocument" placeholder="NIT ..." disabled>
-        </div>
-        <div class="container__col">
-            <label>Nombre</label>
-            <input type="text" class="form-control" formControlName="txtClient" placeholder="Cliente ..." disabled>
-        </div>
-        <div class="container__col">
-            <label>Contrato</label>
-            <input type="text" class="form-control" formControlName="txtContract" placeholder="Contrato ..." disabled>
-        </div>
-    </div>
-    <div class="container__row">
-        <div class="container__col">
-            <label>Cupo disponible</label>
-            <input type="text" class="form-control" formControlName="txtCurrentQuota" placeholder="Cupo disponible ..." disabled>
-        </div>
-        <div class="container__col">
-            <label>Cupo consumido</label>
-            <input type="text" class="form-control" formControlName="txtConsumedQuota" placeholder="Cupo consumido ..." disabled>
-        </div>
-        <div class="container__col">
-            <label>Cupo en tránsito</label>
-            <input type="text" class="form-control" formControlName="txtInTransitQuota" placeholder="Cupo en tránsito ..." disabled>
-        </div>
-    </div>
+                <div class="container__col">
+                    <label>Línea</label>
+                    <input type="text" class="form-control" formControlName="txtVehicleModel" placeholder="Línea"
+                        disabled>
+                </div>
+            </div>
+            <hr>
+            <legend>Datos del cliente</legend>
+            <div class="container__row">
+                <div class="container__col">
+                    <label>Documento</label>
+                    <input type="text" class="form-control" formControlName="txtClientDocument" placeholder="NIT ..."
+                        disabled>
+                </div>
+                <div class="container__col">
+                    <label>Nombre</label>
+                    <input type="text" class="form-control" formControlName="txtClient" placeholder="Cliente ..."
+                        disabled>
+                </div>
+                <div class="container__col">
+                    <label>Contrato</label>
+                    <input type="text" class="form-control" formControlName="txtContract" placeholder="Contrato ..."
+                        disabled>
+                </div>
+            </div>
+            <div class="container__row">
+                <div class="container__col">
+                    <label>Cupo disponible</label>
+                    <input type="text" class="form-control" formControlName="txtCurrentQuota"
+                        placeholder="Cupo disponible ..." disabled>
+                </div>
+                <div class="container__col">
+                    <label>Cupo consumido</label>
+                    <input type="text" class="form-control" formControlName="txtConsumedQuota"
+                        placeholder="Cupo consumido ..." disabled>
+                </div>
+                <div class="container__col">
+                    <label>Cupo en tránsito</label>
+                    <input type="text" class="form-control" formControlName="txtInTransitQuota"
+                        placeholder="Cupo en tránsito ..." disabled>
+                </div>
+            </div>
 
-    <hr>
-    <legend>Datos de la orden</legend>
-    <div class="container__row">
-        <div class="container__col">
-            <label>Concesionario</label>
-            <input type="text" class="form-control" formControlName="txtDealer" placeholder="Concesionario ..." disabled>
-        </div>
-        <div class="container__col">
-            <app-branch-by-dealer
-                [dealer]="dealer"
-                (branchWasSetted)="setBranchSelected()"></app-branch-by-dealer>
-        </div>
-        <div class="container__col">
-           <app-routines-by-vehicle-model
-                [vehicleModel]="vehicleModelSelected"    
-                (routineWasSetted)="showMaintenanceItems()">
-            </app-routines-by-vehicle-model>
-        </div>
-    </div>
-    <hr>
-    <legend>Observaciones</legend>
-    <div>
-        <textarea class="form-control" formControlName="txtObservation" cols="30" rows="2"></textarea>
-    </div>
-    <hr>
-    <legend>Items órden de trabajo</legend>
+            <hr>
+            <legend>Datos de la orden</legend>
+            <div class="container__row">
+                <div class="container__col">
+                    <label>Concesionario</label>
+                    <input type="text" class="form-control" formControlName="txtDealer" placeholder="Concesionario ..."
+                        disabled>
+                </div>
+                <div class="container__col">
+                    <app-branch-by-dealer 
+                        [dealer]="dealer" 
+                        (branchWasSetted)="setBranchSelected()">
+                    </app-branch-by-dealer>
 
-    <table class="table table-striped">
-        <thead>
-            <th>#</th>
-            <th>-</th>
-            <th>Nombre</th>
-            <th>Presentación</th>
-            <th>Categoría</th>
-            <th>Cantidad</th>
-            <th>Precio unitario</th>
-            <th>Precio total</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let i = index; let mItem of lsMaintenanceItems">
-                <td>{{i + 1 }}</td>
-                <td>
-                    <label class="container__checkbox">
-                    <input 
-                        type="checkbox" 
-                        [id]="getCheckBoxId(mItem.id)" 
-                        (click)="pickItem($event.target,mItem)"/>
-                    <span class="checkmark"></span>
-                </label>
-                </td>
-                <td>
-                    <Label [for]="getCheckBoxId(mItem.id)">
-                        {{mItem.name | titlecase}}
-                    </Label>                    
-                </td>
-                <td>{{mItem.presentationUnit.shortName}}</td>
-                <td>{{mItem.category.name | titlecase }}</td>
-                <td><input 
-                        type="number" 
-                        class="txt-amount form-control" 
-                        step="0.01"
-                        [id]="getTextAmountId(mItem.id)"
-                        (input)="updateAmountByItem($event.target,mItem)" 
-                        [value]="mItem.amount"></td>
-                <td [id]="getPriceId(mItem.id)">{{ formatNumberToString(mItem.referencePrice) }}</td>
-                <td>
-                    <span [id]="getLabelId(mItem.id)" class="lbl-total-price"></span>
-                </td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b class="bold">Total mantenimiento:</b></td>
-                <td><span id="lbl-total-routine" class="bold"></span></td>
-            </tr>
-        </tfoot>
-    </table>
-    <div class="buttons__container" id="container__buttons">
-        <button type="button" class="btn btn-danger" (click)="closeWorkOrder()">Cancelar</button>
-        <button type="button" class="btn btn-success" (click)="saveWorkOrder()">Guardar</button>
-    </div>
-</form>
+                    <div class="error" *ngIf="fieldBranchIsInvalid">
+                        <p>* La sucursal es un campo obligatorio </p>
+                    </div>
+                </div>
+                <div class="container__col">
+                    <app-routines-by-vehicle-model [vehicleModel]="vehicleModelSelected"
+                        (routineWasSetted)="showMaintenanceItems()">
+                    </app-routines-by-vehicle-model>
+                    <div class="error" *ngIf="fieldMaintenanceRoutineIsInvalid">
+                        <p>* La rutina de mantenimiento es un campo obligatorio </p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <legend>Observaciones</legend>
+            <div>
+                <textarea class="form-control" formControlName="txtObservation" cols="30" rows="2"></textarea>
+            </div>
+            <hr>
+            <legend>Items órden de trabajo</legend>
+
+            <table class="table table-striped">
+                <thead>
+                    <th>#</th>
+                    <th>-</th>
+                    <th>Nombre</th>
+                    <th>Presentación</th>                    
+                    <th>Cantidad</th>
+                    <th>Valor unitario sin impuestos</th>
+                    <th>Valor unitario x cantidad</th>
+                    <th>Valor impuestos</th>
+                    <th>Valor total por item</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let i = index; let mItem of lsMaintenanceItems">
+                        <td>{{i + 1 }}</td>
+                        <td>
+                            <label class="container__checkbox">
+                                <input type="checkbox" [id]="getCheckBoxId(mItem.id)"
+                                    (click)="pickItem($event.target,mItem)" />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <Label [for]="getCheckBoxId(mItem.id)">
+                                {{mItem.name | titlecase}}
+                            </Label>
+                        </td>
+                        <td>{{mItem.presentationUnit.shortName}}</td>                        
+                        <td>
+                            <input type="number" class="txt-amount form-control" step="0.01"
+                                [id]="getTextAmountId(mItem.id)" (input)="updateAmountByItem($event.target,mItem)"
+                                [value]="mItem.amount"></td>
+                        <td [id]="getPriceId(mItem.id)">{{ formatNumberToString(mItem.referencePrice) }}</td>
+                        <td>
+                            <span [id]=getLabePriceByAmountId(mItem.id)></span>
+                        </td>
+                        <td>
+                            <span [id]=getLabeTaxesId(mItem.id)></span>
+                        </td>
+                        <td>
+                            <span [id]="getLabeTotalId(mItem.id)" class="lbl-total-price"></span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="last-row">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><b class="bold">Total mantenimiento:</b></td>
+                        <td><span id="lbl-total-without_taxes" class="bold"></span></td>
+                        <td><span id="lbl-total-taxes" class="bold"></span></td>
+                        <td><span id="lbl-total-routine" class="bold"></span></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="buttons__container" id="container__buttons">
+                <button type="button" class="btn btn-danger" (click)="closeWorkOrder()">Cancelar</button>
+                <button type="button" class="btn btn-success" (click)="saveWorkOrder()" [disabled]="fieldBranchIsInvalid || fieldMaintenanceRoutineIsInvalid">Guardar</button>
+            </div>
+            <div>
+                <div class="container__infoError" id="cont_error_add_work_order" *ngIf="fieldBranchIsInvalid || fieldMaintenanceRoutineIsInvalid">
+                    <span>No se puede guardar la orden de trabajo puesto que hay campos obligatorios sin diligenciar</span>
+                </div>                
+            </div>
+        </div>
+    </form>
+</div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

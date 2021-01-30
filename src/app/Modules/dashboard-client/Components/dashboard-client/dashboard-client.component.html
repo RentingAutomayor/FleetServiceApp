@@ -4,7 +4,7 @@
     <table class="table table-striped">
         <thead>
             <th>#</th>
-            <th>Consecutivo</th>
+            <th>Código</th>
             <th>Placa</th>
             <th>Mantenimiento</th>
             <th>Contrato</th>
@@ -17,7 +17,7 @@
         <tbody>
             <tr *ngFor="let i = index;let trx of lsTransactionsToApprove">
                 <td>{{ (i + 1) }}</td>
-                <td>{{ trx.consecutive }}</td>
+                <td>{{ trx.code }}</td>
                 <td>{{ trx.headerDetails.vehicle.licensePlate }}</td>
                 <td>{{ trx.headerDetails.maintenanceRoutine.name }}</td>
                 <td>{{ trx.headerDetails.contract.code }}</td>
@@ -27,8 +27,10 @@
                 <td>{{ trx.registrationDate | date: 'yyyy/MM/dd hh:mm' }}</td>
                 <td>
                     <i class="fas fa-info-circle text-info" title="Más información"></i>
-                    <i class="fas fa-check-circle text-success" (click)="setTransaction(trx); openPopUp('container__Approbation')" title="Aprobar"></i>
-                    <i class="fas fa-times-circle text-danger" (click)="setTransaction(trx); openPopUp('container__Cancelation')" title="Negar"></i>
+                    <i class="fas fa-check-circle text-success"
+                        (click)="setTransaction(trx); openPopUp('container__Approbation')" title="Aprobar"></i>
+                    <i class="fas fa-times-circle text-danger"
+                        (click)="setTransaction(trx); openPopUp('container__Cancelation')" title="Negar"></i>
                 </td>
             </tr>
         </tbody>
@@ -39,28 +41,31 @@
 <div id="container__Approbation">
     <div class="overlay">
         <div class="card">
-            <div class="card-body container__createQuota">
-                <div class="container__row">
-                    <div></div>
-                    <div></div>
-                    <div class="container__buttonClose">
-                        <a><i class="fas fa-times" (click)="closePopUp('container__Approbation')"></i></a>
-                    </div>
+            <div class="card-header container__header">
+                <h2>Aprobar orden de trabajo: {{ (transactionSelected!=null && transactionSelected !=undefined)?transactionSelected.code:'' }}</h2>
+                <div class="container__buttonClose">
+                    <a><i class="fas fa-times" (click)="closePopUp('container__Approbation')"></i></a>
                 </div>
+            </div>
+            <div class="card-body">
+                <app-work-order-review
+                    [workOrder_id]="trx_id">
+                </app-work-order-review>
+            </div>
+            <div>
                 <form [formGroup]="frmApprovedTrx">
-                    <div class="container__row">
-                        <h2>Aprobar orden de trabajo</h2>
-                    </div>
                     <div>
-                       <legend>Observaciones</legend>
-                       <textarea class="form-control" 
-                        formControlName="txtObservationApprobation" cols="30" rows="2"></textarea>
-
+                        <legend>Observaciones de la aprobación</legend>
+                        <textarea 
+                            class="form-control" 
+                            formControlName="txtObservationApprobation" cols="30"
+                            rows="2">
+                        </textarea>
                     </div>
                 </form>
-
                 <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger" (click)="closePopUp('container__Approbation')">Cancelar</button>
+                    <button type="button" class="btn btn-danger"
+                        (click)="closePopUp('container__Approbation')">Cancelar</button>
                     <button type="button" class="btn btn-success" (click)="approveWorkOrder()">Guardar</button>
                 </div>
             </div>
@@ -85,15 +90,16 @@
                         <h2>Cancelar orden de trabajo</h2>
                     </div>
                     <div>
-                       <legend>Observaciones</legend>
-                       <textarea class="form-control" 
-                        formControlName="txtObservationCancelation" cols="30" rows="2"></textarea>
+                        <legend>Observaciones</legend>
+                        <textarea class="form-control" formControlName="txtObservationCancelation" cols="30"
+                            rows="2"></textarea>
 
                     </div>
                 </form>
 
                 <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger" (click)="closePopUp('container__Cancelation')">Cancelar</button>
+                    <button type="button" class="btn btn-danger"
+                        (click)="closePopUp('container__Cancelation')">Cancelar</button>
                     <button type="button" class="btn btn-success" (click)="cancelWorkOrder()">Guardar</button>
                 </div>
             </div>

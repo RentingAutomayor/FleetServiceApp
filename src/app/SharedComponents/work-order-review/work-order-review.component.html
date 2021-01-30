@@ -1,0 +1,113 @@
+<form [formGroup]="frmWorkOrder">
+
+    <div class="container__info_client">
+        <legend>Datos del cliente</legend>
+        <div class="container__row">
+            <div class="container__col">
+                <label>Documento</label>
+                <input type="text" class="form-control" placeholder="NIT ..." disabled>
+            </div>
+            <div class="container__col">
+                <label>Nombre</label>
+                <input type="text" class="form-control" placeholder="Cliente ..." disabled>
+            </div>
+            <div class="container__col">
+                <label>Contrato</label>
+                <input type="text" class="form-control" placeholder="Contrato ..." disabled>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <legend>Datos del vehículo</legend>
+    <div class="container__row">
+        <div class="container__col">
+            <label>Placa</label>
+            <input type="number" class="form-control" placeholder="Modelo" disabled>
+        </div>
+        <div class="container__col">
+            <label>Modelo</label>
+            <input type="number" class="form-control" placeholder="Modelo" disabled>
+        </div>
+        <div class="container__col">
+            <label>Kilometraje</label>
+            <input type="text" class="form-control" placeholder="Kilometraje" disabled>
+        </div>
+    </div>
+
+    <div class="container__row">
+        <div class="container__col">
+            <label>Marca</label>
+            <input type="text" class="form-control" placeholder="Marca" disabled>
+        </div>
+
+        <div class="container__col">
+            <label>Tipo</label>
+            <input type="text" class="form-control" placeholder="Tipo" disabled>
+        </div>
+
+        <div class="container__col">
+            <label>Línea</label>
+            <input type="text" class="form-control" placeholder="Línea" disabled>
+        </div>
+    </div>
+    <hr>
+    <legend>Datos de la orden</legend>
+    <div class="container__row">
+        <div class="container__col">
+            <label>Concesionario</label>
+            <input type="text" class="form-control" placeholder="Concesionario ..." disabled>
+        </div>
+        <div class="container__col">
+            <label>Sucursal</label>
+            <input type="text" class="form-control" placeholder="Sucursal ..." disabled>
+        </div>
+        <div class="container__col">
+            <label>Rutina de mantenimiento</label>
+            <input type="text" class="form-control" placeholder="Sucursal ..." disabled>
+        </div>
+    </div>
+    <hr>
+    <legend>Observaciones del concesionario</legend>
+    <div>
+        <textarea class="form-control" cols="30" rows="2" disabled></textarea>
+    </div>
+</form>
+<hr>
+
+<legend>Items órden de trabajo</legend>
+<table class="table table-striped">
+    <thead>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Presentación</th>
+        <th>Cantidad</th>
+        <th>Valor unitario sin impuestos</th>
+        <th>Valor unitario x cantidad</th>
+        <th>Valor impuestos</th>
+        <th>Valor total por item</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let i = index; let mItem of workOrder.lsItems">
+            <td>{{ i + 1 }}</td>
+            <td>{{ mItem.name | titlecase}}</td>            
+            <td>{{ mItem.presentationUnit.longName | titlecase }}</td>                        
+            <td>{{ mItem.amount}}</td>
+            <td>{{ mItem.referencePrice | currency }}</td>
+            <td>{{ mItem.referencePrice * mItem.amount | currency }}</td>           
+            <td>{{ mItem.taxesValue | currency }}</td>             
+            <td>{{ (mItem.referencePrice * mItem.amount) + mItem.taxesValue | currency }}</td>               
+        </tr> 
+    </tbody>
+    <tfoot>
+        <tr class="last-row">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>            
+            <td><b class="bold">Total mantenimiento:</b></td>
+            <td><span id="lbl-total-without_taxes" class="bold">{{ workOrder.valueWithoutTaxes | currency }}</span></td>
+            <td><span id="lbl-total-taxes" class="bold">{{ workOrder.taxesValue | currency }}</span></td>
+            <td><span id="lbl-total-routine" class="bold">{{ workOrder.value | currency }}</span></td>
+        </tr>
+    </tfoot>
+</table>

@@ -30,7 +30,7 @@
                     <td><span [id]="getSpanStateId(workOrder.id)">{{ validateState(workOrder.transactionState,
                             workOrder.id) }}</span></td>
                     <td>
-                        <i class="fas fa-info-circle text-info" title="Más información"></i>
+                        <i class="fas fa-info-circle text-info" (click)="setTransaction(workOrder); openPopUp('container__resume')"title="Más información"></i>
                         <i class="fas fa-trash-alt text-danger" title="Eliminar"></i>
                     </td>
                 </tr>
@@ -45,6 +45,24 @@
     
 
 </div>
+
+<div id="container__resume">
+    <div class="overlay">
+        <div class="card card-review">
+            <div class="card-header container__header">
+                <h2>Resumen orden de trabajo: {{ (transactionSelected!=null && transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
+                <div class="container__buttonClose">
+                    <a><i class="fas fa-times" (click)="closePopUp('container__resume')"></i></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <app-work-order-review [workOrder_id]="trx_id">
+                </app-work-order-review>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

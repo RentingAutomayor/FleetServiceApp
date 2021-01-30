@@ -26,7 +26,7 @@
                 <td>{{ formatNumberToString(trx.value) }}</td>
                 <td>{{ trx.registrationDate | date: 'yyyy/MM/dd hh:mm' }}</td>
                 <td>
-                    <i class="fas fa-info-circle text-info" title="Más información"></i>
+                    <i class="fas fa-info-circle text-info" (click)="setTransaction(trx); openPopUp('container__resume')" title="Más información"></i>
                     <i class="fas fa-check-circle text-success"
                         (click)="setTransaction(trx); openPopUp('container__Approbation')" title="Aprobar"></i>
                     <i class="fas fa-times-circle text-danger"
@@ -40,32 +40,28 @@
 
 <div id="container__Approbation">
     <div class="overlay">
-        <div class="card">
+        <div class="card card-review">
             <div class="card-header container__header">
-                <h2>Aprobar orden de trabajo: {{ (transactionSelected!=null && transactionSelected !=undefined)?transactionSelected.code:'' }}</h2>
+                <h2>Aprobar orden de trabajo: {{ (transactionSelected!=null && transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
                 <div class="container__buttonClose">
                     <a><i class="fas fa-times" (click)="closePopUp('container__Approbation')"></i></a>
                 </div>
             </div>
             <div class="card-body">
-                <app-work-order-review
-                    [workOrder_id]="trx_id">
+                <app-work-order-review [workOrder_id]="trx_id">
                 </app-work-order-review>
             </div>
-            <div>
+            <div class="card-footer">
                 <form [formGroup]="frmApprovedTrx">
                     <div>
                         <legend>Observaciones de la aprobación</legend>
-                        <textarea 
-                            class="form-control" 
-                            formControlName="txtObservationApprobation" cols="30"
-                            rows="2">
+                        <textarea class="form-control" formControlName="txtObservationApprobation" cols="30" rows="2">
                         </textarea>
                     </div>
                 </form>
                 <div class="buttons__container" id="container__buttons">
                     <button type="button" class="btn btn-danger"
-                        (click)="closePopUp('container__Approbation')">Cancelar</button>
+                        (click)="closePopUp('container__Approbation');clearForms()">Cancelar</button>
                     <button type="button" class="btn btn-success" (click)="approveWorkOrder()">Guardar</button>
                 </div>
             </div>
@@ -76,32 +72,46 @@
 
 <div id="container__Cancelation">
     <div class="overlay">
-        <div class="card">
-            <div class="card-body container__createQuota">
-                <div class="container__row">
-                    <div></div>
-                    <div></div>
-                    <div class="container__buttonClose">
-                        <a><i class="fas fa-times" (click)="closePopUp('container__Cancelation')"></i></a>
-                    </div>
+        <div class="card card-review">
+            <div class="card-header container__header">
+                <h2>Cancelar orden de trabajo: {{ (transactionSelected!=null && transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
+                <div class="container__buttonClose">
+                    <a><i class="fas fa-times" (click)="closePopUp('container__Cancelation')"></i></a>
                 </div>
+            </div>
+            <div class="card-body">
+                <app-work-order-review [workOrder_id]="trx_id">
+                </app-work-order-review>
+            </div>
+            <div class="card-footer">
                 <form [formGroup]="frmCancelTrx">
-                    <div class="container__row">
-                        <h2>Cancelar orden de trabajo</h2>
-                    </div>
-                    <div>
-                        <legend>Observaciones</legend>
-                        <textarea class="form-control" formControlName="txtObservationCancelation" cols="30"
-                            rows="2"></textarea>
-
+                    <legend>Observaciones de la cancelación</legend>
+                    <textarea class="form-control" formControlName="txtObservationCancelation" cols="30"
+                        rows="2"></textarea>
+                    <div class="buttons__container" id="container__buttons">
+                        <button type="button" class="btn btn-danger"
+                            (click)="closePopUp('container__Cancelation');clearForms()">Cancelar</button>
+                        <button type="button" class="btn btn-success" (click)="cancelWorkOrder()">Guardar</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger"
-                        (click)="closePopUp('container__Cancelation')">Cancelar</button>
-                    <button type="button" class="btn btn-success" (click)="cancelWorkOrder()">Guardar</button>
+
+<div id="container__resume">
+    <div class="overlay">
+        <div class="card card-review">
+            <div class="card-header container__header">
+                <h2>Resumen orden de trabajo: {{ (transactionSelected!=null && transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
+                <div class="container__buttonClose">
+                    <a><i class="fas fa-times" (click)="closePopUp('container__resume')"></i></a>
                 </div>
+            </div>
+            <div class="card-body">
+                <app-work-order-review [workOrder_id]="trx_id">
+                </app-work-order-review>
             </div>
         </div>
     </div>

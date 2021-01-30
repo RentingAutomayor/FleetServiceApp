@@ -9,6 +9,7 @@ import { MovementService } from '../../../movement/Services/Movement/movement.se
 import { TransactionDetail } from 'src/app/Models/TransactionDetail';
 import { TransactionObservation } from 'src/app/Models/TransactionObservation';
 import { SessionUser } from 'src/app/Models/SessionUser';
+import { SecurityValidators } from 'src/app/Models/SecurityValidators';
 
 @Component({
   selector: 'app-dashboard-client',
@@ -68,10 +69,12 @@ export class DashboardClientComponent implements OnInit {
 
   async getTransactionsToApprove(client_id: number){
     try {
-      this.transactionService.getTransactionsToApprove(client_id).then( 
+      this.isAwaiting = true;
+      await this.transactionService.getTransactionsToApprove(client_id).then( 
         lsTrx => {
           this.lsTransactionsToApprove = lsTrx;
         });
+        this.isAwaiting = false;
     } catch (error) {
       console.warn(error);
     }
@@ -153,14 +156,14 @@ export class DashboardClientComponent implements OnInit {
     let trxApprove = new Transaction();
     trxApprove.movement = movement;
     trxApprove.value = trxRelated.value;
-    trxApprove.usu_id = 0;
+    trxApprove.usu_id = SecurityValidators.validateUserLogged();;
     trxApprove.client = trxRelated.client;
 
     trxApprove.headerDetails = new TransactionDetail();
     trxApprove.headerDetails.relatedTransaction = trxRelated;
 
     let trxObservation = new TransactionObservation();
-    trxObservation.usu_id = 0;
+    trxObservation.usu_id = SecurityValidators.validateUserLogged();
     trxObservation.description = observation;
 
     let lsObservation = [];
@@ -169,6 +172,11 @@ export class DashboardClientComponent implements OnInit {
     trxApprove.lsObservations = lsObservation;
 
     return trxApprove;
+  }
+
+  clearForms(){
+    this.frmApprovedTrx.reset();
+    this.frmCancelTrx.reset();
   }
 
 }

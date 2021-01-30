@@ -47,6 +47,10 @@ button{
     display: none;
 }
 
+#container__resume{
+    display: none;
+}
+
 i{
     margin: 0 3px;
     cursor: pointer;
@@ -87,4 +91,9 @@ table{
 
 .container__buttonClose{
     margin-top: 10px ;
+}
+
+.card-review{
+    width: 1000px;
+    height: auto;   
 }

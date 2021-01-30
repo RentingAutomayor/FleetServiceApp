@@ -12,10 +12,15 @@ import { SessionUser } from 'src/app/Models/SessionUser';
 export class WorkOrderManagerComponent implements OnInit {
   isAwaiting: boolean;
   lsWorkOrderByDealer: Transaction[];
+  transactionSelected: Transaction;
+  trx_id:number;
 
   constructor(
     private transactionService: TransactionService
-  ) { }
+  ) { 
+    this.transactionSelected = new Transaction();
+    this.trx_id = 0;
+  }
 
   ngOnInit(): void {
     this.initComponents();
@@ -35,7 +40,11 @@ export class WorkOrderManagerComponent implements OnInit {
   async getTransactionByDealer(dealer_id: number) {
     try {    
       this.isAwaiting = true;
-      this.transactionService.getTransactionsByDealer(dealer_id).then(dataTrx => { this.lsWorkOrderByDealer = dataTrx });
+      await this.transactionService.getTransactionsByDealer(dealer_id)
+      .then(dataTrx => { 
+        this.lsWorkOrderByDealer = dataTrx;
+        console.log(this.lsWorkOrderByDealer) ;
+      });
       this.isAwaiting = false;
     } catch (error) {
       console.warn(error);
@@ -94,5 +103,20 @@ export class WorkOrderManagerComponent implements OnInit {
     //TODO: change this for the user logged configuration;
     this.getTransactionByDealer(this.getDealerId());
     this.closeWorkOrder();
+  }
+
+  closePopUp(idPopUp) {
+    let popUp = document.getElementById(idPopUp);
+    popUp.style.display = 'none';
+  }
+
+  openPopUp(idPopUp) {
+    let popUp = document.getElementById(idPopUp);
+    popUp.style.display = 'block';
+  }
+
+  setTransaction(trx: Transaction){
+    this.transactionSelected = trx;
+    this.trx_id = trx.id;    
   }
 }

@@ -506,13 +506,15 @@ export class WorkOrderComponent implements OnInit, OnChanges {
         let trxWillBePorcesed = ((parseFloat(financialInformationByClient.currentQuota.toString()) - trxWorkOrder.value) > 0) ? true : false;
         if (trxWillBePorcesed) {
           console.log(trxWorkOrder);
-          this.transactionService.processTransaction(trxWorkOrder).then(response => {
+          this.isAwaiting = true;
+          await this.transactionService.processTransaction(trxWorkOrder).then(response => {
             let rta = response;
             if (rta.response) {
               alert(rta.message);
               this.workOrderWasSaved.emit(true);
             }
           });
+          this.isAwaiting = true;
         } else {
           alert("¡No se puede procesar esta órden de trabajo puesto que el cliente no cuenta con el suficiente cupo disponible!");
         }
@@ -534,7 +536,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       trxWorkOrder.taxesValue = this.totalTaxes;
       trxWorkOrder.value = this.totalRoutine;
       trxWorkOrder.client = this.contractSelected.client;
-      trxWorkOrder.usu_id = SecurityValidators.validateUserLogged();;
+      trxWorkOrder.usu_id = SecurityValidators.validateUserLogged();
 
       let trxDetail = new TransactionDetail();
       trxDetail.dealer = this.dealer;
@@ -569,7 +571,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       let aObservation = [];
       let observation = new TransactionObservation()
       observation.description = txtObservation.value;
-      observation.usu_id = 0;
+      observation.usu_id = SecurityValidators.validateUserLogged();;
       aObservation.push(observation);
       trxWorkOrder.lsObservations = aObservation;
 

@@ -9,11 +9,9 @@ import { TransactionState } from 'src/app/Models/TransactionState';
 import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service';
 import { QuotaService } from '../../Services/Quota/quota.service';
 import { MovementService } from '../../../movement/Services/Movement/movement.service';
-import { reject, values } from 'lodash';
-import { transcode } from 'buffer';
-import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { FinancialInformation } from 'src/app/Models/FinancialInformation';
 import { SharedFunction } from 'src/app/Models/SharedFunctions';
+import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 
 
 @Component({
@@ -209,7 +207,7 @@ export class QuotaManagementComponent implements OnInit {
     trx.transactionState = pState;
     trx.headerDetails = pHeaderDetails;
     trx.lsObservations = pListObservations;
-    trx.usu_id = usu_id;
+    trx.usu_id = SecurityValidators.validateUserLogged();;
     return trx;
   }
 

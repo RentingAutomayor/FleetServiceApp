@@ -23,7 +23,7 @@
                 <td>{{ trx.headerDetails.contract.code }}</td>
                 <td>{{ trx.headerDetails.dealer.name }}</td>
                 <td>{{ trx.headerDetails.branch.name }}</td>
-                <td>{{ formatNumberToString(trx.value) }}</td>
+                <td>{{ trx.value | currency }}</td>
                 <td>{{ trx.registrationDate | date: 'yyyy/MM/dd hh:mm' }}</td>
                 <td>
                     <i class="fas fa-info-circle text-info" (click)="setTransaction(trx); openPopUp('container__resume')" title="Más información"></i>
@@ -48,8 +48,8 @@
                 </div>
             </div>
             <div class="card-body">
-                <app-work-order-review [workOrder_id]="trx_id">
-                </app-work-order-review>
+                <app-transaction-review [trx_id]="trx_id">
+                </app-transaction-review>
             </div>
             <div class="card-footer">
                 <form [formGroup]="frmApprovedTrx">
@@ -80,8 +80,8 @@
                 </div>
             </div>
             <div class="card-body">
-                <app-work-order-review [workOrder_id]="trx_id">
-                </app-work-order-review>
+                <app-transaction-review [trx_id]="trx_id">
+                </app-transaction-review>
             </div>
             <div class="card-footer">
                 <form [formGroup]="frmCancelTrx">
@@ -110,8 +110,8 @@
                 </div>
             </div>
             <div class="card-body">
-                <app-work-order-review [workOrder_id]="trx_id">
-                </app-work-order-review>
+                <app-transaction-review [trx_id]="trx_id">
+                </app-transaction-review>
             </div>
         </div>
     </div>

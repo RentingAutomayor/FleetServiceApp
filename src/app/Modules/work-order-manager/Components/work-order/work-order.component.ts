@@ -569,13 +569,18 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       trxWorkOrder.lsItems = this.lsMaintenanceItemsSelected;
 
       let aObservation = [];
+
       let observation = new TransactionObservation()
-      observation.description = txtObservation.value;
-      observation.usu_id = SecurityValidators.validateUserLogged();;
-      aObservation.push(observation);
+      let observationDesc =  txtObservation.value;
+
+      if(observationDesc.toString().trim() != ''){
+        observation.description = observationDesc;
+        observation.usu_id = SecurityValidators.validateUserLogged();;
+        aObservation.push(observation);
+      }   
+
       trxWorkOrder.lsObservations = aObservation;
-
-
+      
       return trxWorkOrder;
     } catch (error) {      
       alert(error);

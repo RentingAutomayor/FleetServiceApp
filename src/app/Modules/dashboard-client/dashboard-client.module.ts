@@ -6,8 +6,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardClientComponent } from './Components/dashboard-client/dashboard-client.component';
 
 import { DashboardClientRoutingModule } from './dashboardClient-routing.module';
-import { SharedModule } from 'src/app/SharedComponents/shared.module';
 
+import { SharedModule } from 'src/app/SharedComponents/shared.module';
 
 
 
@@ -19,7 +19,7 @@ import { SharedModule } from 'src/app/SharedComponents/shared.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule,
+    SharedModule,    
     DashboardClientRoutingModule 
   ]
 })

@@ -4,6 +4,7 @@ import { Movement } from './Movement';
 import { TransactionDetail } from './TransactionDetail';
 import { TransactionObservation } from './TransactionObservation';
 import { TransactionState } from './TransactionState';
+import { User } from './User';
 
 export class Transaction{
     public id: number;
@@ -20,6 +21,7 @@ export class Transaction{
     public lsObservations: TransactionObservation[];    
     //TODO change this for model of user
     public usu_id: number;
+    public user: User;
     public state: boolean;
     public registrationDate: Date;
     public updateDate: Date;

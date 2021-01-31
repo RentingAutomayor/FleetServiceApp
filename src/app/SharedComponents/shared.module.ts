@@ -17,7 +17,7 @@ import { PersonComponent } from './person/person.component';
 import { VehicleBrandComponent } from './vehicle-brand/vehicle-brand.component';
 import { VehicleModelComponent } from './vehicle-model/vehicle-model.component';
 import { VehicleTypeComponent } from './vehicle-type/vehicle-type.component';
-import { WorkOrderReviewComponent } from './work-order-review/work-order-review.component';
+import { TransactionReviewComponent } from './transaction-review/transaction-review.component';
 
 
 @NgModule({
@@ -36,7 +36,7 @@ import { WorkOrderReviewComponent } from './work-order-review/work-order-review.
     VehicleBrandComponent,
     VehicleModelComponent,
     VehicleTypeComponent,
-    WorkOrderReviewComponent
+    TransactionReviewComponent
   ],
   imports: [
     CommonModule,
@@ -59,7 +59,7 @@ import { WorkOrderReviewComponent } from './work-order-review/work-order-review.
     VehicleModelComponent,
     VehicleTypeComponent,
     NgxPaginationModule,
-    WorkOrderReviewComponent
+    TransactionReviewComponent
   ],
   
   schemas: [

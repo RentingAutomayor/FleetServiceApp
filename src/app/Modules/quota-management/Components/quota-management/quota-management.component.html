@@ -42,13 +42,13 @@
             <tbody>
                 <tr *ngFor="let index = index;let financialInformation of lsClientsWithQuota">
                     <td>{{ index + 1}}</td>
-                    <td >{{ financialInformation.client.name | titlecase}}</td>
-                    <td [id]="getElementId('approvedQuota',financialInformation.client.id)"></td>
-                    <td [id]="getElementId('currentQuota',financialInformation.client.id)"></td>
-                    <td [id]="getElementId('consumedQuota',financialInformation.client.id)"></td>
-                    <td [id]="getElementId('inTransitQuota',financialInformation.client.id)"></td>
+                    <td>{{ financialInformation.client.name | titlecase}}</td>
+                    <td>{{ financialInformation.approvedQuota | currency }}</td>
+                    <td>{{ financialInformation.currentQuota | currency }}</td>
+                    <td>{{ financialInformation.consumedQuota | currency }}</td>
+                    <td>{{ financialInformation.inTransitQuota | currency }}</td>
                     <td>
-                        <i class="fas fa-info-circle text-info" title="Más información"></i>
+                        <i class="fas fa-info-circle text-info" title="Más información" ></i>
                         <i class="fas fa-plus-circle text-success" (click)="openPopUp('container__addQuota') ; setClientInformation('container__addQuota',financialInformation.client)" title="Ampliar cupo"></i>
                         <i class="fas fa-hand-holding-usd" (click)="openPopUp('container__freeUpQuota') ; setClientInformation('container__freeUpQuota',financialInformation.client)" title="Liberar cupo"></i>
                         <i class="fas fa-trash-alt text-danger" (click)="openPopUp('container__cancelQuota') ;setClientInformation('container__cancelQuota',financialInformation.client)" title="Anular cupo"></i>
@@ -96,7 +96,7 @@
         <table class="table table-striped">
             <thead>
                 <th class="col-number col-mobile-hide">#</th>
-                <th>Consecutivo</th>
+                <th>Código</th>
                 <th>Movimiento</th>  
                 <th>Cliente</th>                            
                 <th>Valor</th>
@@ -107,14 +107,14 @@
             <tbody>
                 <tr *ngFor="let index = index; let trx of lsTodayTransactions">
                     <td>{{ index + 1 }}</td>
-                    <td>{{ trx.consecutive }}</td>
+                    <td>{{ (trx.code!=null)?trx.code:trx.consecutive }}</td>
                     <td>{{ trx.movement.name | titlecase }}</td> 
                     <td>{{ trx.client.name | titlecase }}</td>                                      
-                    <td [id]="getElementId('trxValue',trx.id)"></td>
+                    <td>{{ trx.value | currency }}</td>
                     <td>{{ getStringHour(trx.registrationDate) }}</td>
-                    <td>{{ trx.usu_id}}</td>
+                    <td>{{ trx.user.name +' '+ trx.user.lastName }}</td>
                     <td>
-                        <i class="fas fa-info-circle text-info" title="Más información"></i>
+                        <i class="fas fa-info-circle text-info" (click)="setTransaction(trx); openPopUp('container__resume')" title="Más información"></i>
                         <i class="fas fa-trash-alt text-danger" title="Anular transacción"></i>
                     </td>
                 </tr>
@@ -312,6 +312,24 @@
                         (click)="closePopUp('container__cancelQuota')">Cancelar</button>
                     <button type="button" class="btn btn-success" (click)="cancelQuota()">Guardar</button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="container__resume">
+    <div class="overlay">
+        <div class="card card-review">
+            <div class="card-header container__header" id="container__header">
+                <h2 class="title_resume">{{( ((transactionSelected.movement.name!=null)?transactionSelected.movement.name:'') + ' ' + ((transactionSelected.code!=null)?transactionSelected.code:transactionSelected.consecutive) ) | lowercase }}</h2>
+                <div class="container__buttonClose">
+                    <a><i class="fas fa-times" (click)="closePopUp('container__resume')"></i></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <app-transaction-review [trx_id]="trx_id">
+                </app-transaction-review>
             </div>
         </div>
     </div>

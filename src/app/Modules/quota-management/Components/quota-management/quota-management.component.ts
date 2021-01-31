@@ -38,6 +38,8 @@ export class QuotaManagementComponent implements OnInit {
   LIBERACION_DE_CUPO = 7;
 
   sharedFunction: SharedFunction;
+  transactionSelected: Transaction;
+  trx_id:number;    
 
   constructor(
     private quotaService: QuotaService,
@@ -65,7 +67,13 @@ export class QuotaManagementComponent implements OnInit {
     this.frmCancelQuota = new FormGroup({
       txtCancelQuotaClient: new FormControl(''),
       txtCancelQuotaObservation: new FormControl(''),
-    })
+    });
+
+    this.transactionSelected = new Transaction();
+    this.transactionSelected.consecutive = 0;
+    this.transactionSelected.code = null;
+    this.transactionSelected.movement = new Movement();
+    this.trx_id = 0;    
   }
 
   ngOnInit(): void {
@@ -109,9 +117,7 @@ export class QuotaManagementComponent implements OnInit {
   async getTodayTransactions() {
     try {
       this.lsTodayTransactions = await this.trxService.getTodayTransactions();
-      setTimeout(() => {
-        this.formatTrxQuantity(this.lsTodayTransactions);
-      }, 500)
+      console.log(this.lsTodayTransactions);    
 
     } catch (error) {
       console.warn(error);
@@ -310,14 +316,7 @@ export class QuotaManagementComponent implements OnInit {
     }
   }
 
-  formatTrxQuantity(lsTransactions: Transaction[]) {
-    for (let trx of lsTransactions) {
-      let idTrxValue = this.getElementId('trxValue', trx.id);
-      let elementTrxValue = document.getElementById(idTrxValue);
-      let TrxValueFormated = this.formatNumberToString(trx.value);
-      elementTrxValue.innerText = TrxValueFormated;
-    }
-  }
+
 
   formatNumber(event: any) {
     let { txtApprovedQuota } = this.frmApprovedQuota.controls;
@@ -456,5 +455,11 @@ export class QuotaManagementComponent implements OnInit {
         }
       });
     }
+  }
+
+
+  setTransaction(trx: Transaction){
+    this.transactionSelected = trx;
+    this.trx_id = trx.id;    
   }
 }

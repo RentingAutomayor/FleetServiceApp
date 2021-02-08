@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { PersonComponent } from '../app/Components/person/person.component';
 import { CityComponent } from '../app/Components/city/city.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { JobTitleComponent } from './Components/job-title/job-title.component';
 import { ClientComponent } from './Modules/client/client.component';
 import { ContactComponent } from './Modules/contact/contact.component';
@@ -135,6 +136,7 @@ import { UsersComponent } from './Modules/users/users.component';
     NgxPaginationModule,
     BrowserAnimationsModule,
     BsDatepickerModule.forRoot(),
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [
     DatePipe

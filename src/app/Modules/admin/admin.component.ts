@@ -13,6 +13,12 @@ export class AdminComponent implements OnInit {
   lsGroups: any[];
   lsUsers: any[];
 
+  // others
+  lsClient: any[];
+  lsDealer: any[];
+  lsComp: any[];
+
+
   session : any = {};
   isAwaiting:boolean;
 
@@ -20,7 +26,6 @@ export class AdminComponent implements OnInit {
    ap:number = 1;
    gp:number = 1;
    up:number = 1;
-   p:number = 1;
 
   constructor(private adminService : AdminService,
               private router:Router) { 
@@ -33,11 +38,19 @@ export class AdminComponent implements OnInit {
   }
 
   loadApp(){    
-    this.session = JSON.parse(sessionStorage.getItem('sessionUser'))   
+    this.session = JSON.parse(sessionStorage.getItem('sessionUser'));
     if (this.session == null) {      
       this.router.navigate(['Login']);      
+    }else{
+      this.loadProfiles();
     }
   } 
+
+  async loadProfiles(){
+    this.lsClient = await this.adminService.getClients();
+    this.lsDealer = await this.adminService.getDealers();  
+    this.lsComp = await this.adminService.getCompanies();  
+  }
 
   async initComponents(){
     this.isAwaiting = true;
@@ -204,6 +217,26 @@ export class AdminComponent implements OnInit {
     }    
 
     this.comeBackToTable('Action')
+  }
+
+  saveGroup(respuesta: any){
+    alert(respuesta.message);
+
+    if (respuesta.state) {      
+      this.initComponents();
+    }    
+
+    this.comeBackToTable('Group')
+  }
+
+  saveUser(respuesta: any){
+    alert(respuesta.message);
+
+    if (respuesta.state) {      
+      this.initComponents();
+    }    
+
+    this.comeBackToTable('User')
   }
 
 }

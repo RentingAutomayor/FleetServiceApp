@@ -21,7 +21,7 @@
                 <th class="col-mobile-hide">Acciones</th>
             </thead>
             <tbody>
-                <tr *ngFor="let i = index ;let user of lsUsers | paginate: { itemsPerPage: 10, currentPage: p }">
+                <tr *ngFor="let i = index ;let user of lsUsers | paginate: { itemsPerPage: 10, currentPage: up }">
                     <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
                     <td>{{ user.usr_firstName | titlecase }}</td>
                     <td>{{ user.usr_lastName | titlecase }}</td>
@@ -37,14 +37,14 @@
             </tbody>
         </table>
         <div class="paginationContainer">
-            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            <pagination-controls (pageChange)="up = $event"></pagination-controls>
         </div>
 
         <div id="container__formUser">
             <div class="overlay">
                 <div class="card">
                     <div class="card-body-float">
-                        <app-users (userWasCanceled)="comeBackToTable($event)">
+                        <app-users (userWasCanceled)="comeBackToTable($event)" [lsGroups]=(lsGroups) [lsClient]=(lsClient) [lsDealer]=(lsDealer) [lsComp]=(lsComp)>
                         </app-users>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                 <th class="col-mobile-hide">Acciones</th>
             </thead>
             <tbody>
-                <tr *ngFor="let i = index ;let group of lsGroups | paginate: { itemsPerPage: 10, currentPage: p }">
+                <tr *ngFor="let i = index ;let group of lsGroups | paginate: { itemsPerPage: 10, currentPage: gp }">
                     <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
                     <td>{{ group.groupName }}</td>
                     <td>{{ group.description | titlecase }}</td>
@@ -76,14 +76,14 @@
 
         </table>
         <div class="paginationContainer">
-            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            <pagination-controls (pageChange)="gp = $event"></pagination-controls>
         </div>
 
         <div id="container__formGroup">
             <div class="overlay">
                 <div class="card">
                     <div class="card-body-float">
-                        <app-groups (groupWasCanceled)="comeBackToTable($event)">
+                        <app-groups [actions]="lsActions" (groupWasCanceled)="comeBackToTable($event)" (groupWasSetted)="saveGroup($event)">
                         </app-groups>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                 <th class="col-mobile-hide">Acciones</th>
             </thead>
             <tbody>
-                <tr *ngFor="let i = index ;let action of lsActions | paginate: { itemsPerPage: 10, currentPage: p }">
+                <tr *ngFor="let i = index ;let action of lsActions | paginate: { itemsPerPage: 10, currentPage: ap }">
                     <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
                     <td>{{ action.act_name | titlecase }}</td>
                     <td>{{ action.act_description | titlecase }}</td>

@@ -7,9 +7,10 @@ import { ResponseApi } from '../Models/ResponseAPI';
   providedIn: 'root'
 })
 export class AdminService {
-  private URL_API_actions =  "https://localhost:44318/api/Actions";
-  private URL_API_group =  "https://localhost:44318/api/Group";
-  private URL_API_users =  "https://localhost:44318/api/Users";
+  private URL_API_base =  "https://localhost:44318/api";
+  private URL_API_actions =  this.URL_API_base + "/Actions";
+  private URL_API_group =  this.URL_API_base + "/Group";
+  private URL_API_users =  this.URL_API_base + "/Users";
 
   private  HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -52,6 +53,11 @@ export class AdminService {
     return this.http.post<ResponseApi>(urlDeleteGroup,pGroup,this.HttpOptions).toPromise();   
   }
 
+  async insertGroup(pGroup: any):Promise<ResponseApi>{
+    let urlInsertGroup = `${this.URL_API_group}/Insert`;
+    return this.http.post<ResponseApi>(urlInsertGroup,pGroup,this.HttpOptions).toPromise();
+  }
+
   // ----------------------------------------------------------------------------------------  //
 
   // metodos administrativos para la parte de a usuarios
@@ -65,6 +71,33 @@ export class AdminService {
     let urlDeleteUser = `${this.URL_API_users}/Delete`;
     return this.http.post<ResponseApi>(urlDeleteUser,pUser,this.HttpOptions).toPromise();   
   }
+
+  // ----------------------------------------------------------------------------------------  //
+
+  // otros
+
+  async getModules():Promise<any[]>{
+    let urlGetModules = `${this.URL_API_group}/Modules`;
+    return this.http.get<any[]>(urlGetModules).toPromise();
+  }
+
+  async getClients():Promise<any[]>{
+    let urlGetModules = `${this.URL_API_base}/Client/Get`;
+    return this.http.get<any[]>(urlGetModules).toPromise();
+  }
+
+  async getDealers():Promise<any[]>{
+    let urlGetModules = `${this.URL_API_base}/Dealer/Get`;
+    return this.http.get<any[]>(urlGetModules).toPromise();
+  }
+
+  async getCompanies():Promise<any[]>{
+    let urlGetCompanies = `${this.URL_API_base}/Company/Get`;
+    return this.http.get<any[]>(urlGetCompanies).toPromise();
+  }
+
+  
+
 
   // ----------------------------------------------------------------------------------------  //
 }

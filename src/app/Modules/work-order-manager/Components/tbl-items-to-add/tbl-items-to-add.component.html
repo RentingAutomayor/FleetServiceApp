@@ -1,0 +1,60 @@
+<div class="container__content">
+    <div class="container__row">
+        <div class="container___col">
+            <label>Nombre / Código</label>
+            <input type="text" class="form-control" (input)="filterItems($event)" id="txtFilter">
+            <i class="fas fa-times clear_filter" *ngIf="clearFilterIsVisible" (click)="clearFilter()"
+                title="Borrar filtro"></i>
+        </div>
+
+    </div>
+    <hr>
+    <div id="container__table_resume">
+        <div>
+            <table class="table table-striped">
+                <thead>
+                    <th>#</th>
+                    <th>-</th>
+                    <th>Código / Nombre</th>
+                    <th>Presentación</th>
+                    <th>Valor sin impuestos</th>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let i = index; let mItem of lsMaintenanceItemsTemp | paginate: { itemsPerPage: 5, currentPage: p } ">
+                        <td>{{i + 1 }}</td>
+                        <td>
+                            <label class="container__checkbox">
+                                <input type="checkbox" [id]="getCheckBoxId(mItem.id)"
+                                    (click)="pickItemToAdd($event.target,mItem)" />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <Label [for]="getCheckBoxId(mItem.id)">
+                                {{ mItem.code + ' - '+ mItem.name | titlecase | slice:0:80}}
+                            </Label>
+                        </td>
+                        <td>{{mItem.presentationUnit.shortName}}</td>
+                        <td>{{mItem.referencePrice | currency}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <div class="paginationContainer">
+                <pagination-controls (pageChange)="p = $event; validateItemsChecked()"></pagination-controls>
+            </div>
+        </div>
+        <div id="container__resume">
+            <legend class="title_resume">Resumen</legend>
+            <ol>
+                <li *ngFor="let item of lsItemsToAddSelected">{{ (item.code + ' - ' + item.name) | titlecase | slice:0:40 }} <hr> </li>
+            </ol>
+        </div>
+    </div>
+    <hr>
+    <div class="buttons__container" id="container__buttons">
+        <button type="button" class="btn btn-danger" (click)="cancelAddItems()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="addItemsToWorkOrder()">Añadir items</button>
+    </div>
+</div>

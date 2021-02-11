@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -11,12 +11,13 @@ import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.
   templateUrl: './input-search-vehicle.component.html',
   styleUrls: ['./input-search-vehicle.component.scss','../../../assets/styles/searchList.scss']
 })
-export class InputSearchVehicleComponent implements OnInit {
+export class InputSearchVehicleComponent implements OnInit,OnChanges {
   frmSearchVehicle: FormGroup;
   listIsvisible:boolean;
   description = new Subject<string>();
   lsVehicles: Vehicle[];
   lsVehicleSuggestion$: Observable<Vehicle[]>;
+  @Input() vehicleSelected: Vehicle;
   @Output() vehicleWasSetted = new EventEmitter<boolean>();
 
   constructor(
@@ -26,6 +27,15 @@ export class InputSearchVehicleComponent implements OnInit {
     this.frmSearchVehicle = new FormGroup({
       txtLicensePlate : new FormControl('')
     })
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    for (const change in changes) {
+      if(change == "vehicleSelected"){
+        if(this.vehicleSelected == null){
+          this.frmSearchVehicle.reset();
+        }
+      }
+    }
   }
 
   ngOnInit(): void {

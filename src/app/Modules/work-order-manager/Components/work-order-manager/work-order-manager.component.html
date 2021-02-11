@@ -30,7 +30,7 @@
                     <td><span [id]="getSpanStateId(workOrder.id)">{{ validateState(workOrder.transactionState,
                             workOrder.id) }}</span></td>
                     <td>
-                        <i class="fas fa-info-circle text-info" (click)="setTransaction(workOrder); openPopUp('container__resume')"title="Más información"></i>
+                        <i class="fas fa-info-circle text-info" (click)="setTransaction(workOrder); openPopUp('container__resume_main')"title="Más información"></i>
                         <i class="fas fa-trash-alt text-danger" title="Eliminar"></i>
                     </td>
                 </tr>
@@ -46,13 +46,13 @@
 
 </div>
 
-<div id="container__resume">
+<div id="container__resume_main">
     <div class="overlay">
         <div class="card card-review">
             <div class="card-header container__header">
                 <h2>Resumen orden de trabajo: {{ (transactionSelected!=null && transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
                 <div class="container__buttonClose">
-                    <a><i class="fas fa-times" (click)="closePopUp('container__resume')"></i></a>
+                    <a><i class="fas fa-times" (click)="closePopUp('container__resume_main')"></i></a>
                 </div>
             </div>
             <div class="card-body">

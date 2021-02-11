@@ -17,6 +17,9 @@ export class MaintenanceItem {
     public lsVehicleType: VehicleType[];
     public lsVehicleModel: VehicleModel[];
     public referencePrice: number;
+    public valueWithoutDiscount: number;
+    public discountValue: number;
+    public valueWithDiscountWithoutTaxes: number;
     public taxesValue:number;
     public amount:number;
     public state: boolean;

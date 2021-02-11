@@ -26,15 +26,14 @@ import { SessionUser } from 'src/app/Models/SessionUser';
 import { DealerService } from 'src/app/Modules/dealer/Services/Dealer/dealer.service';
 import { Tax } from 'src/app/Models/Tax';
 import { SecurityValidators } from 'src/app/Models/SecurityValidators';
-
-
+import { DiscountType, DiscountTypes } from 'src/app/Models/DiscountType';
 
 
 
 @Component({
   selector: 'app-work-order',
   templateUrl: './work-order.component.html',
-  styleUrls: ['./work-order.component.scss', '../../../../../assets/styles/checkbox.scss']
+  styleUrls: ['./work-order.component.scss', '../../../../../assets/styles/checkbox.scss', '../../../../../assets/styles/app.scss']
 })
 export class WorkOrderComponent implements OnInit, OnChanges {
   oCountChanges: number;
@@ -49,8 +48,10 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   sharedFunctions: SharedFunction;
   lsMaintenanceItemsSelected: MaintenanceItem[];
   totalRoutine: number;
-  totalTaxes:number;
-  totalWithoutTaxes:number;
+  totalTaxes: number;
+  totalWithoutTaxes: number;
+  totalWithoutTaxesAndDiscount:number; 
+  totalDiscount:number;
   lsMovements: Movement[];
   vehicleSelected: Vehicle;
   ORDEN_DE_TRABAJO = 4;
@@ -60,6 +61,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   fieldBranchIsInvalid: boolean;
   fieldMaintenanceRoutineIsInvalid: boolean;
+
+  
+  
 
   constructor(
     private ClientService: ClientService,
@@ -71,7 +75,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     private movementService: MovementService,
     private transactionService: TransactionService,
     private quotaService: QuotaService,
-    private dealerService: DealerService
+    private dealerService: DealerService,
+
   ) {
     this.frmWorkOrder = new FormGroup({
       txtYear: new FormControl(''),
@@ -89,13 +94,36 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       txtInTransitQuota: new FormControl('')
     });
 
+    //this.setTotalWithoutTaxesByItem = this.setTotalWithoutTaxesByItem.bind(this);
+
     this.totalTaxes = 0;
     this.totalWithoutTaxes = 0;
+    this.totalWithoutTaxesAndDiscount = 0;
+    this.totalDiscount = 0;
     this.fieldBranchIsInvalid = true;
     this.fieldMaintenanceRoutineIsInvalid = true;
+
+   
+  
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.clearBufferForm();
+    this.getDealer();
+  }
+
+  clearBufferForm() {
+    this.frmWorkOrder.reset();
+    this.vehicleSelected = null;
+    this.vehicleModelSelected = null;
+    this.branchSelected = null;
+    this.contractSelected = null;
+    this.routineSelected = null;
+    this.lsMaintenanceItems = [];
+    this.lsMaintenanceItemsSelected = [];
+    this.updateLabelTotalRoutine(0);
+    this.updateLabelTotalTaxes(0);
+    this.updateLabelWithoutTaxes(0);
     this.getDealer();
   }
 
@@ -103,16 +131,24 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     this.getDealer();
     this.initComponents();
   }
-  getLabeTaxesId(idItem:number):string{
+  getLabeTaxesId(idItem: number): string {
     return `lbl_taxes_${idItem}`;
   }
 
-  getLabeTotalId(idItem:number):string{
+  getLabeTotalId(idItem: number): string {
     return `lbl_total_${idItem}`;
   }
 
-  getLabePriceByAmountId(idItem:number){
+  getLabePriceByAmountId(idItem: number) {
     return `lbl_price_amount_${idItem}`
+  }
+
+  getLabePriceByAmountLessDiscountId(idItem: number){
+    return `lbl_price_amount_less_discount_${idItem}`
+  }
+
+  getLabelDiscountId(idItem: number) {
+    return `lbl_discount_${idItem}`;
   }
 
 
@@ -162,32 +198,34 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       try {
         let priceContract = pricesByContract.lsMaintenanceItems.find(mi => mi.id == mItem.id);
         //console.log(`Precio de referencia: ${mItem.referencePrice} Precio de contrato: ${priceContract.referencePrice}`);
-        mItem.referencePrice = priceContract.referencePrice;       
-      
+        mItem.referencePrice = priceContract.referencePrice;
 
-        this.updateLabelTotalItem(mItem);
+        //this.updateLabelTotalItem(mItem);
+
+        this.updateLabelPriceByAmount(mItem);
         this.turnOnCheckbox(mItem);
         this.addItemToRoutine(mItem);
       } catch (error) {
         console.warn(error);
       }
     });
+    
     this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
   }
 
   updateLabelTotalRoutine(totalRoutine: number) {
     let totalFormatted = totalRoutine.toFixed(2);
     let lblTotalRoutine: HTMLElement = document.querySelector('#lbl-total-routine');
-    lblTotalRoutine.innerText =  this.sharedFunctions.formatNumberToString(parseFloat(totalFormatted));;
+    lblTotalRoutine.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalFormatted));;
   }
 
-  updateLabelWithoutTaxes(totalWithoutTaxes:number){
+  updateLabelWithoutTaxes(totalWithoutTaxes: number) {
     let totalFormatted = totalWithoutTaxes.toFixed(2);
-    let lblTotalWithoutTaxes: HTMLSpanElement = document.querySelector('#lbl-total-without_taxes');
+    let lblTotalWithoutTaxes: HTMLSpanElement = document.querySelector('#lbl-total-without-taxes');
     lblTotalWithoutTaxes.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalFormatted));
   }
 
-  updateLabelTotalTaxes(totalTaxes:number){
+  updateLabelTotalTaxes(totalTaxes: number) {
     let totalFormatted = totalTaxes.toFixed(2);
     let lblTotalTaxes: HTMLSpanElement = document.querySelector('#lbl-total-taxes');
     lblTotalTaxes.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalFormatted));
@@ -273,9 +311,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   setBranchSelected() {
     this.branchSelected = this.branchService.getBranchSelected();
-    if(this.branchSelected == null || this.branchSelected == undefined){
+    if (this.branchSelected == null || this.branchSelected == undefined) {
       this.fieldBranchIsInvalid = true;
-    }else{
+    } else {
       this.fieldBranchIsInvalid = false;
     }
   }
@@ -283,14 +321,15 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   showMaintenanceItems() {
     this.resetItemsToRoutine();
     this.routineSelected = this.maintenanceRoutineService.getRoutine();
-    if(this.routineSelected == null || this.routineSelected == undefined){
+    if (this.routineSelected == null || this.routineSelected == undefined) {
       this.fieldMaintenanceRoutineIsInvalid = true;
-    }else{
+    } else {
       this.fieldMaintenanceRoutineIsInvalid = false;
       this.lsMaintenanceItems = this.routineSelected.lsItems;
       this.getPricesByContract(this.contractSelected.id);
       console.log(this.routineSelected);
-    }   
+    }
+    
   }
 
   getTextAmountId(pId: number) {
@@ -313,6 +352,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.deleteItemToRoutine(pItem);
       this.disableTxtAmount(pItem);
     }
+    
     this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
   }
 
@@ -325,23 +365,23 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     let totalByItemWithoutTaxes = (pItem.amount * pItem.referencePrice);
 
     let taxValue = 0;
-    if(pItem.handleTax){
+    if (pItem.handleTax) {
       taxValue = this.calculateTaxes(totalByItemWithoutTaxes, pItem.lsTaxes);
-    }  
+    }
 
     let idLabelPriceByAmount = `#${this.getLabePriceByAmountId(pItem.id)}`;
     let labelPriceByAmount: HTMLSpanElement = document.querySelector(idLabelPriceByAmount);
     let totalWithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2);
     labelPriceByAmount.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalWithoutTaxesFormatted));
 
-    let idLabelTax = `#${this.getLabeTaxesId(pItem.id)}` ;
+    let idLabelTax = `#${this.getLabeTaxesId(pItem.id)}`;
     let labelTax: HTMLSpanElement = document.querySelector(idLabelTax);
     let taxesFormatted = taxValue.toFixed(2)
     labelTax.innerText = this.sharedFunctions.formatNumberToString(parseFloat(taxesFormatted));
 
 
-    let idLblTotalByItem = `#${this.getLabeTotalId(pItem.id)}`;    
-    let lblPriceTotalByItem: HTMLElement = document.querySelector(idLblTotalByItem); 
+    let idLblTotalByItem = `#${this.getLabeTotalId(pItem.id)}`;
+    let lblPriceTotalByItem: HTMLElement = document.querySelector(idLblTotalByItem);
 
     let totalByItem = totalByItemWithoutTaxes + taxValue;
     let totalFormatted = totalByItem.toFixed(2);
@@ -350,7 +390,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
   disableTxtAmount(pItem) {
-    let idTxt = `#${this.getTextAmountId(pItem.id)}`; 
+    let idTxt = `#${this.getTextAmountId(pItem.id)}`;
     let txtAmount: HTMLInputElement = document.querySelector(idTxt);
     txtAmount.value = '0';
     txtAmount.disabled = true;
@@ -359,13 +399,23 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     let labelPriceByAmount: HTMLSpanElement = document.querySelector(idLabelPriceByAmount);
     labelPriceByAmount.innerText = '';
 
-    let idLabelTax = `#${this.getLabeTaxesId(pItem.id)}` ;
+    let idLabelDiscount = `#${this.getLabelDiscountId(pItem.id)}`;
+    let labelDiscount: HTMLSpanElement = document.querySelector(idLabelDiscount);
+    labelDiscount.innerText = '';
+
+    let idLabelPriceWithoutDiscount = `#${this.getLabePriceByAmountLessDiscountId(pItem.id)}`;
+    let LabelPriceWithoutDiscount: HTMLSpanElement = document.querySelector(idLabelPriceWithoutDiscount);
+    LabelPriceWithoutDiscount.innerText = '';
+
+    let idLabelTax = `#${this.getLabeTaxesId(pItem.id)}`;
     let labelTax: HTMLSpanElement = document.querySelector(idLabelTax);
-    labelTax.innerText = '';  
+    labelTax.innerText = '';
 
     let idLabelTotal = `#${this.getLabeTotalId(pItem.id)}`;
-    let lblPriceWithTaxes: HTMLElement = document.querySelector(idLabelTotal);  
+    let lblPriceWithTaxes: HTMLElement = document.querySelector(idLabelTotal);
     lblPriceWithTaxes.innerText = '';
+
+
   }
 
   turnOnCheckbox(pItem: MaintenanceItem) {
@@ -391,32 +441,25 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
 
   addItemToRoutine(item: MaintenanceItem) {
-    // console.log("addIteToRotine");
-    // console.log(this.lsMaintenanceItemsSelected);
     if (this.lsMaintenanceItemsSelected == null || this.lsMaintenanceItemsSelected == undefined) {
       this.resetItemsToRoutine();
     }
-
     let totalByItemWithoutTaxes = (item.amount * item.referencePrice);
-
     let taxValue = 0;
-    if(item.handleTax){
+    if (item.handleTax) {
       taxValue = this.calculateTaxes(totalByItemWithoutTaxes, item.lsTaxes);
-    }   
-
+    }
     item.taxesValue = parseFloat(taxValue.toFixed(2));
-
     this.lsMaintenanceItemsSelected.push(item);
-    console.log(this.lsMaintenanceItemsSelected);
+    //console.log(this.lsMaintenanceItemsSelected);
   }
 
   deleteItemToRoutine(item: MaintenanceItem) {
-    console.log("addIteToRotine");
-    console.log(this.lsMaintenanceItemsSelected);
+  
     let itemTMP = this.lsMaintenanceItemsSelected.find(it => it.id == item.id);
     let indexOfItem = this.lsMaintenanceItemsSelected.indexOf(itemTMP);
     this.lsMaintenanceItemsSelected.splice(indexOfItem, 1);
-    console.log(this.lsMaintenanceItemsSelected);
+    //console.log(this.lsMaintenanceItemsSelected);
   }
 
   updateAmountByItem(event: any, pItem: MaintenanceItem) {
@@ -426,30 +469,14 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
   }
 
+  updateLabelPriceByAmount(mItem: MaintenanceItem) {
+    let totalByItemWithoutTaxes = (mItem.amount * mItem.referencePrice);
+    this.setTotalWithoutTaxesByItem(mItem.id, totalByItemWithoutTaxes);
+  }
+
   updateLabelTotalItem(mItem: MaintenanceItem) {
     let totalByItemWithoutTaxes = (mItem.amount * mItem.referencePrice);
-
-    let taxValue = 0;
-    if(mItem.handleTax){
-      taxValue = this.calculateTaxes(totalByItemWithoutTaxes, mItem.lsTaxes);
-    }      
-
-    this.setTaxesValue(mItem.id,taxValue);
-
-    console.log(`Total by  Item Without: ${totalByItemWithoutTaxes} Total taxes: ${taxValue}`);
-
-    let totalByItem = parseFloat(totalByItemWithoutTaxes.toString()) + parseFloat(taxValue.toString());
-    
-    let idTotalWithoutTaxes = `#${this.getLabePriceByAmountId(mItem.id)}`;
-    let labelTotalWithoutTaxes: HTMLSpanElement = document.querySelector(idTotalWithoutTaxes);
-    let totalwithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2);
-    labelTotalWithoutTaxes.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalwithoutTaxesFormatted));
-
-    let idTotalByItem = this.getLabeTotalId(mItem.id);
-    let labelTotalByItem: HTMLElement = document.querySelector(`#${idTotalByItem}`);
-
-    let TotalFormatted = totalByItem.toFixed(2)
-    labelTotalByItem.innerText = this.sharedFunctions.formatNumberToString(parseFloat(TotalFormatted));
+    this.setTotalWithoutTaxesByItem(mItem.id, totalByItemWithoutTaxes);
   }
 
   clearFrmWorkOrder() {
@@ -462,65 +489,87 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     return this.sharedFunctions.formatNumberToString(oNumber);
   }
 
+  getValueWithoutTaxesByItem(idItem:number): number{
+    try {
+      let idSpanWithoutTaxes = `#${this.getLabePriceByAmountId(idItem)}`;
+      let spanWithoutTaxes: HTMLSpanElement = document.querySelector(idSpanWithoutTaxes);    
+      return parseFloat(spanWithoutTaxes.innerText.replace(/,/g, '')); 
+    } catch (error) {
+      console.log("[getValueWithoutTaxesByItem]", error);
+    }    
+  }
 
-
-  calculateTotalRoutine(lsMaintenanceItems: MaintenanceItem[]) {
-    this.totalRoutine = 0;
-    this.totalTaxes = 0;
-    this.totalWithoutTaxes = 0;
-
-    lsMaintenanceItems.forEach(item => {
-      let idSpanWithoutTaxes = `#${this.getLabePriceByAmountId(item.id)}`;
-      let spanWithoutTaxes: HTMLSpanElement = document.querySelector(idSpanWithoutTaxes);
-
-      let idItemReference = `#${this.getLabeTotalId(item.id)}`;
-      let spanElemt: HTMLSpanElement = document.querySelector(idItemReference);
-
-      let idSpanTax = `#${this.getLabeTaxesId(item.id)}`;
+  getValueTaxesByItem(idItem:number):number{
+    try {
+      let idSpanTax = `#${this.getLabeTaxesId(idItem)}`;
       let spanTaxes: HTMLSpanElement = document.querySelector(idSpanTax);
+      return parseFloat(spanTaxes.innerText.replace(/,/g, '')); 
+    } catch (error) {
+      console.log("[getValueTaxesByItem]", error);
+    }    
+  }
 
-     
-      let valueWithoutTaxes = spanWithoutTaxes.innerText.replace(/,/g,'');
-      let valueTaxesByItem = spanTaxes.innerText.replace(/,/g,'');
-      let valueTotalByItem = spanElemt.innerText.replace(/,/g,'');
+  getValueTotalByItem(idItem:number):number{
+    try {
+      let idItemReference = `#${this.getLabeTotalId(idItem)}`;
+      let spanElemt: HTMLSpanElement = document.querySelector(idItemReference);     
+      return parseFloat(spanElemt.innerText.replace(/,/g, '')); 
+    } catch (error) {
+      console.log("[getValueTotalByItem]", error);
+    }
+  }
+
+
+  calculateTotalRoutine(lsMaintenanceItemsSelected: MaintenanceItem[]) {
+    try {
+      this.totalRoutine = 0;
+      this.totalTaxes = 0;
+      this.totalWithoutTaxes = 0;
+      this.totalWithoutTaxesAndDiscount = 0;
+      this.totalDiscount = 0;
+
+      lsMaintenanceItemsSelected.forEach(item => {   
+        let valueWithoutTaxes = this.getValueWithoutTaxesByItem(item.id);      
+        this.totalWithoutTaxes += valueWithoutTaxes;
+      });
+      this.updateLabelWithoutTaxes(this.totalWithoutTaxes);
+
+      console.log("[contract validation]");
+      console.log(this.contractSelected);
+
+    
+      this.calculateDiscount(this.lsMaintenanceItemsSelected);
       
+    } catch (error) {
+      console.log(error)
+    }
 
-      this.totalWithoutTaxes += parseFloat(valueWithoutTaxes);
-      this.totalTaxes += parseFloat(valueTaxesByItem);
-      this.totalRoutine += parseFloat(valueTotalByItem);
-    });
-    this.updateLabelWithoutTaxes(this.totalWithoutTaxes);
-    this.updateLabelTotalTaxes(this.totalTaxes);
-    this.updateLabelTotalRoutine(this.totalRoutine);    
   }
 
   async saveWorkOrder() {
     try {
       if (confirm("¿Está seguro de guardar los datos de esta órden de trabajo?")) {
-        this.isAwaiting = true;
         let trxWorkOrder = this.setDataToWorkOrder();
         console.log("[SAVE WORK ORDER]");
         console.log(trxWorkOrder);
-
+        this.isAwaiting = true;
         let financialInformationByClient = await this.quotaService.getFinancialInformationByClient(trxWorkOrder.client.id);
         let trxWillBePorcesed = ((parseFloat(financialInformationByClient.currentQuota.toString()) - trxWorkOrder.value) > 0) ? true : false;
         if (trxWillBePorcesed) {
           console.log(trxWorkOrder);
-          this.isAwaiting = true;
           await this.transactionService.processTransaction(trxWorkOrder).then(response => {
             let rta = response;
             if (rta.response) {
               alert(rta.message);
+              this.clearBufferForm();
               this.workOrderWasSaved.emit(true);
             }
           });
-          this.isAwaiting = true;
         } else {
           alert("¡No se puede procesar esta órden de trabajo puesto que el cliente no cuenta con el suficiente cupo disponible!");
         }
         this.isAwaiting = false;
       }
-
     }
     catch (error) {
       console.warn(error);
@@ -532,7 +581,10 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       let { txtObservation, txtMileage } = this.frmWorkOrder.controls;
       let trxWorkOrder = new Transaction();
       trxWorkOrder.movement = this.lsMovements.find(mv => mv.id == this.ORDEN_DE_TRABAJO);
-      trxWorkOrder.valueWithoutTaxes = this.totalWithoutTaxes;
+      
+      trxWorkOrder.valueWithoutDiscount = this.totalWithoutTaxes ;
+      trxWorkOrder.discountValue = this.totalDiscount;
+      trxWorkOrder.valueWithDiscountWithoutTaxes = this.totalWithoutTaxesAndDiscount;
       trxWorkOrder.taxesValue = this.totalTaxes;
       trxWorkOrder.value = this.totalRoutine;
       trxWorkOrder.client = this.contractSelected.client;
@@ -540,30 +592,30 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
       let trxDetail = new TransactionDetail();
       trxDetail.dealer = this.dealer;
-      
-      if(this.branchSelected == null || this.branchSelected == undefined){
-        throw("La sucursal es un dato obligatorio para poder cerrar la orden de trabajo");
-      }else{
+
+      if (this.branchSelected == null || this.branchSelected == undefined) {
+        throw ("La sucursal es un dato obligatorio para poder cerrar la orden de trabajo");
+      } else {
         trxDetail.branch = this.branchSelected;
       }
 
-      if(this.vehicleSelected == null || this.vehicleSelected == undefined){
-        throw("El vehículo ingresado no es válido, por favor rectifique la placa");
-      }else{
+      if (this.vehicleSelected == null || this.vehicleSelected == undefined) {
+        throw ("El vehículo ingresado no es válido, por favor rectifique la placa");
+      } else {
         trxDetail.vehicle = this.vehicleSelected;
         let currentMileage = txtMileage.value
         trxDetail.vehicle.mileage = currentMileage.replace(/\,/g, '');
       }
-      
 
-      if(this.routineSelected == null || this.routineSelected == undefined){
+
+      if (this.routineSelected == null || this.routineSelected == undefined) {
         this.fieldMaintenanceRoutineIsInvalid = true;
-      }else{
-        trxDetail.maintenanceRoutine = this.routineSelected;        
+      } else {
+        trxDetail.maintenanceRoutine = this.routineSelected;
       }
 
       trxDetail.contract = this.contractSelected;
-     
+
 
       trxWorkOrder.headerDetails = trxDetail;
       trxWorkOrder.lsItems = this.lsMaintenanceItemsSelected;
@@ -571,18 +623,18 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       let aObservation = [];
 
       let observation = new TransactionObservation()
-      let observationDesc =  txtObservation.value;
+      let observationDesc = txtObservation.value;
 
-      if(observationDesc.toString().trim() != ''){
+      if (observationDesc.toString().trim() != '') {
         observation.description = observationDesc;
         observation.usu_id = SecurityValidators.validateUserLogged();;
         aObservation.push(observation);
-      }   
+      }
 
       trxWorkOrder.lsObservations = aObservation;
-      
+
       return trxWorkOrder;
-    } catch (error) {      
+    } catch (error) {
       alert(error);
       return null;
     }
@@ -598,26 +650,27 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   closeWorkOrder() {
     if (confirm("¿está seguro que desea cerrar la orden de trabajo?, sí lo realiza se perderan todos los cambios consignados acá")) {
       this.clearFrmWorkOrder();
+      this.clearBufferForm();
       this.workOrderWasCanceled.emit(true);
     }
   }
 
 
-  calculateTaxes(referencePrice: number,lsTaxes: Tax[]): number {
+  calculateTaxes(referencePrice: number, lsTaxes: Tax[]): number {
     let taxValue = 0;
     for (const tax of lsTaxes) {
       let taxTmp = referencePrice * (tax.percentValue / 100);
       taxValue += taxTmp;
-    }                                                                                                                                                                 
+    }
     return taxValue
-  }  
-  
-  
-  
-  setTaxesValue(item_id:number,taxesValue:number){
+  }
+
+
+
+  setTaxesValue(item_id: number, taxesValue: number) {
     try {
       let idLblTaxes = `#${this.getLabeTaxesId(item_id)}`;
-      let labelTaxes: HTMLSpanElement  = document.querySelector(idLblTaxes);
+      let labelTaxes: HTMLSpanElement = document.querySelector(idLblTaxes);
       let taxesFormatted = this.sharedFunctions.formatNumberToString(parseFloat(taxesValue.toFixed(2)))
       labelTaxes.innerText = taxesFormatted;
     } catch (error) {
@@ -626,11 +679,11 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
 
-  setTotalValue(item_id:number,totalValue:number){
+  setTotalValue(item_id: number, totalValue: number) {
     try {
       //console.log(`[setTotalValue] : ${totalValue}`);
       let idLblTotal = `#${this.getLabeTotalId(item_id)}`;
-      let labelTotal: HTMLSpanElement  = document.querySelector(idLblTotal);
+      let labelTotal: HTMLSpanElement = document.querySelector(idLblTotal);
 
       let totalFormatted = this.sharedFunctions.formatNumberToString(parseFloat(totalValue.toFixed(2)))
       labelTotal.innerText = totalFormatted;
@@ -640,4 +693,197 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
 
+  closePopUp(idPopUp) {
+    let popUp = document.getElementById(idPopUp);
+    popUp.style.display = 'none';
+  }
+
+  openPopUp(idPopUp) {
+    this.oCountChanges += 1;
+    let popUp = document.getElementById(idPopUp);
+    popUp.style.display = 'block';
+  }
+
+
+  goToUp() {
+    window.scroll(0, 0);
+  }
+
+  addNewMaintenanceItemsToRoutine(maintenanceItemsToAdd: MaintenanceItem[]) {
+
+    maintenanceItemsToAdd.forEach(newItem => {
+      try {
+        let exitsItem = this.lsMaintenanceItemsSelected.find(it => it.id == newItem.id);
+        if (exitsItem) {
+          console.warn("[addNewMaintenanceItemsToRoutine]: Ya existe el item seleccionado en la rutina");
+        } else {
+          newItem.amount = 1;
+          this.lsMaintenanceItems.push(newItem);
+          setTimeout(() => {
+            this.addItemToRoutine(newItem);
+            this.enableTxtAmount(newItem);
+            this.turnOnCheckbox(newItem);
+            this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
+          }, 300);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    
+    
+
+    window.scroll(0, 1000);
+    this.closePopUp('container__addItems');
+  }
+
+  getTotalWithoutTaxes() {
+    let totalWithoutTaxes = 0;
+    let lblTotalWithoutTaxes: HTMLSpanElement = document.querySelector('#lbl-total-without-taxes');
+    totalWithoutTaxes = parseFloat(lblTotalWithoutTaxes.innerText.replace(/,/g, ''));
+    return totalWithoutTaxes;
+  }
+
+
+  calculateDiscount(lsItemsSelected: MaintenanceItem[]) {
+    try {
+      this.totalDiscount = 0;
+      let totalWithoutTaxes = this.getTotalWithoutTaxes();
+
+      switch (this.contractSelected.discountType.id) {
+        case DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO:
+          this.totalDiscount = totalWithoutTaxes * (this.contractSelected.discountValue / 100);
+          break;
+        case DiscountTypes.VALOR_FIJO_POR_TOTAL_MANTENIMIENTO:
+          this.totalDiscount = this.contractSelected.discountValue;
+          break;
+      }
+      
+     
+      this.updateLabelDiscount( this.totalDiscount);      
+      this.calculateDiscountAndTaxesByItem(totalWithoutTaxes, this.totalDiscount);     
+            
+
+      console.log("[calculateDiscount] VALOR RUTINA ANTES = ",  this.totalRoutine );
+      this.totalRoutine = this.totalWithoutTaxesAndDiscount + this.totalTaxes;
+     
+      console.log("[calculateDiscount] VALOR RUTINA DESPUES = ",  this.totalRoutine );
+      this.updateLabelTotalRoutine(this.totalRoutine);
+
+    } catch (error) {
+      console.warn(error);
+    }
+
+  }
+
+  calculateDiscountAndTaxesByItem(totalWithoutTaxes: number,totalDiscount: number) {
+    try {
+      
+      let valueWithoutTaxesAndDiscount = 0;
+      let valueTotaTaxes = 0;
+
+      this.lsMaintenanceItemsSelected.forEach(item => {
+        
+        let discountByItem = 0;
+        let valueWithoutTaxesByItem = (item.referencePrice * item.amount) ;
+        item.valueWithoutDiscount = valueWithoutTaxesByItem;
+
+        if(totalDiscount > 0){         
+          let participationPercent = valueWithoutTaxesByItem / totalWithoutTaxes;
+          console.log(`[calculateDiscountAndTaxesByItem] item: ${item.name} procentaje de participación: ${participationPercent}`);
+          discountByItem = participationPercent * totalDiscount;
+        }
+        item.discountValue = discountByItem;
+        this.setDiscountByItem(item.id, discountByItem);
+
+        let totalWithoutTaxesAndDiscountByItem = valueWithoutTaxesByItem - discountByItem; 
+        item.valueWithDiscountWithoutTaxes = totalWithoutTaxesAndDiscountByItem ;
+        valueWithoutTaxesAndDiscount += totalWithoutTaxesAndDiscountByItem;
+        this.setTotalWithoutTaxesAndDiscountByItem(item.id,totalWithoutTaxesAndDiscountByItem);
+
+        let taxValue = 0;
+        if (item.handleTax) {
+          taxValue = this.calculateTaxes(totalWithoutTaxesAndDiscountByItem, item.lsTaxes);
+        }
+        item.taxesValue = taxValue;
+        valueTotaTaxes += taxValue;
+        this.setTaxesValue(item.id, taxValue);
+
+        let totalByItem = totalWithoutTaxesAndDiscountByItem + taxValue ;
+        this.setTotalByItem(item.id, totalByItem);
+      });
+
+      this.totalTaxes = valueTotaTaxes;
+      this.totalWithoutTaxesAndDiscount  = valueWithoutTaxesAndDiscount;
+      this.updateLabelWithoutTaxesAndDiscount(valueWithoutTaxesAndDiscount);
+      this.updateLabelTotalTaxes(this.totalTaxes);
+    
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  setTotalWithoutTaxesByItem(idItem: number, totalByItemWithoutTaxes: number) {
+    try {
+      let idTotalWithoutTaxes = `#${this.getLabePriceByAmountId(idItem)}`;
+      let labelTotalWithoutTaxes: HTMLSpanElement = document.querySelector(idTotalWithoutTaxes);
+      let totalwithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2);
+      labelTotalWithoutTaxes.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalwithoutTaxesFormatted));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  setDiscountByItem(idItem: number, discount: number) {
+    try {
+      let idDiscountByItem = `#${this.getLabelDiscountId(idItem)}`;
+      let labelDiscountByItem: HTMLSpanElement = document.querySelector(idDiscountByItem);
+      let discountFormatted = discount.toFixed(2);
+      labelDiscountByItem.innerText = this.sharedFunctions.formatNumberToString(parseFloat(discountFormatted));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  
+  setTotalWithoutTaxesAndDiscountByItem(idItem: number, totalByItemWithoutTaxesAndDiscount: number) {
+    try {
+      let idTotalWithoutTaxesAndDiscount = `#${this.getLabePriceByAmountLessDiscountId(idItem)}`;
+      let labelTotalWithoutTaxesAndDiscount: HTMLSpanElement = document.querySelector(idTotalWithoutTaxesAndDiscount);
+      let totalByItemWithoutTaxesAndDiscountFormatted = totalByItemWithoutTaxesAndDiscount.toFixed(2);
+      labelTotalWithoutTaxesAndDiscount.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalByItemWithoutTaxesAndDiscountFormatted));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+
+  setTotalByItem(idItem: number, totalByItem: number) {
+    try {
+      let idTotalByItem = this.getLabeTotalId(idItem);
+      let labelTotalByItem: HTMLElement = document.querySelector(`#${idTotalByItem}`);
+      let TotalFormatted = totalByItem.toFixed(2)
+      labelTotalByItem.innerText = this.sharedFunctions.formatNumberToString(parseFloat(TotalFormatted));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  updateLabelDiscount(totalDiscount: number) {
+    let totalDiscountFormatted = totalDiscount.toFixed(2);
+    let lblTotalDiscount: HTMLSpanElement = document.querySelector('#lbl-total-discount');
+    lblTotalDiscount.innerText = `-${this.sharedFunctions.formatNumberToString(parseFloat(totalDiscountFormatted))}`;
+  }
+
+  updateLabelWithoutTaxesAndDiscount(totalWithoutTaxesAndDiscount: number) {
+    let totalWithoutTaxesAndDiscountFormatted = totalWithoutTaxesAndDiscount.toFixed(2);
+    let lblTotalWithoutTaxesDiscount: HTMLSpanElement = document.querySelector('#lbl-total-without-taxes-and-discount');
+    lblTotalWithoutTaxesDiscount.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalWithoutTaxesAndDiscountFormatted));
+  }
+
+
+ 
 }

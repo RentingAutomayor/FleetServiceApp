@@ -62,7 +62,7 @@
             <hr>
         </div>
 
-        <div class="container__info_workOrder"  *ngIf="infoWorkOrderIsVisible">
+        <div class="container__info_workOrder" *ngIf="infoWorkOrderIsVisible">
             <legend>Datos de la orden</legend>
             <div class="container__row">
                 <div class="container__col">
@@ -88,10 +88,24 @@
             <legend>Datos de la transacción</legend>
             <div class="container__row">
                 <div class="container__col">
-                    <label>Valor sin impuesto</label>
-                    <input type="text" class="form-control" formControlName="trx_valueWithoutTaxes"
-                        placeholder="Valor sin impuestos ..." disabled>
+                    <label>Valor sin descuento</label>
+                    <input type="text" class="form-control" formControlName="trx_valueWithoutDiscount"
+                    placeholder="Valor con impuestos ..." disabled>
                 </div>
+                <div class="container__col">
+                    <label>Valor descuento</label>
+                    <input type="text" class="form-control" formControlName="trx_valueDiscount"
+                    placeholder="Valor con impuestos ..." disabled>
+
+                </div>
+                <div class="container__col">
+                    <label>Valor con descuento sin impuesto</label>
+                    <input type="text" class="form-control" formControlName="trx_valueWithDiscountWithoutTaxes"
+                        placeholder="Valor con impuestos ..." disabled>
+                </div>
+
+            </div>
+            <div class="container__row">
                 <div class="container__col">
                     <label>Valor impuestos</label>
                     <input type="text" class="form-control" formControlName="trx_valueTaxes"
@@ -114,8 +128,10 @@
                 <th>Nombre</th>
                 <th>Presentación</th>
                 <th>Cantidad</th>
-                <th>Valor unitario sin impuestos</th>
-                <th>Valor unitario x cantidad</th>
+                <th>Precio de referencia sin impuestos</th>
+                <th>Valor unitario x cantidad sin descuento</th>
+                <th>Dto</th>
+                <th>Valor unitario x cantidad con descuento</th>
                 <th>Valor impuestos</th>
                 <th>Valor total por item</th>
             </thead>
@@ -126,9 +142,11 @@
                     <td>{{ mItem.presentationUnit.longName | titlecase }}</td>
                     <td>{{ mItem.amount}}</td>
                     <td>{{ mItem.referencePrice | currency }}</td>
-                    <td>{{ mItem.referencePrice * mItem.amount | currency }}</td>
+                    <td>{{ mItem.valueWithoutDiscount | currency }}</td>
+                    <td>{{ mItem.discountValue | currency}}</td>
+                    <td>{{ mItem.valueWithDiscountWithoutTaxes | currency}}</td>
                     <td>{{ mItem.taxesValue | currency }}</td>
-                    <td>{{ (mItem.referencePrice * mItem.amount) + mItem.taxesValue | currency }}</td>
+                    <td>{{ (mItem.valueWithDiscountWithoutTaxes + mItem.taxesValue) | currency }}</td>
                 </tr>
             </tbody>
             <tfoot>
@@ -138,9 +156,9 @@
                     <td></td>
                     <td></td>
                     <td><b class="bold">Total mantenimiento:</b></td>
-                    <td><span id="lbl-total-without_taxes" class="bold">{{ transaction.valueWithoutTaxes | currency
-                            }}</span>
-                    </td>
+                    <td><span class="bold">{{ transaction.valueWithoutDiscount | currency }}</span> </td>
+                    <td> <span class="bold">{{ transaction.discountValue | currency }}</span> </td>                                    
+                    <td><span id="lbl-total-without_taxes" class="bold">{{ transaction.valueWithDiscountWithoutTaxes | currency }}</span></td>
                     <td><span id="lbl-total-taxes" class="bold">{{ transaction.taxesValue | currency }}</span></td>
                     <td><span id="lbl-total-routine" class="bold">{{ transaction.value | currency }}</span></td>
                 </tr>

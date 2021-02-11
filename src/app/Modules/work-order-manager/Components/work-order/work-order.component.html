@@ -14,7 +14,9 @@
             </div>
             <div class="container__row">
                 <div class="container__col">
-                    <app-input-search-vehicle (vehicleWasSetted)="SetDataInForm()"></app-input-search-vehicle>
+                    <app-input-search-vehicle 
+                    [vehicleSelected]="vehicleSelected"    
+                    (vehicleWasSetted)="SetDataInForm()"></app-input-search-vehicle>
                 </div>
                 <div class="container__col">
                     <label>Modelo</label>
@@ -93,6 +95,7 @@
                 <div class="container__col">
                     <app-branch-by-dealer 
                         [dealer]="dealer" 
+                        [branchSelected]="branchSelected"
                         (branchWasSetted)="setBranchSelected()">
                     </app-branch-by-dealer>
 
@@ -110,13 +113,9 @@
                 </div>
             </div>
             <hr>
-            <legend>Observaciones</legend>
-            <div>
-                <textarea class="form-control" formControlName="txtObservation" cols="30" rows="2"></textarea>
-            </div>
-            <hr>
             <legend>Items órden de trabajo</legend>
-
+            <button class="btn-add btn-info"
+                    (click)="openPopUp('container__addItems'); goToUp()"><i class="fas fa-plus"></i></button>
             <table class="table table-striped">
                 <thead>
                     <th>#</th>
@@ -124,8 +123,10 @@
                     <th>Nombre</th>
                     <th>Presentación</th>                    
                     <th>Cantidad</th>
-                    <th>Valor unitario sin impuestos</th>
-                    <th>Valor unitario x cantidad</th>
+                    <th>Val. Und</th>
+                    <th>Val und x cantidad</th>         
+                    <th>Dto</th>
+                    <th>(Val und x cantidad) - Dto</th>                   
                     <th>Valor impuestos</th>
                     <th>Valor total por item</th>
                 </thead>
@@ -141,7 +142,7 @@
                         </td>
                         <td>
                             <Label [for]="getCheckBoxId(mItem.id)">
-                                {{mItem.name | titlecase}}
+                                {{ mItem.code + ' - ' + mItem.name | titlecase | slice:0:200 }}
                             </Label>
                         </td>
                         <td>{{mItem.presentationUnit.shortName}}</td>                        
@@ -150,9 +151,18 @@
                                 [id]="getTextAmountId(mItem.id)" (input)="updateAmountByItem($event.target,mItem)"
                                 [value]="mItem.amount"></td>
                         <td [id]="getPriceId(mItem.id)">{{ formatNumberToString(mItem.referencePrice) }}</td>
+                        
                         <td>
                             <span [id]=getLabePriceByAmountId(mItem.id)></span>
                         </td>
+
+                        <td>
+                            <span [id]=getLabelDiscountId(mItem.id)>0</span>
+                        </td>
+                        <td>
+                            <span [id]=getLabePriceByAmountLessDiscountId(mItem.id)></span>
+                        </td>
+                        
                         <td>
                             <span [id]=getLabeTaxesId(mItem.id)></span>
                         </td>
@@ -167,14 +177,21 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td><b class="bold">Total mantenimiento:</b></td>
-                        <td><span id="lbl-total-without_taxes" class="bold"></span></td>
+                        <td></td>                       
+                        <td><b class="bold">Total mantenimiento</b></td>
+                        <td><span id="lbl-total-without-taxes" class="bold"></span></td>
+                        <td><span id="lbl-total-discount" class="bold error"></span></td>      
+                        <td><span id="lbl-total-without-taxes-and-discount" class="bold"></span></td>                        
                         <td><span id="lbl-total-taxes" class="bold"></span></td>
                         <td><span id="lbl-total-routine" class="bold"></span></td>
                     </tr>
                 </tfoot>
             </table>
+            <hr>
+            <legend>Observaciones</legend>
+            <div>
+                <textarea class="form-control" formControlName="txtObservation" cols="30" rows="2"></textarea>
+            </div>
             <div class="buttons__container" id="container__buttons">
                 <button type="button" class="btn btn-danger" (click)="closeWorkOrder()">Cancelar</button>
                 <button type="button" class="btn btn-success" (click)="saveWorkOrder()" [disabled]="fieldBranchIsInvalid || fieldMaintenanceRoutineIsInvalid">Guardar</button>
@@ -187,4 +204,28 @@
         </div>
     </form>
 </div>
+
+
+<div id="container__addItems">
+    <div class="overlay">
+        <div class="card card-review">
+            <div class="card-header container__header">
+                <h2>Añadir item a la orden de trabajo</h2>
+                <div class="container__buttonClose">
+                    <a><i class="fas fa-times" (click)="closePopUp('container__addItems')"></i></a>
+                </div>
+            </div>
+            <div class="card-body" id="container__tableAddNewItems">
+               <app-tbl-items-to-add
+               [countChanges]="oCountChanges"
+               [lsMaintenanceItems]="(pricesByContract!=null)?pricesByContract.lsMaintenanceItems:[]"
+               (newItemsWasSetted)="addNewMaintenanceItemsToRoutine($event)"
+               (addItemsWasCanceled)="closePopUp('container__addItems')">
+            </app-tbl-items-to-add>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

@@ -9,6 +9,7 @@ import { WorkOrderManagerComponent } from './Components/work-order-manager/work-
 
 import { SharedModule } from 'src/app/SharedComponents/shared.module';
 import { WorkOrderManagerRoutingModule } from './workOrderManager-routing.module';
+import { TblItemsToAddComponent } from './Components/tbl-items-to-add/tbl-items-to-add.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { WorkOrderManagerRoutingModule } from './workOrderManager-routing.module
     RoutinesByVehicleModelComponent,
     WorkOrderComponent,
     WorkOrderManagerComponent,
+    TblItemsToAddComponent,
   ],
   imports: [
     CommonModule,

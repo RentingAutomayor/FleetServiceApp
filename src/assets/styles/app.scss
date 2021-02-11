@@ -60,7 +60,7 @@ table{
     display: grid;
     grid-template-columns: repeat(3fr);
     grid-template-rows: repeat(3fr);
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     top: 0;

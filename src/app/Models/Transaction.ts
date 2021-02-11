@@ -11,7 +11,9 @@ export class Transaction{
     public consecutive: number;
     public code:string;
     public movement: Movement;
-    public valueWithoutTaxes: number;
+    public valueWithoutDiscount: number;
+    public discountValue: number;
+    public valueWithDiscountWithoutTaxes: number;
 	public taxesValue: number;
     public value:number;
     public client: Client;

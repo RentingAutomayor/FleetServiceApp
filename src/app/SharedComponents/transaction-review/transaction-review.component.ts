@@ -54,6 +54,10 @@ export class TransactionReviewComponent implements OnInit {
       trx_valueWithoutTaxes: new FormControl(''),
       trx_valueTaxes: new FormControl(''),
       trx_valueWithTaxes: new FormControl(''),
+      trx_valueWithoutDiscount: new FormControl(''),
+      trx_valueDiscount: new FormControl(''),
+      trx_valueWithDiscountWithoutTaxes: new FormControl('')
+
     });
   }
 
@@ -140,7 +144,7 @@ export class TransactionReviewComponent implements OnInit {
       vehicle_year, vehicle_mileage ,vehicle_brand,
       vehicle_type, vehicle_model,dealer_name,
       dealer_branch, maintenance_routine, trx_valueWithoutTaxes,trx_valueTaxes,
-      trx_valueWithTaxes
+      trx_valueWithTaxes,trx_valueWithoutDiscount,trx_valueDiscount, trx_valueWithDiscountWithoutTaxes
 
     } = this.frmTransaction.controls;
 
@@ -181,7 +185,10 @@ export class TransactionReviewComponent implements OnInit {
         maintenance_routine.setValue(transaction.headerDetails.maintenanceRoutine.name.toUpperCase());
       }
     }      
-    trx_valueWithoutTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.valueWithoutTaxes!=null)?transaction.valueWithoutTaxes:0));
+    
+    trx_valueWithoutDiscount.setValue(this.sharedFunction.formatNumberToString((transaction.valueWithoutDiscount!=null)?transaction.valueWithoutDiscount:0));
+    trx_valueDiscount.setValue(this.sharedFunction.formatNumberToString((transaction.discountValue!=null)?transaction.discountValue:0));
+    trx_valueWithDiscountWithoutTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.valueWithDiscountWithoutTaxes!=null)?transaction.valueWithDiscountWithoutTaxes:0));
     trx_valueTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.taxesValue!=null)?transaction.taxesValue:0));
     trx_valueWithTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.value!=null)?transaction.value:0));
   }

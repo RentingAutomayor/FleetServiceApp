@@ -12,6 +12,7 @@ import { BranchService } from 'src/app/SharedComponents/Services/Branch/branch.s
 export class BranchByDealerComponent implements OnInit , OnChanges{
   lsBranch: Branch[];
   frmBranch: FormGroup;
+  @Input() branchSelected: Branch;
   @Input() dealer: Dealer;
   @Output() branchWasSetted = new EventEmitter<boolean>();
 

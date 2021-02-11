@@ -31,7 +31,11 @@ export class RoutinesByVehicleModelComponent implements OnInit,OnChanges {
       console.log("vehicleModel change");
       console.log(this.vehicleModel);
       if(change == "vehicleModel"){
-        this.getListMaintenanceRoutines(this.vehicleModel.id);
+        if(this.vehicleModel == null){
+          this.frmRoutineByVehicleModel.controls.cmbRoutineByVehicleModel.setValue(0);
+        }else{
+          this.getListMaintenanceRoutines(this.vehicleModel.id);
+        }        
       }
     }
   }

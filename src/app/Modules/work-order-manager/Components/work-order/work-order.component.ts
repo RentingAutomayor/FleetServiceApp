@@ -463,10 +463,18 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
   updateAmountByItem(event: any, pItem: MaintenanceItem) {
-    this.lsMaintenanceItemsSelected.find(item => item.id == pItem.id).amount = event.value;
-    let mItem = this.lsMaintenanceItemsSelected.find(item => item.id == pItem.id);
-    this.updateLabelTotalItem(mItem);
-    this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
+    let amount =  event.target.value;
+    if(amount < 0){
+      alert("La cantidad ingresada no es válida");
+      event.target.value = 0;
+      event.preventDefault();
+      return false;
+    }else{
+      this.lsMaintenanceItemsSelected.find(item => item.id == pItem.id).amount = amount;
+      let mItem = this.lsMaintenanceItemsSelected.find(item => item.id == pItem.id);
+      this.updateLabelTotalItem(mItem);
+      this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
+    } 
   }
 
   updateLabelPriceByAmount(mItem: MaintenanceItem) {

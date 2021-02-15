@@ -148,7 +148,8 @@
                         <td>{{mItem.presentationUnit.shortName}}</td>                        
                         <td>
                             <input type="number" class="txt-amount form-control" step="0.01"
-                                [id]="getTextAmountId(mItem.id)" (input)="updateAmountByItem($event.target,mItem)"
+                                [id]="getTextAmountId(mItem.id)" 
+                                (input)="updateAmountByItem($event,mItem)"
                                 [value]="mItem.amount"></td>
                         <td [id]="getPriceId(mItem.id)">{{ formatNumberToString(mItem.referencePrice) }}</td>
                         

@@ -1,0 +1,20 @@
+<div id="container__content">
+    <div class="container__reports">
+        <div class="report-one">
+            <app-report-workorders-value-by-month></app-report-workorders-value-by-month>
+        </div>
+         
+       
+        <div class="report-two">
+            <app-report-trx-by-state></app-report-trx-by-state>
+        </div>
+
+        <div class="report-three">
+            <app-report-trx-by-vehicle></app-report-trx-by-vehicle>
+        </div>    
+       
+       
+    </div>
+</div>
+
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

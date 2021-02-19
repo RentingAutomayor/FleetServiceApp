@@ -1,0 +1,20 @@
+<div class="card card-report">
+    <div class="card-header">
+        <h3>Valores facturados por mes</h3>
+    </div>
+    <div class="card-body">
+        <div style="display:block;">
+            <canvas baseChart
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            [plugins]="chartPlugin"
+            [legend]="chartLegend"
+            [chartType]="chartType"
+            [colors]="chartColors">                         
+            </canvas>
+        </div>
+    </div>
+    <div class="card-footer">
+    </div>
+</div>

@@ -13,8 +13,11 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { LoginComponent } from './Modules/Login/Components/login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 import { NavigationComponent } from './Modules/navigation/Components/navigation/navigation.component';
-import { HomeComponent } from './Modules/home/home.component';
+
 import { SharedModule } from './SharedComponents/shared.module';
+
+
+
 
 
 
@@ -24,8 +27,7 @@ import { SharedModule } from './SharedComponents/shared.module';
     NavigationComponent,       
     LoginComponent,    
     LoginComponent,
-    LayoutComponent,
-    HomeComponent
+    LayoutComponent,    
   ],
   imports: [
     BrowserModule,

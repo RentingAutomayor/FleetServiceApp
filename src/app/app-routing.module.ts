@@ -15,6 +15,7 @@ import { DashboardClientComponent } from './Modules/dashboard-client/Components/
 import { LoginComponent } from './Modules/Login/Components/login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 
+import { HomeGuard } from 'src/app/Guardians/home-guardian/home.guard';
 import { ClientGuardianGuard } from 'src/app/Guardians/client-guardian/client-guardian.guard';
 import { DealerGuard } from 'src/app/Guardians/dealer-guardian/dealer.guard';
 import { MaintenanceGuard } from 'src/app/Guardians/maintenance-guardian/maintenance.guard';
@@ -36,8 +37,8 @@ const routes: Routes = [
   },
   {
     path: 'Home',
-    component: LayoutComponent,
-    pathMatch: 'full'
+    canActivate: [HomeGuard],
+    loadChildren: () => import('../app/Modules/home/home.module').then(m => m.HomeModule)
   },
   {
     path: 'MasterClients',

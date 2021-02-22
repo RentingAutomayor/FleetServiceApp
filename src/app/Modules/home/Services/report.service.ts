@@ -20,17 +20,30 @@ export class ReportService {
   }
 
   public GetWorkOrderApprovedByVehicle(client_id: number = null, license_plate: string = null,init_date:Date=null,end_date:Date=null): Promise<any>{
-    let urlReport = `${this.URL_API}/getWorkOrderApprovedByVehicle?client_id=${client_id}&license_plate${license_plate}&init_date=${init_date}&end_date=${end_date}`;
+    let urlReport = `${this.URL_API}/getWorkOrderApprovedByVehicle?client_id=${client_id}&license_plate=${license_plate}&init_date=${init_date}&end_date=${end_date}`;
     return this.http.get<any>(urlReport).toPromise();
   }
 
   public GetWorkOrderCanceledByVehicle(client_id: number = null, license_plate: string = null,init_date:Date=null,end_date:Date=null): Promise<any>{
-    let urlReport = `${this.URL_API}/getWorkOrderCanceledByVehicle?client_id=${client_id}&license_plate${license_plate}&init_date=${init_date}&end_date=${end_date}`;
+    let urlReport = `${this.URL_API}/getWorkOrderCanceledByVehicle?client_id=${client_id}&license_plate=${license_plate}&init_date=${init_date}&end_date=${end_date}`;
     return this.http.get<any>(urlReport).toPromise();
   }
 
   public GetWorkOrdersValueByMonth(client_id: number = null, dealer_id: number = null,init_date:Date=null,end_date:Date=null): Promise<any>{
-    let urlReport = `${this.URL_API}/getWorkOrdersValueByMonth?client_id=${client_id}&dealer_id${dealer_id}&init_date=${init_date}&end_date=${end_date}`;
+    let urlReport = `${this.URL_API}/getWorkOrdersValueByMonth?client_id=${client_id}&dealer_id=${dealer_id}&init_date=${init_date}&end_date=${end_date}`;
     return this.http.get<any>(urlReport).toPromise();
   }
+
+
+  
+  public GetAmountWorkOrdersByClientAndMonth(client_id: number = null, dealer_id: number = null,init_date:Date=null,end_date:Date=null): Promise<any>{
+    let urlReport = `${this.URL_API}/getAmountWorkOrdersByClientAndMonth?client_id=${client_id}&dealer_id=${dealer_id}&init_date=${init_date}&end_date=${end_date}`;
+    return this.http.get<any>(urlReport).toPromise();
+  }
+
+  public GetAmountWorkOrdersByDealerAndMonth(client_id: number = null, dealer_id: number = null,init_date:Date=null,end_date:Date=null): Promise<any>{
+    let urlReport = `${this.URL_API}/getAmountWorkOrdersByDealerAndMonth?client_id=${client_id}&dealer_id=${dealer_id}&init_date=${init_date}&end_date=${end_date}`;
+    return this.http.get<any>(urlReport).toPromise();
+  }
+
 }

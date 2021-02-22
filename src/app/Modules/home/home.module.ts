@@ -7,6 +7,7 @@ import { ChartsModule } from 'ng2-charts';
 import { ReportTrxByStateComponent } from './Components/report-trx-by-state/report-trx-by-state.component';
 import { ReportTrxByVehicleComponent } from './Components/report-trx-by-vehicle/report-trx-by-vehicle.component';
 import { ReportWorkordersValueByMonthComponent } from './Components/report-workorders-value-by-month/report-workorders-value-by-month.component';
+import { ReportAmountWorkordersByClientOrByDealerComponent } from './Components/report-amount-workorders-by-client-or-by-dealer/report-amount-workorders-by-client-or-by-dealer.component';
 
 
 
@@ -15,7 +16,8 @@ import { ReportWorkordersValueByMonthComponent } from './Components/report-worko
     HomeComponent,
     ReportTrxByStateComponent,
     ReportTrxByVehicleComponent,
-    ReportWorkordersValueByMonthComponent
+    ReportWorkordersValueByMonthComponent,
+    ReportAmountWorkordersByClientOrByDealerComponent
   ],
   imports: [
     CommonModule,  

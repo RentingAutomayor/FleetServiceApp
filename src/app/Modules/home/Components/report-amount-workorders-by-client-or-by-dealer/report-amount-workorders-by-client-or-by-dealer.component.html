@@ -1,0 +1,25 @@
+<div class="card card-report">
+    <div class="card-header">
+        <h3>Cantidad de órdenes de trabajo ejecutadas por mes</h3>
+    </div>
+    <div class="card-body">
+        <div class="container__buttons" *ngIf="isMainCompanyLogged">
+            <button class="btn btn-info" (click)="changeDataByDealer()">Por concesionario</button>
+            <button class="btn btn-info" (click)="changeDataByClient()">Por cliente</button>
+        </div>
+       
+        <div style="display:block;">
+            <canvas baseChart
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            [plugins]="chartPlugin"
+            [legend]="chartLegend"
+            [chartType]="chartType"
+          >                         
+            </canvas>
+        </div>
+    </div>
+    <div class="card-footer">
+    </div>
+</div>

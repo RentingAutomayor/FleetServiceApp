@@ -1,19 +1,23 @@
 <div id="container__content">
     <div class="container__reports">
-        <div class="report-one">
+
+        <div class="report-one report-bigger">
+            <app-report-amount-workorders-by-client-or-by-dealer
+                [company]="company">                
+            </app-report-amount-workorders-by-client-or-by-dealer>
+        </div>
+
+        <div class="report-two report-bigger">
             <app-report-workorders-value-by-month></app-report-workorders-value-by-month>
         </div>
          
-       
-        <div class="report-two">
-            <app-report-trx-by-state></app-report-trx-by-state>
-        </div>
-
         <div class="report-three">
             <app-report-trx-by-vehicle></app-report-trx-by-vehicle>
-        </div>    
-       
-       
+        </div>  
+
+        <div class="report-four">
+            <app-report-trx-by-state></app-report-trx-by-state>
+        </div>
     </div>
 </div>
 

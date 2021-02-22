@@ -253,7 +253,12 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
 
       this.vehicleSelected = this.vehicleService.getVehicle();
-      console.log(this.vehicleSelected);
+      console.log("[SetDataInForm]",this.vehicleSelected);
+      
+      let VEHICLE_STATE_ACTIVE = 1;
+      if(!(this.vehicleSelected.vehicleState.id == VEHICLE_STATE_ACTIVE)){
+        throw ("El vehículo que seleccionó se encuentra en un estado INACTIVO, por favor comuniquese con el administrador");
+      }
 
       this.contractService.getContractByVehicleId(this.vehicleSelected.id).then(dataContract => {
         this.contractSelected = dataContract;
@@ -303,6 +308,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       });
     } catch (error) {
       console.warn(error);
+      alert(error);
     }
 
 

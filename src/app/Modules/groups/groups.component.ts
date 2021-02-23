@@ -12,14 +12,16 @@ import { AdminService } from 'src/app/Services/admin.service';
 export class GroupsComponent implements OnInit {
   @Input() returnPath: string;
   @Input() actions: any[] ;
+  @Input() GroupToUpdate: {};
   lsModules: any[];
   lsActionsSlected: any[] = []  ;
   isAwaiting:boolean;
 
   @Output() groupWasSetted = new EventEmitter<any>();
   @Output() groupWasCanceled = new EventEmitter<string>();
-  
-  formgGroup: FormGroup;
+
+  group: any = {} ;
+  actualizar:boolean = false;
 
   // 
 
@@ -32,12 +34,35 @@ export class GroupsComponent implements OnInit {
   // modulo seleccionado
   modulosSeleccionado: string = "0";
 
-  constructor(private router: Router, private adminService: AdminService) {          
-    this.formgGroup = new FormGroup({
-      txtName: new FormControl(''),
-      txtDescription: new FormControl('')
-    });    
+  ngOnChanges(){   
+    if (Object.entries(this.GroupToUpdate).length != 0) {
+      this.lsActionsSlected = [] ;
+      this.group = this.GroupToUpdate;
+      this.group.modules.forEach(element => {
+        let module = {
+          id_module : element.id_module,          
+          name_module : element.moduleName,
+          actions: []
+        }
 
+        element.actions.forEach(act => {
+          let action = {
+            act_id: act.id_action,
+            act_name: act.actionName
+          } 
+          module.actions.push(action);
+        });
+
+        this.lsActionsSlected.push(module);
+      });
+
+      console.log(this.lsActionsSlected);          
+      this.actualizar = true;
+    }    
+  }
+
+  constructor(private router: Router, private adminService: AdminService) {          
+    
     this.dropdownSettings = { 
       singleSelection: false, 
       idField: 'act_id',
@@ -81,42 +106,115 @@ export class GroupsComponent implements OnInit {
     }
   }
 
-  deleteModule(item:any){  
-    console.log(item);
-    this.lsActionsSlected.splice(item,1);
+  deleteModule(item:any){ 
+
+    for( var i = 0; i < this.lsActionsSlected.length; i++){ 
+                                   
+      if ( this.lsActionsSlected[i].id_module === item.id_module) { 
+        this.lsActionsSlected.splice(i, 1); 
+          i--; 
+      }
+    }
+
+    //this.lsActionsSlected.splice(item);
+    console.log(this.lsActionsSlected);
   }
 
   setDataGroup() {
+
+    let flagGroup = false;
     
     this.isAwaiting = true;
-    // let objAction = new Action();
-    let objGroup: any = {};
+    
+    if (this.lsActionsSlected.length == 0) {
+      flagGroup = false;
+      alert("Debe seleccionar minimo un modulo al grupo.");
+    }else{
+      flagGroup = true;
+    }
 
-    objGroup.name = this.formgGroup.controls.txtName.value;
-    objGroup.description = this.formgGroup.controls.txtDescription.value;
-    objGroup.moduleAction = this.lsActionsSlected;
+    if(this.group.groupName == undefined || this.group.groupName == ''){
+      flagGroup = false;
+      alert("El nombre es obligatorio.");
+    }else{
+      flagGroup = true;
+    }
+    
+    if(flagGroup == true)
+    {
+      this.group.moduleAction = this.lsActionsSlected;
 
-    // if(this.personToUpdate != null){
-    //   objPerson.id = this.personToUpdate.id;
-    //   console.warn("Detecta información de cliente para actualizar");
-    // }
+      this.adminService.insertGroup(this.group).then( data => {
+        let serviceResponse: any = {
+          state : data.response,
+          message : data.message
+        }
+        this.isAwaiting = false;
+        this.groupWasSetted.emit(serviceResponse);        
+      }).catch( err => {
+        let serviceResponse: any = {
+          state : false,
+          message : err.error.Message
+        }
+  
+        this.isAwaiting = false;
+        this.groupWasSetted.emit(serviceResponse);  
+      });
 
-    this.adminService.insertGroup(objGroup).then( data => {
-      let serviceResponse: any = {
-        state : data.response,
-        message : data.message
-      }
-      this.isAwaiting = false;
-      this.groupWasSetted.emit(serviceResponse);        
-    }).catch( err => {
-      let serviceResponse: any = {
-        state : false,
-        message : err.error.Message
-      }
+      this.comeBack();
+    } 
+  }
 
-      this.isAwaiting = false;
-      this.groupWasSetted.emit(serviceResponse);  
-    });
+  updateDataGroup() {
+
+    let flagGroupModule = false;
+    let flagGroupName = false;
+    
+    this.isAwaiting = true;
+    
+    if (this.lsActionsSlected.length == 0) {
+      flagGroupModule = false;
+      alert("Debe seleccionar minimo un modulo al grupo.");
+    }else{
+      flagGroupModule = true;
+    }
+
+    if(this.group.groupName == undefined || this.group.groupName == ''){
+      flagGroupName = false;
+      alert("El nombre es obligatorio.");
+    }else{
+      flagGroupName = true;
+    }
+    
+    if(flagGroupModule == true && flagGroupName == true)
+    {
+      this.group.moduleAction = this.lsActionsSlected;
+
+      this.adminService.updateGroup(this.group).then( data => {
+        let serviceResponse: any = {
+          state : data.response,
+          message : data.message
+        }
+        this.isAwaiting = false;
+        this.groupWasSetted.emit(serviceResponse);        
+      }).catch( err => {
+        let serviceResponse: any = {
+          state : false,
+          message : err.error.Message
+        }
+  
+        this.isAwaiting = false;
+        this.groupWasSetted.emit(serviceResponse);  
+      });
+
+      this.comeBack();
+    } 
+  }
+
+  refresGroup(){
+    this.actualizar = false;
+    this.group = {};
+    this.lsActionsSlected = [];
   }
 
   comeBack() {
@@ -124,7 +222,22 @@ export class GroupsComponent implements OnInit {
       console.log("[retorno]:", this.returnPath);
       this.router.navigate([this.returnPath]);
     }
+    this.refresGroup();
     this.groupWasCanceled.emit('Group');
+  }
+
+   // actualizar el grupo a modificar
+   updateFile(file: any){ 
+    switch (file.id) {
+        case "groupName":
+            this.group.groupName = file.value;
+            break;    
+        case "description":
+            this.group.description = file.value;
+            break; 
+        default:            
+            break;
+    }
   }
 
 }

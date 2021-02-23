@@ -11,16 +11,24 @@ import { AdminService } from '../../Services/admin.service';
 })
 export class ActionsComponent implements OnInit {
   @Input() returnPath: string;
+  @Input() actionToUpdate: Action;
   @Output() actionWasSetted = new EventEmitter<any>();
   @Output() actionWasCanceled = new EventEmitter<string>();
-  formAction: FormGroup;
+  
   isAwaiting:boolean;
+  actualizar:boolean = false;
 
-  constructor(private router: Router, private adminService: AdminService) { 
-    this.formAction = new FormGroup({
-      txtName: new FormControl(''),
-      txtDescription: new FormControl('')
-    });
+  action = new Action();
+
+  ngOnChanges(){   
+    if (Object.entries(this.actionToUpdate).length != 0) {
+      this.action = this.actionToUpdate;
+      this.actualizar = true;
+    }    
+  }
+
+
+  constructor(private router: Router, private adminService: AdminService) {     
   }
 
   ngOnInit(): void {
@@ -29,20 +37,9 @@ export class ActionsComponent implements OnInit {
   
   setDataAction() {
 
-    this.isAwaiting = true;
-
-    let objAction = new Action();
-
-    // if(this.personToUpdate != null){
-    //   objPerson.id = this.personToUpdate.id;
-    //   console.warn("Detecta información de cliente para actualizar");
-    // }
-
-    objAction.act_name = this.formAction.controls.txtName.value;
-    objAction.act_description = this.formAction.controls.txtDescription.value;
-    
-    
-    this.adminService.insertAction(objAction).then( data => {
+    this.isAwaiting = true;    
+        
+    this.adminService.insertAction(this.action).then( data => {
       let serviceResponse: any = {
         state : data.response,
         message : data.message
@@ -58,14 +55,60 @@ export class ActionsComponent implements OnInit {
       this.isAwaiting = false;
       this.actionWasSetted.emit(serviceResponse);  
     });
+
+    this.comeBack();
   }
 
-  comeBack() {
+  updateDataAction() {
+
+    this.isAwaiting = true;    
+        
+    this.adminService.updateAction(this.action).then( data => {
+      let serviceResponse: any = {
+        state : data.response,
+        message : data.message
+      }
+      this.isAwaiting = false;
+      this.actionWasSetted.emit(serviceResponse);        
+    }).catch( err => {
+      let serviceResponse: any = {
+        state : false,
+        message : err.error.Message
+      }
+
+      this.isAwaiting = false;
+      this.actionWasSetted.emit(serviceResponse);  
+    });
+
+    this.comeBack();
+  }
+
+  refresAction(){
+    this.actualizar = false;
+    this.action = new Action();
+  }
+
+  comeBack() {    
     if (this.returnPath != null) {
       console.log("[retorno]:", this.returnPath);
       this.router.navigate([this.returnPath]);
     }
+    this.refresAction();
     this.actionWasCanceled.emit('Action');
+  }
+
+  // actualizar el usuario a modificar
+  updateFile(file: any){ 
+    switch (file.id) {
+        case "act_name":
+            this.action.act_name = file.value;
+            break;    
+        case "act_description":
+            this.action.act_description = file.value;
+            break; 
+        default:            
+            break;
+    }
   }
 
 }

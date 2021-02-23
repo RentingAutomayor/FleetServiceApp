@@ -39,6 +39,17 @@ export class AdminService {
     return this.http.post<ResponseApi>(urlInsertAction,pAction,this.HttpOptions).toPromise();
   }
 
+  async updateAction(pAction: Action):Promise<ResponseApi>{
+    let urlUpdateAction = `${this.URL_API_actions}/Update`;
+    return this.http.post<ResponseApi>(urlUpdateAction,pAction,this.HttpOptions).toPromise();
+  }
+
+  async getActionById(pId:number):Promise<Action>{
+    let urlGetActionById = `${this.URL_API_actions}/GetById?pId=${pId}`;
+    return this.http.get<Action>(urlGetActionById).toPromise();
+  }
+
+
   // ----------------------------------------------------------------------------------------  //
 
   // metodos administrativos para la parte de a grupos 
@@ -58,6 +69,16 @@ export class AdminService {
     return this.http.post<ResponseApi>(urlInsertGroup,pGroup,this.HttpOptions).toPromise();
   }
 
+  async updateGroup(pGroup: any):Promise<ResponseApi>{
+    let urlUpdateGroup = `${this.URL_API_group}/Update`;
+    return this.http.post<ResponseApi>(urlUpdateGroup,pGroup,this.HttpOptions).toPromise();
+  }
+
+  async getGroupById(pId:number):Promise<any>{
+    let urlGetGroupById = `${this.URL_API_group}/GetById?pId=${pId}`;
+    return this.http.get<any>(urlGetGroupById).toPromise();
+  }
+
   // ----------------------------------------------------------------------------------------  //
 
   // metodos administrativos para la parte de a usuarios
@@ -70,6 +91,21 @@ export class AdminService {
   async deleteUser(pUser:any):Promise<ResponseApi>{
     let urlDeleteUser = `${this.URL_API_users}/Delete`;
     return this.http.post<ResponseApi>(urlDeleteUser,pUser,this.HttpOptions).toPromise();   
+  }
+
+  async insertUser(pUser: any):Promise<ResponseApi>{
+    let urlInsertUser = `${this.URL_API_users}/Insert`;
+    return this.http.post<ResponseApi>(urlInsertUser,pUser,this.HttpOptions).toPromise();
+  }
+
+  async updateUser(pUser: any):Promise<ResponseApi>{
+    let urlUpdateUser = `${this.URL_API_users}/Update`;
+    return this.http.post<ResponseApi>(urlUpdateUser,pUser,this.HttpOptions).toPromise();
+  }
+
+  async getUserById(pId:number):Promise<any>{
+    let urlGetUserById = `${this.URL_API_users}/GetById?pId=${pId}`;
+    return this.http.get<any>(urlGetUserById).toPromise();
   }
 
   // ----------------------------------------------------------------------------------------  //

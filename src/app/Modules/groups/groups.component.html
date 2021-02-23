@@ -1,13 +1,13 @@
 <div class="container__group">
-    <form [formGroup]="formgGroup">
+    <form>
         <div class="row__container" id="container__name">
             <div class="col">
                 <label for="#">Nombre:</label>
-                <input type="text" class="form-control" placeholder="Nombre ..." formControlName="txtName">
+                <input type="text" class="form-control" placeholder="Nombre ..." value="{{group.groupName !=null ? group.groupName : ''}}" id="groupName" #groupName (keyup)=updateFile(groupName) required>
             </div>
             <div class="col">
                 <label for="">Descripcion:</label>
-                <input type="text" class="form-control" placeholder="Descripcion ..." formControlName="txtDescription">
+                <input type="text" class="form-control" placeholder="Descripcion ..." value="{{group.description !=null ? group.description : ''}}" id="description" #description (keyup)=updateFile(description) required>
             </div>
         </div>
     </form>
@@ -52,7 +52,8 @@
             <div class="buttons__container" id="container__buttons">
                 <button type="button" class="btn btn-success" (click)="addModule(modulos)">Añadir Modulo</button>
                 <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-                <button type="button" class="btn btn-success" (click)="setDataGroup()">Guardar</button>
+                <button *ngIf="actualizar" type="button" class="btn btn-success" (click)="updateDataGroup()">Actualizar</button>
+                <button *ngIf="!actualizar" type="button" class="btn btn-success" (click)="setDataGroup()">Guardar</button>
             </div>
         </div>
     </div>

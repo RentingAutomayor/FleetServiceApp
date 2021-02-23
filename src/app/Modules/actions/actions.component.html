@@ -1,18 +1,19 @@
 <div class="container__action">
-    <form [formGroup]="formAction">
+    <form>
         <div class="row__container" id="container__name">
             <div class="col">
                 <label for="#">Nombre:</label>
-                <input type="text" class="form-control" placeholder="Nombre ..." formControlName="txtName" required>
+                <input type="text" class="form-control" placeholder="Nombres ..." value="{{action.act_name !=null ? action.act_name : ''}}" id="act_name" #act_name (keyup)=updateFile(act_name) required>
             </div>
             <div class="col">
                 <label for="">Descripcion:</label>
-                <input type="text" class="form-control" placeholder="Descripcion ..." formControlName="txtDescription">
+                <input type="text" class="form-control" placeholder="Descripcion ..." value="{{action.act_description !=null ? action.act_description : ''}}" id="act_description" #act_description (keyup)=updateFile(act_description) required>
             </div>
         </div>
         <div class="buttons__container" id="container__buttons">
             <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-            <button type="button" class="btn btn-success" (click)="setDataAction()">Guardar</button>
+            <button *ngIf="actualizar" type="button" class="btn btn-success" (click)="updateDataAction()">Actualizar</button>
+            <button *ngIf="!actualizar" type="button" class="btn btn-success" (click)="setDataAction()">Guardar</button>
         </div>
     </form>
 </div>

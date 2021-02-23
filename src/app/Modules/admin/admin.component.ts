@@ -18,6 +18,10 @@ export class AdminComponent implements OnInit {
   lsDealer: any[];
   lsComp: any[];
 
+  // object to update
+  actionToUpdate = new Action();
+  groupToUpdate: any = {} ;
+  userToUpdate: any = {} ;
 
   session : any = {};
   isAwaiting:boolean;
@@ -127,16 +131,39 @@ export class AdminComponent implements OnInit {
   // update
 
   async updateAction(pId:number){
-    // try{
-    //   this.isAwaiting = true;
-    //   let oClientDB = await this.clientService.getClientById(pId);
-    //   this.clientService.setClientToUpdate(oClientDB);      
-    //   this.isAwaiting = false;
-    //   this.router.navigate(["/MasterClients/Client"]);
-    // }catch(err){
-    //   console.error(err.error.Message);
-    //   alert(err.error.Message);
-    // }
+    try{
+      this.isAwaiting = true;
+      this.actionToUpdate = await this.adminService.getActionById(pId);
+      this.showPopUp('Action');
+      this.isAwaiting = false;
+    }catch(err){
+      console.error(err.error.Message);
+      alert(err.error.Message);
+    }
+  }
+
+  async updateGroup(pId:number){
+    try{
+      this.isAwaiting = true;
+      this.groupToUpdate = await this.adminService.getGroupById(pId);
+      this.showPopUp('Group');
+      this.isAwaiting = false;
+    }catch(err){
+      console.error(err.error.Message);
+      alert(err.error.Message);
+    }
+  }
+
+  async updateUser(pId:number){
+    try{
+      this.isAwaiting = true;
+      this.userToUpdate = await this.adminService.getUserById(pId);
+      this.showPopUp('User');
+      this.isAwaiting = false;
+    }catch(err){
+      console.error(err.error.Message);
+      alert(err.error.Message);
+    }
   }
 
   // delete

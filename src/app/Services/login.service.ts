@@ -13,7 +13,7 @@ import { variable } from '@angular/compiler/src/output/output_ast';
 })
 export class LoginService {
 
-  private URL_API = 'https://localhost:44318/api/Users/GetAuthenticate';
+  private URL_API = 'https://localhost:44318/api/Users';
   
   constructor(private http: HttpClient) { }
 
@@ -24,8 +24,14 @@ export class LoginService {
 
   // tslint:disable-next-line: typedef
   loginUser(user: any){
-    user.password = btoa(user.password);
-    return this.http.post<any>(this.URL_API, user);
+    user.usr_pass = btoa(user.usr_pass);
+    let urlLogin = `${this.URL_API}/GetAuthenticate`;
+    return this.http.post<any>(urlLogin, user);
+  }
+
+  recoverPass(user: any){
+    let urlRecover = `${this.URL_API}/recoverPass`;
+    return this.http.post<any>(urlRecover, user);
   }
 }
 

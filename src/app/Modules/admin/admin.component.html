@@ -30,7 +30,7 @@
                     <td>{{ user.group.grp_name}}</td>
                     <td>
                         <i class="fas fa-info-circle text-info" title="Más información"></i>
-                        <i class="fas fa-edit text-warning" (click)="updateAction(user.usr_id)" title="Modificar"></i>
+                        <i class="fas fa-edit text-warning" (click)="updateUser(user.usr_id)" title="Modificar"></i>
                         <i class="fas fa-trash-alt text-danger" (click)="deleteUser(user)" title="Eliminar"></i>
                     </td>
                 </tr>
@@ -44,7 +44,7 @@
             <div class="overlay">
                 <div class="card">
                     <div class="card-body-float">
-                        <app-users (userWasCanceled)="comeBackToTable($event)" [lsGroups]=(lsGroups) [lsClient]=(lsClient) [lsDealer]=(lsDealer) [lsComp]=(lsComp)>
+                        <app-users [UserToUpdate]="userToUpdate" (userWasCanceled)="comeBackToTable($event)" (userWasSetted)="saveUser($event)" [lsGroups]=(lsGroups) [lsClient]=(lsClient) [lsDealer]=(lsDealer) [lsComp]=(lsComp)>
                         </app-users>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                     <td>{{ group.description | titlecase }}</td>
                     <td>
                         <i class="fas fa-info-circle text-info" title="Más información"></i>
-                        <i class="fas fa-edit text-warning" (click)="updateAction(group.id_group)" title="Modificar"></i>
+                        <i class="fas fa-edit text-warning" (click)="updateGroup(group.id_group)" title="Modificar"></i>
                         <i class="fas fa-trash-alt text-danger" (click)="deleteGroup(group)" title="Eliminar"></i>
                     </td>
                 </tr>
@@ -83,7 +83,7 @@
             <div class="overlay">
                 <div class="card">
                     <div class="card-body-float">
-                        <app-groups [actions]="lsActions" (groupWasCanceled)="comeBackToTable($event)" (groupWasSetted)="saveGroup($event)">
+                        <app-groups [GroupToUpdate]="groupToUpdate" [actions]="lsActions" (groupWasCanceled)="comeBackToTable($event)" (groupWasSetted)="saveGroup($event)">
                         </app-groups>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
                     <td>{{ action.act_description | titlecase }}</td>
                     <td>
                         <i class="fas fa-info-circle text-info" title="Más información"></i>
-                        <i class="fas fa-edit text-warning" (click)="updateAction(action.id)" title="Modificar"></i>
+                        <i class="fas fa-edit text-warning" (click)="updateAction(action.act_id)" title="Modificar"></i>
                         <i class="fas fa-trash-alt text-danger" (click)="deleteAction(action)" title="Eliminar"></i>
                     </td>
                 </tr>
@@ -121,7 +121,7 @@
             <div class="overlay">
                 <div class="card">
                     <div class="card-body-float">
-                        <app-actions (actionWasCanceled)="comeBackToTable($event)" (actionWasSetted)="saveAction($event)">
+                        <app-actions [actionToUpdate]="actionToUpdate" (actionWasCanceled)="comeBackToTable($event)" (actionWasSetted)="saveAction($event)">
                         </app-actions>
                     </div>
                 </div>

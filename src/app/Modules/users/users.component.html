@@ -1,32 +1,32 @@
 <div class="container__users">
-    <div class="row__container" id="container__name" [formGroup]="formUser">
+    <div class="row__container" id="container__name">
         <div class="col">
             <label for="#">Nombres:</label>
-            <input type="text" class="form-control" placeholder="Nombres ..." formControlName="txtNames">
+            <input type="text" class="form-control" placeholder="Nombres ..." value="{{user.usr_names !=null ? user.usr_names : ''}}" id="usr_names" #usr_names (keyup)=updateFile(usr_names)>
         </div>
         <div class="col">
             <label for="">Apellidos:</label>
-            <input type="text" class="form-control" placeholder="Apellidos ..." formControlName="txtLastNames">
-        </div>
-    </div>
-    <div class="row__container" [formGroup]="formUser">
-        <div class="col">
-            <label for="#">Usuario:</label>
-            <input type="text" class="form-control" placeholder="Usuario ..." formControlName="txtUser">
-        </div>
-        <div class="col">
-            <label for="">Contraseña:</label>
-            <input type="text" class="form-control" placeholder="Contraseña ..." formControlName="txtPass">
+            <input type="text" class="form-control" placeholder="Apellidos ..." value="{{user.usr_last_names !=null ? user.usr_last_names : ''}}" id="usr_last_names" #usr_last_names (keyup)=updateFile(usr_last_names)>
         </div>
     </div>
     <div class="row__container">
-        <div class="col" [formGroup]="formUser">
+        <div class="col">
+            <label for="#">Usuario:</label>
+            <input type="text" class="form-control" placeholder="Usuario ..." value="{{user.usr_user !=null ? user.usr_user : ''}}" id="usr_user" #usr_user (keyup)=updateFile(usr_user)>
+        </div>
+        <div class="col">
+            <label for="">Contraseña:</label>
+            <input type="text" class="form-control" placeholder="Contraseña ..." value="{{user.usr_pass !=null ? user.usr_pass : ''}}" id="usr_pass" #usr_pass (keyup)=updateFile(usr_pass)>
+        </div>
+    </div>
+    <div class="row__container">
+        <div class="col">
             <label for="">Correo:</label>
-            <input type="text" class="form-control" placeholder="Correo ..." formControlName="txtEmail">
+            <input type="text" class="form-control" placeholder="Correo ..." value="{{user.usr_email !=null ? user.usr_email : ''}}" id="usr_email" #usr_email (keyup)=updateFile(usr_email)>
         </div>
         <div class="col">
             <label for="">Grupo:</label>
-            <ng-multiselect-dropdown id="grupo" #acciones name="grupos" [placeholder]="'Grupo ...'" [data]="lsGroups" [settings]="dropdownSettings" [(ngModel)]="opcionesSeleccionadas">
+            <ng-multiselect-dropdown id="grupo" #acciones name="grupos" [placeholder]="'Grupo ...'" [data]="lsGroups" [settings]="dropdownSettings" [(ngModel)]="opcionesSeleccionadas" (onSelect)="loadgroup()" (onDeSelect)="loadgroup()">
             </ng-multiselect-dropdown>
         </div>
     </div>
@@ -36,15 +36,16 @@
             <ng-multiselect-dropdown id="profile" #profile name="profile" [placeholder]="'Perfil ...'" [data]="lsProfiles" [settings]="dropdownSettingsProfile" [(ngModel)]="opcionesSeleccionadasProfile" (onSelect)="loadProfile()" (onDeSelect)="loadProfile()">
             </ng-multiselect-dropdown>
         </div>
-        <div class="col">
-            <label for="">C/C/D:</label>
+        <div class="col" *ngIf="profileSelected">
+            <label for="">_</label>
             <ng-multiselect-dropdown id="profileS" #profileS name="profileS" [placeholder]="'Perfil Mod ...'" [data]="lsProfileCDC" [settings]="dropdownSettingsProf" [(ngModel)]="opcionesSeleccionadasProf">
             </ng-multiselect-dropdown>
         </div>
     </div>
     <div class="buttons__container" id="container__buttons">
         <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-        <button type="button" class="btn btn-success" (click)="setDataUser()">Guardar</button>
+        <button *ngIf="actualizar" type="button" class="btn btn-success" (click)="updateDataUser()">Actualizar</button>
+        <button *ngIf="!actualizar" type="button" class="btn btn-success" (click)="setDataUser()">Guardar</button>
     </div>
 
 </div>

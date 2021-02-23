@@ -4,7 +4,6 @@ import { Label } from 'ng2-charts';
 import * as pluginDataLabels from 'chart.js';
 import { ReportService } from '../../Services/report.service';
 import { Color } from 'angular-bootstrap-md';
-import { identity, indexOf } from 'lodash';
 import { Company } from 'src/app/Models/Company';
 import { CompanyType } from "src/app/Models/CompanyType";
 

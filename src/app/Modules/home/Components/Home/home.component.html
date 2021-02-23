@@ -7,17 +7,25 @@
             </app-report-amount-workorders-by-client-or-by-dealer>
         </div>
 
-        <div class="report-two report-bigger">
-            <app-report-workorders-value-by-month></app-report-workorders-value-by-month>
+        <div class="report-three report-bigger">
+            <app-report-workorders-value-by-month
+                [company]="company">
+            </app-report-workorders-value-by-month>
         </div>
          
-        <div class="report-three">
-            <app-report-trx-by-vehicle></app-report-trx-by-vehicle>
-        </div>  
+        <div class="report-two   report-bigger">
+            <app-report-trx-by-state   
+                [company]="company">
+            </app-report-trx-by-state>
+        </div>
 
         <div class="report-four">
-            <app-report-trx-by-state></app-report-trx-by-state>
-        </div>
+            <app-report-trx-by-vehicle 
+                [company]="company">             
+            </app-report-trx-by-vehicle>
+        </div>  
+
+       
     </div>
 </div>
 

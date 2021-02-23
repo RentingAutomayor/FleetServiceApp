@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js';
 import { Label } from 'ng2-charts';
 import * as pluginDataLabels from 'chart.js';
 import { ReportService } from '../../Services/report.service';
 import { Color } from 'angular-bootstrap-md';
+import { Company } from 'src/app/Models/Company';
+import { CompanyType } from "src/app/Models/CompanyType";
 
 @Component({
   selector: 'app-report-workorders-value-by-month',
@@ -41,18 +43,52 @@ export class ReportWorkordersValueByMonthComponent implements OnInit {
   public chartData: ChartDataSets[] = [];
   public chartColors: Color[] = [
     { backgroundColor: '#ade498' },
-  ]
+  ];
+
+  @Input() company: Company;
+  public typeOfReport: string;
+  isMainCompanyLogged: boolean;
+  dealer_to_filter: number;
+  client_to_filter: number;
+  init_date: Date;
+  end_date: Date;
 
   constructor(
     private reportService:ReportService
   ) { }
 
   ngOnInit(): void {
+    this.initDataToGetReport();
     this.getDataToReport();
   }
 
+  initDataToGetReport() {
+    console.warn("[initDataToGetReport]",this.company);
+    switch(this.company.type){
+      case CompanyType.CLIENT:
+         this.typeOfReport = "dealer";
+         this.isMainCompanyLogged = false;
+         this.client_to_filter = this.company.id;
+         this.dealer_to_filter = null;
+        break;
+       case CompanyType.DEALER:
+         this.typeOfReport = "client";
+         this.isMainCompanyLogged = false;
+         this.dealer_to_filter = this.company.id;
+         this.client_to_filter = null;
+         break;
+       case CompanyType.MAIN_COMPANY:
+         this.typeOfReport = "client";
+         this.isMainCompanyLogged = true;
+         this.client_to_filter = null;
+         this.dealer_to_filter = null;
+         break;
+    }
+   }
+
   async getDataToReport(){
-    await this.reportService.GetWorkOrdersValueByMonth()
+    console.warn(this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date);
+    await this.reportService.GetWorkOrdersValueByMonth(this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date)
     .then(data => {
       let aLabels = [];
       console.log("[getDataToReport]",data);

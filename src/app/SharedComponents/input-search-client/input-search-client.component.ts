@@ -17,6 +17,7 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
   clientSelected:Client;
   private description = new  Subject<string>();
   @Input() countChanges:number;
+  @Input() disableField: boolean;
   @Output() clientWasSetted = new EventEmitter<boolean>();
 
   constructor(
@@ -25,6 +26,8 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
     this.frmSearchClient = new FormGroup({
       txtClient: new FormControl('')
     });
+
+    this.disableField = false;
   }
 
   ngOnChanges(changes: SimpleChanges){
@@ -33,8 +36,13 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
         this.clientSelected = this.clientService.getClientSelected();
         if(this.clientSelected != null && this.clientSelected != undefined){
           this.setDataInForm(this.clientSelected);
+        }else{
+          this.frmSearchClient.reset();
         }
+      }else if(change == "disableField"){      
+          this.toggleClientField();
       }
+      
     }
   }
 
@@ -43,6 +51,7 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
   }
 
   async initComponents(){
+    this.toggleClientField();
     this.countChanges = 0;
     this.listIsvisible = false;
     this.lsClientSuggestion$ = this.description.pipe(
@@ -81,5 +90,15 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
 
   loseFocus(){
     this.clientWasSetted.emit(true);
+  }
+
+  toggleClientField(){
+    let { txtClient } = this.frmSearchClient.controls;
+    if(this.disableField){
+      txtClient.disable();
+    }else{
+      txtClient.enable();
+    }
+    
   }
 }

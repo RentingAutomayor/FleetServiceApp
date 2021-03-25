@@ -27,6 +27,7 @@ import { DealerService } from 'src/app/Modules/dealer/Services/Dealer/dealer.ser
 import { Tax } from 'src/app/Models/Tax';
 import { SecurityValidators } from 'src/app/Models/SecurityValidators';
 import { DiscountType, DiscountTypes } from 'src/app/Models/DiscountType';
+import { ConstractStates } from 'src/app/Models/ContractState';
 
 
 
@@ -264,6 +265,11 @@ export class WorkOrderComponent implements OnInit, OnChanges {
         this.contractSelected = dataContract;
 
         if (this.contractSelected != null) {
+
+          if(this.contractSelected.contractState.id != ConstractStates.ACTIVO){
+              throw(`El vehículo que intenta asociar cuenta con un contrato en estado: ${this.contractSelected.contractState.name } , por tal motivo, NO se puede generar una orden de trabajo. Por favor comuniquese con el administrador.`);
+          }
+
           console.log(this.contractSelected);
           txtYear.setValue(this.vehicleSelected.year);
           txtMileage.setValue(this.sharedFunctions.formatNumberToString(this.vehicleSelected.mileage));

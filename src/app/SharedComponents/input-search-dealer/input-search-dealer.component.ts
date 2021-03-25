@@ -38,7 +38,11 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
         if(this.dealerSelected != null && this.dealerSelected != undefined){
           this.setDataInForm(this.dealerSelected);
           this.dealerWasSetted.emit(true);
+        }else{
+          this.frmSearchDealer.reset();
         }
+      }else if(change == "disableField"){
+        this.toggleFieldDealer();
       }      
     }
   }
@@ -86,5 +90,15 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
 
   loseFocus(){
     this.dealerWasSetted.emit(true);
+  }
+
+  toggleFieldDealer(){
+    let {txtDealer} = this.frmSearchDealer.controls;
+
+    if(this.disableField){
+      txtDealer.disable();
+    }else{
+      txtDealer.enable();
+    }
   }
 }

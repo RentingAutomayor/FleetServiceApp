@@ -3,7 +3,7 @@ import { DatePipe } from '@angular/common';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Client } from 'src/app/Models/Client';
 import { Contract } from 'src/app/Models/Contract';
-import { ContractState } from 'src/app/Models/ContractState';
+import { ContractState, ConstractStates } from 'src/app/Models/ContractState';
 import { VehicleModel } from 'src/app/Models/VehicleModel';
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service';
 import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service';
@@ -47,6 +47,11 @@ export class ContractComponent implements OnInit, OnChanges {
   discountFieldIsInvalid: boolean;
   discountType: DiscountType;
   lsMaintenanceItemsTemp: MaintenanceItem[];
+  disableClientField: boolean;
+  disableTypeOfDiscoutnField: boolean;
+  disableVehicleTypesAndVehicleModels: boolean;
+  disableVehicles: boolean;
+  
 
 
   isAwaiting: boolean;
@@ -69,6 +74,10 @@ export class ContractComponent implements OnInit, OnChanges {
     this.contracStateFieldIsInvalid = false;
     this.discountFieldIsInvalid = false;
     this.lsMaintenanceItemsTemp = [];
+    this.disableClientField = false;
+    this.disableTypeOfDiscoutnField = false;
+    this.disableVehicles = false;
+    
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.validateCompanyLogged();
@@ -141,11 +150,14 @@ export class ContractComponent implements OnInit, OnChanges {
               this.dealerService.setDealerSelected(dataDealer);
               this.countChanges += 1;
             });
+            
           break
         case CompanyType.CLIENT:
+          
           break;
         default:
           this.disableDealerField = false;
+          
           break;
       }
     } catch (error) {
@@ -320,54 +332,69 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
 
-  saveContract() {
-
+  async saveContract() {
+    let { name, startingDate, endingDate, amountVehicles, duration, discountValue, observation } = this.frmContract.controls;
     try {
+      
+      this.isAwaiting = true;
       if (this.frmContract.valid) {
-        this.contract = this.frmContract.value;
+        this.contract = new Contract();
+        this.contract.name = name.value;
+        this.contract.startingDate = startingDate.value;
+        this.contract.endingDate = endingDate.value;
+        this.contract.amountVehicles = amountVehicles.value;
+        this.contract.duration = duration.value;
+        this.contract.discountValue = discountValue.value;
+        this.contract.observation = observation.value;
+
         this.oGetPricesOfContract += 1;
-        setTimeout(()=>{
+        console.log("[saveContract]", this.contract);
+
+        if (confirm("¿Está seguro que desea guardar los datos asociados a este contrato?")) {
+
+         
           if (this.contractToUpdate != null && this.contractToUpdate != undefined) {
             this.contract.id = this.contractToUpdate.id;
             this.contract.code = this.contractToUpdate.code;
             this.contract.consecutive = this.contractToUpdate.consecutive;
           }
-  
+
           this.contract.client = new Client();
           this.contract.client = this.clientService.getClientSelected();
-  
+
           if (this.contract.client == null || this.contract.client == undefined) {
             this.clientFieldIsInvalid = true;
             throw ("Error guardando el contrato. Se debe seleccionar un cliente");
           }
-  
+
           this.contract.dealer = new Dealer();
           this.contract.dealer = this.dealerService.getDealerSelected();
-  
+
           if (this.contract.dealer == null || this.contract.dealer == undefined) {
             this.dealerFieldIsInvalid = true;
             throw ("Error guardando el contrato. Se debe seleccionar un concesionario");
           }
-  
+
           this.contract.contractState = this.contractService.getContractStateSelected();
           this.contract.discountType = this.contractService.getDiscountTypeSelected();
-  
-  
-          this.contract.lsVehicleModels = (this.vehicleService.getListVehicleModelsSelected() != null)?this.vehicleService.getListVehicleModelsSelected():[];
-          this.contract.lsVehicles = (this.vehicleService.getListVehiclesSelected() != null)?this.vehicleService.getListVehiclesSelected():[];
-  
-          if(this.contract.lsVehicles.length > this.contract.amountVehicles){
-            throw("No se puede guardar el contrato. verifique la cantidad de vehículos seleccionados dentro del mismo");
+
+
+          this.contract.lsVehicleModels = (this.vehicleService.getListVehicleModelsSelected() != null) ? this.vehicleService.getListVehicleModelsSelected() : [];
+          this.contract.lsVehicles = (this.vehicleService.getListVehiclesSelected() != null) ? this.vehicleService.getListVehiclesSelected() : [];
+
+          if (this.contract.lsVehicles.length > this.contract.amountVehicles) {
+            throw ("No se puede guardar el contrato. verifique la cantidad de vehículos seleccionados dentro del mismo");
           }
-  
+
+          this.contract.lsMaintenanceItems = this.contractService.getItemsWithPrice();
+
           console.warn("[Contrato a guardar]");
           console.log(this.contract);
-  
+
           this.saveData(this.contract);
 
-        
-        },500)
-       
+        }
+        this.isAwaiting = false;
       }
     } catch (error) {
       console.warn(error);
@@ -380,6 +407,7 @@ export class ContractComponent implements OnInit, OnChanges {
 
   async saveData(pContract: Contract) {
     try {
+      console.warn("[saveData - Contract]", pContract);
       this.isAwaiting = true;
       let rta = new ResponseApi();
       if (this.isToUpdate) {
@@ -389,16 +417,17 @@ export class ContractComponent implements OnInit, OnChanges {
         let lastContract = await this.contractService.getLastContractByClientAndDealer(pContract.client.id, pContract.dealer.id);
         this.contractService.setContract(lastContract);
       }
-     
+
       if (rta.response) {
         alert(rta.message);
-        
+
         this.router.navigate(['/MasterContracts']);
         this.isAwaiting = false;
       }
     } catch (error) {
       this.isAwaiting = false;
       console.error(error);
+      alert(`Se ha producido un error guardando el contrato: ${error}`);
     }
   }
 
@@ -423,33 +452,65 @@ export class ContractComponent implements OnInit, OnChanges {
     return InputValidator.validateTyping(event, 'numbers');
   }
 
-  setContractState(contractState: ContractState){
-    if(contractState == null || contractState == undefined){
+  setContractState(contractState: ContractState) {
+    if (contractState == null || contractState == undefined) {
       this.contracStateFieldIsInvalid = true;
-    }else{
+    } else {
+      this.disableContract(contractState);
       this.contracStateFieldIsInvalid = false;
     }
   }
 
-  validateInputDate(event:any){
+  validateInputDate(event: any) {
     event.preventDefault();
     return null;
   }
 
-  setDiscountType(discountType: DiscountType){
-    if(discountType == null || discountType == undefined){
+  setDiscountType(discountType: DiscountType) {
+    if (discountType == null || discountType == undefined) {
       this.discountFieldIsInvalid = true;
-    }else{
+    } else {
       this.discountType = discountType;
       this.discountFieldIsInvalid = false;
     }
   }
 
-  setItemsByContract(lsMaintenanceItems: MaintenanceItem[]){
+  setItemsByContract(lsMaintenanceItems: MaintenanceItem[]) {
     try {
-      this.contract.lsMaintenanceItems = (lsMaintenanceItems != null && lsMaintenanceItems != undefined)?lsMaintenanceItems:[];
+      this.contract.lsMaintenanceItems = (lsMaintenanceItems != null && lsMaintenanceItems != undefined) ? lsMaintenanceItems : [];
     } catch (error) {
       console.warn(error);
     }
+  }
+
+  disableContract(contractState: ContractState) {
+    let { name, duration, startingDate, endingDate, discountValue, observation, amountVehicles } = this.frmContract.controls;
+
+    if (contractState.id != ConstractStates.EN_NEGOCIACION) {
+      name.disable();
+      duration.disable();
+      startingDate.disable();
+      discountValue.disable();
+      observation.disable();
+      amountVehicles.disable();
+      this.disableClientField = true;
+      this.disableDealerField = true;
+      this.disableTypeOfDiscoutnField = true;
+      this.disableVehicleTypesAndVehicleModels = true;
+      this.disableVehicles = true;
+    } else {
+      name.enable();
+      duration.enable();
+      startingDate.enable();
+      discountValue.enable();
+      observation.enable();
+      amountVehicles.enable();
+      this.disableClientField = false;
+      this.disableDealerField = false;
+      this.disableTypeOfDiscoutnField = false;
+      this.disableVehicleTypesAndVehicleModels = false;
+      this.disableVehicles = false;
+    }
+
   }
 }

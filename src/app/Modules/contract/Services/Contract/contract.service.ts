@@ -4,6 +4,7 @@ import { ContractState } from '../../../../Models/ContractState';
 import { DiscountType } from '../../../../Models/DiscountType';
 import { ResponseApi } from '../../../../Models/ResponseApi';
 import { Contract } from '../../../../Models/Contract';
+import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class ContractService {
   private contractStateSelected: ContractState;
   private discoutSelected: DiscountType;
   private contract: Contract;
+  private lsMaintenanceItems: MaintenanceItem[];
 
   constructor(
     private http: HttpClient
@@ -95,5 +97,13 @@ export class ContractService {
 
   getContract():Contract{
     return this.contract;
+  }
+
+  setItemsWithPrice(MaintenanceItems: MaintenanceItem[]){
+    this.lsMaintenanceItems = MaintenanceItems;
+  }
+
+  getItemsWithPrice():MaintenanceItem[]{
+    return this.lsMaintenanceItems;
   }
 }

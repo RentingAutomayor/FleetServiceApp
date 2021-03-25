@@ -11,6 +11,8 @@ import { SharedModule } from 'src/app/SharedComponents/shared.module';
 import { WorkOrderManagerRoutingModule } from './workOrderManager-routing.module';
 import { TblItemsToAddComponent } from './Components/tbl-items-to-add/tbl-items-to-add.component';
 
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+
 
 @NgModule({
   declarations: [
@@ -25,7 +27,8 @@ import { TblItemsToAddComponent } from './Components/tbl-items-to-add/tbl-items-
     FormsModule, 
     ReactiveFormsModule,
     SharedModule,
-    WorkOrderManagerRoutingModule
+    WorkOrderManagerRoutingModule, 
+    BsDatepickerModule.forRoot(),
   ]
 })
 export class WorkOrderManagerModule { }

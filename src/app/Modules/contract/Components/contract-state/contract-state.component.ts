@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Contract } from 'src/app/Models/Contract';
-import { ContractState } from 'src/app/Models/ContractState';
+import { ConstractStates, ContractState } from 'src/app/Models/ContractState';
 import { ContractService } from '../../Services/Contract/contract.service';
 
 
@@ -67,5 +67,8 @@ export class ContractStateComponent implements OnInit, OnChanges {
   loseFocus(){
     this.contractStateWasSelected.emit(this.contractStateSelected);
   }
+
+
+  
 
 }

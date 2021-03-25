@@ -1,7 +1,7 @@
 
 <div id="container__content">
     <h1>Contratos</h1>
-    <button class="btn-add btn-info" (click)="insertContract()"><i class="fas fa-plus"></i></button>
+    <button class="btn-add btn-info" *ngIf="!hideButtonAdd" (click)="insertContract()"><i class="fas fa-plus"></i></button>
     <table class="table table-striped">
         <thead>
             <th>#</th>

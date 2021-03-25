@@ -35,6 +35,16 @@ export class ReportService {
     return this.http.get<any>(urlReport).toPromise();
   }
 
+  public GetWorkOrderFinishedByVehicle(client_id: number = null,dealer_id:number = null, license_plate: string = null,init_date:Date=null,end_date:Date=null): Promise<any>{
+    let urlReport = `${this.URL_API}/getWorkOrderFinishedByVehicle?client_id=${client_id}&dealer_id=${dealer_id}&license_plate=${license_plate}&init_date=${init_date}&end_date=${end_date}`;
+    return this.http.get<any>(urlReport).toPromise();
+  }
+
+  public GetWorkOrderAnnulByVehicle(client_id: number = null,dealer_id:number = null, license_plate: string = null,init_date:Date=null,end_date:Date=null): Promise<any>{
+    let urlReport = `${this.URL_API}/getWorkOrderAnnulByVehicle?client_id=${client_id}&dealer_id=${dealer_id}&license_plate=${license_plate}&init_date=${init_date}&end_date=${end_date}`;
+    return this.http.get<any>(urlReport).toPromise();
+  }
+
   public GetWorkOrdersValueByMonth(client_id: number = null, dealer_id: number = null,init_date:Date=null,end_date:Date=null): Promise<any>{
     let urlReport = `${this.URL_API}/getWorkOrdersValueByMonth?client_id=${client_id}&dealer_id=${dealer_id}&init_date=${init_date}&end_date=${end_date}`;
     return this.http.get<any>(urlReport).toPromise();

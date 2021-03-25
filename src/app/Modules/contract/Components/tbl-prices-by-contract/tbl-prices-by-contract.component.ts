@@ -21,6 +21,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
   pricesByContract: PricesByContract;
   pricesByDealer: PricesByDealer;
   lsMaintenanceItems: MaintenanceItem[];
+  lsMaintenanceItemsWithPrice: MaintenanceItem[];
   isAwaiting: boolean;
   dealerSelected: Dealer;
   contractSelected: Contract;
@@ -42,6 +43,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     this.discountValue = 0;
     this.discountType = new DiscountType();
     this.sharedFunction = new SharedFunction();
+    this.lsMaintenanceItemsWithPrice = [];
   }
 
 
@@ -53,7 +55,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
       switch(change){
         case "getPricesOfContract":
-           this.setPricesByContract();
+          this.setPricesByContract();
           break;
         case "changeDealer":
             this.dealerSelected = this.dealerService.getDealerSelected();
@@ -101,11 +103,11 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     return `lbl_total_${idItem}`;
   }
 
-  getInfoToShowTable() {
-    this.getListMaintenanceItems();
-    this.getPricesByDealer();    
-    this.getPricesByContract();
-    this.setValuesIntoTable();
+  async getInfoToShowTable() {
+    await this.getListMaintenanceItems();
+    await this.getPricesByDealer();    
+    await this.getPricesByContract();
+    await this.setValuesIntoTable();
   }
 
   async getListMaintenanceItems() {
@@ -138,8 +140,9 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
   setValuesIntoTable(){
     try {
       setTimeout(() =>{
+        this.lsMaintenanceItemsWithPrice = [];
         this.lsMaintenanceItems.forEach(item => {
-
+          let itemTmp:MaintenanceItem = item;
           let contractPrice = this.getContractPrice(item.id);
           let discValue = this.calculateDiscount(parseFloat(contractPrice));         
           let priceWithoutDiscount = parseFloat(contractPrice) - discValue;
@@ -153,14 +156,23 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
           let totalByItem =  priceWithoutDiscount + taxesValue;
 
+          itemTmp.referencePrice = parseFloat(contractPrice);
+          itemTmp.discountValue = discValue;
+          itemTmp.taxesValue = taxesValue;
+
           this.setContractPrice(item.id,priceWithoutDiscount);
           this.setDiscoutValue(item.id,discValue);
           this.setTaxesValue(item.id, taxesValue);
           this.setTotalValue(item.id,totalByItem)
+
+          this.lsMaintenanceItemsWithPrice.push(itemTmp);
+
         })
+
+        this.contractService.setItemsWithPrice(this.lsMaintenanceItemsWithPrice);
       },1500);
     } catch (error) {
-      console.warn(error);      
+      console.warn("[setValuesIntoTable]", error);      
     }
   }
 
@@ -326,7 +338,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
   }              
                                                          
 
-  setPricesByContract() {
+  async setPricesByContract() {
 
     try {
       this.pricesByContract = new PricesByContract();
@@ -342,7 +354,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
       });
 
       console.log(this.pricesByContract);
-      this.lsMaintenanceItemsWasSetted.emit(this.pricesByContract.lsMaintenanceItems)
+      //this.lsMaintenanceItemsWasSetted.emit(this.pricesByContract.lsMaintenanceItems)
 
     } catch (error) {
       console.log(error)

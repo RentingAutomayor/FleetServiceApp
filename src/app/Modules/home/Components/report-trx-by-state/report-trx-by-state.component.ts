@@ -13,11 +13,11 @@ import { CompanyType } from "src/app/Models/CompanyType";
 })
 export class ReportTrxByStateComponent implements OnInit {
 
-  public chartLabels: Label[] = ["APROBADA","PENDIENTE","RECHAZADA"];
+  public chartLabels: Label[] = ["APROBADA","PENDIENTE","RECHAZADA","FINALIZADA","ANULADA"];
   public chartDataset: SingleDataSet = [];
   public charType: ChartType = 'pie';
   public chartColors: Array<any> = [ 
-    { backgroundColor: ['#ade498','#f0e050','#ea2c62'] }
+    { backgroundColor: ['#ade498','#f0e050','#ea2c62','#469627','#7e0c2c'] }
   ];
   
   @Input() company: Company;
@@ -63,6 +63,7 @@ export class ReportTrxByStateComponent implements OnInit {
   getData():number[]{
     let aToReturn = [];
     this.getDataToPresent().then(arrayData =>{
+      console.log("[PIPE]",arrayData)
       arrayData.forEach(item => {
         aToReturn.push(item);
       })
@@ -72,19 +73,25 @@ export class ReportTrxByStateComponent implements OnInit {
   }
 
   async getDataToPresent(){
-    let arrayData = [0,0,0];
+    let arrayData = [0,0,0,0,0];
     await this.reportService.GetTotalCountWorkOrdersByDealerAndClient(this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date)
     .then(data => {
       data.forEach(item => {
         switch (item.Estado) {
           case "APROBADA":
-            arrayData.splice(0, 0, item.Cantidad);
+            arrayData.splice(0, 1, item.Cantidad);
             break;
           case "PENDIENTE":
-            arrayData.splice(1, 0, item.Cantidad);
+            arrayData.splice(1, 1, item.Cantidad);
             break;
           case "RECHAZADA":
-            arrayData.splice(2, 0, item.Cantidad);
+            arrayData.splice(2, 1, item.Cantidad);
+            break;
+          case "FINALIZADA":
+            arrayData.splice(3, 1, item.Cantidad);
+            break;
+          case "ANULADA":
+            arrayData.splice(4, 1, item.Cantidad);
             break;
         }        
         console.log("[Home-Component]", item);

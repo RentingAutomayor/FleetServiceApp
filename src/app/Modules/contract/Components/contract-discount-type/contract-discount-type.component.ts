@@ -14,6 +14,7 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
   discountSelected: DiscountType;
   @Input() countChanges:number;
   @Output() discountWasSelected = new EventEmitter<DiscountType>();
+  @Input() disableField:boolean;
 
   constructor(
     private contractService: ContractService
@@ -21,6 +22,7 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
     this.frmDiscountType = new FormGroup({
       cmbDiscount : new  FormControl('Seleccione ...')
     });
+    this.disableField = false;
    }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -31,6 +33,8 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
           this.setDataInForm(this.discountSelected);
           this.discountWasSelected.emit(this.discountSelected);
         }        
+      }else if(change == 'disableField'){
+        this.toggleDisableDiscountFiled();
       }
     }
   }
@@ -62,5 +66,14 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
 
   lostFocus(){
     this.discountWasSelected.emit(this.discountSelected);
+  }
+
+  toggleDisableDiscountFiled(){
+    let { cmbDiscount } = this.frmDiscountType.controls;
+    if(this.disableField){
+      cmbDiscount.disable();
+    }else{
+      cmbDiscount.enable();
+    }
   }
 }

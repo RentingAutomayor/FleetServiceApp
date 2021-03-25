@@ -15,6 +15,7 @@
                 <div class="container__col">
                     <app-input-search-client 
                         [countChanges]="countChanges" 
+                        [disableField]="disableClientField"
                         (clientWasSetted)="setClientSelected()">                     
                     </app-input-search-client>
 
@@ -105,6 +106,7 @@
                 <div class="container__col">
                     <app-contract-discount-type 
                         [countChanges]="countChanges"
+                        [disableField]="disableTypeOfDiscoutnField"
                         (discountWasSelected)="setDiscountType($event)"></app-contract-discount-type>
                     <div class="error" *ngIf="discountFieldIsInvalid">
                         <p>* El tipo de descuento es requerido para guardar el contrato</p>
@@ -133,9 +135,14 @@
 
         </div>
         <div class="tab_content tab_inactive" id="container__vehicleModels">
-            <app-check-list-vehicle-type [countChanges]="countChanges" (vehicleTypeWasSelected)="setListVehicleTypes()">
+            <app-check-list-vehicle-type 
+                [countChanges]="countChanges" 
+                [disableChecks]="disableVehicleTypesAndVehicleModels"
+                (vehicleTypeWasSelected)="setListVehicleTypes()">
             </app-check-list-vehicle-type>
-            <app-check-list-vehicle-model [countChanges]="countChanges"
+            <app-check-list-vehicle-model 
+                [countChanges]="countChanges"
+                [disableChecks]="disableVehicleTypesAndVehicleModels"
                 (vehicleModelsWasSetted)="setLisVehicleModels()">
             </app-check-list-vehicle-model>
         </div>
@@ -144,6 +151,7 @@
             <app-tbl-check-vehicles 
                 [countChanges]="countChanges"
                 [amountAllowed]="amountVehiclesField.value"
+                [disableChecks]="disableVehicles"
                 [contractToFilter]="contractToUpdate">
             </app-tbl-check-vehicles>
 

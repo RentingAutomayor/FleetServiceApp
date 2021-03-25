@@ -23,11 +23,12 @@ export class DashboardClientComponent implements OnInit {
   sharedFunctions: SharedFunction;
   frmApprovedTrx: FormGroup;
   frmCancelTrx:FormGroup;
-  transactionSelected: Transaction;
+
   lsMovements: Movement[];
   APROBACION_ORDEN_DE_TRABAJO = 5;
   CANCELACION_ORDEN_DE_TRABAJO = 6;
   trx_id: number;
+  transactionSelected: Transaction;
 
   
 
@@ -167,7 +168,10 @@ export class DashboardClientComponent implements OnInit {
     trxObservation.description = observation;
 
     let lsObservation = [];
-    lsObservation.push(trxObservation);
+    if(observation != null){
+      lsObservation.push(trxObservation);
+    }
+    
 
     trxApprove.lsObservations = lsObservation;
 

@@ -27,6 +27,36 @@
     justify-content: center;
 }
 
+.tag-ending{ 
+    display: flex;
+    flex-direction: row;
+    background-color: #469627;
+    padding: 8px 40px;
+    color: #fff;
+    border-radius: 20px;
+    width: 150px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tag-canceled{ 
+    display: flex;
+    flex-direction: row;
+    background-color: #7e0c2c;
+    padding: 8px 40px;
+    color: #fff;
+    border-radius: 20px;
+    width: 150px;
+    align-items: center;
+    justify-content: center;
+}
+
+.container__controls{
+    display: inline-block;
+}
+
+
+
 .tag-pending{
     display: flex;
     flex-direction: row;
@@ -117,4 +147,48 @@ table{
 .card-review{
     width: 1200px;
     height: auto;   
+}
+
+.container__filter{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.container__filter div{
+    padding: 10px 20px;
+    width: 250px;
+}
+
+.container__buttons{ 
+   justify-content: center;
+   align-items: center;
+}
+
+.container__buttons button{
+    width: 125px;
+    height: auto;
+    margin-left: 10px;
+    margin-top: 30px;
+}
+
+#container__FinalizeWorkOrder{
+    display: none;
+}
+
+#container__Cancelation{
+    display: none;
+}
+
+
+.buttons__container{
+    display: flex;
+    justify-content: flex-end;   
+}
+
+button{
+    width: 250px;
+    margin-left: 10px;
+    margin-top: 20px;
 }

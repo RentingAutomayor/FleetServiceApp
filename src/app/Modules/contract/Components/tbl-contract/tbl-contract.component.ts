@@ -6,6 +6,7 @@ import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { SecurityValidators } from 'src/app/Models/SecurityValidators';
 import { Company } from 'src/app/Models/Company';
 import { CompanyType } from 'src/app/Models/CompanyType';
+import { FasDirective } from 'angular-bootstrap-md';
 
 
 @Component({
@@ -19,11 +20,14 @@ export class TblContractComponent implements OnInit {
   lsContracts: Contract[];
   isToUpdate:boolean;
   companyStorage:Company;
+  hideButtonAdd: boolean;
 
   constructor(
     private contractService:ContractService,
     private router: Router
-  ) { }
+  ) { 
+    this.hideButtonAdd  = false;
+  }
 
   ngOnInit(): void {
     this.initComponents();
@@ -51,12 +55,15 @@ export class TblContractComponent implements OnInit {
       switch(this.companyStorage.type){
         case CompanyType.DEALER:
           this.lsContracts = await this.contractService.getContracts(this.companyStorage.id);
+          this.hideButtonAdd = true;
         break;
         case CompanyType.CLIENT:
           this.lsContracts = await this.contractService.getContracts(0,this.companyStorage.id);
+          this.hideButtonAdd = true;
         break;
         default:
           this.lsContracts = await this.contractService.getContracts();
+          this.hideButtonAdd = false;
           break;
       }
      

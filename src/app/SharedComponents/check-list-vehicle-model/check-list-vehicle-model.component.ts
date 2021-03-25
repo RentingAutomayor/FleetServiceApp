@@ -21,6 +21,7 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
   prefixContainerModel: string = 'container_model_';
 
   @Input() countChanges: number;
+  @Input() disableChecks: boolean;
   @Output() vehicleModelsWasSetted = new EventEmitter<boolean>();
 
   count: number = 0;
@@ -28,18 +29,18 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
   constructor(
     private vehicleService: VehicleService
   ) {
-    ////console.log("[Debería entrar acá primero]");
+    //////console.log("[Debería entrar acá primero]");
     //this.getLsVehicleModels();
-
+    this.disableChecks = false;
 
   }
 
   async ngOnChanges(changes: SimpleChanges) {
     //console.warn("Puede que entre primero aca");  
     for (let change in changes) {
-      if (change == "countChanges") {       
+      if (change == "countChanges") {
         this.lsVehicleTypesSelected = this.vehicleService.getListVehicleTypeSelected();
-        ////console.log(this.lsVehicleTypesSelected);
+        //////console.log(this.lsVehicleTypesSelected);
 
         if (this.lsVehicleTypesSelected != null && this.lsVehicleTypesSelected != undefined) {
           if (this.lsVehicleTypesSelected.length > 0) {
@@ -47,10 +48,10 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
           }
           else {
             this.disableCheckBox(this.lsVehicleTypesSelected);
-          }       
+          }
 
-        } else {         
-          this.disableCheckBox(this.lsVehicleTypesSelected);      
+        } else {
+          this.disableCheckBox(this.lsVehicleTypesSelected);
         }
 
         this.lsVehicleModelsSelected = this.vehicleService.getListVehicleModelsSelected();
@@ -59,6 +60,8 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
         } else {
           this.clearDataForm();
         }
+      } else if (change == "disableChecks") {
+        this.toggleChecks();
       }
     }
   }
@@ -73,15 +76,17 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
     this.countChanges = 0;
     //draw container by type 
     this.getLsVehicleTypes();
-    this.getLsVehicleModels().then(()=>{
+    this.getLsVehicleModels().then(() => {
       this.disableCheckBox(this.lsVehicleTypesSelected);
+      this.toggleChecks();
     });
-    
+
+
 
   }
 
   showVehicleModelsByContainer(last: boolean) {
-    // console.log("Mostrando vm por tipo:",last)
+    // //console.log("Mostrando vm por tipo:",last)
     this.validateContainerTypes();
     //this.disableCheckBox(this.lsVehicleTypesSelected);
   }
@@ -91,7 +96,7 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
       this.lsVehicleModels = await this.vehicleService.getVehicleModelByBrandAndType(0, 0);
     } catch (error) {
       console.error(error);
-    }   
+    }
   }
 
   async getLsVehicleTypes() {
@@ -134,7 +139,7 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
   async enableAndDisableVehicleModels(pLsVehicleTypes: VehicleType[]) {
     try {
       this.disableCheckBox(pLsVehicleTypes);
-      ////console.log("[chek vehicle model] - ", pLsVehicleTypes);
+      //////console.log("[chek vehicle model] - ", pLsVehicleTypes);
       this.lsVehicleModelEnabled = await this.vehicleService.getVehicleModelByTypes(pLsVehicleTypes);
       this.enableCheckBox(this.lsVehicleTypesSelected, this.lsVehicleModelEnabled);
 
@@ -162,9 +167,9 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
     this.vehicleModelsWasSetted.emit(true);
   }
 
-  setDataInForm(lsVehicleModel: VehicleModel[]) {
+  async setDataInForm(lsVehicleModel: VehicleModel[]) {
     try {
-      ////console.log("[Líneas a seleccionar]:", lsVehicleModel)
+      //////console.log("[Líneas a seleccionar]:", lsVehicleModel)
       setTimeout(() => {
         lsVehicleModel.forEach(item => {
           let idCheck = `#${this.getIdChk(item.id)}`;
@@ -204,7 +209,7 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
       });
     } catch (error) {
       console.warn(error);
-     
+
     }
 
   }
@@ -213,18 +218,18 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
     try {
       this.lsVehicleModels.forEach(item => {
         let idCheck = `#${this.getIdChk(item.id)}`;
-        let checkVM: HTMLInputElement = document.querySelector(idCheck);      
+        let checkVM: HTMLInputElement = document.querySelector(idCheck);
         checkVM.disabled = true;
 
-        if(lsTypesToAvoid != null && lsTypesToAvoid != undefined){
+        if (lsTypesToAvoid != null && lsTypesToAvoid != undefined) {
           let itemHasVehicleType = lsTypesToAvoid.find(tp => tp.id == item.type.id);
-          //console.log(itemHasVehicleType);
+          ////console.log(itemHasVehicleType);
           if (!itemHasVehicleType) {
-            checkVM.checked = false;          
+            checkVM.checked = false;
             this.removeVehicleModelFromSelected(item);
           }
         }
-        
+
       });
     } catch (error) {
       console.warn(error);
@@ -232,18 +237,34 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
   }
 
 
-  removeVehicleModelFromSelected(pVehicleModel:VehicleModel){
-    if(this.lsVehicleModelsSelected != null && this.lsVehicleTypesSelected != undefined){
-     
+  removeVehicleModelFromSelected(pVehicleModel: VehicleModel) {
+    if (this.lsVehicleModelsSelected != null && this.lsVehicleTypesSelected != undefined) {
+
       let oVmTmp = this.lsVehicleModelsSelected.find(item => item.id == pVehicleModel.id);
       let index = this.lsVehicleModelsSelected.indexOf(oVmTmp);
       if (index != -1) {
-        console.log("Intenta eliminar el item de los seleccionados");
+        //console.log("Intenta eliminar el item de los seleccionados");
         this.lsVehicleModelsSelected.splice(index, 1);
         this.vehicleService.setListVehicleModelsSelected(this.lsVehicleModelsSelected);
         //this.vehicleModelsWasSetted.emit(true);
       }
-    } 
+    }
+  }
+
+
+  toggleChecks() {
+    try {
+      setTimeout(() => {
+        console.log("[toggleChecks VM]", this.disableChecks);
+        this.lsVehicleModels.forEach(vehicleModel => {
+          let idCheck = `#${this.getIdChk(vehicleModel.id)}`;
+          let checkVM: HTMLInputElement = document.querySelector(idCheck);
+          checkVM.disabled = this.disableChecks;
+        })
+      }, 800);
+    } catch (error) {
+      console.warn("[toggleChecks VM]", error);
+    }
   }
 
 

@@ -50,7 +50,17 @@ export class ReportTrxByVehicleComponent implements OnInit {
     {
       data: [],
       label: 'Pendientes',
+    },
+    {
+      data: [],
+      label: 'Finalizadas',
+    },
+    {
+      data: [],
+      label: 'Anuladas',
     }
+
+
   ];
 
   // public chartColors: Array<any> = [
@@ -60,7 +70,9 @@ export class ReportTrxByVehicleComponent implements OnInit {
   public chartColors: Color[] = [
     { backgroundColor: '#ade498' },
     { backgroundColor: '#ea2c62' },
-    { backgroundColor: '#f0e050'}
+    { backgroundColor: '#f0e050'},
+    { backgroundColor: '#469627'},
+    { backgroundColor:'#7e0c2c'}
   ]
 
   //{ data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' }, -> Example
@@ -95,6 +107,8 @@ export class ReportTrxByVehicleComponent implements OnInit {
     await this.getWorkOrdersApproved();
     await this.getWorkOrdersCanceled();
     await this.getWorkOrdersPending();
+    await this.getWorkOrdersFinished();
+    await this.getWorkOrdersAnnul();
   }
 
   initDataToGetReport() {
@@ -176,6 +190,52 @@ export class ReportTrxByVehicleComponent implements OnInit {
             this.chartLabels.push(item.Placa);
             indexLicensePlate = this.chartLabels.indexOf(item.Placa);
             this.chartData[2].data.splice(indexLicensePlate,1,item.Cantidad);
+          }         
+
+          console.log(this.chartData);
+        });
+      })
+  }
+
+  async getWorkOrdersFinished() {
+    console.log("[getWorkOrdersFinished]",this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
+    await this.reportService.GetWorkOrderFinishedByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
+      .then(data => {
+        console.log(data);
+        data.forEach(item => {
+          //TODO: find index of vehicle to asign the correct value 
+          //IF No exist approbation by vehicle add new data     
+          let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
+
+          if(indexLicensePlate >= 0){
+            this.chartData[3].data.splice(indexLicensePlate,1,item.Cantidad);
+          }else{
+            this.chartLabels.push(item.Placa);
+            indexLicensePlate = this.chartLabels.indexOf(item.Placa);
+            this.chartData[3].data.splice(indexLicensePlate,1,item.Cantidad);
+          }         
+
+          console.log(this.chartData);
+        });
+      })
+  }
+
+  async getWorkOrdersAnnul() {
+    console.log("[getWorkOrdersAnnul]",this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
+    await this.reportService.GetWorkOrderAnnulByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
+      .then(data => {
+        console.log(data);
+        data.forEach(item => {
+          //TODO: find index of vehicle to asign the correct value 
+          //IF No exist approbation by vehicle add new data     
+          let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
+
+          if(indexLicensePlate >= 0){
+            this.chartData[4].data.splice(indexLicensePlate,1,item.Cantidad);
+          }else{
+            this.chartLabels.push(item.Placa);
+            indexLicensePlate = this.chartLabels.indexOf(item.Placa);
+            this.chartData[4].data.splice(indexLicensePlate,1,item.Cantidad);
           }         
 
           console.log(this.chartData);

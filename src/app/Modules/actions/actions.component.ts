@@ -12,23 +12,41 @@ import { AdminService } from '../../Services/admin.service';
 export class ActionsComponent implements OnInit {
   @Input() returnPath: string;
   @Input() actionToUpdate: Action;
+  @Input() actionToCreate: Action;
+  @Input() actionToView: Action;
   @Output() actionWasSetted = new EventEmitter<any>();
   @Output() actionWasCanceled = new EventEmitter<string>();
   
   isAwaiting:boolean;
   actualizar:boolean = false;
+  mostrar:boolean = false;
 
   action = new Action();
 
   ngOnChanges(){   
+    this.actualizar = false;
+    this.mostrar = false;
+    
+    if (this.actionToCreate != undefined) {
+      this.actualizar = false;
+      this.mostrar = false;
+    }   
+
     if (Object.entries(this.actionToUpdate).length != 0) {
       this.action = this.actionToUpdate;
       this.actualizar = true;
-    }    
+    }  
+    
+    if (Object.entries(this.actionToView).length != 0) {
+      this.action = this.actionToView;
+      this.mostrar = true;
+    } 
   }
 
 
   constructor(private router: Router, private adminService: AdminService) {     
+    this.actualizar = false;
+    this.mostrar = false;
   }
 
   ngOnInit(): void {
@@ -94,7 +112,7 @@ export class ActionsComponent implements OnInit {
       this.router.navigate([this.returnPath]);
     }
     this.refresAction();
-    this.actionWasCanceled.emit('Action');
+    this.actionWasCanceled.emit('actions');
   }
 
   // actualizar el usuario a modificar

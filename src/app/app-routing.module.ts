@@ -16,14 +16,16 @@ import { DashboardClientComponent } from './Modules/dashboard-client/dashboard-c
 import { LoginComponent } from './Components/login/login.component';
 import { FinancialInformationByClientComponent } from './Components/financial-information-by-client/financial-information-by-client.component';
 import { AdminComponent } from './Modules/admin/admin.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 
-
+debugger;
 
 const routes: Routes = [{ path: 'MasterClients/Client', component: ClientComponent },
 // { path: ' ', component: AppComponent },
 { path: 'Login', component: LoginComponent },
 { path: 'Admin', component: AdminComponent },
+{ path: 'ChangePassword', component: ChangePasswordComponent},
 { path: 'MasterClients', component: TblClientComponent },
 { path: 'MasterDealers/Dealer', component: DealerComponent },
 { path: 'MasterDealers', component: TblDealerComponent },

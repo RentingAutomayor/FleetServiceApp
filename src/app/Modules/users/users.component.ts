@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdminService } from 'src/app/Services/admin.service';
+import { values } from 'lodash';
 
 @Component({
   selector: 'app-users',
@@ -15,6 +16,8 @@ export class UsersComponent implements OnInit {
   @Input() lsDealer: any[];
   @Input() lsComp: any[];
   @Input() UserToUpdate: {};
+  @Input() userToView: {};
+  @Input() userToCreate: {};
 
   @Output() userWasSetted = new EventEmitter<any>();
   @Output() userWasCanceled = new EventEmitter<string>();
@@ -38,6 +41,10 @@ export class UsersComponent implements OnInit {
   // setObject
   user: any = {} ;
   actualizar:boolean = false;
+  mostrar:boolean = false;
+
+  // text profile
+  tipoPerfil: string = '';
 
   // opciones select 
   opcionesSeleccionadas: any[] = [];
@@ -45,14 +52,42 @@ export class UsersComponent implements OnInit {
   opcionesSeleccionadasProfile: any[] = [];
 
   ngOnChanges(){   
+    this.refresUser();
+
+    if (this.userToCreate != undefined) {
+      this.refresUser();
+    }  
+
+    if (Object.entries(this.userToView).length != 0) {      
+      this.opcionesSeleccionadas = [] ;
+      this.opcionesSeleccionadasProf = [] ;
+      this.opcionesSeleccionadasProfile = [] ;
+
+      this.user = this.userToView;  
+
+      if (this.user.groupLoad != null) {        
+        this.opcionesSeleccionadas.push(this.user.groupLoad);
+        this.loadgroup();
+      }
+
+      let profile = this.user.profile.split('-');
+      this.opcionesSeleccionadasProfile.push(profile[0]);
+
+      if (profile.length > 1) {
+        this.loadProfile();
+        let pfroSlected = this.lsProfileCDC.find(prf => prf.id == profile[1]) ;
+        this.opcionesSeleccionadasProf.push(pfroSlected);
+      }
+
+      this.mostrar = true;
+    }    
+
     if (Object.entries(this.UserToUpdate).length != 0) {
       this.opcionesSeleccionadas = [] ;
       this.opcionesSeleccionadasProf = [] ;
       this.opcionesSeleccionadasProfile = [] ;
 
-      this.user = this.UserToUpdate;      
-      console.log(this.UserToUpdate);
-      console.log(this.user);
+      this.user = this.UserToUpdate;  
 
       if (this.user.groupLoad != null) {        
         this.opcionesSeleccionadas.push(this.user.groupLoad);
@@ -73,6 +108,7 @@ export class UsersComponent implements OnInit {
   }
   
   constructor(private router: Router,private adminService: AdminService) {    
+    this.refresUser();
     this.loadSettingsDrop();    
   }
 
@@ -91,6 +127,18 @@ export class UsersComponent implements OnInit {
         case "usr_pass":
             this.user.usr_pass = file.value;
             break;  
+        case "usr_pass_confirm":
+            this.user.usr_pass_confirm = file.value;
+
+            let passlen = file.value.length; 
+            let passWord = this.user.usr_pass.substr(0,passlen);
+
+            if(passWord != file.value){
+              alert("las contraseñas no coinciden, validar")
+              this.user.usr_pass = "";
+              this.user.usr_pass_confirm = "";
+            }
+            break; 
         case "usr_email":
             this.user.usr_email = file.value;
             break;    
@@ -130,37 +178,49 @@ export class UsersComponent implements OnInit {
 
   setDataUser() {
     let flag = false;
-    if (this.opcionesSeleccionadasProfile.length > 0 ) {
-      if (this.opcionesSeleccionadasProfile[0] != 'Admin' ) {
-        if (this.opcionesSeleccionadasProf.length > 0) {
-          switch (this.opcionesSeleccionadasProfile[0]) {
-            case 'Cliente':
-              this.user.cli_id = this.opcionesSeleccionadasProf[0].id;
-              break;
-            case 'Compañia':
-              this.user.cpn_id = this.opcionesSeleccionadasProf[0].id;
-              break;
-            case 'Dealer':
-              this.user.deal_id = this.opcionesSeleccionadasProf[0].id;
-              break;
-            default:
-              break;
-          };
+    let passflag = false;
 
-          flag = true;
-        }else{
-          alert("Asocie un cliente, compañia o deales a su perfil.")
-        }            
-      }else{
-        flag = true ;
-      }
-     
+    if (this.opcionesSeleccionadas.length == 0) {
+      alert("Asocie un grupo de permisos.")
     }else{
-      alert("Seleccione un tipo de perfil");
-      
+      if (this.opcionesSeleccionadasProfile.length > 0 ) {
+        if (this.opcionesSeleccionadasProfile[0] != 'Admin' ) {
+          if (this.opcionesSeleccionadasProf.length > 0) {
+            switch (this.opcionesSeleccionadasProfile[0]) {
+              case 'Cliente':
+                this.user.cli_id = this.opcionesSeleccionadasProf[0].id;
+                break;
+              case 'Compañia':
+                this.user.cpn_id = this.opcionesSeleccionadasProf[0].id;
+                break;
+              case 'Dealer':
+                this.user.deal_id = this.opcionesSeleccionadasProf[0].id;
+                break;
+              default:
+                break;
+            };
+  
+            flag = true;
+          }else{
+            alert("Asocie un cliente, compañia o dealer a su perfil.")
+          }            
+        }else{
+          flag = true ;
+        }
+       
+      }else{
+        alert("Seleccione un tipo de perfil");
+        
+      }
     }
 
-    if (flag) {
+    if (this.user.usr_pass == this.user.usr_pass_confirm) {
+      passflag = true ;
+    }else{
+      alert("Las contraseñas no coinciden")
+    }
+
+    if (flag && passflag) {
       this.isAwaiting = true;
 
       this.adminService.insertUser(this.user).then( data => {
@@ -189,7 +249,8 @@ export class UsersComponent implements OnInit {
 
   updateDataUser() {
     let flag = false;
-    debugger;
+    let passflag = false;
+
     if (this.opcionesSeleccionadasProfile.length > 0 ) {
       if (this.opcionesSeleccionadasProfile[0] != 'Admin' ) {
         if (this.opcionesSeleccionadasProf.length > 0) {
@@ -216,11 +277,16 @@ export class UsersComponent implements OnInit {
       }
      
     }else{
-      alert("Seleccione un tipo de perfil");
-      
+      alert("Seleccione un tipo de perfil");      
     }
 
-    if (flag) {
+    if (this.user.usr_pass == this.user.usr_pass_confirm) {
+      passflag = true ;
+    }else{
+      alert("Las contraseñas no coinciden")
+    }
+
+    if (flag && passflag) {
       this.isAwaiting = true;
 
       this.adminService.updateUser(this.user).then( data => {
@@ -245,7 +311,8 @@ export class UsersComponent implements OnInit {
   }
 
   refresUser(){
-    this.actualizar = false;
+    this.actualizar = false;    
+    this.mostrar = false;
     this.profileSelected = false;
     this.user = {};
     this.opcionesSeleccionadas = [] ;
@@ -259,7 +326,7 @@ export class UsersComponent implements OnInit {
       this.router.navigate([this.returnPath]);
     }
     this.refresUser();
-    this.userWasCanceled.emit('User');
+    this.userWasCanceled.emit('users');
   }
 
   loadgroup(){
@@ -271,6 +338,7 @@ export class UsersComponent implements OnInit {
   }
 
   loadProfile(){
+    this.tipoPerfil = '' ;
     this.user.cli_id = 0 ;
     this.user.deal_id = 0 ;
     this.user.cpn_id = 0 ;
@@ -279,7 +347,7 @@ export class UsersComponent implements OnInit {
     this.profileSelected = false ;
     if (this.opcionesSeleccionadasProfile.length > 0) {
       switch (this.opcionesSeleccionadasProfile[0]) {
-        case 'Admin':          
+        case 'Admin':       
           this.lsProfileCDC = this.lsClient ;
           this.profileSelected = false ;
           break;      
@@ -287,17 +355,19 @@ export class UsersComponent implements OnInit {
           this.lsProfileCDC = this.lsClient ;
           this.profileSelected = true ;
           break;      
-        case 'Compañia':          
+        case 'Compañia':       
           this.lsProfileCDC = this.lsComp ;
           this.profileSelected = true ;
           break;     
-        case 'Dealer':          
+        case 'Dealer':      
           this.lsProfileCDC = this.lsDealer ;
           this.profileSelected = true ;
           break;      
         default:
           break;
       }
+
+      this.tipoPerfil = this.opcionesSeleccionadasProfile[0] ;
     }
     
   }

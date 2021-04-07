@@ -12,10 +12,12 @@ export class NavigationComponent implements OnInit{
   @Output() showCloseMenu = new EventEmitter<boolean>();
   constructor(private navigationService: NavigationService,
               private router: Router) {
+                debugger;
                     this.loadApp();
    }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {  
+    debugger;  
     this.initComponents();
     this.validateItemActive();
   }
@@ -68,7 +70,8 @@ export class NavigationComponent implements OnInit{
   }
 
   navigateTo(itemNav: string) {
-    //this.turnOffItems();
+    //this.turnOffItems();+
+    debugger;
     this.activateItem(itemNav);
     this.navigationService.setItemActive(itemNav);
     

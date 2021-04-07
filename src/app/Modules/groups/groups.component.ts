@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { element } from 'protractor';
 import { Action } from 'src/app/Models/Action';
 import { AdminService } from 'src/app/Services/admin.service';
 
@@ -13,6 +14,8 @@ export class GroupsComponent implements OnInit {
   @Input() returnPath: string;
   @Input() actions: any[] ;
   @Input() GroupToUpdate: {};
+  @Input() groupToView: {};
+  @Input() groupToCreate: {};
   lsModules: any[];
   lsActionsSlected: any[] = []  ;
   isAwaiting:boolean;
@@ -22,6 +25,7 @@ export class GroupsComponent implements OnInit {
 
   group: any = {} ;
   actualizar:boolean = false;
+  mostrar:boolean = false;
 
   // 
 
@@ -35,6 +39,15 @@ export class GroupsComponent implements OnInit {
   modulosSeleccionado: string = "0";
 
   ngOnChanges(){   
+    this.actualizar = false;
+    this.mostrar = false;
+    
+    if (this.groupToCreate != undefined) {
+      this.actualizar = false;
+      this.mostrar = false;
+      this.lsActionsSlected = [] ;
+    }  
+
     if (Object.entries(this.GroupToUpdate).length != 0) {
       this.lsActionsSlected = [] ;
       this.group = this.GroupToUpdate;
@@ -46,19 +59,46 @@ export class GroupsComponent implements OnInit {
         }
 
         element.actions.forEach(act => {
-          let action = {
-            act_id: act.id_action,
-            act_name: act.actionName
-          } 
-          module.actions.push(action);
+          debugger; 
+          if (act != undefined) {
+            let action = {
+              act_id: act.id_action,
+              act_name: act.actionName
+            } 
+            module.actions.push(action);
+          }    
         });
 
         this.lsActionsSlected.push(module);
-      });
-
-      console.log(this.lsActionsSlected);          
+      });        
       this.actualizar = true;
     }    
+
+    if (Object.entries(this.groupToView).length != 0) {
+      this.lsActionsSlected = [] ;
+      this.group = this.groupToView;
+      this.group.modules.forEach(element => {
+        let module = {
+          id_module : element.id_module,          
+          name_module : element.moduleName,
+          actions: []
+        }
+
+        element.actions.forEach(act => {
+          debugger; 
+          if (act != undefined) {
+            let action = {
+              act_id: act.id_action,
+              act_name: act.actionName
+            } 
+            module.actions.push(action);
+          }          
+        });
+
+        this.lsActionsSlected.push(module);
+      });        
+      this.mostrar = true;
+    } 
   }
 
   constructor(private router: Router, private adminService: AdminService) {          
@@ -93,12 +133,45 @@ export class GroupsComponent implements OnInit {
     }else{
       if (this.opcionesSeleccionadas.length == 0) {
         alert("debe asociar minimo 1 accion.")
-      }else{        
-        this.lsActionsSlected.push({
-          id_module : file.value,          
-          name_module : this.lsModules.find(m => m.id_module == file.value).moduleName,
-          actions: this.opcionesSeleccionadas
-        });
+      }else{
+        debugger;
+        if(this.lsActionsSlected.find(f => f.id_module == file.value)){
+
+          let actions : any = {} ;
+          actions = this.lsActionsSlected.find(f => f.id_module == file.value).actions ;
+
+          this.opcionesSeleccionadas.forEach((elementI : any) => {
+            debugger;
+            let action: any = {};
+            action = actions.find(e => e.act_id == elementI.act_id);
+            if (action == null) {           
+              this.lsActionsSlected.find(f => f.id_module == file.value).actions.push(elementI);
+            }
+            action = {} ;
+
+          });
+
+
+        }else{
+          this.lsActionsSlected.push({
+            id_module : file.value,          
+            name_module : this.lsModules.find(m => m.id_module == file.value).moduleName,
+            actions: this.opcionesSeleccionadas
+          });
+        }
+        // if(this.opcionesSeleccionadas.find(a => parseInt(a.act_id) == parseInt(file.value)))
+        //   {
+
+        // }else{
+        //   this.lsActionsSlected.push({
+        //     id_module : file.value,          
+        //     name_module : this.lsModules.find(m => m.id_module == file.value).moduleName,
+        //     actions: this.opcionesSeleccionadas
+        //   });
+        // }   
+        
+        
+        
 
         this.opcionesSeleccionadas = [] ;
         this.modulosSeleccionado = "0";
@@ -123,6 +196,7 @@ export class GroupsComponent implements OnInit {
   setDataGroup() {
 
     let flagGroup = false;
+    let flagModule = false;
     
     this.isAwaiting = true;
     
@@ -130,7 +204,7 @@ export class GroupsComponent implements OnInit {
       flagGroup = false;
       alert("Debe seleccionar minimo un modulo al grupo.");
     }else{
-      flagGroup = true;
+      flagModule = true;
     }
 
     if(this.group.groupName == undefined || this.group.groupName == ''){
@@ -140,7 +214,7 @@ export class GroupsComponent implements OnInit {
       flagGroup = true;
     }
     
-    if(flagGroup == true)
+    if(flagGroup == true && flagModule == true)
     {
       this.group.moduleAction = this.lsActionsSlected;
 
@@ -219,11 +293,12 @@ export class GroupsComponent implements OnInit {
 
   comeBack() {
     if (this.returnPath != null) {
+      debugger;
       console.log("[retorno]:", this.returnPath);
       this.router.navigate([this.returnPath]);
     }
     this.refresGroup();
-    this.groupWasCanceled.emit('Group');
+    this.groupWasCanceled.emit('groups');
   }
 
    // actualizar el grupo a modificar

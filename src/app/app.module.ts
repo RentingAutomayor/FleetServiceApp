@@ -65,6 +65,7 @@ import { AdminComponent } from './Modules/admin/admin.component';
 import { ActionsComponent } from './Modules/actions/actions.component';
 import { GroupsComponent } from './Modules/groups/groups.component';
 import { UsersComponent } from './Modules/users/users.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -123,7 +124,8 @@ import { UsersComponent } from './Modules/users/users.component';
     AdminComponent,
     ActionsComponent,
     GroupsComponent,
-    UsersComponent
+    UsersComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,

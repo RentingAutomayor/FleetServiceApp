@@ -20,8 +20,16 @@ export class AdminComponent implements OnInit {
 
   // object to update
   actionToUpdate = new Action();
+  actionToView = new Action();
+  actionToCreate = new Action();
+
   groupToUpdate: any = {} ;
+  groupToView: any = {} ;
+  groupToCreate: any = {} ;
+
   userToUpdate: any = {} ;
+  userToView: any = {} ;
+  userToCreate: any = {} ;
 
   session : any = {};
   isAwaiting:boolean;
@@ -56,7 +64,7 @@ export class AdminComponent implements OnInit {
     this.lsComp = await this.adminService.getCompanies();  
   }
 
-  async initComponents(){
+  async initComponents(tab?: string){
     this.isAwaiting = true;
     this.hideContainerTabs();
     try{       
@@ -68,6 +76,7 @@ export class AdminComponent implements OnInit {
       alert(err.error.Message);
     }
     this.isAwaiting = false;
+    this.comeBackToTable(tab);
   }
 
   hideContainerTabs(){
@@ -95,6 +104,7 @@ export class AdminComponent implements OnInit {
     for(let i = 0 ; i < tabLinks.length; i ++){
       tabLinks[i].classList.remove("active");
     }
+    
     oButton.target.className += " active";
     let containerTabs = document.getElementsByClassName("tab_content");
 
@@ -117,15 +127,24 @@ export class AdminComponent implements OnInit {
   // insert
 
   insertAction(){
-    this.showPopUp('Action');
+    this.actionToUpdate = new Action();
+    this.actionToCreate = new Action();
+    this.actionToView = new Action();
+    this.showPopUp('actions');
   }
 
   insertGroup(){
-    this.showPopUp('Group');
+    this.groupToUpdate = {} ;
+    this.groupToView = {} ;
+    this.groupToCreate = {} ;
+    this.showPopUp('groups');
   }
 
   insertUser(){
-    this.showPopUp('User');
+    this.userToUpdate = {} ;
+    this.userToView = {} ;
+    this.userToCreate = {} ;
+    this.showPopUp('users');
   }
 
   // update
@@ -133,20 +152,22 @@ export class AdminComponent implements OnInit {
   async updateAction(pId:number){
     try{
       this.isAwaiting = true;
+      this.actionToView = new Action();
       this.actionToUpdate = await this.adminService.getActionById(pId);
-      this.showPopUp('Action');
+      this.showPopUp('actions');
       this.isAwaiting = false;
     }catch(err){
       console.error(err.error.Message);
       alert(err.error.Message);
     }
-  }
+  }  
 
   async updateGroup(pId:number){
     try{
       this.isAwaiting = true;
+      this.groupToView = {};
       this.groupToUpdate = await this.adminService.getGroupById(pId);
-      this.showPopUp('Group');
+      this.showPopUp('groups');
       this.isAwaiting = false;
     }catch(err){
       console.error(err.error.Message);
@@ -157,8 +178,9 @@ export class AdminComponent implements OnInit {
   async updateUser(pId:number){
     try{
       this.isAwaiting = true;
+      this.userToView = {};
       this.userToUpdate = await this.adminService.getUserById(pId);
-      this.showPopUp('User');
+      this.showPopUp('users');
       this.isAwaiting = false;
     }catch(err){
       console.error(err.error.Message);
@@ -176,12 +198,13 @@ export class AdminComponent implements OnInit {
         this.isAwaiting = false;
         if(rta.response){
           alert(rta.message);
-          this.initComponents();
+          this.initComponents("users");
         }
       }
     }catch(err){
       console.error(err.error.Message);
       alert(err.error.Message);
+      this.initComponents("users");
     }
    
   }
@@ -194,12 +217,13 @@ export class AdminComponent implements OnInit {
         this.isAwaiting = false;
         if(rta.response){
           alert(rta.message);
-          this.initComponents();
+          this.initComponents("actions");
         }
       }
     }catch(err){
       console.error(err.error.Message);
       alert(err.error.Message);
+      this.initComponents("actions");
     }
    
   }
@@ -212,14 +236,56 @@ export class AdminComponent implements OnInit {
         this.isAwaiting = false;
         if(rta.response){
           alert(rta.message);
-          this.initComponents();
+          this.initComponents("groups");
         }
       }
     }catch(err){
       console.error(err.error.Message);
       alert(err.error.Message);
+      this.initComponents("groups");
     }
    
+  }
+
+  // view
+
+  async viewAction(pId:number){
+    try{
+      this.isAwaiting = true;
+      this.actionToUpdate = new Action();
+      this.actionToView = await this.adminService.getActionById(pId);
+      this.showPopUp('actions');
+      this.isAwaiting = false;
+    }catch(err){
+      console.error(err.error.Message);
+      alert(err.error.Message);
+    }
+  }
+
+  async viewUser(pId:number){
+    try{
+      this.isAwaiting = true;
+      this.userToUpdate = {};
+      this.userToView = await this.adminService.getUserById(pId);
+      this.showPopUp('users');
+      this.isAwaiting = false;
+    }catch(err){
+      console.error(err.error.Message);
+      alert(err.error.Message);
+    }    
+  }
+
+  async viewGroup(pId:number){
+    try{
+      this.isAwaiting = true;
+      this.groupToUpdate = {};
+      this.groupToView = await this.adminService.getGroupById(pId);
+      this.showPopUp('groups');
+      this.isAwaiting = false;
+    }catch(err){
+      console.error(err.error.Message);
+      alert(err.error.Message);
+    }
   }
 
   // pop up
@@ -232,6 +298,28 @@ export class AdminComponent implements OnInit {
   hidePopUp(id: string) {
     let containerForm = document.getElementById("container__form" + id);
     containerForm.setAttribute("style", "display:none");
+
+    let tabLinks = document.getElementsByClassName("tab_link");
+
+    for(let i = 0 ; i < tabLinks.length; i ++){
+      tabLinks[i].classList.remove("active");
+    }
+
+    let containerTap = document.getElementById(id);
+
+    containerTap.className += " active";
+    let containerTabs = document.getElementsByClassName("tab_content");
+
+    for(let i = 0 ; i < containerTabs.length; i ++){
+      containerTabs[i].setAttribute("style","display:none");
+    }
+
+    let containerToShow_id = `container__${id}`;     
+    let containerToShow = document.getElementById(containerToShow_id);
+
+    containerToShow.setAttribute("style","display:blick");
+
+
   }
 
   // refresh
@@ -240,30 +328,25 @@ export class AdminComponent implements OnInit {
     alert(respuesta.message);
 
     if (respuesta.state) {      
-      this.initComponents();
+      this.initComponents('actions');
     }    
-
-    this.comeBackToTable('Action')
   }
 
   saveGroup(respuesta: any){
     alert(respuesta.message);
 
     if (respuesta.state) {      
-      this.initComponents();
+      this.initComponents('groups');
     }    
-
-    this.comeBackToTable('Group')
   }
 
   saveUser(respuesta: any){
     alert(respuesta.message);
 
     if (respuesta.state) {      
-      this.initComponents();
+      this.initComponents('users');
     }    
-
-    this.comeBackToTable('User')
   }
 
 }
+

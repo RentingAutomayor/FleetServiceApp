@@ -1,4 +1,4 @@
-<div class="container__users">
+<div class="container__users" *ngIf="!mostrar">
     <div class="row__container" id="container__name">
         <div class="col">
             <label for="#">Nombres:</label>
@@ -15,29 +15,35 @@
             <input type="text" class="form-control" placeholder="Usuario ..." value="{{user.usr_user !=null ? user.usr_user : ''}}" id="usr_user" #usr_user (keyup)=updateFile(usr_user)>
         </div>
         <div class="col">
-            <label for="">Contraseña:</label>
-            <input type="text" class="form-control" placeholder="Contraseña ..." value="{{user.usr_pass !=null ? user.usr_pass : ''}}" id="usr_pass" #usr_pass (keyup)=updateFile(usr_pass)>
+            <label for="">Correo:</label>
+            <input type="text" class="form-control" placeholder="Correo ..." value="{{user.usr_email !=null ? user.usr_email : ''}}" id="usr_email" #usr_email (keyup)=updateFile(usr_email)>
         </div>
     </div>
     <div class="row__container">
         <div class="col">
-            <label for="">Correo:</label>
-            <input type="text" class="form-control" placeholder="Correo ..." value="{{user.usr_email !=null ? user.usr_email : ''}}" id="usr_email" #usr_email (keyup)=updateFile(usr_email)>
+            <label for="">Contraseña:</label>
+            <input type="password" class="form-control" placeholder="Contraseña ..." value="{{user.usr_pass !=null ? user.usr_pass : ''}}" id="usr_pass" #usr_pass (keyup)=updateFile(usr_pass)>
         </div>
+        <div class="col">
+            <label for="">Confirmar contraseña:</label>
+            <input type="password" class="form-control" placeholder="Contraseña ..." value="{{user.usr_pass_confirm !=null ? user.usr_pass_confirm : ''}}" id="usr_pass_confirm" #usr_pass_confirm (keyup)=updateFile(usr_pass_confirm)>
+        </div>
+    </div>
+    <div class="row__container">
         <div class="col">
             <label for="">Grupo:</label>
             <ng-multiselect-dropdown id="grupo" #acciones name="grupos" [placeholder]="'Grupo ...'" [data]="lsGroups" [settings]="dropdownSettings" [(ngModel)]="opcionesSeleccionadas" (onSelect)="loadgroup()" (onDeSelect)="loadgroup()">
             </ng-multiselect-dropdown>
         </div>
-    </div>
-    <div class="row__container">
         <div class="col">
             <label for="">Perfil:</label>
             <ng-multiselect-dropdown id="profile" #profile name="profile" [placeholder]="'Perfil ...'" [data]="lsProfiles" [settings]="dropdownSettingsProfile" [(ngModel)]="opcionesSeleccionadasProfile" (onSelect)="loadProfile()" (onDeSelect)="loadProfile()">
             </ng-multiselect-dropdown>
         </div>
+    </div>
+    <div class="row__container">
         <div class="col" *ngIf="profileSelected">
-            <label for="">_</label>
+            <label for="">{{tipoPerfil}}</label>
             <ng-multiselect-dropdown id="profileS" #profileS name="profileS" [placeholder]="'Perfil Mod ...'" [data]="lsProfileCDC" [settings]="dropdownSettingsProf" [(ngModel)]="opcionesSeleccionadasProf">
             </ng-multiselect-dropdown>
         </div>
@@ -46,6 +52,54 @@
         <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
         <button *ngIf="actualizar" type="button" class="btn btn-success" (click)="updateDataUser()">Actualizar</button>
         <button *ngIf="!actualizar" type="button" class="btn btn-success" (click)="setDataUser()">Guardar</button>
+    </div>
+
+</div>
+
+<div class="container__users" *ngIf="mostrar">
+    <button type="button" class="btn btn-danger btnClose" (click)="comeBack()">X</button>
+
+    <div class="row__container" id="container__name">
+        <div class="col">
+            <label for="#">Nombres: </label>
+            <label for="">{{user.usr_names !=null ? user.usr_names : ''}}</label>
+        </div>
+        <div class="col">
+            <label for="">Apellidos: </label>
+            <label for="">{{user.usr_last_names !=null ? user.usr_last_names : ''}}</label>
+
+        </div>
+    </div>
+    <div class="row__container">
+        <div class="col">
+            <label for="#">Usuario: </label>
+            <label for="">{{user.usr_user !=null ? user.usr_user : ''}}</label>
+        </div>
+        <div class="col">
+            <label for="">Contraseña: </label>
+            <label for="">{{user.usr_pass !=null ? user.usr_pass : ''}}</label>
+        </div>
+
+    </div>
+    <div class="row__container">
+        <div class="col">
+            <label for="">Correo: </label>
+            <label for="">{{user.usr_email !=null ? user.usr_email : ''}}</label>
+        </div>
+        <div class="col">
+            <label for="">Grupo: </label>
+            <label for="">{{ opcionesSeleccionadas[0].groupName }}</label>
+        </div>
+    </div>
+    <div class="row__container">
+        <div class="col">
+            <label for="">Perfil: </label>
+            <label for="">{{ opcionesSeleccionadasProfile[0] }}</label>
+        </div>
+        <div class="col" *ngIf="profileSelected">
+            <label for="">{{tipoPerfil}}: </label>
+            <label for="">{{ opcionesSeleccionadasProf[0].name }}</label>
+        </div>
     </div>
 
 </div>

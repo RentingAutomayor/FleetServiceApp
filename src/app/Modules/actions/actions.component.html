@@ -1,5 +1,5 @@
 <div class="container__action">
-    <form>
+    <form *ngIf="!mostrar">
         <div class="row__container" id="container__name">
             <div class="col">
                 <label for="#">Nombre:</label>
@@ -16,6 +16,19 @@
             <button *ngIf="!actualizar" type="button" class="btn btn-success" (click)="setDataAction()">Guardar</button>
         </div>
     </form>
+    <div *ngIf="mostrar">
+        <button type="button" class="btn btn-danger btnClose" (click)="comeBack()">X</button>
+        <div class="row__container" id="container__name">
+            <div class="col-12">
+                <label for="#">Nombre:</label>
+                <label>{{action.act_name !=null ? action.act_name : ''}}</label>
+            </div>
+            <div class="col-12">
+                <label for="">Descripcion:</label>
+                <label>{{action.act_description !=null ? action.act_description : ''}}</label>
+            </div>
+        </div>
+    </div>
 </div>
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

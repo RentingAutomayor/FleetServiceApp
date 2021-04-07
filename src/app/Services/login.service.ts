@@ -24,6 +24,7 @@ export class LoginService {
 
   // tslint:disable-next-line: typedef
   loginUser(user: any){
+    // transforma la contraseña en base64
     user.usr_pass = btoa(user.usr_pass);
     let urlLogin = `${this.URL_API}/GetAuthenticate`;
     return this.http.post<any>(urlLogin, user);

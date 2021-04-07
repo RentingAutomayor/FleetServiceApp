@@ -1,61 +1,98 @@
 <div class="container__group">
-    <form>
-        <div class="row__container" id="container__name">
+    <div *ngIf="!mostrar">
+        <form>
+            <div class="row__container" id="container__name">
+                <div class="col">
+                    <label for="#">Nombre:</label>
+                    <input type="text" class="form-control" placeholder="Nombre ..." value="{{group.groupName !=null ? group.groupName : ''}}" id="groupName" #groupName (keyup)=updateFile(groupName) required>
+                </div>
+                <div class="col">
+                    <label for="">Descripcion:</label>
+                    <input type="text" class="form-control" placeholder="Descripcion ..." value="{{group.description !=null ? group.description : ''}}" id="description" #description (keyup)=updateFile(description) required>
+                </div>
+            </div>
+        </form>
+        <div class="row__container">
             <div class="col">
-                <label for="#">Nombre:</label>
-                <input type="text" class="form-control" placeholder="Nombre ..." value="{{group.groupName !=null ? group.groupName : ''}}" id="groupName" #groupName (keyup)=updateFile(groupName) required>
+                <label for="#">Modulo:</label>
+                <select [(ngModel)]="modulosSeleccionado" #modulos name="modulos" id="modulos" class="form-control">
+                    <option value="0" selected>-- Seleccione un Modulo --</option>
+                    <option [value]="module.id_module" *ngFor="let module of lsModules">{{module.moduleName}}</option>
+                </select>
             </div>
             <div class="col">
-                <label for="">Descripcion:</label>
-                <input type="text" class="form-control" placeholder="Descripcion ..." value="{{group.description !=null ? group.description : ''}}" id="description" #description (keyup)=updateFile(description) required>
-            </div>
-        </div>
-    </form>
-    <div class="row__container">
-        <div class="col">
-            <label for="#">Modulo:</label>
-            <select [(ngModel)]="modulosSeleccionado" #modulos name="modulos" id="modulos" class="form-control">
-                <option value="0" selected>-- Seleccione un Modulo --</option>
-                <option [value]="module.id_module" *ngFor="let module of lsModules">{{module.moduleName}}</option>
-            </select>
-        </div>
-        <div class="col">
-            <label for="#">Acciones:</label>
+                <label for="#">Acciones:</label>
 
-            <ng-multiselect-dropdown id="acciones" #acciones name="acciones" [placeholder]="'Acciones'" [data]="actions" [settings]="dropdownSettings" [(ngModel)]="opcionesSeleccionadas">
-            </ng-multiselect-dropdown>
-        </div>
-    </div>
-    <div *ngIf="lsActionsSlected.length > 0">
-        <table class="table table-striped">
-            <thead>
-                <th>Modulo</th>
-                <th>Acciones</th>
-                <th></th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of lsActionsSlected;let indice=index">
-                    <td>{{item.name_module}}</td>
-                    <td>
-                        <select class="form-control" readonly>
-                                <option value="0" selected>-- Acciones cargadas --</option>
-                                <option [value]="action.act_id" *ngFor="let action of item.actions">{{action.act_name}}</option>
-                            </select>
-                    </td>
-                    <td><a role="button" (click)="deleteModule(item)"><i class="fas fa-trash-alt"></i></a></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="row__container">
-        <div class="col">
-            <div class="buttons__container" id="container__buttons">
-                <button type="button" class="btn btn-success" (click)="addModule(modulos)">Añadir Modulo</button>
-                <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-                <button *ngIf="actualizar" type="button" class="btn btn-success" (click)="updateDataGroup()">Actualizar</button>
-                <button *ngIf="!actualizar" type="button" class="btn btn-success" (click)="setDataGroup()">Guardar</button>
+                <ng-multiselect-dropdown id="acciones" #acciones name="acciones" [placeholder]="'Acciones'" [data]="actions" [settings]="dropdownSettings" [(ngModel)]="opcionesSeleccionadas">
+                </ng-multiselect-dropdown>
             </div>
         </div>
+        <div *ngIf="lsActionsSlected.length > 0">
+            <table class="table table-striped">
+                <thead>
+                    <th>Modulo</th>
+                    <th>Acciones</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lsActionsSlected;let indice=index">
+                        <td>{{item.name_module}}</td>
+                        <td>
+                            <select class="form-control" readonly>
+                                    <option value="0" selected>-- Acciones cargadas --</option>
+                                    <option [value]="action.act_id" *ngFor="let action of item.actions">{{action.act_name}}</option>
+                                </select>
+                        </td>
+                        <td><a role="button" (click)="deleteModule(item)"><i class="fas fa-trash-alt"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row__container">
+            <div class="col">
+                <div class="buttons__container" id="container__buttons">
+                    <button type="button" class="btn btn-success" (click)="addModule(modulos)">Añadir Modulo</button>
+                    <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
+                    <button *ngIf="actualizar" type="button" class="btn btn-success" (click)="updateDataGroup()">Actualizar</button>
+                    <button *ngIf="!actualizar" type="button" class="btn btn-success" (click)="setDataGroup()">Guardar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div *ngIf="mostrar">
+        <button type="button" class="btn btn-danger btnClose" (click)="comeBack()">X</button>
+        <div class="row__container" id="container__name">
+            <div class="col-12">
+                <label for="#">Nombre:</label>
+                <label>{{group.groupName !=null ? group.groupName : ''}}</label>
+            </div>
+            <div class="col-12">
+                <label for="">Descripcion:</label>
+                <label>{{group.description !=null ? group.description : ''}}</label>
+            </div>
+        </div>
+        <div *ngIf="lsActionsSlected.length > 0">
+            <table class="table table-striped">
+                <thead>
+                    <th>Modulo</th>
+                    <th>Acciones</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lsActionsSlected;let indice=index">
+                        <td>{{item.name_module}}</td>
+                        <td>
+                            <select class="form-control" readonly>
+                                    <option value="0" selected>-- Acciones cargadas --</option>
+                                    <option [value]="action.act_id" *ngFor="let action of item.actions">{{action.act_name}}</option>
+                                </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
 </div>

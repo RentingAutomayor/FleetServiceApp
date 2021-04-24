@@ -25,9 +25,9 @@
                 <td>{{ contract.amountVehicles }}</td>
                 <td>{{ contract.contractState.name | titlecase }}</td>
                 <td>
-                    <i class="fas fa-info-circle text-info" title="Más información"></i>
-                    <i class="fas fa-edit text-warning" (click)="updateContract(contract)" title="Modificar"></i>
-                    <i class="fas fa-trash-alt text-danger" (click)="deleteContract(contract)" title="Eliminar"></i>
+                    <i class="fas fa-info-circle text-info" title="Más información" (click)="getDetailsContract(contract)"></i>
+                    <i class="fas fa-edit text-warning" *ngIf="enableButtonsEditAndDelete" (click)="updateContract(contract)" title="Modificar"></i>
+                    <i class="fas fa-trash-alt text-danger" *ngIf="enableButtonsEditAndDelete" (click)="deleteContract(contract)" title="Eliminar"></i>
                 </td>
             </tr>
         </tbody>

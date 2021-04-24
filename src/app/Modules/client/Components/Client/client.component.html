@@ -5,7 +5,7 @@
             <button class="tab_link" (click)="openTab($event,'contact')">Contactos</button>
             <button class="tab_link" (click)="openTab($event,'branch')">Sucursales</button>
             <button class="tab_link" (click)="openTab($event,'vehicles')">Vehículos</button>
-            <button class="tab_link" (click)="openTab($event,'contracts')">Contratos asociados</button>            
+            <!-- <button class="tab_link" (click)="openTab($event,'contracts')">Contratos asociados</button>             -->
             <button class="tab_link" (click)="openTab($event,'financialInformation')">Información financiera</button>
         </div>
     </div>
@@ -22,6 +22,7 @@
                 [error]="errorMessage"                    
                 [returnPath]="sReturnPath" 
                 [personToUpdate]="oPersonToUpdate"
+                [frmPersonMustBeBlocked]="blockFormClient"
                 (personWasSetted)="SetDataToSaveClient()"></app-person>
             </div>
         </div>
@@ -30,26 +31,38 @@
     <div class="tab_content tab_inactive" id="container__contact">  
         
         <div class="container__table__contact">
-            <app-contact [isToClient]="oIsToClient" [clientWasSaved]="oClientWasSaved">
+            <app-contact
+                [action]="action" 
+                [isToClient]="oIsToClient" 
+                [clientWasSaved]="oClientWasSaved"
+                [disableActionButtons]="blockFormClient">
             </app-contact> 
         </div>
         
     </div>
 
     <div class="tab_content tab_inactive" id="container__branch">
-        <app-branch [isToClient]="oIsToClient" [clientWasSaved]="oClientWasSaved">
+        <app-branch 
+            [action]="action"    
+            [isToClient]="oIsToClient" 
+            [clientWasSaved]="oClientWasSaved"
+            [disableActionButtons]="blockFormClient">
         </app-branch>
     </div>
 
     <div class="tab_content tab_inactive" id="container__vehicles">
-        <app-vehicles-by-client [clientWasSaved]="oClientWasSaved"></app-vehicles-by-client>
+        <app-vehicles-by-client 
+            [action]="action"
+            [clientWasSaved]="oClientWasSaved"
+            [disableActionButtons]="blockFormClient">
+        </app-vehicles-by-client>
     </div> 
 
-    <div class="tab_content tab_inactive" id="container__contracts">
+    <!-- <div class="tab_content tab_inactive" id="container__contracts">
         <app-tbl-contracts-by-client
         [client_id]="(this.oClientToUpdate != null) ? this.oClientToUpdate.id : 0">            
         </app-tbl-contracts-by-client>        
-    </div> 
+    </div>  -->
 
     <div class="tab_content tab_inactive" id="container__financialInformation">
         <app-financial-information-by-client>            

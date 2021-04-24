@@ -17,6 +17,8 @@ export class CityComponent implements OnInit, OnChanges {
   lsDepartment: Department[];
   lsCities: City[];
 
+  @Input() blockFieldCity:boolean;
+
 
   constructor(
     private cityService: CityService
@@ -25,6 +27,8 @@ export class CityComponent implements OnInit, OnChanges {
       cmbDepartment: new FormControl('Seleccione ...'),
       cmbCity: new FormControl('Seleccione ...')
     })
+
+    this.blockFieldCity = false;
   }
 
 
@@ -68,7 +72,22 @@ export class CityComponent implements OnInit, OnChanges {
       this.frmCity.controls.cmbCity.setValue(0);
     }
 
+    this.validateBlockFields();
+
   }
+
+  validateBlockFields(){
+    try {
+      if(this.blockFieldCity){
+        this.frmCity.disable();
+      }else{
+        this.frmCity.enable();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async searchCities(pDepartment_id: number) {
     this.lsCities = await this.cityService.getCitiesByDepartmentId(pDepartment_id);
   }

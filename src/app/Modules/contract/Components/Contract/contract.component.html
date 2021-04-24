@@ -46,7 +46,8 @@
                 <div class="container__col">
                     <app-contract-state 
                         [countChanges]="countChanges"
-                        (contractStateWasSelected)="setContractState($event)"></app-contract-state>
+                        (contractStateWasSelected)="setContractState($event)"
+                        [cmbStateIsDisable]="disableCmbState"></app-contract-state>
 
                     <div class="error" *ngIf="contracStateFieldIsInvalid">
                         <p>* El estado es requerido para guardar el contrato</p>
@@ -170,7 +171,7 @@
         <div class="buttons__container" id="container__buttons">
             <button type="button" class="btn btn-danger" (click)="comeBackTable()">Cancelar</button>
             <button type="submit" class="btn btn-success" 
-                [disabled]="frmContract.invalid || clientFieldIsInvalid || dealerFieldIsInvalid  || contracStateFieldIsInvalid || discountFieldIsInvalid">Guardar</button>
+                [disabled]="frmContract.invalid || clientFieldIsInvalid || dealerFieldIsInvalid  || contracStateFieldIsInvalid || discountFieldIsInvalid || buttonSaveIsDisable">Guardar</button>
         </div>
         <div>
             <div class="container__infoError" id="cont_error_add_contract"

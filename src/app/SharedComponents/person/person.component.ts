@@ -36,6 +36,8 @@ export class PersonComponent implements OnInit, OnChanges {
   
   isContact:boolean = true;
 
+  @Input() frmPersonMustBeBlocked: boolean;
+
   constructor(
     private personService: PersonService,
     private cityService: CityService,
@@ -47,6 +49,7 @@ export class PersonComponent implements OnInit, OnChanges {
     this.configRenderComponent = new ConfigPersonComponent();
     this.isRequiredDataComponent = false;
     this.formHasError = false;
+    this.frmPersonMustBeBlocked = false;
 
   }
 
@@ -121,6 +124,7 @@ export class PersonComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.initComponents();
+    this.validateBlockForm();
   }
 
   initComponents() {
@@ -132,6 +136,18 @@ export class PersonComponent implements OnInit, OnChanges {
       console.log(this.personToUpdate);
       this.setDataInForm(this.personToUpdate);
     }    
+  }
+
+  validateBlockForm(){
+    try {      
+      if(this.frmPersonMustBeBlocked){
+        this.formPerson.disable();
+      }else{
+        this.formPerson.enable();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 

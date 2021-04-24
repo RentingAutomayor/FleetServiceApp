@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Client } from 'src/app/Models/Client';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { PersonService } from '../../../../SharedComponents/Services/Person/person.service';
@@ -8,6 +8,7 @@ import { Person } from 'src/app/Models/Person';
 import { Router } from '@angular/router';
 import { CityService } from '../../../../SharedComponents/Services/City/city.service';
 import { City } from 'src/app/Models/City';
+import { ActionType } from 'src/app/Models/ActionType';
 
 @Component({
   selector: 'app-client',
@@ -26,6 +27,8 @@ export class ClientComponent implements OnInit {
   ROUTE_MASTER_CLIENT:string = "/MasterClients";
   oIsToClient:boolean;
   oClientWasSaved:boolean;
+  blockFormClient:boolean;
+  action:ActionType;
  
 
   constructor(
@@ -39,6 +42,7 @@ export class ClientComponent implements OnInit {
     this.isAwaiting = false;
     this.oDataIsToUpdate = false;  
     this.oIsToClient= true;
+    this.blockFormClient = false;
   }
 
   ngOnInit(): void {
@@ -52,11 +56,16 @@ export class ClientComponent implements OnInit {
     this.sReturnPath = this.ROUTE_MASTER_CLIENT;
     //console.warn("[before]")
     this.oClientToUpdate = this.ClientService.getClientToUpdate();
+    this.blockFormClient = this.ClientService.getBlockFormClient();
     //console.log("[Client component] : ", this.oClientToUpdate);
     if(this.oClientToUpdate != null){      
       this.setDataToUpdateClient(this.oClientToUpdate);
-      this.oDataIsToUpdate = true;
+      this.oDataIsToUpdate = true;      
     }
+    this.action = this.ClientService.getAction();
+    if(this.action == ActionType.CREATE){
+      this.blockFormClient = false;
+    }   
   }
 
   configurePersonComponent(){

@@ -11,6 +11,7 @@ import { JobTitle } from 'src/app/Models/JobTitle';
 import { JobTitleService } from '../Services/JobTitle/job-title.service';
 import { Dealer } from 'src/app/Models/Dealer';
 import { DealerService } from '../../Modules/dealer/Services/Dealer/dealer.service';
+import { ActionType } from 'src/app/Models/ActionType';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class ContactComponent implements OnInit, OnChanges {
   btnAddContact: HTMLButtonElement;
   containerErrorAdd: HTMLElement;
   sOwnerName:string;
+ 
 
   //pagination
   p: number = 1;
@@ -37,6 +39,11 @@ export class ContactComponent implements OnInit, OnChanges {
   @Input() isToDealer: boolean;
   @Input() clientWasSaved: boolean;
   @Input() dealerWasSaved: boolean;
+  @Input() disableActionButtons:boolean;
+
+  buttonAddIsVisible:boolean;
+  @Input() action: ActionType;
+  
   
 
   constructor(
@@ -47,10 +54,17 @@ export class ContactComponent implements OnInit, OnChanges {
     private dealerService: DealerService
   ) {
     this.sOwnerName="";
+    this.disableActionButtons = false;
+    this.buttonAddIsVisible = false;
+    
   }
 
   ngOnInit(): void {
     this.initComponents();
+    setTimeout(()=>{     
+      //await this time because the btn it's no ready yet
+      this.validateIfButtonAddMustVisible();
+    },1500);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -76,6 +90,11 @@ export class ContactComponent implements OnInit, OnChanges {
         }
       }
     }
+
+    setTimeout(()=>{     
+      //await this time because the btn it's no ready yet
+      this.validateIfButtonAddMustVisible();
+    },1500);
   }
 
   validateNameOfOwner():string{
@@ -94,9 +113,7 @@ export class ContactComponent implements OnInit, OnChanges {
     titleComp.innerHTML = `Contactos de: ${this.validateNameOfOwner()}`
   }
 
-  initComponents() {    
-    this.btnAddContact = document.querySelector("#btnAddContact");
-    this.containerErrorAdd = document.querySelector("#cont_error_add_contact")
+  initComponents() {  
     this.isAwaiting = false;
     this.isToInsert = false;
     this.oCountContact = 0;
@@ -142,15 +159,41 @@ export class ContactComponent implements OnInit, OnChanges {
   }
 
   activateButtonAdd() {
-    this.btnAddContact.disabled = false;
-    this.btnAddContact.classList.remove("error");
-    this.containerErrorAdd.style.display = 'none';
+    try{
+      this.btnAddContact = document.querySelector("#btnAddContact");
+      this.btnAddContact.disabled = false;
+      this.btnAddContact.classList.remove("error");
+    }catch(error){
+      console.warn(error.message)
+    }   
+  }
+
+  removeContainerError(){
+    try {
+      this.containerErrorAdd = document.querySelector("#cont_error_add_contact")
+      this.containerErrorAdd.style.display = 'none';
+    } catch (error) {
+      console.warn(error.message)
+    }
   }
 
   disableButtonAdd() {
-    this.btnAddContact.disabled = true;
-    this.btnAddContact.className += `${this.btnAddContact.className} error`;
-    this.containerErrorAdd.style.display = 'block';
+    try {
+      this.btnAddContact = document.querySelector("#btnAddContact");
+      this.btnAddContact.disabled = true;
+      this.btnAddContact.className += `${this.btnAddContact.className} error`;
+    } catch (error) {
+      console.warn(error.message)
+    }     
+  }
+
+  addContainerError(){
+    try {
+      this.containerErrorAdd = document.querySelector("#cont_error_add_contact")
+      this.containerErrorAdd.style.display = 'block';
+    } catch (error) {
+      console.warn(error.message)
+    }
   }
 
   configurePersonComponent() {
@@ -329,6 +372,34 @@ export class ContactComponent implements OnInit, OnChanges {
 
     if(this.isToDealer){
       return 'No se pueden agregar contactos hasta que se guarde la información básica del concesionario';
+    }
+  }
+
+
+  validateIfButtonAddMustVisible(){
+    switch(this.action){
+      case ActionType.READ:
+          this.buttonAddIsVisible = false;
+        break;
+      case ActionType.UPDATE:
+      case ActionType.CREATE:
+          this.buttonAddIsVisible = true;
+        break;
+    }   
+
+    this.validateData();
+  }
+
+  validateData(){  
+    //console.warn("[validateData]",this.client,this.dealer);
+    if((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
+      //console.warn("[validateData] -> Activa botón");
+      this.activateButtonAdd();
+      this.removeContainerError();
+    }else{
+      //console.warn("[validateData] -> Inactiva botón");
+      this.disableButtonAdd();
+      this.addContainerError();
     }
   }
 }

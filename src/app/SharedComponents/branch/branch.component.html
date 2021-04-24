@@ -1,9 +1,16 @@
 <h2 id="titleComponentBranch"></h2>
 
-<button class="btn-add btn-info" (click)="insertBranch()" id="btnAddBranch"><i class="fas fa-plus"></i></button>
+<div *ngIf="buttonAddIsVisible">
+    <button 
+        id="btnAddBranch"
+        class="btn-add btn-info"
+        (click)="insertBranch()">
+        <i class="fas fa-plus"></i>
+    </button>
 
-<div class="container__infoError" id="cont_error_add_branch">
-    <span>{{ getErrorDescription() }}</span>
+    <div class="container__infoError"  id="cont_error_add_branch">
+        <span>{{ getErrorDescription() }}</span>
+    </div>
 </div>
 
 <table class="table table-striped">
@@ -25,9 +32,9 @@
             <td class="col-mobile-hide">{{ branch.address }}</td>
             <td class="col-mobile-hide">{{ validateCityName(branch.city) | titlecase }}</td>
             <td>
-                <i class="fas fa-info-circle text-info" title="Más información"></i>
-                <i class="fas fa-edit text-warning" (click)="updateContact(branch)" title="Modificar"></i>
-                <i class="fas fa-trash-alt text-danger" (click)="deleteBranch(branch)" title="Eliminar"></i>
+                <i class="fas fa-info-circle text-info" title="Más información" *ngIf="!disableActionButtons"></i>
+                <i class="fas fa-edit text-warning" (click)="updateContact(branch)" title="Modificar" *ngIf="!disableActionButtons"></i>
+                <i class="fas fa-trash-alt text-danger" (click)="deleteBranch(branch)" title="Eliminar" *ngIf="!disableActionButtons"></i>
             </td>
         </tr>
     </tbody>

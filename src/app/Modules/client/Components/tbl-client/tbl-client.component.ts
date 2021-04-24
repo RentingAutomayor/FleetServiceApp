@@ -4,6 +4,11 @@ import { Client } from 'src/app/Models/Client';
 import { ClientService } from '../../Services/Client/client.service';
 import { Router } from '@angular/router';
 import { NavigationService } from '../../../navigation/Services/Navigation/navigation.service';
+import { Company } from 'src/app/Models/Company';
+import { CompanyType } from 'src/app/Models/CompanyType';
+import { SecurityValidators } from 'src/app/Models/SecurityValidators';
+import { ActionType } from 'src/app/Models/ActionType';
+
 
 @Component({
   selector: 'app-tbl-client',
@@ -13,8 +18,12 @@ import { NavigationService } from '../../../navigation/Services/Navigation/navig
 export class TblClientComponent implements OnInit {
   lsClient: Client[];
   isAwaiting:boolean;
+  company: Company;
+  enableButtonsEditAndDelete: boolean;
    //pagination
    p:number = 1;
+  
+   action: ActionType
   
   constructor(
     private clientService : ClientService,
@@ -26,7 +35,9 @@ export class TblClientComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.enableButtonsEditAndDelete = true;
     this.initComponents();
+    this.validateCompanyLogged();
   }
 
   async initComponents(){
@@ -42,6 +53,24 @@ export class TblClientComponent implements OnInit {
     this.isAwaiting = false;
   }
 
+  async validateCompanyLogged() {
+    try {
+      this.company = SecurityValidators.validateUserAndCompany();
+      console.log("[validateCompanyLogged]",this.company);
+      switch (this.company.type) {
+        case CompanyType.DEALER:
+        case CompanyType.CLIENT:
+            this.enableButtonsEditAndDelete = false;
+          break;
+        default:
+            this.enableButtonsEditAndDelete = true;         
+          break;
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
   validateCityName(pCity:City):string{
     if(pCity!= null){
       return pCity.name;
@@ -50,12 +79,33 @@ export class TblClientComponent implements OnInit {
     }
   }
 
-  async updateClient(pId:number){
+
+  async getDetailsClient(pId:number){
     try{
+      this.action = ActionType.READ;
+      this.clientService.setAction(this.action);
       this.isAwaiting = true;
+      this.clientService.setBlockFormClient(true);
       let oClientDB = await this.clientService.getClientById(pId);
       this.clientService.setClientToUpdate(oClientDB);      
       this.isAwaiting = false;
+      this.router.navigate(["/MasterClients/Client"]);
+    }catch(err){
+      console.error(err.error.Message);
+      alert(err.error.Message);
+    }
+  }
+
+  async updateClient(pId:number){
+    try{
+      this.action = ActionType.UPDATE;
+      this.clientService.setAction(this.action);
+      this.isAwaiting = true;
+      this.clientService.setBlockFormClient(false);
+      let oClientDB = await this.clientService.getClientById(pId);
+      this.clientService.setClientToUpdate(oClientDB);      
+      this.isAwaiting = false;
+      
       this.router.navigate(["/MasterClients/Client"]);
     }catch(err){
       console.error(err.error.Message);
@@ -82,6 +132,8 @@ export class TblClientComponent implements OnInit {
   }
 
   insertClient(){
+    this.action = ActionType.CREATE;
+    this.clientService.setAction(this.action);
     this.router.navigate(["/MasterClients/Client"]);
   }
 

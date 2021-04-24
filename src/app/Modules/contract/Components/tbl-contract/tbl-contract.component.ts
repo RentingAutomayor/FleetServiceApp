@@ -7,6 +7,7 @@ import { SecurityValidators } from 'src/app/Models/SecurityValidators';
 import { Company } from 'src/app/Models/Company';
 import { CompanyType } from 'src/app/Models/CompanyType';
 import { FasDirective } from 'angular-bootstrap-md';
+import { ActionType } from 'src/app/Models/ActionType';
 
 
 @Component({
@@ -21,6 +22,8 @@ export class TblContractComponent implements OnInit {
   isToUpdate:boolean;
   companyStorage:Company;
   hideButtonAdd: boolean;
+  enableButtonsEditAndDelete:boolean;
+  action:ActionType;
 
   constructor(
     private contractService:ContractService,
@@ -30,6 +33,7 @@ export class TblContractComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.enableButtonsEditAndDelete = true;
     this.initComponents();
   }
 
@@ -56,14 +60,17 @@ export class TblContractComponent implements OnInit {
         case CompanyType.DEALER:
           this.lsContracts = await this.contractService.getContracts(this.companyStorage.id);
           this.hideButtonAdd = true;
+          this.enableButtonsEditAndDelete = false;
         break;
         case CompanyType.CLIENT:
           this.lsContracts = await this.contractService.getContracts(0,this.companyStorage.id);
           this.hideButtonAdd = true;
+          this.enableButtonsEditAndDelete = false;
         break;
         default:
           this.lsContracts = await this.contractService.getContracts();
           this.hideButtonAdd = false;
+          this.enableButtonsEditAndDelete =  true;
           break;
       }
      
@@ -88,7 +95,22 @@ export class TblContractComponent implements OnInit {
   insertContract(){
     this.isToUpdate = false;
     this.contractService.setContract(null);
+    this.contractService.setAction(ActionType.CREATE);
     this.router.navigate(['/MasterContracts/Contract']);
+  }
+
+  async getDetailsContract(pContract:Contract){
+    try {
+      this.isAwaiting = true;
+      let oContractDetails = await this.contractService.getContractByID(pContract.id);
+      this.isAwaiting = false;
+      this.contractService.setAction(ActionType.READ);
+      console.log("[tbl-contract contract-to-see-details]: ",oContractDetails);
+      this.contractService.setContract(oContractDetails);
+      this.router.navigate(['/MasterContracts/Contract']);
+    } catch (error) {
+      console.error(error);
+    }    
   }
 
   async updateContract(pContract:Contract){
@@ -96,6 +118,7 @@ export class TblContractComponent implements OnInit {
       this.isAwaiting = true;
       let oContractToUpdate = await this.contractService.getContractByID(pContract.id);
       this.isAwaiting = false;
+      this.contractService.setAction(ActionType.UPDATE);
       console.log("[tbl-contract contract-to-update]: ",oContractToUpdate);
       this.contractService.setContract(oContractToUpdate);
       this.router.navigate(['/MasterContracts/Contract']);

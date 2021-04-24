@@ -4,6 +4,7 @@ import { ResponseApi } from '../../../../Models/ResponseApi';
 import { Client } from '../../../../Models/Client';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ActionType } from 'src/app/Models/ActionType';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,9 @@ export class ClientService {
   };
   private clientToUpdate:Client;
   private clientSelected:Client;
+  private blockFormClient: boolean;
+  private action:ActionType;
+
   constructor(
     private http: HttpClient
   ) { }
@@ -77,7 +81,20 @@ export class ClientService {
     return this.clientSelected;
   }
 
+  getBlockFormClient():boolean{
+    return this.blockFormClient;
+  }
+  setBlockFormClient(value:boolean){
+    this.blockFormClient = value;
+  }
 
+  getAction():ActionType{
+    return this.action;
+  }
+
+  setAction(value: ActionType){
+    this.action = value;
+  }
  
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

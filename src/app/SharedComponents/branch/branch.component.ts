@@ -11,6 +11,7 @@ import { PersonService } from '../Services/Person/person.service';
 import { CityService } from '../Services/City/city.service';
 import { Dealer } from 'src/app/Models/Dealer';
 import { DealerService } from '../../Modules/dealer/Services/Dealer/dealer.service';
+import { ActionType } from 'src/app/Models/ActionType';
 
 @Component({
   selector: 'app-branch',
@@ -36,6 +37,9 @@ export class BranchComponent implements OnInit, OnChanges {
   oPersonToUpdate: Person;
   oCountBranch: number;
   oCountChangesCity:number;
+  @Input()disableActionButtons: boolean;
+  @Input() action: ActionType;
+  buttonAddIsVisible:boolean;
 
 
   constructor(
@@ -46,31 +50,45 @@ export class BranchComponent implements OnInit, OnChanges {
     private dealerService: DealerService
   ) { 
 
-    
+    this.disableActionButtons = false;
+    this.buttonAddIsVisible = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
       if (change == "clientWasSaved") {
-        //console.log("[clientWasSaved]: ", changes["clientWasSaved"].currentValue)
+        ////console.log("[clientWasSaved]: ", changes["clientWasSaved"].currentValue)
         if (changes["clientWasSaved"].currentValue == true) {
-          //console.log("Se ha guardado el cliente ...");
+          ////console.log("Se ha guardado el cliente ...");
           this.activateButtonAdd();
+          this.removeContainerError();
           this.client = this.clientService.getClientToUpdate();
           this.updateTitleComponent();
+        }else{          
+          this.disableButtonAdd();
+          this.addContainerError();         
         }
       }
 
       if (change == "dealerWasSaved") {
-        console.log("[dealerWasSaved]: ", changes["dealerWasSaved"].currentValue)
+        //console.log("[dealerWasSaved]: ", changes["dealerWasSaved"].currentValue)
         if (changes["dealerWasSaved"].currentValue == true) {
-          console.log("Se ha guardado el concesionario ...");
+          //console.log("Se ha guardado el concesionario ...");
           this.activateButtonAdd();
+          this.removeContainerError();
           this.dealer = this.dealerService.getDealerToUpdate();
           this.updateTitleComponent();
+        }else{          
+          this.disableButtonAdd();
+          this.addContainerError();          
         }
       }
     }
+
+    setTimeout(()=>{     
+      //await this time because the btn it's no ready yet
+      this.validateIfButtonAddMustVisible();
+    },1500);
   }
 
   ngOnInit(): void {
@@ -82,75 +100,109 @@ export class BranchComponent implements OnInit, OnChanges {
     this.isToInsert = false;
     this.isAwaiting = false;
     this.oCountBranch = 0;
-    this.configureComponentToShowDataBranch();
-    this.btnAddBranch = document.querySelector("#btnAddBranch");
-    this.containerErrorBranch = document.querySelector("#cont_error_add_branch");
+    this.configureComponentToShowDataBranch();   
     this.oContainerFormBranch = document.querySelector("#container__formBranch");
     this.showTableBranchs();
+
+    setTimeout(()=>{     
+      //await this time because the btn it's no ready yet
+      this.validateIfButtonAddMustVisible();
+    },1500);
   }
 
   async showTableBranchs() {
     try {
       this.isAwaiting = true;
-      if (this.isToClient) {
-        this.getListOfBranchByClient();
-      }
-
-      if (this.isToDealer) {
-        this.getListOfBranchByDealer();
-      }
+      setTimeout(() => {
+        if (this.isToClient) {
+          this.getListOfBranchByClient();
+        }
+  
+        if (this.isToDealer) {
+          this.getListOfBranchByDealer();
+        }
+      },1500);      
       this.isAwaiting = false;
     } catch (error) {
       alert(error.error.Message);
-      console.error(error.error.Message);
+      //console.error(error.error.Message);
     }
   }
 
   async getListOfBranchByClient() {
-    console.log("Validando configuración para clientes");
+    //console.log("Validando configuración para clientes");
     this.client = this.clientService.getClientToUpdate();
     if (this.client != null) {
       this.updateTitleComponent();
-      console.log("validando sucursales para el cliente: " + this.client.name);
+      //console.log("validando sucursales para el cliente: " + this.client.name);
       this.lsBranchs = await this.branchService.getBranchs(this.client.id, "client");
-      console.log(this.lsBranchs);
+      //console.log(this.lsBranchs);
       this.activateButtonAdd();
+      this.removeContainerError();
     } else {
       this.disableButtonAdd();
+      this.addContainerError();
     }
   }
 
   async getListOfBranchByDealer() {
-    console.log("Validando configuración para concesionarios");
+    //console.log("Validando configuración para concesionarios");
     this.dealer = this.dealerService.getDealerToUpdate();
     if (this.dealer != null) {
       this.updateTitleComponent();
-      console.log("validando sucursales para el concesionario: " + this.dealer.name);
+      //console.log("validando sucursales para el concesionario: " + this.dealer.name);
       this.lsBranchs = await this.branchService.getBranchs(this.dealer.id, "dealer");
-      console.log(this.lsBranchs);
+      //console.log(this.lsBranchs);
       this.activateButtonAdd();
+      this.removeContainerError();
     } else {
       this.disableButtonAdd();
+      this.addContainerError();
     }
   }
 
   activateButtonAdd() {
-    this.btnAddBranch.disabled = false;
-    this.btnAddBranch.classList.remove("error");
-    this.containerErrorBranch.style.display = 'none';
+    try {
+      this.btnAddBranch = document.querySelector('#btnAddBranch');
+      this.btnAddBranch.disabled = false;
+      this.btnAddBranch.classList.remove("error");  
+    } catch (error) {
+      //console.warn(error.message);
+    }       
+  }
+
+  removeContainerError(){
+    try {
+      this.containerErrorBranch = document.querySelector('#cont_error_add_branch');
+      this.containerErrorBranch.style.display = 'none';
+    } catch (error) {
+      //console.warn(error.message);
+    }
   }
 
   disableButtonAdd() {
-    this.btnAddBranch.disabled = true;
-    this.btnAddBranch.className += `${this.btnAddBranch.className} error`;
-    this.containerErrorBranch.style.display = 'block';
+    try {      
+      this.btnAddBranch = document.querySelector('#btnAddBranch');
+      this.btnAddBranch.disabled = true;
+      this.btnAddBranch.className += `${this.btnAddBranch.className} error`;
+    } catch (error) {
+      //console.warn(error.message);
+    }    
+  }
+
+  addContainerError(){
+    try {
+      this.containerErrorBranch = document.querySelector('#cont_error_add_branch');
+      this.containerErrorBranch.style.display = 'block';
+    } catch (error) {
+      //console.warn(error.message);
+    }
   }
 
   validateNameOfOwner(): string {
     if (this.client != null) {
       return this.client.name.toLowerCase();
     }
-
     if (this.dealer != null) {
       return this.dealer.name.toLowerCase();
     }
@@ -193,8 +245,8 @@ export class BranchComponent implements OnInit, OnChanges {
     this.isToInsert = false;
     this.oCountBranch += 1;
     this.oCountChangesCity += 1;
-    console.log("[branch component]:");
-    console.log(pBranch);
+    //console.log("[branch component]:");
+    //console.log(pBranch);
     this.setDataToUpdatBranch(pBranch);
     this.showFormBranch();
   }
@@ -226,7 +278,7 @@ export class BranchComponent implements OnInit, OnChanges {
       }
 
     } catch (err) {
-      console.error(err.error.Message);
+      //console.error(err.error.Message);
       alert(err.error.Message)
     }
   }
@@ -255,10 +307,10 @@ export class BranchComponent implements OnInit, OnChanges {
     let rta = new ResponseApi();
     this.isAwaiting = true;
     if (this.isToInsert) {
-      console.warn("[sucursal para insertar] : ", pBranch);
+      //console.warn("[sucursal para insertar] : ", pBranch);
       rta = await this.branchService.insert(pBranch);
     } else {
-      console.warn("[sucursal para update] : ", pBranch);
+      //console.warn("[sucursal para update] : ", pBranch);
       rta = await this.branchService.update(pBranch);
     }
 
@@ -306,7 +358,7 @@ export class BranchComponent implements OnInit, OnChanges {
         }
       }
     } catch (err) {
-      console.error(err.error.Message);
+      //console.error(err.error.Message);
       alert(err.error.Message)
     }
   }
@@ -320,7 +372,7 @@ export class BranchComponent implements OnInit, OnChanges {
     this.oPersonToUpdate.cellphone = pBranch.cellphone;
     this.oPersonToUpdate.address = (pBranch.address != null) ? pBranch.address.toLowerCase() : "";
     this.oPersonToUpdate.city = pBranch.city;
-    console.log("[Person component setted person]");
+    //console.log("[Person component setted person]");
     this.personService.setPersonToUpdate(this.oPersonToUpdate);
   }
 
@@ -332,6 +384,33 @@ export class BranchComponent implements OnInit, OnChanges {
 
     if(this.isToDealer){
       return 'No se pueden agregar sucursales hasta que se guarde la información básica del concesionario';
+    }
+  }
+
+  validateIfButtonAddMustVisible(){
+    switch(this.action){
+      case ActionType.READ:
+          this.buttonAddIsVisible = false;
+        break;
+      case ActionType.UPDATE:
+      case ActionType.CREATE:
+          this.buttonAddIsVisible = true;
+        break;
+    }   
+
+    this.validateData();
+  }
+
+  validateData(){  
+    //console.warn("[validateData]",this.client,this.dealer);
+    if((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
+      //console.warn("[validateData] -> Activa botón");
+      this.activateButtonAdd();
+      this.removeContainerError();
+    }else{
+      //console.warn("[validateData] -> Inactiva botón");
+      this.disableButtonAdd();
+      this.addContainerError();
     }
   }
 }

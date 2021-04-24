@@ -5,6 +5,7 @@ import { DiscountType } from '../../../../Models/DiscountType';
 import { ResponseApi } from '../../../../Models/ResponseApi';
 import { Contract } from '../../../../Models/Contract';
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
+import { ActionType } from 'src/app/Models/ActionType';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,8 @@ export class ContractService {
   private discoutSelected: DiscountType;
   private contract: Contract;
   private lsMaintenanceItems: MaintenanceItem[];
+  private contractIsToEdit:boolean;
+  private action:ActionType;
 
   constructor(
     private http: HttpClient
@@ -105,5 +108,21 @@ export class ContractService {
 
   getItemsWithPrice():MaintenanceItem[]{
     return this.lsMaintenanceItems;
+  }
+
+  setContractIsToEdit(value: boolean){
+    this.contractIsToEdit = value;
+  }
+
+  getContractIsToEdit():boolean{
+    return this.contractIsToEdit;
+  }
+
+  setAction(value:ActionType){
+    this.action = value;
+  }
+
+  getAction():ActionType{
+    return this.action;
   }
 }

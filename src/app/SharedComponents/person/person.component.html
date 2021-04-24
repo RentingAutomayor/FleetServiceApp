@@ -87,7 +87,8 @@
         <div *ngIf="configComponent.cityIsVisible">
             <app-city 
                 [countChanges]="oCountChanges"
-                [city]="oCity">
+                [city]="oCity"
+                [blockFieldCity]="frmPersonMustBeBlocked">
             </app-city>
         </div> 
         <div  class="container__error" *ngIf="formHasError">
@@ -95,7 +96,7 @@
         </div>
         <div class="buttons__container" id="container__buttons" >
             <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-            <button type="submit" class="btn btn-success" [disabled]="formPerson.invalid">Guardar</button>
+            <button type="submit" class="btn btn-success" [disabled]="formPerson.invalid  || frmPersonMustBeBlocked">Guardar</button>
         </div>  
     </form>
 </div>

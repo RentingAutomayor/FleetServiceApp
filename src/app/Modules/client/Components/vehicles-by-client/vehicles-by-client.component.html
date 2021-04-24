@@ -1,9 +1,18 @@
 <h2 id="titleComponent"></h2>
 
-<button class="btn-add btn-info" id="btnAddVehicle" (click)="insertVehicle()"><i class="fas fa-plus"></i></button>   
+<div *ngIf="buttonAddIsVisible">
+    <button 
+        class="btn-add btn-info" 
+        id="btnAddVehicle" 
+        (click)="insertVehicle()">
+        <i class="fas fa-plus"></i>
+    </button>   
 
-<div class="container__infoError" id="cont_error_add_vehicle">    
-    <span>{{ getErrorDescription() }}</span>
+    <div   
+        class="container__infoError" 
+        id="cont_error_add_vehicle">    
+        <span>{{ getErrorDescription() }}</span>
+    </div>
 </div>
 
 <table class="table table-striped">
@@ -31,9 +40,9 @@
             <td class="col-mobile-hide">{{ vehicle.mileage  }}</td>
             <td class="col-mobile-hide"><span [id]="getStateID(vehicle.id)">{{ validateTag(vehicle.vehicleState.name,vehicle.id) | titlecase }}</span></td>
             <td>
-                <i class="fas fa-info-circle text-info" title="Más información"></i>
-                <i class="fas fa-edit text-warning" (click)="updateVehicle(vehicle)" title="Modificar"></i>
-                <i class="fas fa-trash-alt text-danger" (click)="deleteVehicle(vehicle)" title="Eliminar"></i>
+                <i class="fas fa-info-circle text-info" title="Más información" *ngIf="!disableActionButtons" ></i>
+                <i class="fas fa-edit text-warning" (click)="updateVehicle(vehicle)" title="Modificar" *ngIf="!disableActionButtons"></i>
+                <i class="fas fa-trash-alt text-danger" (click)="deleteVehicle(vehicle)" title="Eliminar" *ngIf="!disableActionButtons"></i>
             </td>
         </tr>
     </tbody>    

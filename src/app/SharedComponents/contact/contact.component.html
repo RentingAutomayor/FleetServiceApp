@@ -1,9 +1,15 @@
 <h3 id="titleComponent"></h3>
 
-<button class="btn-add btn-info" id="btnAddContact" (click)="insertContact()"><i class="fas fa-plus"></i></button>
-<!--This is a message when there isn't a client-->
-<div class="container__infoError" id="cont_error_add_contact">
-    <span>{{ getErrorDescription() }}</span>
+<div *ngIf="buttonAddIsVisible">
+    <button 
+        class="btn-add btn-info" 
+        id="btnAddContact" 
+        (click)="insertContact()"><i class="fas fa-plus"></i>
+    </button>
+    <!--This is a message when there isn't a client-->
+    <div class="container__infoError" id="cont_error_add_contact">
+        <span>{{ getErrorDescription() }}</span>
+    </div>
 </div>
 
 <table class="table table-striped">
@@ -29,9 +35,9 @@
             <td class="col-mobile-hide">{{ contact.address }}</td>
             <td class="col-mobile-hide">{{ validateJobTitle(contact.jobTitle) | titlecase }}</td>
             <td>
-                <i class="fas fa-info-circle text-info" title="Más información"></i>
-                <i class="fas fa-edit text-warning" (click)="updateContact(contact)" title="Modificar"></i>
-                <i class="fas fa-trash-alt text-danger" (click)="deleteContact(contact)" title="Eliminar"></i>
+                <i class="fas fa-info-circle text-info" title="Más información" *ngIf="!disableActionButtons"></i>
+                <i class="fas fa-edit text-warning" (click)="updateContact(contact)" title="Modificar" *ngIf="!disableActionButtons"></i>
+                <i class="fas fa-trash-alt text-danger" (click)="deleteContact(contact)" title="Eliminar" *ngIf="!disableActionButtons"></i>
             </td>
         </tr>
     </tbody>

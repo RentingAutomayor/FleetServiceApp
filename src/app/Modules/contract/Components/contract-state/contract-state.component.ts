@@ -16,6 +16,7 @@ export class ContractStateComponent implements OnInit, OnChanges {
   contractStateSelected: ContractState;
   @Input() countChanges:number;
   @Output() contractStateWasSelected = new EventEmitter<ContractState>();
+  @Input() cmbStateIsDisable:boolean;
   
   constructor(
     private contractService: ContractService
@@ -23,7 +24,10 @@ export class ContractStateComponent implements OnInit, OnChanges {
     this.frmContractState = new FormGroup({
       cmbStates: new FormControl('Seleccione ...')
     });
+
+    this.cmbStateIsDisable = false;
   }
+
   ngOnChanges(changes: SimpleChanges){
     for (let change in changes) {
       if (change == "countChanges") {       
@@ -33,6 +37,12 @@ export class ContractStateComponent implements OnInit, OnChanges {
           this.contractStateWasSelected.emit(this.contractStateSelected);
         }
       }
+    }
+
+    if(this.cmbStateIsDisable){
+      this.frmContractState.disable();
+    }else{
+      this.frmContractState.enable();
     }
     
   }

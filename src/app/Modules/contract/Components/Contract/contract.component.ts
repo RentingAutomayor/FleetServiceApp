@@ -19,6 +19,8 @@ import { CompanyType } from 'src/app/Models/CompanyType';
 import { InputValidator } from 'src/app/Utils/InputValidator';
 import { DiscountType } from 'src/app/Models/DiscountType';
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
+import { ActionType } from 'src/app/Models/ActionType';
+import { Action } from 'rxjs/internal/scheduler/Action';
 
 
 @Component({
@@ -27,9 +29,12 @@ import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
   styleUrls: ['./contract.component.scss']
 })
 export class ContractComponent implements OnInit, OnChanges {
+  
   frmContract: FormGroup;
   @Input() countChanges: number;
+  @Input() contractIsToUpdate:boolean;
   @Output() contractWasSetted = new EventEmitter<boolean>();
+
   oChangeDealer: number;
 
   contract: Contract;
@@ -51,10 +56,11 @@ export class ContractComponent implements OnInit, OnChanges {
   disableTypeOfDiscoutnField: boolean;
   disableVehicleTypesAndVehicleModels: boolean;
   disableVehicles: boolean;
-  
-
-
+  buttonSaveIsDisable:boolean;  
+  disableCmbState:boolean;
   isAwaiting: boolean;
+  action:ActionType;
+
   constructor(
     private clientService: ClientService,
     private vehicleService: VehicleService,
@@ -77,8 +83,10 @@ export class ContractComponent implements OnInit, OnChanges {
     this.disableClientField = false;
     this.disableTypeOfDiscoutnField = false;
     this.disableVehicles = false;
-    
+    this.buttonSaveIsDisable = false;
+    this.disableCmbState = false;
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     this.validateCompanyLogged();
   }
@@ -128,6 +136,7 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
   async initComponents() {
+    this.action = this.contractService.getAction();
     this.validateCompanyLogged();
     this.oChangeDealer = 0;
     this.oGetPricesOfContract = 0;
@@ -137,6 +146,8 @@ export class ContractComponent implements OnInit, OnChanges {
     this.countChanges = 0;
     this.hideContainerTabs();
     this.validateContractToUpdate();
+    this.enableOrDisableForm();
+    
   }
 
   async validateCompanyLogged() {
@@ -512,5 +523,26 @@ export class ContractComponent implements OnInit, OnChanges {
       this.disableVehicles = false;
     }
 
+  }
+
+
+  enableOrDisableForm(){
+    try{
+      let isFormToEdit = this.contractService.getContractIsToEdit();
+      if(isFormToEdit  || this.action == ActionType.UPDATE){
+        console.log("[enableOrDisableForm]", true);
+        this.disableCmbState = false;
+      }else{
+        console.log("[enableOrDisableForm]", false);
+      }
+
+      if(this.action == ActionType.READ){
+        this.buttonSaveIsDisable = true;
+        this.disableCmbState = true;
+      }
+      
+    }catch(error){
+      console.warn("[Enable or diable form]", error);
+    }
   }
 }

@@ -4,6 +4,8 @@ import { Vehicle } from 'src/app/Models/Vehicle';
 import { VehicleService } from '../../Services/Vehicle/vehicle.service';
 import { ClientService } from '../../Services//Client/client.service';
 import { Client } from 'src/app/Models/Client';
+import { ActionType } from 'src/app/Models/ActionType';
+import { Action } from 'rxjs/internal/scheduler/Action';
 
 @Component({
   selector: 'app-vehicles-by-client',
@@ -21,10 +23,17 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
   p: number = 1;
   @Input() clientWasSaved: boolean;
   oCountVehicle: number;
+  @Input() disableActionButtons:boolean;
+  @Input() action: ActionType;
+  buttonAddIsVisible:boolean;
+
   constructor(
     private vehicleService: VehicleService,
     private clientService: ClientService
-  ) { }
+  ) { 
+    this.disableActionButtons = false;
+    this.buttonAddIsVisible = false;
+  }
 
   ngOnInit(): void {
     this.initComponents();
@@ -32,12 +41,11 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     for (let change in changes) {
-      if (change == "clientWasSaved") {
-        //console.log("[clientWasSaved]: ", changes["clientWasSaved"].currentValue)
-        if (changes["clientWasSaved"].currentValue == true) {
-          //console.log("Se ha guardado el cliente ...");
-          this.activateButtonAdd();                 
-        }
+      if (change == "clientWasSaved") { 
+        setTimeout(()=>{
+          //await this time because the btn it's no ready jet      
+          this.validateIfButtonAddMustVisible();
+        },1500);
       }
     }
   }
@@ -46,19 +54,21 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
     this.isAwaiting = false;
     this.isToUpdate = false;
     this.oClient = this.clientService.getClientToUpdate();
-    this.btnAddVehicle = document.querySelector("#btnAddVehicle");
-    this.containerErrorAdd = document.querySelector("#cont_error_add_vehicle");
     this.showTableVehicles();
     this.oCountVehicle = 0;
+    //console.log("[initComponents] - action: ", this.action);
   }
 
   async showTableVehicles() {
-    if (this.oClient != null) {
-      this.lsVehicles = await this.vehicleService.getVehiclesByClient(this.oClient.id);
-      this.activateButtonAdd();
-    } else {
-      this.disableButtonAdd();
+    //console.warn("[showTableVehicles]",this.oClient);
+    if (this.oClient != null  && this.oClient != undefined) {
+      this.lsVehicles = await this.vehicleService.getVehiclesByClient(this.oClient.id);     
     }
+    
+    setTimeout(()=>{
+      //await this time because the btn it's no ready jet
+      this.validateIfButtonAddMustVisible();
+    },1500);
   }
 
   insertVehicle() {
@@ -96,7 +106,7 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
       }
 
     } catch (err) {
-      console.error(err.error.Message);
+      //console.error(err.error.Message);
       alert(err.error.Message);
       this.isAwaiting = false;
 
@@ -124,20 +134,51 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
 
 
   activateButtonAdd() {
-    this.btnAddVehicle.disabled = false;
-    this.btnAddVehicle.classList.remove("error");
-    this.containerErrorAdd.style.display = 'none';
+    try {
+      this.btnAddVehicle = document.querySelector('#btnAddVehicle');      
+      this.btnAddVehicle.disabled = false;
+      this.btnAddVehicle.classList.remove("error");    
+      
+    } catch (error) {
+      //console.warn(error.message);
+    }
+  
   }
 
-  disableButtonAdd() {
-    this.btnAddVehicle.disabled = true;
-    this.btnAddVehicle.className += `${this.btnAddVehicle.className} error`;
-    this.containerErrorAdd.style.display = 'block';
+  removeContainerError(){
+    try{
+      this.containerErrorAdd = document.querySelector('#cont_error_add_vehicle');
+      this.containerErrorAdd.style.display = 'none';
+    }catch(error){
+      //console.log(error.message);
+    }
   }
+ 
+  disableButtonAdd() {
+    try{
+      this.btnAddVehicle = document.querySelector('#btnAddVehicle');
+      this.btnAddVehicle.disabled = true;
+      this.btnAddVehicle.className += `${this.btnAddVehicle.className} error`;     
+    }catch(error){
+      //console.warn(error.message);
+    }      
+  }
+
+  addContainerError(){
+    try{
+      this.containerErrorAdd = document.querySelector('#cont_error_add_vehicle');
+      this.containerErrorAdd.style.display = 'block';
+    }catch(error){
+      //console.log(error.message);
+    }
+    
+  }
+
+  
 
   updateVehicle(pVehicle: Vehicle) {
     this.isToUpdate = true;
-    //console.log("[Vehicle to uodate]", pVehicle);
+    ////console.log("[Vehicle to uodate]", pVehicle);
     this.vehicleService.setVehicleToUpdate(pVehicle);
     this.oCountVehicle += 1;
     this.showPopUp();
@@ -173,6 +214,32 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
     }
     return state_name;
 
+  }
+
+  validateIfButtonAddMustVisible(){
+    switch(this.action){
+      case ActionType.READ:
+          this.buttonAddIsVisible = false;
+        break;
+      case ActionType.UPDATE:
+      case ActionType.CREATE:
+          this.buttonAddIsVisible = true;
+        break;
+    }  
+    this.validateDataClient();  
+  }
+
+  validateDataClient(){
+    //console.warn("[validateDataClient]",this.oClient);
+    if(this.oClient != null && this.oClient != undefined){
+      //console.warn("[validateDataClient] -> Activa botón");
+      this.activateButtonAdd();
+      this.removeContainerError();
+    }else{
+      //console.warn("[validateDataClient] -> Inactiva botón");
+      this.disableButtonAdd();
+      this.addContainerError();
+    }
   }
 
 }

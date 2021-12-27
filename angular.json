@@ -139,5 +139,8 @@
       }
     }
   },
-  "defaultProject": "FleetServiceApp"
+  "defaultProject": "FleetServiceApp",
+  "cli": {
+    "analytics": false
+  }
 }

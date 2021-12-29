@@ -1,4 +1,6 @@
-<form [formGroup]="frmMaintenanceItem" (ngSubmit)="setDataMaintenanceItem($event)">
+<form 
+    [formGroup]="frmMaintenanceItem" 
+    (ngSubmit)="setDataMaintenanceItem($event)">
     <div class="card">
         <div class="card-header" id="container__header">
             <legend>Datos del artículo de mantenimiento</legend>
@@ -7,7 +9,6 @@
             </div>
         </div>
         <div class="card-body">
-
             <div id="container__maintenanceItem">
                 <div class="row__container">
                     <div class="col">
@@ -112,11 +113,18 @@
                 <hr>
                 <div class="buttons__container" id="container__buttons">
                     <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-                    <button type="submit" class="btn btn-success"
-                        [disabled]="frmMaintenanceItem.invalid || presentationUnitIsInvalid ||  typeIsInvalid">Guardar</button>
+                    <button 
+                        type="submit" 
+                        class="btn btn-success"
+                        [disabled]="frmMaintenanceItem.invalid || presentationUnitIsInvalid ||  typeIsInvalid">
+                        Guardar
+                    </button>
                 </div>
                 <div>
-                    <div class="container__infoError" id="cont_error_add_maintenance_item" *ngIf="frmMaintenanceItem.invalid || presentationUnitIsInvalid ||  typeIsInvalid">
+                    <div 
+                        *ngIf="frmMaintenanceItem.invalid || presentationUnitIsInvalid ||  typeIsInvalid"
+                        class="container__infoError" 
+                        id="cont_error_add_maintenance_item">
                         <span>No se puede guardar el item de mantenimiento debido a que el formulario no cumple con los datos requeridos</span>
                     </div>
                     

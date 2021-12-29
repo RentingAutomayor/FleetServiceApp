@@ -67,6 +67,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.clearDataForm();
     this.initComponents();
   }
 
@@ -79,8 +80,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
     event.preventDefault();
     this.item = this.setDataToItem();
     console.log("[Maintenance item]: ", this.item);
-    this.maintenanceItemService.setItem(this.item);
-    this.clearDataForm();
+    this.maintenanceItemService.setItem(this.item);    
     this.maintenanceItemWasSetted.emit(true);
   }
 
@@ -93,6 +93,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
       if (this.itemToUpdate != null) {
         oItem.id = this.itemToUpdate.id;
       }
+
       if(this.lsTaxesSelected.length > 0){        
         oItem.handleTax = true;
         oItem.lsTaxes = this.lsTaxesSelected;

@@ -27,7 +27,7 @@
         <div class="row__container_tax" *ngIf="itemHandleTax">
             <div *ngFor="let tax of lsTaxes" class="container__tax">
                 <label class="container__checkbox" [for]="getTaxContainerId(tax.id)">
-                    <input type="checkbox" 
+                    <input type="checkbox"
                         [id]="getTaxContainerId(tax.id)"
                         (click)="AddOrRemoveTaxToList($event,tax)">
                     <span class="checkmark"></span>
@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <div 
+    <div
         *ngIf="taxesAreInvalid"
         class="container-error">
         <span class="error">* Debe seleccionar al menos un impuesto</span>

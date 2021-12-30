@@ -10,7 +10,7 @@ import { Vehicle } from 'src/app/Models/Vehicle';
   templateUrl: './vehicle-model.component.html',
   styleUrls: ['./vehicle-model.component.scss']
 })
-export class VehicleModelComponent implements OnInit, OnChanges { 
+export class VehicleModelComponent implements OnInit, OnChanges {
   lsVehicleModel: VehicleModel[];
   oBrand: Brand;
   oVehicleType: VehicleType;
@@ -33,20 +33,20 @@ export class VehicleModelComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
-      //console.log("[componente vehicle Model]: ", change);
-      if (change == "countChanges") {    
-        console.log("[Vehicle model component]");
+
+      if (change == "countChanges") {
+
         this.oBrand = this.vehicleService.getBrandSelected();
-        console.log(this.oBrand);
+
         this.oVehicleType = this.vehicleService.getVehicleTypeSelected();
-        console.log(this.oVehicleType);
-        this.filterVehicleModels( this.oBrand, this.oVehicleType);      
-        this.vehicleModelToUpdate = this.vehicleService.getVehicleModelSelected();       
-        if (this.vehicleModelToUpdate != null) {         
+
+        this.filterVehicleModels( this.oBrand, this.oVehicleType);
+        this.vehicleModelToUpdate = this.vehicleService.getVehicleModelSelected();
+        if (this.vehicleModelToUpdate != null) {
           this.setDataInFields(this.vehicleModelToUpdate);
         } else {
           this.clearDataFields();
-        }        
+        }
       }
     }
   }
@@ -55,10 +55,10 @@ export class VehicleModelComponent implements OnInit, OnChanges {
     this.initComponents();
   }
 
-  initComponents() {  
+  initComponents() {
     this.countChanges = 0;
     this.clearDataFields();
-    this.getDataToLists( 0, 0);   
+    this.getDataToLists( 0, 0);
   }
 
   async getDataToLists(brandId:number,typeId:number) {
@@ -67,20 +67,20 @@ export class VehicleModelComponent implements OnInit, OnChanges {
     } catch (error) {
       console.error(error);
     }
-    
+
   }
 
   filterVehicleModels(pBrand: Brand, pVehicleType:VehicleType){
     let idBrand = (pBrand !== null && pBrand !== undefined)? pBrand.id: 0;
     let idType = (pVehicleType !== null && pVehicleType !== undefined)?pVehicleType.id: 0;
-    console.log("[vehicle model component]");
-    console.log(`Id brand ${idBrand} id type ${idType}`);
+
+
     this.getDataToLists(idBrand,idType);
   }
- 
+
   setVehicleModel(event: any) {
     let vehicleModel = this.lsVehicleModel.find(vm => vm.id == event.value);
-    console.log(vehicleModel);
+
 
     if(vehicleModel != null){
       this.vehicleService.setVehicleModelSelected(vehicleModel);
@@ -88,20 +88,20 @@ export class VehicleModelComponent implements OnInit, OnChanges {
       this.VehicleModelWasSelected.emit(vehicleModel);
     }else{
       this.vehicleService.setVehicleModelSelected(null);
-    }   
+    }
   }
 
-  async setDataInFields(pVehicleModel: VehicleModel) {    
+  async setDataInFields(pVehicleModel: VehicleModel) {
      setTimeout(() => {
-      let { cmbVehicleModel } = this.frmVehicleModel.controls;  
-      console.log("[vm component]", pVehicleModel, this.lsVehicleModel)  ;
+      let { cmbVehicleModel } = this.frmVehicleModel.controls;
+
       cmbVehicleModel.setValue(pVehicleModel.id);
      }, 500);
-     
+
      this.vehicleModelWasSetted.emit(true);
   }
 
-  clearDataFields() {  
+  clearDataFields() {
     this.frmVehicleModel.controls.cmbVehicleModel.setValue(0);
   }
 

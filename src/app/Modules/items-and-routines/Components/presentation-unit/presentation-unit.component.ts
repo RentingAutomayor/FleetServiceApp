@@ -12,28 +12,20 @@ export class PresentationUnitComponent implements OnInit,OnChanges {
   lsPresentationUnit: PresentationUnit[];
   frmPresentationUnit: FormGroup;
   presentationUnitToUpdate: PresentationUnit
-  @Input() countChanges: number;
+  @Input() presentationUnit: PresentationUnit;
   @Output() lostFocus = new EventEmitter<boolean>();
+  @Output() changePresentation = new EventEmitter<PresentationUnit>();
 
   constructor(
     private maintenanceItemService: MaintenanceItemService
-  ) { 
+  ) {
     this.frmPresentationUnit = new FormGroup({
       cmbPresentationUnit: new FormControl('Seleccione ...')
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      if (change == "countChanges") {
-        this.presentationUnitToUpdate = this.maintenanceItemService.getPresentationUnit();
-        if (this.presentationUnitToUpdate != null) {
-          this.setDataInForm(this.presentationUnitToUpdate);
-        } else {
-          this.clearForm();
-        }
-      }
-    }
+    this.setDataInForm(this.presentationUnit)
   }
 
   ngOnInit(): void {
@@ -42,19 +34,17 @@ export class PresentationUnitComponent implements OnInit,OnChanges {
 
   async initComponents(){
     try{
-      this.countChanges = 0;
       this.clearForm();
       this.lsPresentationUnit = await this.maintenanceItemService.getPresentationUnits();
     }catch(err){
       console.error(err.error.Message);
-      alert(err.error.Message);      
-    }    
+      alert(err.error.Message);
+    }
   }
 
   setPresentationUnit(event: any){
     let oPresentation = this.lsPresentationUnit.find(pu => pu.id == event.value);
-    //console.log("[presentation unit]: ", oPresentation);
-    this.maintenanceItemService.setPresentationUnit(oPresentation);
+    this.changePresentation.emit(oPresentation);
   }
 
   clearForm(){
@@ -62,7 +52,8 @@ export class PresentationUnitComponent implements OnInit,OnChanges {
   }
 
   setDataInForm(pPresentation:PresentationUnit){
-    this.frmPresentationUnit.controls.cmbPresentationUnit.setValue(pPresentation.id);
+    const indexPresentation = (pPresentation !== null)?pPresentation.id:0;
+    this.frmPresentationUnit.controls.cmbPresentationUnit.setValue(indexPresentation);
   }
 
   presentationUnitFocusOut(){

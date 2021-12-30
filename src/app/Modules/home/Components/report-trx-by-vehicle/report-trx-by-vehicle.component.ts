@@ -20,7 +20,7 @@ export class ReportTrxByVehicleComponent implements OnInit {
     scales: {
       xAxes: [{
         ticks: {
-          min: 0, 
+          min: 0,
           max : 5 ,
           stepSize: 1
         }
@@ -89,9 +89,9 @@ export class ReportTrxByVehicleComponent implements OnInit {
 
   constructor(
     private reportService: ReportService
-  ) { 
+  ) {
     this.dealer_to_filter = null;
-    this.client_to_filter = null;  
+    this.client_to_filter = null;
     this.license_plate_to_filter = null;
     this.init_date = null;
     this.end_date = null;
@@ -100,7 +100,7 @@ export class ReportTrxByVehicleComponent implements OnInit {
   ngOnInit(): void {
     this.initDataToGetReport();
     this.initRepot();
-   
+
   }
 
   async initRepot(){
@@ -135,28 +135,28 @@ export class ReportTrxByVehicleComponent implements OnInit {
    }
 
   async getWorkOrdersApproved() {
-    console.log("[getWorkOrdersApproved]",this.client_to_filter, this.dealer_to_filter,this.license_plate_to_filter, this.init_date, this.end_date)
+
     await this.reportService.GetWorkOrderApprovedByVehicle(this.client_to_filter,this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
       .then(data => {
-        console.log(data);
+
         data.forEach(item => {
           this.chartLabels.push(item.Placa);
           this.chartData[0].data.push(item.Cantidad);
         });
 
-       
-        
+
+
       })
   }
 
   async getWorkOrdersCanceled() {
-    console.log("[GetWorkOrderCanceledByVehicle]",this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
+
     await this.reportService.GetWorkOrderCanceledByVehicle(this.client_to_filter,this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
       .then(data => {
-        console.log(data);
+
         data.forEach(item => {
-          //TODO: find index of vehicle to asign the correct value 
-          //IF No exist approbation by vehicle add new data     
+          //TODO: find index of vehicle to asign the correct value
+          //IF No exist approbation by vehicle add new data
           let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
 
           if(indexLicensePlate >= 0){
@@ -165,23 +165,23 @@ export class ReportTrxByVehicleComponent implements OnInit {
             this.chartLabels.push(item.Placa);
             indexLicensePlate = this.chartLabels.indexOf(item.Placa);
             this.chartData[1].data.splice(indexLicensePlate,1,item.Cantidad);
-          }        
-         
+          }
 
-          console.log(this.chartData);
-          
+
+
+
         });
       })
   }
 
   async getWorkOrdersPending() {
-    console.log("[getWorkOrdersPending]",this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
+
     await this.reportService.GetWorkOrderPendingByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
       .then(data => {
-        console.log(data);
+
         data.forEach(item => {
-          //TODO: find index of vehicle to asign the correct value 
-          //IF No exist approbation by vehicle add new data     
+          //TODO: find index of vehicle to asign the correct value
+          //IF No exist approbation by vehicle add new data
           let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
 
           if(indexLicensePlate >= 0){
@@ -190,21 +190,21 @@ export class ReportTrxByVehicleComponent implements OnInit {
             this.chartLabels.push(item.Placa);
             indexLicensePlate = this.chartLabels.indexOf(item.Placa);
             this.chartData[2].data.splice(indexLicensePlate,1,item.Cantidad);
-          }         
+          }
 
-          console.log(this.chartData);
+
         });
       })
   }
 
   async getWorkOrdersFinished() {
-    console.log("[getWorkOrdersFinished]",this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
+
     await this.reportService.GetWorkOrderFinishedByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
       .then(data => {
-        console.log(data);
+
         data.forEach(item => {
-          //TODO: find index of vehicle to asign the correct value 
-          //IF No exist approbation by vehicle add new data     
+          //TODO: find index of vehicle to asign the correct value
+          //IF No exist approbation by vehicle add new data
           let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
 
           if(indexLicensePlate >= 0){
@@ -213,21 +213,21 @@ export class ReportTrxByVehicleComponent implements OnInit {
             this.chartLabels.push(item.Placa);
             indexLicensePlate = this.chartLabels.indexOf(item.Placa);
             this.chartData[3].data.splice(indexLicensePlate,1,item.Cantidad);
-          }         
+          }
 
-          console.log(this.chartData);
+
         });
       })
   }
 
   async getWorkOrdersAnnul() {
-    console.log("[getWorkOrdersAnnul]",this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
+
     await this.reportService.GetWorkOrderAnnulByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
       .then(data => {
-        console.log(data);
+
         data.forEach(item => {
-          //TODO: find index of vehicle to asign the correct value 
-          //IF No exist approbation by vehicle add new data     
+          //TODO: find index of vehicle to asign the correct value
+          //IF No exist approbation by vehicle add new data
           let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
 
           if(indexLicensePlate >= 0){
@@ -236,9 +236,9 @@ export class ReportTrxByVehicleComponent implements OnInit {
             this.chartLabels.push(item.Placa);
             indexLicensePlate = this.chartLabels.indexOf(item.Placa);
             this.chartData[4].data.splice(indexLicensePlate,1,item.Cantidad);
-          }         
+          }
 
-          console.log(this.chartData);
+
         });
       })
   }

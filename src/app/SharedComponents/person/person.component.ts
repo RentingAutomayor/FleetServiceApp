@@ -25,7 +25,7 @@ export class PersonComponent implements OnInit, OnChanges {
   @Input() personToUpdate: Person;
   @Input() returnPath: string;
   @Input() countContact: number;
-  
+
   @Input() configRenderComponent: ConfigPersonComponent;
   @Output() personWasSetted = new EventEmitter<boolean>();
   @Output() personWasCanceled = new EventEmitter<boolean>();
@@ -33,7 +33,7 @@ export class PersonComponent implements OnInit, OnChanges {
   oCity: City;
   oJobTitleSelected: JobTitle;
   oInputvalidator: InputValidator;
-  
+
   isContact:boolean = true;
 
   @Input() frmPersonMustBeBlocked: boolean;
@@ -44,7 +44,7 @@ export class PersonComponent implements OnInit, OnChanges {
     private jobTitleService: JobTitleService,
     private router: Router,
     private formBuilder: FormBuilder
-  ) {  
+  ) {
     this.configComponent = new ConfigPersonComponent();
     this.configRenderComponent = new ConfigPersonComponent();
     this.isRequiredDataComponent = false;
@@ -57,7 +57,7 @@ export class PersonComponent implements OnInit, OnChanges {
 
     try {
       if(configComponent.documentIsVisible){
-        this.formPerson = this.formBuilder.group({     
+        this.formPerson = this.formBuilder.group({
           document : ['',[ Validators.required, Validators.minLength(8), Validators.maxLength(10) ]],
           name: ['', [Validators.required]],
           lastname:[''],
@@ -66,14 +66,14 @@ export class PersonComponent implements OnInit, OnChanges {
           email: ['',[ Validators.email ]],
           website: [''],
           address: ['']
-        });  
+        });
 
         this.formPerson.get('document').valueChanges.subscribe(val => {
-          console.log(val)
-          console.log(this.documentField.errors);
+          //console.log(val)
+          //console.log(this.documentField.errors);
         });
       }else{
-        this.formPerson = this.formBuilder.group({     
+        this.formPerson = this.formBuilder.group({
           name: ['', [Validators.required]],
           lastname:[''],
           phone: [''],
@@ -81,7 +81,7 @@ export class PersonComponent implements OnInit, OnChanges {
           email: ['',[ Validators.email ]],
           website: [''],
           address: ['']
-        });  
+        });
       }
     } catch (error) {
       console.warn('No se ha detectado una consiguración para el componente de persona');
@@ -93,7 +93,7 @@ export class PersonComponent implements OnInit, OnChanges {
     this.buildPersonForm(this.configComponent);
     for (let change in changes) {
       try {
-        console.log(changes);
+
         if (change == "configRenderComponent") {
           this.configComponent = this.configRenderComponent;
           this.renderComponent();
@@ -132,21 +132,21 @@ export class PersonComponent implements OnInit, OnChanges {
     this.cleanFormData();
     this.renderComponent();
     if (this.personToUpdate != null) {
-      console.log("Existe algo en memoria");
-      console.log(this.personToUpdate);
+
+
       this.setDataInForm(this.personToUpdate);
-    }    
+    }
   }
 
   validateBlockForm(){
-    try {      
+    try {
       if(this.frmPersonMustBeBlocked){
         this.formPerson.disable();
       }else{
         this.formPerson.enable();
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
 
@@ -158,7 +158,7 @@ export class PersonComponent implements OnInit, OnChanges {
     let containerEmail = document.querySelector("#container__email");
     let containerAddress = document.querySelector("#container__address");
 
-    console.log(this.configComponent);
+
 
     if (!this.configComponent.kindOfDocumentIsVisible || !this.configComponent.documentIsVisible) {
       containerDocument.classList.remove("row__container");
@@ -182,7 +182,7 @@ export class PersonComponent implements OnInit, OnChanges {
        containerEmail.classList.remove("row__container_single" );
        containerEmail.classList.add("row__container");
 
-       console.log(containerEmail);
+
     }
 
     if (!this.configComponent.addressIsVisible || !this.configComponent.jobTitleIsVisible) {
@@ -191,19 +191,19 @@ export class PersonComponent implements OnInit, OnChanges {
     }
   }
 
-  setDataInForm(pPerson: Person) {       
+  setDataInForm(pPerson: Person) {
     this.formPerson.patchValue(pPerson);
     if(pPerson.city != null){
       this.oCity = pPerson.city;
     }else{
       this.oCity = null;
     }
-    
+
     this.cityService.setSelectedCity(this.oCity);
   }
 
   cleanFormData() {
-    this.formPerson.reset();  
+    this.formPerson.reset();
     this.cityService.setSelectedCity(null);
     this.oJobTitleSelected = new JobTitle();
     this.oJobTitleSelected.id = 0;
@@ -234,7 +234,7 @@ export class PersonComponent implements OnInit, OnChanges {
       }
     }
 
-    console.log(objPerson);
+
 
     this.personService.setPerson(objPerson);
     this.personWasSetted.emit(true);
@@ -242,7 +242,7 @@ export class PersonComponent implements OnInit, OnChanges {
 
   comeBack() {
     if (this.returnPath != null) {
-      console.log("[retorno]:", this.returnPath);
+
       this.router.navigate([this.returnPath]);
     }
     this.personWasCanceled.emit(true);

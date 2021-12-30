@@ -26,11 +26,9 @@ export class VehicleStateComponent implements OnInit ,OnChanges{
 
    ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
-      //console.log("[componente vehicle Model]: ", change);
       if (change == "countChanges") {
-        //this.vehicleToUpdate = this.vehicleService.getVehicleToUpdate();
         this.stateSelected = this.vehicleService.getVehicleStateSelected();
-        if (this.stateSelected != null) {         
+        if (this.stateSelected != null) {
           this.setDataInFields(this.stateSelected);
         } else {
           this.clearDataFields();
@@ -53,14 +51,13 @@ export class VehicleStateComponent implements OnInit ,OnChanges{
   }
 
   async setDataInFields(vehicleState:VehicleState){
-    //console.log("[Vehicle State - state selected] : ", vehicleState);
     this.vehicleService.getVehicleStates()
     .then( data => {
       this.lsStates = data;
       setTimeout(() => {
         this.frmVehicleState.controls.cmbState.setValue(vehicleState.id);
-      },500);      
-    });    
+      },500);
+    });
   }
 
   clearDataFields(){

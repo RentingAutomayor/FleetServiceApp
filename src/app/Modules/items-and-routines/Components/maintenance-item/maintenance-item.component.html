@@ -1,5 +1,5 @@
-<form 
-    [formGroup]="frmMaintenanceItem" 
+<form
+    [formGroup]="frmMaintenanceItem"
     (ngSubmit)="setDataMaintenanceItem($event)">
     <div class="card">
         <div class="card-header" id="container__header">
@@ -35,36 +35,42 @@
                 </div>
                 <div class="row__container">
                     <div class="col">
-                        <app-presentation-unit 
-                            [countChanges]="countChanges"
-                            (lostFocus)="validatePresentationUnit()"></app-presentation-unit>
+                        <app-type-of-maintenance-item
+                            [typeOfItem]="typeOfItem"
+                            (chageType)="setTypeOfItem($event)"
+                            (lostFocus)="validateTypeOfMaintenanceItem()">
+                        </app-type-of-maintenance-item>
+                        <div class="error" *ngIf="typeIsInvalid">
+                            <p>* El campo tipo es requerido</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <app-presentation-unit
+                            [presentationUnit]="presentationUnit"
+                            (changePresentation)="setPresentationUnit($event)"
+                            (lostFocus)="validatePresentationUnit()">
+                        </app-presentation-unit>
                         <div class="error" *ngIf="presentationUnitIsInvalid">
                             <p>* El campo unidad de presentación es requerido</p>
                         </div>
                     </div>
                     <div class="col">
-                        <app-type-of-maintenance-item 
-                            [countChanges]="countChanges"
-                            (lostFocus)="validateTypeOfMaintenanceItem()"></app-type-of-maintenance-item>
-                            <div class="error" *ngIf="typeIsInvalid">
-                                <p>* El campo tipo es requerido</p>
-                            </div>
-                    </div>
-                    <div class="col">
-                        <app-maintenance-item-category [countChanges]="countChanges">
+                        <app-maintenance-item-category
+                          [category]="category"
+                          (changeCategory)="setCategory($event)">
                         </app-maintenance-item-category>
                     </div>
                 </div>
                 <hr>
                 <div class="row__container">
-
                     <div class="col">
                         <label>Valor sin impuestos</label>
                         <input type="number" class="form-control" formControlName="referencePrice"
-                            (input)="calculateTaxesByItem(lsTaxesSelected)" placeholder="Valor sin impuestos ...">
+                            (input)="calculateTaxesByItem(itemAndTaxes)" placeholder="Valor sin impuestos ...">
 
                         <div class="error" *ngIf="(fieldReferencePrice.dirty || fieldReferencePrice.touched)  && fieldReferencePrice.invalid">
                             <p *ngIf="fieldReferencePrice.hasError('required')">* El campo valor sin impuesto es requerido</p>
+                            <p *ngIf="fieldReferencePrice.hasError('min')">* El campo valor no puede tener un valor inferior a 1</p>
                         </div>
                     </div>
 
@@ -83,20 +89,25 @@
                 </div>
                 <div>
                     <app-taxes-list
-                    [itmHandleTax]="itemHandleTax"
-                    [inpLsTaxSelected]="lsTaxesSelected"
-                    (taxWasSelected)="calculateTaxesByItem($event)"></app-taxes-list>                   
-                </div>              
+                        [itmHandleTax]="itemHandleTax"
+                        [inpLsTaxSelected]="lsTaxesSelected"
+                        (taxWasSelected)="calculateTaxesByItem($event)">
+                    </app-taxes-list>
+                </div>
                 <hr>
                 <div class="row__container">
                     <div class="col">
-                        <app-vehicle-brand [countChanges]="countChanges" (vehicleBrandWasSetted)="setBrand()">
+                        <app-vehicle-brand
+                            [countChanges]="countChanges"
+                            [defaultBrandId]="brandChevrolet"
+                            (vehicleBrandWasSetted)="setBrand()">
                         </app-vehicle-brand>
                     </div>
 
                     <div class="col">
                         <div class="container__groups">
-                            <app-check-list-vehicle-type [countChanges]="countChanges"
+                            <app-check-list-vehicle-type
+                                [countChanges]="countChanges"
                                 (vehicleTypeWasSelected)="setListVehicleTypes()">
                             </app-check-list-vehicle-type>
                         </div>
@@ -112,22 +123,27 @@
                 </div>
                 <hr>
                 <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        (click)="comeBack()">
+                        Cancelar
+                    </button>
+                    <button
+                        type="submit"
                         class="btn btn-success"
-                        [disabled]="frmMaintenanceItem.invalid || presentationUnitIsInvalid ||  typeIsInvalid">
+                        [disabled]="frmMaintenanceItem.invalid || presentationUnitIsInvalid || typeIsInvalid || vehicleTypeIsValid || taxesAreInvalid">
                         Guardar
                     </button>
                 </div>
                 <div>
-                    <div 
-                        *ngIf="frmMaintenanceItem.invalid || presentationUnitIsInvalid ||  typeIsInvalid"
-                        class="container__infoError" 
+                    <div
+                        *ngIf="frmMaintenanceItem.invalid || presentationUnitIsInvalid || typeIsInvalid || vehicleTypeIsValid || taxesAreInvalid"
+                        class="container__infoError"
                         id="cont_error_add_maintenance_item">
                         <span>No se puede guardar el item de mantenimiento debido a que el formulario no cumple con los datos requeridos</span>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

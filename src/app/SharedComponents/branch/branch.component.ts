@@ -48,7 +48,7 @@ export class BranchComponent implements OnInit, OnChanges {
     private personService: PersonService,
     private cityService: CityService,
     private dealerService: DealerService
-  ) { 
+  ) {
 
     this.disableActionButtons = false;
     this.buttonAddIsVisible = false;
@@ -57,35 +57,35 @@ export class BranchComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
       if (change == "clientWasSaved") {
-        ////console.log("[clientWasSaved]: ", changes["clientWasSaved"].currentValue)
+
         if (changes["clientWasSaved"].currentValue == true) {
-          ////console.log("Se ha guardado el cliente ...");
+
           this.activateButtonAdd();
           this.removeContainerError();
           this.client = this.clientService.getClientToUpdate();
           this.updateTitleComponent();
-        }else{          
+        }else{
           this.disableButtonAdd();
-          this.addContainerError();         
+          this.addContainerError();
         }
       }
 
       if (change == "dealerWasSaved") {
-        //console.log("[dealerWasSaved]: ", changes["dealerWasSaved"].currentValue)
+
         if (changes["dealerWasSaved"].currentValue == true) {
-          //console.log("Se ha guardado el concesionario ...");
+
           this.activateButtonAdd();
           this.removeContainerError();
           this.dealer = this.dealerService.getDealerToUpdate();
           this.updateTitleComponent();
-        }else{          
+        }else{
           this.disableButtonAdd();
-          this.addContainerError();          
+          this.addContainerError();
         }
       }
     }
 
-    setTimeout(()=>{     
+    setTimeout(()=>{
       //await this time because the btn it's no ready yet
       this.validateIfButtonAddMustVisible();
     },1500);
@@ -100,11 +100,11 @@ export class BranchComponent implements OnInit, OnChanges {
     this.isToInsert = false;
     this.isAwaiting = false;
     this.oCountBranch = 0;
-    this.configureComponentToShowDataBranch();   
+    this.configureComponentToShowDataBranch();
     this.oContainerFormBranch = document.querySelector("#container__formBranch");
     this.showTableBranchs();
 
-    setTimeout(()=>{     
+    setTimeout(()=>{
       //await this time because the btn it's no ready yet
       this.validateIfButtonAddMustVisible();
     },1500);
@@ -117,26 +117,26 @@ export class BranchComponent implements OnInit, OnChanges {
         if (this.isToClient) {
           this.getListOfBranchByClient();
         }
-  
+
         if (this.isToDealer) {
           this.getListOfBranchByDealer();
         }
-      },1500);      
+      },1500);
       this.isAwaiting = false;
     } catch (error) {
       alert(error.error.Message);
-      //console.error(error.error.Message);
+      console.warn(error.error.Message);
     }
   }
 
   async getListOfBranchByClient() {
-    //console.log("Validando configuración para clientes");
+
     this.client = this.clientService.getClientToUpdate();
     if (this.client != null) {
       this.updateTitleComponent();
-      //console.log("validando sucursales para el cliente: " + this.client.name);
+
       this.lsBranchs = await this.branchService.getBranchs(this.client.id, "client");
-      //console.log(this.lsBranchs);
+
       this.activateButtonAdd();
       this.removeContainerError();
     } else {
@@ -146,13 +146,13 @@ export class BranchComponent implements OnInit, OnChanges {
   }
 
   async getListOfBranchByDealer() {
-    //console.log("Validando configuración para concesionarios");
+
     this.dealer = this.dealerService.getDealerToUpdate();
     if (this.dealer != null) {
       this.updateTitleComponent();
-      //console.log("validando sucursales para el concesionario: " + this.dealer.name);
+
       this.lsBranchs = await this.branchService.getBranchs(this.dealer.id, "dealer");
-      //console.log(this.lsBranchs);
+
       this.activateButtonAdd();
       this.removeContainerError();
     } else {
@@ -165,10 +165,10 @@ export class BranchComponent implements OnInit, OnChanges {
     try {
       this.btnAddBranch = document.querySelector('#btnAddBranch');
       this.btnAddBranch.disabled = false;
-      this.btnAddBranch.classList.remove("error");  
+      this.btnAddBranch.classList.remove("error");
     } catch (error) {
-      //console.warn(error.message);
-    }       
+      console.warn(error.message);
+    }
   }
 
   removeContainerError(){
@@ -176,18 +176,18 @@ export class BranchComponent implements OnInit, OnChanges {
       this.containerErrorBranch = document.querySelector('#cont_error_add_branch');
       this.containerErrorBranch.style.display = 'none';
     } catch (error) {
-      //console.warn(error.message);
+      console.warn(error.message);
     }
   }
 
   disableButtonAdd() {
-    try {      
+    try {
       this.btnAddBranch = document.querySelector('#btnAddBranch');
       this.btnAddBranch.disabled = true;
       this.btnAddBranch.className += `${this.btnAddBranch.className} error`;
     } catch (error) {
-      //console.warn(error.message);
-    }    
+      console.warn(error.message);
+    }
   }
 
   addContainerError(){
@@ -195,7 +195,7 @@ export class BranchComponent implements OnInit, OnChanges {
       this.containerErrorBranch = document.querySelector('#cont_error_add_branch');
       this.containerErrorBranch.style.display = 'block';
     } catch (error) {
-      //console.warn(error.message);
+      console.warn(error.message);
     }
   }
 
@@ -245,8 +245,7 @@ export class BranchComponent implements OnInit, OnChanges {
     this.isToInsert = false;
     this.oCountBranch += 1;
     this.oCountChangesCity += 1;
-    //console.log("[branch component]:");
-    //console.log(pBranch);
+
     this.setDataToUpdatBranch(pBranch);
     this.showFormBranch();
   }
@@ -274,11 +273,11 @@ export class BranchComponent implements OnInit, OnChanges {
       }
 
       if(oBranch != null){
-        let rta = await this.saveData(oBranch); 
+        let rta = await this.saveData(oBranch);
       }
 
     } catch (err) {
-      //console.error(err.error.Message);
+      console.warn(err.error.Message);
       alert(err.error.Message)
     }
   }
@@ -289,7 +288,7 @@ export class BranchComponent implements OnInit, OnChanges {
     } else {
       alert("No se puede guardar la sucursal hasta que no se haya guardado los datos básicos del cliente.");
       return null;
-    }   
+    }
     return pBranch;
   }
 
@@ -299,7 +298,7 @@ export class BranchComponent implements OnInit, OnChanges {
     } else {
       alert("No se puede guardar la sucursal hasta que no se haya guardado los datos básicos del concesionario.");
       return null;
-    }   
+    }
     return pBranch;
   }
 
@@ -307,10 +306,10 @@ export class BranchComponent implements OnInit, OnChanges {
     let rta = new ResponseApi();
     this.isAwaiting = true;
     if (this.isToInsert) {
-      //console.warn("[sucursal para insertar] : ", pBranch);
+
       rta = await this.branchService.insert(pBranch);
     } else {
-      //console.warn("[sucursal para update] : ", pBranch);
+
       rta = await this.branchService.update(pBranch);
     }
 
@@ -358,7 +357,7 @@ export class BranchComponent implements OnInit, OnChanges {
         }
       }
     } catch (err) {
-      //console.error(err.error.Message);
+      console.warn(err.error.Message);
       alert(err.error.Message)
     }
   }
@@ -372,11 +371,11 @@ export class BranchComponent implements OnInit, OnChanges {
     this.oPersonToUpdate.cellphone = pBranch.cellphone;
     this.oPersonToUpdate.address = (pBranch.address != null) ? pBranch.address.toLowerCase() : "";
     this.oPersonToUpdate.city = pBranch.city;
-    //console.log("[Person component setted person]");
+
     this.personService.setPersonToUpdate(this.oPersonToUpdate);
   }
 
-  
+
   getErrorDescription():string{
     if(this.isToClient){
       return 'No se pueden agregar sucursales hasta que se guarde la información básica del cliente';
@@ -396,19 +395,19 @@ export class BranchComponent implements OnInit, OnChanges {
       case ActionType.CREATE:
           this.buttonAddIsVisible = true;
         break;
-    }   
+    }
 
     this.validateData();
   }
 
-  validateData(){  
-    //console.warn("[validateData]",this.client,this.dealer);
+  validateData(){
+
     if((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
-      //console.warn("[validateData] -> Activa botón");
+
       this.activateButtonAdd();
       this.removeContainerError();
     }else{
-      //console.warn("[validateData] -> Inactiva botón");
+
       this.disableButtonAdd();
       this.addContainerError();
     }

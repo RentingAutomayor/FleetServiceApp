@@ -37,7 +37,6 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
-      console.log("[TBL CHECK VEHICLES] [Cambios]", changes)
       switch (change) {
         case "countChanges":
           this.sModels = "";
@@ -70,7 +69,7 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
           } else {
             this.lsVehiclesEmty = true;
           }
-          this.getVehicles();         
+          this.getVehicles();
           break;
         case "disableChecks":
           this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected();
@@ -86,14 +85,11 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
       }
 
     }
-    console.log(this.clientToFilter);
-    console.log(this.lsVehicleModelsToFilter);
     this.getVehicles();
-    console.log(this.sModels)
   }
 
   ngOnInit(): void {
-    this.initComponents();    
+    this.initComponents();
   }
 
   async initComponents() {
@@ -102,7 +98,7 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
     setTimeout(()=>{
       this.toggleChecks();
     },800)
-    
+
   }
 
   setModelsString() {
@@ -113,7 +109,6 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
         if (this.sModels == "") {
           this.sModels = "0";
         }
-        console.log(this.sModels);
       }
 
     } catch (error) {
@@ -126,9 +121,7 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
     try {
       if (this.clientToFilter != null && this.clientToFilter != undefined && this.sModels != "") {
         let contract_id = (this.contractToFilter != null && this.contractToFilter != undefined) ? this.contractToFilter.id : 0;
-        console.log(`[TBL CHECK VEHICLES] cliente a filtrar ${this.clientToFilter.id} Modelos: ${this.sModels}  Contrato: ${contract_id}`);
         this.lsVehicles = await this.vehicleService.getVehiclesByClientAndModel(this.clientToFilter.id, this.sModels, contract_id);
-        console.log("[tbl-chk-veh -- lsVehicles]:", this.lsVehicles);
       } else {
         this.lsVehicles = [];
       }
@@ -146,8 +139,6 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
       if (this.lsVehiclesSelected == null && this.lsVehiclesSelected == undefined) {
         this.lsVehiclesSelected = [];
       }
-      console.log(`[TBL CHECK VEHICLES] [Vehículos asociados hasta el momento] ${this.lsVehiclesSelected.length}`);
-
       if (this.lsVehiclesSelected.length < this.amountAllowed) {
         this.lsVehiclesSelected.push(pVehicle);
       } else {
@@ -162,8 +153,6 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
         this.lsVehiclesSelected.splice(index, 1);
       }
     }
-    console.log(this.lsVehiclesSelected);
-
     this.vehicleService.setListVehiclesSelected(this.lsVehiclesSelected);
   }
 
@@ -194,7 +183,7 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
         })
       },800)
     } catch (error) {
-      console.warn("[toggleChecks VEHI]",error);    
+      console.warn("[toggleChecks VEHI]",error);
     }
   }
 

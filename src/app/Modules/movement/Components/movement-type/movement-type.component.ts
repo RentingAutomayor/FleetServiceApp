@@ -25,7 +25,7 @@ export class MovementTypeComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
-      if (change == "countChanges") {        
+      if (change == "countChanges") {
         this.validateMovementTypeSelected();
       }
     }
@@ -36,13 +36,13 @@ export class MovementTypeComponent implements OnInit, OnChanges {
   }
 
   initComponents(){
-    this.getMovementTypeList();    
+    this.getMovementTypeList();
   }
 
   async getMovementTypeList(){
     try {
       this.lsMovementType = await this.movementService.getMovementTypes();
-      this.validateMovementTypeSelected();        
+      this.validateMovementTypeSelected();
     } catch (error) {
       console.warn(error);
     }
@@ -51,7 +51,7 @@ export class MovementTypeComponent implements OnInit, OnChanges {
   validateMovementTypeSelected(){
     this.movementTypeSelected = this.movementService.getMovementTypeSelected();
     if(this.movementTypeSelected != null && this.movementTypeSelected != undefined){
-      console.log("[movement type]: ",this.movementTypeSelected);
+
       this.setDataInForm(this.movementTypeSelected);
     }else{
       this.clearDataInForm();
@@ -60,17 +60,17 @@ export class MovementTypeComponent implements OnInit, OnChanges {
 
   setMovementType(event:any){
     let oMovementType = this.lsMovementType.find(mt => mt.id == event.value);
-    console.log(oMovementType);
+
     this.movementService.setMovementTypeSelected(oMovementType);
   }
 
   setDataInForm(movementType: MovementType){
     let { cmbMovementType } = this.frmMovementType.controls;
-    console.log("a settear",movementType);
-    setTimeout(() => { 
-      cmbMovementType.setValue(movementType.id); 
+
+    setTimeout(() => {
+      cmbMovementType.setValue(movementType.id);
       this.movementService.setMovementTypeSelected(movementType);
-    },300);   
+    },300);
   }
 
   clearDataInForm(){

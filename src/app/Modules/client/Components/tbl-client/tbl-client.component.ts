@@ -22,9 +22,9 @@ export class TblClientComponent implements OnInit {
   enableButtonsEditAndDelete: boolean;
    //pagination
    p:number = 1;
-  
+
    action: ActionType
-  
+
   constructor(
     private clientService : ClientService,
     private router: Router,
@@ -44,7 +44,7 @@ export class TblClientComponent implements OnInit {
     this.navigationService.setItemActive('client');
     this.isAwaiting = true;
     this.clientService.setClientToUpdate(null);
-    try{     
+    try{
       this.lsClient = await this.clientService.getClients();
     }catch(err){
       console.error(err.error.Message);
@@ -56,14 +56,14 @@ export class TblClientComponent implements OnInit {
   async validateCompanyLogged() {
     try {
       this.company = SecurityValidators.validateUserAndCompany();
-      console.log("[validateCompanyLogged]",this.company);
+      //console.log("[validateCompanyLogged]",this.company);
       switch (this.company.type) {
         case CompanyType.DEALER:
         case CompanyType.CLIENT:
             this.enableButtonsEditAndDelete = false;
           break;
         default:
-            this.enableButtonsEditAndDelete = true;         
+            this.enableButtonsEditAndDelete = true;
           break;
       }
     } catch (error) {
@@ -87,7 +87,7 @@ export class TblClientComponent implements OnInit {
       this.isAwaiting = true;
       this.clientService.setBlockFormClient(true);
       let oClientDB = await this.clientService.getClientById(pId);
-      this.clientService.setClientToUpdate(oClientDB);      
+      this.clientService.setClientToUpdate(oClientDB);
       this.isAwaiting = false;
       this.router.navigate(["/MasterClients/Client"]);
     }catch(err){
@@ -103,9 +103,9 @@ export class TblClientComponent implements OnInit {
       this.isAwaiting = true;
       this.clientService.setBlockFormClient(false);
       let oClientDB = await this.clientService.getClientById(pId);
-      this.clientService.setClientToUpdate(oClientDB);      
+      this.clientService.setClientToUpdate(oClientDB);
       this.isAwaiting = false;
-      
+
       this.router.navigate(["/MasterClients/Client"]);
     }catch(err){
       console.error(err.error.Message);
@@ -128,7 +128,7 @@ export class TblClientComponent implements OnInit {
       console.error(err.error.Message);
       alert(err.error.Message);
     }
-   
+
   }
 
   insertClient(){
@@ -138,15 +138,15 @@ export class TblClientComponent implements OnInit {
   }
 
   moveContent(event:any){
-    console.log(event);
-    let containerContent:HTMLDivElement  = document.querySelector("#container__content"); 
-    
-    if(event){     
+    //console.log(event);
+    let containerContent:HTMLDivElement  = document.querySelector("#container__content");
+
+    if(event){
       containerContent.style.marginLeft = "250px";
     }else{
       containerContent.style.marginLeft = "0px";
     }
-    
+
   }
 
 }

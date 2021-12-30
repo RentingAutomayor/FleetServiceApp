@@ -16,10 +16,10 @@ export class ReportTrxByStateComponent implements OnInit {
   public chartLabels: Label[] = ["APROBADA","PENDIENTE","RECHAZADA","FINALIZADA","ANULADA"];
   public chartDataset: SingleDataSet = [];
   public charType: ChartType = 'pie';
-  public chartColors: Array<any> = [ 
+  public chartColors: Array<any> = [
     { backgroundColor: ['#ade498','#f0e050','#ea2c62','#469627','#7e0c2c'] }
   ];
-  
+
   @Input() company: Company;
   public typeOfReport: string;
   isMainCompanyLogged: boolean;
@@ -36,7 +36,7 @@ export class ReportTrxByStateComponent implements OnInit {
     this.initDataToGetReport();
     this.chartDataset = this.getData();
   }
-  
+
   initDataToGetReport() {
     switch(this.company.type){
       case CompanyType.CLIENT:
@@ -63,12 +63,11 @@ export class ReportTrxByStateComponent implements OnInit {
   getData():number[]{
     let aToReturn = [];
     this.getDataToPresent().then(arrayData =>{
-      console.log("[PIPE]",arrayData)
       arrayData.forEach(item => {
         aToReturn.push(item);
       })
     });
-  
+
     return aToReturn;
   }
 
@@ -93,10 +92,10 @@ export class ReportTrxByStateComponent implements OnInit {
           case "ANULADA":
             arrayData.splice(4, 1, item.Cantidad);
             break;
-        }        
-        console.log("[Home-Component]", item);
+        }
+
       })
-     
+
     });
     return arrayData;
   }

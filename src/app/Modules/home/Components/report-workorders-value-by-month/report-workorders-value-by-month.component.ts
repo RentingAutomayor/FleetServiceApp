@@ -19,7 +19,7 @@ export class ReportWorkordersValueByMonthComponent implements OnInit {
     scales: {
       yAxes: [{
         ticks: {
-          min: 0, 
+          min: 0,
           max : 5000000 ,
           stepSize: 500000
         }
@@ -91,13 +91,13 @@ export class ReportWorkordersValueByMonthComponent implements OnInit {
     await this.reportService.GetWorkOrdersValueByMonth(this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date)
     .then(data => {
       let aLabels = [];
-      console.log("[getDataToReport]",data);
-      data.forEach(row => {       
-        let labelTmp = `${row.Mes}`;
-        aLabels = this.validateLabels(aLabels,labelTmp);        
-      });       
 
-      console.log(aLabels);
+      data.forEach(row => {
+        let labelTmp = `${row.Mes}`;
+        aLabels = this.validateLabels(aLabels,labelTmp);
+      });
+
+
       this.chartLabels = aLabels;
       this.validateDataSets(data);
     })
@@ -118,40 +118,37 @@ export class ReportWorkordersValueByMonthComponent implements OnInit {
   }
 
   validateDataSets(data:any):any{
-    // {
-    //   data: [],
-    //   label: 'Aprobadas',
-    // },
+
 
     this.chartData = [];
 
     let aAnios:string[] = [];
-    data.forEach(row => { 
-      aAnios = this.validateAniosOfDataSet(aAnios,row.Anio);     
-    });  
+    data.forEach(row => {
+      aAnios = this.validateAniosOfDataSet(aAnios,row.Anio);
+    });
 
     aAnios.forEach(anio => {
       let aDataFiltered = data.filter(row => row.Anio == anio);
       let aDataByAnio = [];
-      
+
       this.chartLabels.forEach(labelAmount =>{
         aDataByAnio.push(0);
       })
 
       aDataFiltered.forEach(row => {
         //TODO: VALIDATE TAG
-        console.log("[chartLabels]", this.chartLabels)
+
         let index  = this.chartLabels.indexOf(`${row.Mes}`);
-        console.log("[aDataFiltered]",index, this.chartLabels , `${row.Mes}-${row.Anio}`);
+
         aDataByAnio.splice(index,1,row.Valor);
       });
-      console.log("[validateDataSets - Validate data by anio]",aDataByAnio);
+
       let dataSet = { data: aDataByAnio, label:anio }
       this.chartData.push(dataSet);
     });
 
-    //console.log("[validateDataSets]",aAnios);
-    console.log("[validateDataSets]",this.chartData);
+
+
   }
 
   validateAniosOfDataSet(aAnio: string[], anio:any): string[]{

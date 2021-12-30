@@ -15,6 +15,7 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
   oBrand: Brand;
   @Input() countChanges:number;
   @Output() vehicleBrandWasSetted = new EventEmitter<boolean>();
+  @Input() defaultBrandId: number = 0
 
   constructor(
     private vehicleService: VehicleService
@@ -26,10 +27,10 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
-      //console.log("[componente vehicle brand]: ", change);
+
       if (change == "countChanges") {
         this.oBrand = this.vehicleService.getBrandSelected();
-        if (this.oBrand != null) {         
+        if (this.oBrand != null) {
           this.setDataInForm(this.oBrand);
         } else {
           this.clearDataForm();
@@ -45,24 +46,35 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
   async initComponents(){
     try{
       this.countChanges = 0;
-      this.frmBrand.controls.cmbBrand.setValue(0);
+      if(this.defaultBrandId !== 0){
+        this.frmBrand.controls.cmbBrand.setValue(this.defaultBrandId);
+      }else{
+        this.frmBrand.controls.cmbBrand.setValue(0);
+      }
+
       this.lsBrand = await this.vehicleService.getBrands();
     }catch(error){
       console.error(error.Message);
     }
   }
-  
+
   setBrand(event:any){
     let oBrand = this.lsBrand.find(br => br.id == event.value);
     this.vehicleService.setBrandSelected(oBrand);
     this.vehicleBrandWasSetted.emit(true);
   }
 
-  setDataInForm(pBrand: Brand){    
-    this.frmBrand.controls.cmbBrand.setValue(pBrand.id);  
+  setDataInForm(pBrand: Brand){
+    this.frmBrand.controls.cmbBrand.setValue(pBrand.id);
   }
 
   clearDataForm(){
-    this.frmBrand.controls.cmbBrand.setValue(0);
+    const defaultValue = (this.defaultBrandId!==0)?this.defaultBrandId:0
+    this.frmBrand.controls.cmbBrand.setValue(defaultValue);
+    if(defaultValue!==0){
+      let oBrand = this.lsBrand.find(br => br.id == defaultValue);
+      this.vehicleService.setBrandSelected(oBrand);
+      this.vehicleBrandWasSetted.emit(true);
+    }
   }
 }

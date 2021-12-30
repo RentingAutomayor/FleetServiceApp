@@ -8,6 +8,10 @@ import { Tax } from 'src/app/Models/Tax';
 import { CompanyType } from 'src/app/Models/CompanyType'
 import { Dealer } from 'src/app/Models/Dealer';
 import { SharedFunction } from 'src/app/Models/SharedFunctions';
+import { ItemHandleTaxes } from 'src/app/Models/ItemHandleTaxes';
+import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem';
+import { PresentationUnit } from 'src/app/Models/PresentationUnit';
+import { Category } from 'src/app/Models/Category';
 
 
 @Component({
@@ -26,7 +30,14 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   @Input() countChanges: number;
   sharedFunction: SharedFunction;
   presentationUnitIsInvalid: boolean;
+  vehicleTypeIsValid: boolean;
   typeIsInvalid:boolean;
+  brandChevrolet = 1;
+  taxesAreInvalid: boolean;
+  itemAndTaxes: ItemHandleTaxes = {} as ItemHandleTaxes;
+  typeOfItem: TypeOfMaintenanceItem;
+  presentationUnit: PresentationUnit;
+  category: Category;
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -39,6 +50,11 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
     this.lsTaxesSelected = [];
     this.presentationUnitIsInvalid = false;
     this.typeIsInvalid = false;
+    this.vehicleTypeIsValid = false;
+    this.taxesAreInvalid = false;
+    this.typeOfItem = null;
+    this.presentationUnit = null;
+    this.category = null;
   }
 
 
@@ -48,7 +64,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
       code: ['', [Validators.required]],
       name: ['', [Validators.required]],
       description: [''],
-      referencePrice: ['', Validators.required]
+      referencePrice: [1, [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -57,7 +73,8 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
       if (change == "countChanges") {
         this.itemToUpdate = this.maintenanceItemService.getItemToUpdate();
         if (this.itemToUpdate != null) {
-          console.log("[on changes]", this.itemToUpdate);
+          this.typeOfItem = this.itemToUpdate.type
+          this.presentationUnit = this.itemToUpdate.presentationUnit
           this.setDataInForm(this.itemToUpdate);
         } else {
           this.clearDataForm();
@@ -73,43 +90,40 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
 
   async initComponents() {
     this.itemToUpdate = this.maintenanceItemService.getItemToUpdate();
-    this.itemHandleTax = false;        
-  } 
+    this.itemHandleTax = false;
+  }
 
   setDataMaintenanceItem(event: any) {
     event.preventDefault();
     this.item = this.setDataToItem();
-    console.log("[Maintenance item]: ", this.item);
-    this.maintenanceItemService.setItem(this.item);    
+    this.maintenanceItemService.setItem(this.item);
     this.maintenanceItemWasSetted.emit(true);
   }
 
   setDataToItem(): MaintenanceItem {
     try {
       let oItem = new MaintenanceItem();
-
       oItem = this.frmMaintenanceItem.value;
 
       if (this.itemToUpdate != null) {
         oItem.id = this.itemToUpdate.id;
       }
 
-      if(this.lsTaxesSelected.length > 0){        
+      if(this.lsTaxesSelected.length > 0){
         oItem.handleTax = true;
         oItem.lsTaxes = this.lsTaxesSelected;
       }else{
         oItem.handleTax = false;
         oItem.lsTaxes = [];
       }
-      
-      oItem.presentationUnit = this.maintenanceItemService.getPresentationUnit();
-      oItem.type = this.maintenanceItemService.getTypeOfItem();
-      oItem.category = this.maintenanceItemService.getCategorySelected();
+
+      oItem.presentationUnit = this.presentationUnit;
+      oItem.type = this.typeOfItem;
+      oItem.category = this.category;
       oItem.lsVehicleType = (this.vehicleService.getListVehicleTypeSelected() != null) ? this.vehicleService.getListVehicleTypeSelected() : [];
       oItem.lsVehicleModel = (this.vehicleService.getListVehicleModelsSelected() != null) ? this.vehicleService.getListVehicleModelsSelected() : [];
 
       oItem = this.setDealerToItem(oItem);
-      console.log("[item component]: ", oItem);
       return oItem;
     } catch (error) {
       console.warn(error);
@@ -119,26 +133,22 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
 
   setDealerToItem(oItem: MaintenanceItem) {
     let session = JSON.parse(sessionStorage.getItem('sessionUser'));
-
     if (session.company.type == CompanyType.DEALER) {
       oItem.dealer = new Dealer();
       oItem.dealer.id = session.company.id;
     }
-
     return oItem;
   }
 
   setDataInForm(pItem: MaintenanceItem) {
-
     this.frmMaintenanceItem.patchValue(pItem);
-    this.maintenanceItemService.setPresentationUnit(pItem.presentationUnit);
-    this.maintenanceItemService.settypeOfItem(pItem.type);
-
+    this.presentationUnit = pItem.presentationUnit;
+    this.typeOfItem = pItem.type;
+    this.category = pItem.category;
     let oBrandTmp = new Brand();
 
     if (pItem.lsVehicleModel.length > 0) {
       if (pItem.lsVehicleModel[0].brand != null && pItem.lsVehicleModel[0].brand != undefined) {
-        console.log(pItem.lsVehicleModel);
         oBrandTmp = pItem.lsVehicleModel[0].brand;
 
       } else {
@@ -153,15 +163,23 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
     if(pItem.handleTax){
       this.itemHandleTax = true;
       this.lsTaxesSelected = pItem.lsTaxes;
-      this.calculateTaxesByItem(this.lsTaxesSelected);
+      this.itemAndTaxes = {
+        handleTaxes: this.itemHandleTax,
+        lsTaxes: this.lsTaxesSelected
+      }  as   ItemHandleTaxes
+      this.calculateTaxesByItem(this.itemAndTaxes);
+
     }else{
       this.itemHandleTax = false;
       this.lsTaxesSelected = [];
+      this.itemAndTaxes = {
+        handleTaxes: this.itemHandleTax,
+        lsTaxes: this.lsTaxesSelected
+      }  as   ItemHandleTaxes
+      this.calculateTaxesByItem(this.itemAndTaxes);
     }
 
     this.vehicleService.setBrandSelected(oBrandTmp);
-    this.maintenanceItemService.setCategorySelected(pItem.category);
-
     this.vehicleService.setListVehicleTypeSelected(pItem.lsVehicleType);
     this.vehicleService.setListVehicleModelsSelected(pItem.lsVehicleModel);
 
@@ -170,11 +188,11 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   clearDataForm() {
     this.frmMaintenanceItem.reset();
     this.lsTaxesSelected = [];
-    this.maintenanceItemService.setPresentationUnit(null);
-    this.maintenanceItemService.settypeOfItem(null);
+    this.presentationUnit = null;
+    this.typeOfItem	 = null;
+    this.category = null;
     this.vehicleService.setVehicleModelSelected(null);
     this.vehicleService.setBrandSelected(null);
-    this.maintenanceItemService.setCategorySelected(null);
     this.vehicleService.setListVehicleTypeSelected(null);
     this.vehicleService.setListVehicleModelsSelected(null);
     this.itemHandleTax = false;
@@ -186,6 +204,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   }
 
   comeBack() {
+    this.clearDataForm()
     this.maintenanceItemWasCanceled.emit(true);
   }
   setBrand() {
@@ -198,41 +217,54 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
 
   setListVehicleTypes() {
     this.countChanges += 1;
+    const vehicleSelectedLength = (this.vehicleService.getListVehicleTypeSelected() != null) ? this.vehicleService.getListVehicleTypeSelected().length : 0;
+    console.warn(`setListVehicleTypes ${vehicleSelectedLength}`)
+
+    if(vehicleSelectedLength==0){
+      this.vehicleTypeIsValid = true;
+    }else{
+      this.vehicleTypeIsValid = false;
+    }
   }
 
   setLisVehicleModels() {
 
   }
- 
-  calculateTaxesByItem(lsTaxesSelected: Tax[]) {
-    console.log("[Maintenance item]",lsTaxesSelected);
-    
-    this.lsTaxesSelected = lsTaxesSelected;
 
-    let {referencePrice} = this.frmMaintenanceItem.controls;
-    let value = (referencePrice.value != null)?referencePrice.value:0;
-    var totalTaxes = 0;
-    if(lsTaxesSelected.length > 0){
-      for (let tax of lsTaxesSelected) {
-        totalTaxes += value * (tax.percentValue / 100);
+  calculateTaxesByItem(itemAndTaxes: ItemHandleTaxes) {
+
+
+    if(itemAndTaxes.handleTaxes){
+
+
+      this.lsTaxesSelected = itemAndTaxes.lsTaxes;
+      let {referencePrice} = this.frmMaintenanceItem.controls;
+      this.taxesAreInvalid = (this.lsTaxesSelected.length>0)? false : true;
+
+      let value = (referencePrice.value != null)?referencePrice.value:0;
+      var totalTaxes = 0;
+      if(itemAndTaxes.lsTaxes.length > 0){
+        for (let tax of itemAndTaxes.lsTaxes) {
+          totalTaxes += value * (tax.percentValue / 100);
+        }
       }
-    }
-   
-    console.log(totalTaxes);
 
-    let txtTaxesValue: HTMLInputElement = document.querySelector('#taxesValue');
-    let txtTotalValue: HTMLInputElement = document.querySelector('#totalValue');
-    txtTaxesValue.value = totalTaxes.toString();
-    txtTotalValue.value = (parseFloat(value.toString()) + parseFloat(totalTaxes.toString())).toString();
+      let txtTaxesValue: HTMLInputElement = document.querySelector('#taxesValue');
+      let txtTotalValue: HTMLInputElement = document.querySelector('#totalValue');
+      txtTaxesValue.value = totalTaxes.toString();
+      txtTotalValue.value = (parseFloat(value.toString()) + parseFloat(totalTaxes.toString())).toString();
+    }else{
+
+      this.taxesAreInvalid = false;
+    }
+
+
+
     return totalTaxes;
   }
 
   validatePresentationUnit(){
-    let presentationTmp = this.maintenanceItemService.getPresentationUnit();
-    console.log("[validatePresentationUnit]");
-    console.log(presentationTmp);
-
-    if(presentationTmp == null || presentationTmp == undefined){
+    if(this.presentationUnit == null || this.presentationUnit == undefined){
       this.presentationUnitIsInvalid = true;
     }else{
       this.presentationUnitIsInvalid = false;
@@ -240,11 +272,14 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   }
 
   validateTypeOfMaintenanceItem(){
-    let typeTmp = this.maintenanceItemService.getTypeOfItem();
-    if(typeTmp == null || typeTmp == undefined){
-      this.typeIsInvalid = true;
-    }else{
-      this.typeIsInvalid = false;
+    try {
+      if(this.typeOfItem == null || this.typeOfItem == undefined){
+        this.typeIsInvalid = true;
+      }else{
+        this.typeIsInvalid = false;
+      }
+    } catch (error) {
+      console.warn(error)
     }
   }
 
@@ -258,5 +293,17 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
 
   get fieldReferencePrice() {
     return this.frmMaintenanceItem.get('referencePrice');
+  }
+
+  setTypeOfItem(type: TypeOfMaintenanceItem){
+    this.typeOfItem = type;
+  }
+
+  setPresentationUnit(presentation: PresentationUnit){
+    this.presentationUnit = presentation;
+  }
+
+  setCategory(category: Category){
+    this.category = category
   }
 }

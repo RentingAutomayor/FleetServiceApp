@@ -50,7 +50,7 @@ export class DealerComponent implements OnInit {
 
   validateDealerToUpdate(){
     this.oDealerToUpdate = this.dealerService.getDealerToUpdate();
-    if(this.oDealerToUpdate != null){      
+    if(this.oDealerToUpdate != null){
       this.setDataToUpdateDealer(this.oDealerToUpdate);
       this.oDataIsToUpdate = true;
     }
@@ -65,14 +65,12 @@ export class DealerComponent implements OnInit {
   SetDataToSaveDealer() {
     let oDealer = new Dealer();
     oDealer = this.personService.getPerson();
-    console.log("[Concesionario a guardar]: ", oDealer);
     this.saveDealer(oDealer);
   }
 
   async saveDealer(pDealer: Dealer) {
     try {
       pDealer = this.personService.getPerson();
-      console.log("[Concesionario a guardar]: ", pDealer);
       let rta = new ResponseApi();
       this.isAwaiting = true;
       if (this.oDataIsToUpdate) {
@@ -89,7 +87,7 @@ export class DealerComponent implements OnInit {
         this.oDealerWasSaved = true;
       }
     } catch (err) {
-      console.log(err.error.Message);
+      console.warn(err.error.Message);
       this.bFormHasError = true;
       this.errorMessage = err.error.Message;
       this.isAwaiting = false;
@@ -111,9 +109,6 @@ export class DealerComponent implements OnInit {
 
     let containerToShow_id = `container__${container}`;
     let containerToShow = document.getElementById(containerToShow_id);
-
-    //console.log(containerToShow);
-
     containerToShow.setAttribute("style", "display:blick");
   }
 
@@ -126,7 +121,6 @@ export class DealerComponent implements OnInit {
 
 
   moveContent(event: any) {
-    console.log(event);
     let containerContent: HTMLDivElement = document.querySelector("#container__content");
 
     if (event) {
@@ -140,7 +134,7 @@ export class DealerComponent implements OnInit {
     this.oPersonToUpdate = new Person();
     this.oPersonToUpdate.id = pDealer.id;
     this.oPersonToUpdate.document = pDealer.document;
-    this.oPersonToUpdate.name = pDealer.name.toLocaleLowerCase();    
+    this.oPersonToUpdate.name = pDealer.name.toLocaleLowerCase();
   }
 
   returnToTable(){

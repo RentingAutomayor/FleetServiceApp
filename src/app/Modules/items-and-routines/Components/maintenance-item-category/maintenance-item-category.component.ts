@@ -1,5 +1,6 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+
 import { Category } from 'src/app/Models/Category';
 import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service';
 
@@ -12,7 +13,8 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
   frmCategory: FormGroup;
   lsCategory: Category[];
   categorySelected: Category;
-  @Input() countChanges:number;
+  @Input() category: Category;
+  @Output() changeCategory  = new EventEmitter<Category>()
 
   constructor(
     private maintenanceItemService: MaintenanceItemService
@@ -21,18 +23,9 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
       cmbCategory: new FormControl('Seleccione ...')
     });
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      if (change == "countChanges") {
-        this.categorySelected = this.maintenanceItemService.getCategorySelected();
 
-        if (this.categorySelected != null) {
-          this.showDataInForm(this.categorySelected);
-        } else {
-          this.clearDataForm();
-        }
-      }
-    }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.showDataInForm(this.category);
   }
 
   ngOnInit(): void {
@@ -41,7 +34,6 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
 
   async initComponents() {
     try {
-      this.countChanges = 0;
       this.frmCategory.controls.cmbCategory.setValue(0);
       this.lsCategory = await this.maintenanceItemService.getCategories();
     } catch (error) {
@@ -51,11 +43,12 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
 
   setCategory(event: any) {
     let oCategory = this.lsCategory.find(ct => ct.id == event.value);
-    this.maintenanceItemService.setCategorySelected(oCategory);
+    this.changeCategory.emit(oCategory);
   }
 
-  showDataInForm(pCategory: Category) {    
-    this.frmCategory.controls.cmbCategory.setValue(pCategory.id);
+  showDataInForm(pCategory: Category) {
+    const indexCategory = (pCategory !== null)?pCategory.id:0;
+    this.frmCategory.controls.cmbCategory.setValue(indexCategory);
   }
 
   clearDataForm() {

@@ -29,7 +29,7 @@ import { Action } from 'rxjs/internal/scheduler/Action';
   styleUrls: ['./contract.component.scss']
 })
 export class ContractComponent implements OnInit, OnChanges {
-  
+
   frmContract: FormGroup;
   @Input() countChanges: number;
   @Input() contractIsToUpdate:boolean;
@@ -56,7 +56,7 @@ export class ContractComponent implements OnInit, OnChanges {
   disableTypeOfDiscoutnField: boolean;
   disableVehicleTypesAndVehicleModels: boolean;
   disableVehicles: boolean;
-  buttonSaveIsDisable:boolean;  
+  buttonSaveIsDisable:boolean;
   disableCmbState:boolean;
   isAwaiting: boolean;
   action:ActionType;
@@ -147,7 +147,7 @@ export class ContractComponent implements OnInit, OnChanges {
     this.hideContainerTabs();
     this.validateContractToUpdate();
     this.enableOrDisableForm();
-    
+
   }
 
   async validateCompanyLogged() {
@@ -161,14 +161,14 @@ export class ContractComponent implements OnInit, OnChanges {
               this.dealerService.setDealerSelected(dataDealer);
               this.countChanges += 1;
             });
-            
+
           break
         case CompanyType.CLIENT:
-          
+
           break;
         default:
           this.disableDealerField = false;
-          
+
           break;
       }
     } catch (error) {
@@ -208,9 +208,6 @@ export class ContractComponent implements OnInit, OnChanges {
 
     let containerToShow_id = `container__${container}`;
     let containerToShow = document.getElementById(containerToShow_id);
-
-    ////console.log(containerToShow);
-
     containerToShow.setAttribute("style", "display:blick");
   }
 
@@ -222,7 +219,6 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
   moveContent(event: any) {
-    ////console.log(event);
     let containerContent: HTMLDivElement = document.querySelector("#container__content");
 
     if (event) {
@@ -244,7 +240,6 @@ export class ContractComponent implements OnInit, OnChanges {
   setLisVehicleModels() {
     this.countChanges += 1;
     this.contract.lsVehicleModels = this.vehicleService.getListVehicleModelsSelected();
-    //console.log("[contract component - lsModels] :", this.contract.lsVehicleModels);
   }
 
   setClientSelected() {
@@ -276,27 +271,18 @@ export class ContractComponent implements OnInit, OnChanges {
 
   calculateEndingDate() {
     let { duration, startingDate, endingDate } = this.frmContract.controls;
-
-    console.log("Si está reconociendo el evento");
-    console.log(startingDate.value);
-
     let dTmp = startingDate.value;
-    console.log("Sin formato", dTmp)
     let pStartingDate = null;
 
     try {
-      console.log("Sin error");
-      console.log(dTmp.toISOString().substring(0, 10));
       pStartingDate = this.formatDate(dTmp.toISOString().substring(0, 10));
     } catch (error) {
-      console.log("Con error");
+
       dTmp = `${startingDate.value}`;
-      console.log(dTmp.substr(0, 10));
+
       pStartingDate = this.formatDate(dTmp.substr(0, 10));
     }
-    console.log("Con formato", pStartingDate);
 
-    console.log("[contract-component]: ", pStartingDate);
     let durationTmp = duration.value;
 
     let endingDateTmp = new Date(pStartingDate.getFullYear(), (pStartingDate.getMonth() - 1), (pStartingDate.getDate()));
@@ -304,7 +290,6 @@ export class ContractComponent implements OnInit, OnChanges {
 
     let strEndDate = endingDateTmp.toISOString().substring(0, 10);
     this.dtEndingDate = endingDateTmp;
-    console.log(strEndDate, endingDateTmp);
 
   }
 
@@ -333,12 +318,9 @@ export class ContractComponent implements OnInit, OnChanges {
       let existsType = lsVehicletype.find(vt => vt.id == vehicleType.id);
 
       if (!existsType) {
-        console.log("Añade tipo de vehículo");
         lsVehicletype.push(vehicleType);
       }
     });
-
-    console.log(lsVehicletype);
     return lsVehicletype;
   }
 
@@ -346,7 +328,7 @@ export class ContractComponent implements OnInit, OnChanges {
   async saveContract() {
     let { name, startingDate, endingDate, amountVehicles, duration, discountValue, observation } = this.frmContract.controls;
     try {
-      
+
       this.isAwaiting = true;
       if (this.frmContract.valid) {
         this.contract = new Contract();
@@ -359,11 +341,10 @@ export class ContractComponent implements OnInit, OnChanges {
         this.contract.observation = observation.value;
 
         this.oGetPricesOfContract += 1;
-        console.log("[saveContract]", this.contract);
 
         if (confirm("¿Está seguro que desea guardar los datos asociados a este contrato?")) {
 
-         
+
           if (this.contractToUpdate != null && this.contractToUpdate != undefined) {
             this.contract.id = this.contractToUpdate.id;
             this.contract.code = this.contractToUpdate.code;
@@ -398,10 +379,6 @@ export class ContractComponent implements OnInit, OnChanges {
           }
 
           this.contract.lsMaintenanceItems = this.contractService.getItemsWithPrice();
-
-          console.warn("[Contrato a guardar]");
-          console.log(this.contract);
-
           this.saveData(this.contract);
 
         }
@@ -447,15 +424,10 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
   formatDate(sDate: string): Date {
-    console.log(sDate);
-
     let year = parseInt(sDate.substring(0, 4));
     let month = parseInt(sDate.substring(5, 7));
     let day = parseInt(sDate.substring(8, 10));
-
-    console.log(year, month, day);
     let dateToReturn = new Date(year, month, day);
-    console.log(dateToReturn);
     return dateToReturn;
   }
 
@@ -530,17 +502,15 @@ export class ContractComponent implements OnInit, OnChanges {
     try{
       let isFormToEdit = this.contractService.getContractIsToEdit();
       if(isFormToEdit  || this.action == ActionType.UPDATE){
-        console.log("[enableOrDisableForm]", true);
         this.disableCmbState = false;
       }else{
-        console.log("[enableOrDisableForm]", false);
       }
 
       if(this.action == ActionType.READ){
         this.buttonSaveIsDisable = true;
         this.disableCmbState = true;
       }
-      
+
     }catch(error){
       console.warn("[Enable or diable form]", error);
     }

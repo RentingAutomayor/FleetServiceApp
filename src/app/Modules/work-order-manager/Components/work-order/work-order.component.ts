@@ -51,7 +51,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   totalRoutine: number;
   totalTaxes: number;
   totalWithoutTaxes: number;
-  totalWithoutTaxesAndDiscount:number; 
+  totalWithoutTaxesAndDiscount:number;
   totalDiscount:number;
   lsMovements: Movement[];
   vehicleSelected: Vehicle;
@@ -63,8 +63,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   fieldBranchIsInvalid: boolean;
   fieldMaintenanceRoutineIsInvalid: boolean;
 
-  
-  
+
+
 
   constructor(
     private ClientService: ClientService,
@@ -104,8 +104,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     this.fieldBranchIsInvalid = true;
     this.fieldMaintenanceRoutineIsInvalid = true;
 
-   
-  
+
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -174,8 +174,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.maintenanceItemService.getPricesByContract(contract_id).then(
         pricesByContract => {
           this.pricesByContract = pricesByContract;
-          console.log('Precios para el contrato: ' + contract_id);
-          console.log(this.pricesByContract);
+
           this.updateAmountsAndPrices(this.lsMaintenanceItems, this.pricesByContract)
         }
       )
@@ -193,15 +192,15 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
   updateAmountsAndPrices(lsMaintenanceItems: MaintenanceItem[], pricesByContract: PricesByContract) {
-    console.log(lsMaintenanceItems);
+
     this.totalRoutine = 0;
     lsMaintenanceItems.forEach(mItem => {
       try {
         let priceContract = pricesByContract.lsMaintenanceItems.find(mi => mi.id == mItem.id);
-        //console.log(`Precio de referencia: ${mItem.referencePrice} Precio de contrato: ${priceContract.referencePrice}`);
+
         mItem.referencePrice = priceContract.referencePrice;
 
-        //this.updateLabelTotalItem(mItem);
+
 
         this.updateLabelPriceByAmount(mItem);
         this.turnOnCheckbox(mItem);
@@ -210,7 +209,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
         console.warn(error);
       }
     });
-    
+
     this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
   }
 
@@ -237,7 +236,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     try {
       this.ClientService.getClientById(client_id).then(data => {
         let oClient = data;
-        console.log(oClient);
+
       });
     } catch (error) {
       console.warn(error);
@@ -254,8 +253,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
 
       this.vehicleSelected = this.vehicleService.getVehicle();
-      console.log("[SetDataInForm]",this.vehicleSelected);
-      
+
+
       let VEHICLE_STATE_ACTIVE = 1;
       if(!(this.vehicleSelected.vehicleState.id == VEHICLE_STATE_ACTIVE)){
         throw ("El vehículo que seleccionó se encuentra en un estado INACTIVO, por favor comuniquese con el administrador");
@@ -270,7 +269,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
               throw(`El vehículo que intenta asociar cuenta con un contrato en estado: ${this.contractSelected.contractState.name } , por tal motivo, NO se puede generar una orden de trabajo. Por favor comuniquese con el administrador.`);
           }
 
-          console.log(this.contractSelected);
+
           txtYear.setValue(this.vehicleSelected.year);
           txtMileage.setValue(this.sharedFunctions.formatNumberToString(this.vehicleSelected.mileage));
           txtBrand.setValue(this.vehicleSelected.vehicleModel.brand.name.toUpperCase());
@@ -339,9 +338,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.fieldMaintenanceRoutineIsInvalid = false;
       this.lsMaintenanceItems = this.routineSelected.lsItems;
       this.getPricesByContract(this.contractSelected.id);
-      console.log(this.routineSelected);
+
     }
-    
+
   }
 
   getTextAmountId(pId: number) {
@@ -364,7 +363,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.deleteItemToRoutine(pItem);
       this.disableTxtAmount(pItem);
     }
-    
+
     this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
   }
 
@@ -463,15 +462,15 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     }
     item.taxesValue = parseFloat(taxValue.toFixed(2));
     this.lsMaintenanceItemsSelected.push(item);
-    //console.log(this.lsMaintenanceItemsSelected);
+
   }
 
   deleteItemToRoutine(item: MaintenanceItem) {
-  
+
     let itemTMP = this.lsMaintenanceItemsSelected.find(it => it.id == item.id);
     let indexOfItem = this.lsMaintenanceItemsSelected.indexOf(itemTMP);
     this.lsMaintenanceItemsSelected.splice(indexOfItem, 1);
-    //console.log(this.lsMaintenanceItemsSelected);
+
   }
 
   updateAmountByItem(event: any, pItem: MaintenanceItem) {
@@ -486,7 +485,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       let mItem = this.lsMaintenanceItemsSelected.find(item => item.id == pItem.id);
       this.updateLabelTotalItem(mItem);
       this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
-    } 
+    }
   }
 
   updateLabelPriceByAmount(mItem: MaintenanceItem) {
@@ -512,30 +511,30 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   getValueWithoutTaxesByItem(idItem:number): number{
     try {
       let idSpanWithoutTaxes = `#${this.getLabePriceByAmountId(idItem)}`;
-      let spanWithoutTaxes: HTMLSpanElement = document.querySelector(idSpanWithoutTaxes);    
-      return parseFloat(spanWithoutTaxes.innerText.replace(/,/g, '')); 
+      let spanWithoutTaxes: HTMLSpanElement = document.querySelector(idSpanWithoutTaxes);
+      return parseFloat(spanWithoutTaxes.innerText.replace(/,/g, ''));
     } catch (error) {
-      console.log("[getValueWithoutTaxesByItem]", error);
-    }    
+      console.warn("[getValueWithoutTaxesByItem]", error);
+    }
   }
 
   getValueTaxesByItem(idItem:number):number{
     try {
       let idSpanTax = `#${this.getLabeTaxesId(idItem)}`;
       let spanTaxes: HTMLSpanElement = document.querySelector(idSpanTax);
-      return parseFloat(spanTaxes.innerText.replace(/,/g, '')); 
+      return parseFloat(spanTaxes.innerText.replace(/,/g, ''));
     } catch (error) {
-      console.log("[getValueTaxesByItem]", error);
-    }    
+      console.warn("[getValueTaxesByItem]", error);
+    }
   }
 
   getValueTotalByItem(idItem:number):number{
     try {
       let idItemReference = `#${this.getLabeTotalId(idItem)}`;
-      let spanElemt: HTMLSpanElement = document.querySelector(idItemReference);     
-      return parseFloat(spanElemt.innerText.replace(/,/g, '')); 
+      let spanElemt: HTMLSpanElement = document.querySelector(idItemReference);
+      return parseFloat(spanElemt.innerText.replace(/,/g, ''));
     } catch (error) {
-      console.log("[getValueTotalByItem]", error);
+      console.warn("[getValueTotalByItem]", error);
     }
   }
 
@@ -548,20 +547,18 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.totalWithoutTaxesAndDiscount = 0;
       this.totalDiscount = 0;
 
-      lsMaintenanceItemsSelected.forEach(item => {   
-        let valueWithoutTaxes = this.getValueWithoutTaxesByItem(item.id);      
+      lsMaintenanceItemsSelected.forEach(item => {
+        let valueWithoutTaxes = this.getValueWithoutTaxesByItem(item.id);
         this.totalWithoutTaxes += valueWithoutTaxes;
       });
       this.updateLabelWithoutTaxes(this.totalWithoutTaxes);
 
-      console.log("[contract validation]");
-      console.log(this.contractSelected);
 
-    
+
       this.calculateDiscount(this.lsMaintenanceItemsSelected);
-      
+
     } catch (error) {
-      console.log(error)
+      console.warn(error)
     }
 
   }
@@ -570,13 +567,13 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     try {
       if (confirm("¿Está seguro de guardar los datos de esta órden de trabajo?")) {
         let trxWorkOrder = this.setDataToWorkOrder();
-        console.log("[SAVE WORK ORDER]");
-        console.log(trxWorkOrder);
+
+
         this.isAwaiting = true;
         let financialInformationByClient = await this.quotaService.getFinancialInformationByClient(trxWorkOrder.client.id);
         let trxWillBePorcesed = ((parseFloat(financialInformationByClient.currentQuota.toString()) - trxWorkOrder.value) > 0) ? true : false;
         if (trxWillBePorcesed) {
-          console.log(trxWorkOrder);
+
           await this.transactionService.processTransaction(trxWorkOrder).then(response => {
             let rta = response;
             if (rta.response) {
@@ -601,7 +598,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       let { txtObservation, txtMileage } = this.frmWorkOrder.controls;
       let trxWorkOrder = new Transaction();
       trxWorkOrder.movement = this.lsMovements.find(mv => mv.id == this.ORDEN_DE_TRABAJO);
-      
+
       trxWorkOrder.valueWithoutDiscount = this.totalWithoutTaxes ;
       trxWorkOrder.discountValue = this.totalDiscount;
       trxWorkOrder.valueWithDiscountWithoutTaxes = this.totalWithoutTaxesAndDiscount;
@@ -663,7 +660,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   formatMileageToString(event: any) {
     let numberToTransform = event.target.value.toString().replace(/\,/g, '');
-    console.log(this.formatNumberToString(numberToTransform));
+
     event.target.value = this.formatNumberToString(numberToTransform);
   }
 
@@ -701,7 +698,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   setTotalValue(item_id: number, totalValue: number) {
     try {
-      //console.log(`[setTotalValue] : ${totalValue}`);
+
       let idLblTotal = `#${this.getLabeTotalId(item_id)}`;
       let labelTotal: HTMLSpanElement = document.querySelector(idLblTotal);
 
@@ -747,11 +744,11 @@ export class WorkOrderComponent implements OnInit, OnChanges {
           }, 300);
         }
       } catch (error) {
-        console.log(error);
+        console.warn(error);
       }
     });
-    
-    
+
+
 
     window.scroll(0, 1000);
     this.closePopUp('container__addItems');
@@ -778,16 +775,16 @@ export class WorkOrderComponent implements OnInit, OnChanges {
           this.totalDiscount = this.contractSelected.discountValue;
           break;
       }
-      
-     
-      this.updateLabelDiscount( this.totalDiscount);      
-      this.calculateDiscountAndTaxesByItem(totalWithoutTaxes, this.totalDiscount);     
-            
 
-      console.log("[calculateDiscount] VALOR RUTINA ANTES = ",  this.totalRoutine );
+
+      this.updateLabelDiscount( this.totalDiscount);
+      this.calculateDiscountAndTaxesByItem(totalWithoutTaxes, this.totalDiscount);
+
+
+
       this.totalRoutine = this.totalWithoutTaxesAndDiscount + this.totalTaxes;
-     
-      console.log("[calculateDiscount] VALOR RUTINA DESPUES = ",  this.totalRoutine );
+
+
       this.updateLabelTotalRoutine(this.totalRoutine);
 
     } catch (error) {
@@ -798,25 +795,25 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   calculateDiscountAndTaxesByItem(totalWithoutTaxes: number,totalDiscount: number) {
     try {
-      
+
       let valueWithoutTaxesAndDiscount = 0;
       let valueTotaTaxes = 0;
 
       this.lsMaintenanceItemsSelected.forEach(item => {
-        
+
         let discountByItem = 0;
         let valueWithoutTaxesByItem = (item.referencePrice * item.amount) ;
         item.valueWithoutDiscount = valueWithoutTaxesByItem;
 
-        if(totalDiscount > 0){         
+        if(totalDiscount > 0){
           let participationPercent = valueWithoutTaxesByItem / totalWithoutTaxes;
-          console.log(`[calculateDiscountAndTaxesByItem] item: ${item.name} procentaje de participación: ${participationPercent}`);
+
           discountByItem = participationPercent * totalDiscount;
         }
         item.discountValue = discountByItem;
         this.setDiscountByItem(item.id, discountByItem);
 
-        let totalWithoutTaxesAndDiscountByItem = valueWithoutTaxesByItem - discountByItem; 
+        let totalWithoutTaxesAndDiscountByItem = valueWithoutTaxesByItem - discountByItem;
         item.valueWithDiscountWithoutTaxes = totalWithoutTaxesAndDiscountByItem ;
         valueWithoutTaxesAndDiscount += totalWithoutTaxesAndDiscountByItem;
         this.setTotalWithoutTaxesAndDiscountByItem(item.id,totalWithoutTaxesAndDiscountByItem);
@@ -837,10 +834,10 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.totalWithoutTaxesAndDiscount  = valueWithoutTaxesAndDiscount;
       this.updateLabelWithoutTaxesAndDiscount(valueWithoutTaxesAndDiscount);
       this.updateLabelTotalTaxes(this.totalTaxes);
-    
+
 
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   }
 
@@ -851,7 +848,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       let totalwithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2);
       labelTotalWithoutTaxes.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalwithoutTaxesFormatted));
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   }
 
@@ -862,11 +859,11 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       let discountFormatted = discount.toFixed(2);
       labelDiscountByItem.innerText = this.sharedFunctions.formatNumberToString(parseFloat(discountFormatted));
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   }
 
-  
+
   setTotalWithoutTaxesAndDiscountByItem(idItem: number, totalByItemWithoutTaxesAndDiscount: number) {
     try {
       let idTotalWithoutTaxesAndDiscount = `#${this.getLabePriceByAmountLessDiscountId(idItem)}`;
@@ -874,7 +871,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       let totalByItemWithoutTaxesAndDiscountFormatted = totalByItemWithoutTaxesAndDiscount.toFixed(2);
       labelTotalWithoutTaxesAndDiscount.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalByItemWithoutTaxesAndDiscountFormatted));
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   }
 
@@ -887,7 +884,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       let TotalFormatted = totalByItem.toFixed(2)
       labelTotalByItem.innerText = this.sharedFunctions.formatNumberToString(parseFloat(TotalFormatted));
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   }
 
@@ -905,5 +902,5 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
 
- 
+
 }

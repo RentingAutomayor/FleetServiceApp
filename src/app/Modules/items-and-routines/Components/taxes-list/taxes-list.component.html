@@ -39,4 +39,10 @@
             </div>
         </div>
     </div>
+
+    <div 
+        *ngIf="taxesAreInvalid"
+        class="container-error">
+        <span class="error">* Debe seleccionar al menos un impuesto</span>
+    </div>
 </div>

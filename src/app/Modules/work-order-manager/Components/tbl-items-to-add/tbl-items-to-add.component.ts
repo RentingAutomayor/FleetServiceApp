@@ -7,7 +7,7 @@ import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
   styleUrls: ['./tbl-items-to-add.component.scss', '../../../../../assets/styles/checkbox.scss','../../../../../assets/styles/app.scss']
 })
 export class TblItemsToAddComponent implements OnInit , OnChanges{
-  
+
   lsMaintenanceItemsTemp: MaintenanceItem[];
   @Input()lsMaintenanceItems: MaintenanceItem[];
   @Input() countChanges: number;
@@ -17,7 +17,7 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
   p: number = 1;
   clearFilterIsVisible:boolean;
 
-  constructor() { 
+  constructor() {
     this.clearFilterIsVisible = false;
     this.lsItemsToAddSelected = [];
     this.countChanges = 0;
@@ -46,11 +46,11 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
     } else {
       let itemTmp  = this.lsItemsToAddSelected.find(it => it.id == item.id);
       let index = this.lsItemsToAddSelected.indexOf(itemTmp);
-      this.lsItemsToAddSelected.splice(index,1);      
+      this.lsItemsToAddSelected.splice(index,1);
     }
 
-    console.log("[ADD ITEMS TO ROUTINE]");
-    console.log(this.lsItemsToAddSelected);
+
+
   }
 
   getCheckBoxId(pId: number) {
@@ -61,16 +61,16 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
     try {
       this.validateItemsChecked();
       let valueToFilter = event.target.value.toString().toLowerCase();
-      console.log(valueToFilter);
+
       if(valueToFilter.trim() != ''){
         this.clearFilterIsVisible = true;
         this.lsMaintenanceItemsTemp = this.lsMaintenanceItems.filter(item => item.code.toLowerCase().includes(valueToFilter) || item.name.toLowerCase().includes(valueToFilter) );
       }else{
        this.clearFilter();
       }
-      
+
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   }
 
@@ -95,10 +95,10 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
           let checkElement: HTMLInputElement = document.querySelector(idCheckbox);
           checkElement.checked = true;
         } catch (error) {
-          console.log(error);
+          //console.warn(error);
         }
-      })    
-    },300)    
+      })
+    },300)
   }
 
   addItemsToWorkOrder(){
@@ -110,7 +110,7 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
       this.lsItemsToAddSelected = [];
       this.addItemsWasCanceled.emit(true);
     }
-    
+
   }
 
 
@@ -121,9 +121,9 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
         let checkElement: HTMLInputElement = document.querySelector(idCheckbox);
         checkElement.checked = false;
       } catch (error) {
-        console.log(error);
+        //console.warn(error);
       }
-    })    
+    })
   }
 
 

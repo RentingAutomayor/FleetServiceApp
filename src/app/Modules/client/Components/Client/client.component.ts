@@ -16,7 +16,7 @@ import { ActionType } from 'src/app/Models/ActionType';
   styleUrls: ['./client.component.scss']
 })
 export class ClientComponent implements OnInit {
-  oConfigPersonComp: ConfigPersonComponent;  
+  oConfigPersonComp: ConfigPersonComponent;
   bFormHasError:boolean;
   errorMessage:string;
   isAwaiting:boolean;
@@ -29,18 +29,18 @@ export class ClientComponent implements OnInit {
   oClientWasSaved:boolean;
   blockFormClient:boolean;
   action:ActionType;
- 
+
 
   constructor(
     private personService:PersonService,
     private ClientService:ClientService,
     private cityService:CityService,
     private router:Router
-  ) { 
+  ) {
     this.bFormHasError = false;
     this.errorMessage = "";
     this.isAwaiting = false;
-    this.oDataIsToUpdate = false;  
+    this.oDataIsToUpdate = false;
     this.oIsToClient= true;
     this.blockFormClient = false;
   }
@@ -49,27 +49,25 @@ export class ClientComponent implements OnInit {
     this.initComponents();
   }
 
-  initComponents(){    
-    this.oClientWasSaved = false;    
+  initComponents(){
+    this.oClientWasSaved = false;
     this.configurePersonComponent();
     this.hideContainerTabs();
     this.sReturnPath = this.ROUTE_MASTER_CLIENT;
-    //console.warn("[before]")
     this.oClientToUpdate = this.ClientService.getClientToUpdate();
     this.blockFormClient = this.ClientService.getBlockFormClient();
-    //console.log("[Client component] : ", this.oClientToUpdate);
-    if(this.oClientToUpdate != null){      
+    if(this.oClientToUpdate != null){
       this.setDataToUpdateClient(this.oClientToUpdate);
-      this.oDataIsToUpdate = true;      
+      this.oDataIsToUpdate = true;
     }
     this.action = this.ClientService.getAction();
     if(this.action == ActionType.CREATE){
       this.blockFormClient = false;
-    }   
+    }
   }
 
   configurePersonComponent(){
-    this.oConfigPersonComp = new ConfigPersonComponent();    
+    this.oConfigPersonComp = new ConfigPersonComponent();
     this.oConfigPersonComp.documentIsVisible = true;
     this.oConfigPersonComp.nameIsVisible = true;
     this.oConfigPersonComp.phoneIsVisible = true;
@@ -91,34 +89,32 @@ export class ClientComponent implements OnInit {
     this.oPersonToUpdate.city = pClient.city;
   }
 
- 
+
   async SetDataToSaveClient(){
     this.isAwaiting = true;
-    try{      
+    try{
       let oClient = new Client();
       oClient = this.personService.getPerson();
-      //console.log(oClient);
       let rta = new ResponseApi();
 
       if(this.oDataIsToUpdate){
-        rta = await this.ClientService.updateClient(oClient);      
-        this.cityService.setSelectedCity(null);       
+        rta = await this.ClientService.updateClient(oClient);
+        this.cityService.setSelectedCity(null);
       }else{
-        rta = await this.ClientService.insertClient(oClient);           
-      }     
+        rta = await this.ClientService.insertClient(oClient);
+      }
 
       if(rta.response){
-        alert(rta.message);  
+        alert(rta.message);
         let clientTmp = await this.ClientService.getClientByDocument(oClient.document);
-        this.ClientService.setClientToUpdate(clientTmp);        
-        this.oClientWasSaved = true; 
-             
+        this.ClientService.setClientToUpdate(clientTmp);
+        this.oClientWasSaved = true;
+
       }
     }catch(err){
-      console.log(err.error.Message);
       this.bFormHasError = true;
       this.errorMessage = err.error.Message;
-    } 
+    }
     this.isAwaiting = false;
   }
 
@@ -136,10 +132,8 @@ export class ClientComponent implements OnInit {
       containerTabs[i].setAttribute("style","display:none");
     }
 
-    let containerToShow_id = `container__${container}`;   
+    let containerToShow_id = `container__${container}`;
     let containerToShow = document.getElementById(containerToShow_id);
-
-    //console.log(containerToShow);
 
     containerToShow.setAttribute("style","display:blick");
   }
@@ -151,17 +145,16 @@ export class ClientComponent implements OnInit {
     }
   }
 
-  
+
   moveContent(event:any){
-    //console.log(event);
-    let containerContent:HTMLDivElement  = document.querySelector("#container__content"); 
-    
-    if(event){     
+    let containerContent:HTMLDivElement  = document.querySelector("#container__content");
+
+    if(event){
       containerContent.style.marginLeft = "250px";
     }else{
       containerContent.style.marginLeft = "60px";
     }
-    
+
   }
-  
+
 }

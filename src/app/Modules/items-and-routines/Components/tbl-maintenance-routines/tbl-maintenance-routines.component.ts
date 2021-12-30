@@ -23,7 +23,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
 
   constructor(
     private maintenanceRoutineService: MaintenanceRoutineService
-  ) { 
+  ) {
     this.frequency_id = 0;
     this.vehicleModel_id = 0;
   }
@@ -106,21 +106,21 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     }
   }
 
-  async updateRoutine(pRoutine:MaintenanceRoutine){    
-    this.isToUpdate = true;  
+  async updateRoutine(pRoutine:MaintenanceRoutine){
+    this.isToUpdate = true;
     this.isAwaiting = true;
     let routineToUpdate = await this.maintenanceRoutineService.getMaintenanceRoutineByID(pRoutine.id);
-    console.log(routineToUpdate);    
+
     this.isAwaiting = false;
     this.maintenanceRoutineService.setRoutine(routineToUpdate);
-    this.oCountChanges += 1; 
+    this.oCountChanges += 1;
     this.hideTable();
   }
 
   async deleteRoutine(pRoutine: MaintenanceRoutine) {
     try {
       if (confirm("¿Está seguro que desea eliminar esta rutina de mantenimiento?")) {
-        this.isAwaiting = true;      
+        this.isAwaiting = true;
         let rta = await this.maintenanceRoutineService.delete(pRoutine);
         this.isAwaiting = false;
         if (rta.response) {
@@ -143,17 +143,17 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
       }else{
         this.vehicleModel_id = 0;
       }
-     
+
       this.maintenanceRoutineService.getMaintenanceRoutines( this.vehicleModel_id )
       .then( lsMaintenanceRoutines =>{
         this.lsMaintenanceRoutines = lsMaintenanceRoutines
         this.isAwaiting = false;
       })
-      
+
     }catch(error){
       console.warn(error);
     }
-    
+
   }
 
   async filterByFrequency(frequency: Frequency){
@@ -165,7 +165,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
       }else{
         this.frequency_id = 0;
       }
-     
+
       this.maintenanceRoutineService.getMaintenanceRoutines(0 , this.frequency_id)
       .then( lsMaintenanceRoutines =>{
         this.lsMaintenanceRoutines = lsMaintenanceRoutines

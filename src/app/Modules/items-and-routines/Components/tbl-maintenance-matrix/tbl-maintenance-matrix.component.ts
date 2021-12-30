@@ -59,11 +59,11 @@ export class TblMaintenanceMatrixComponent implements OnInit {
   }
 
   async setVehicleModel() {
-    let oVehicleModel = this.vehicleService.getVehicleModelSelected(); 
-    console.log("[tbl-matrix]: "+ oVehicleModel.shortName);
-    this.isAwaiting = true;   
+    let oVehicleModel = this.vehicleService.getVehicleModelSelected();
+
+    this.isAwaiting = true;
     this.lsMaintenanceRoutinesByModel = await this.getRoutinesByModel(oVehicleModel.id);
-    console.log("[tbl-matrix.component]: ", this.lsMaintenanceRoutinesByModel);
+
     this.clearCheckBoxSelected();
     this.checkItemsByRoutines(this.lsMaintenanceRoutinesByModel);
     this.isAwaiting = false;
@@ -71,8 +71,8 @@ export class TblMaintenanceMatrixComponent implements OnInit {
 
   async getRoutinesByModel(modelId: number): Promise<MaintenanceRoutine[]>
   {
-    try {      
-      return this.maintenanceRoutineService.getMaintenanceRoutineByModel(modelId);     
+    try {
+      return this.maintenanceRoutineService.getMaintenanceRoutineByModel(modelId);
     } catch (error) {
       console.error(error);
     }
@@ -83,21 +83,21 @@ export class TblMaintenanceMatrixComponent implements OnInit {
       try {
         routine.lsItems.forEach(item => {
           try{
-      
+
             if(item.type.id == this.TIPO_MANO_DE_OBRA){
               let idCheck = this.getChkId(item.id,routine.frequency.id);
-              //console.log("item to check: ", idCheck);
+
               let itemCheck: HTMLInputElement = document.querySelector(`#${idCheck}`);
               itemCheck.checked = true;
-            }           
+            }
           }catch(error){
-            console.warn(error);         
-          }         
+            console.warn(error);
+          }
         });
       } catch (error) {
-        console.warn(error);      
+        console.warn(error);
       }
-      
+
     });
   }
 
@@ -107,7 +107,7 @@ export class TblMaintenanceMatrixComponent implements OnInit {
         this.lsFrequency.forEach(frequency => {
           if(item.type.id == this.TIPO_MANO_DE_OBRA){
             let idCheck = `#${this.getChkId(item.id,frequency.id)}`;
-            //console.log("item to check: ", idCheck);
+
             let itemCheck: HTMLInputElement = document.querySelector(idCheck);
             itemCheck.checked = false;
           }
@@ -116,7 +116,7 @@ export class TblMaintenanceMatrixComponent implements OnInit {
     }catch(error){
       setTimeout(()=> { this.clearCheckBoxSelected() },800);
     }
-    
+
   }
 
   getClass(frequency:string): string{
@@ -127,7 +127,7 @@ export class TblMaintenanceMatrixComponent implements OnInit {
 
   showOtherRoutines(){
     let aColum = document.getElementsByClassName('col_frequency');;
-    
+
     for(let i = 0 ; i < aColum.length; i++){
         if(aColum[i].classList.contains('inactive')){
           aColum[i].classList.remove('inactive');
@@ -139,6 +139,6 @@ export class TblMaintenanceMatrixComponent implements OnInit {
     }
   }
 
-    
+
 
 }

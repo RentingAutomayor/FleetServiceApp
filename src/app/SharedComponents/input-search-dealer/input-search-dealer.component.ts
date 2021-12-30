@@ -32,7 +32,7 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
-      console.log("[DisabledFieldDealer]",this.disableField);
+
       if(change == "countChanges"){
         this.dealerSelected = this.dealerService.getDealerSelected();
         if(this.dealerSelected != null && this.dealerSelected != undefined){
@@ -43,7 +43,7 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
         }
       }else if(change == "disableField"){
         this.toggleFieldDealer();
-      }      
+      }
     }
   }
 
@@ -85,7 +85,7 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
 
   setDataInForm(pDealer: Dealer){
     let {txtDealer} = this.frmSearchDealer.controls;
-    txtDealer.setValue(this.getDealerDescription(pDealer));   
+    txtDealer.setValue(this.getDealerDescription(pDealer));
   }
 
   loseFocus(){

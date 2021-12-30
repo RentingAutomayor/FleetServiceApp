@@ -40,7 +40,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     this.frmMaintenanceRoutine = this.formBuilder.group({
       name: ['',[Validators.required]],
       referencePrice: ['',]
-    }); 
+    });
 
     this.sharedFunction = new SharedFunction();
     this.routineIsValid = true;
@@ -61,13 +61,6 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
           this.vehicleModel_id = this.routineToUpdate.vehicleModel.id;
           this.frequency_id = this.routineToUpdate.frequency.id;
           this.initialRoutine =  this.routineToUpdate.frequency.id;
-
-          console.log("[routineIsValid]",this.routineIsValid);
-          console.log("[fieldName.invalid]",this.fieldName.invalid);
-          console.log("[initialRoutine]",this.initialRoutine);
-          console.log((this.fieldName.invalid || !this.routineIsValid))
-
-
         } else {
           this.clearDataForm();
         }
@@ -86,7 +79,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
 
   async GetItemsByVehicleModel() {
     let oVehicleModel = this.vehicleService.getVehicleModelSelected();
-    console.log("[Vehicle model id]", oVehicleModel.id);
+
     this.lsMaintenanceItems = await this.maintenanceItemService.getItemsByVehicleModel(oVehicleModel.id);
   }
 
@@ -119,10 +112,6 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
       let price = amount * item.referencePrice;
       let taxes = parseFloat(this.calculateTaxesByItem(item, amount));
       let totalByItem = (price + taxes);
-
-      console.log("[Precio por item]: ", price);
-      console.log("[Impuestos por item]", taxes);
-      console.log("[Total + item]"), totalByItem;
       this.showInfoItemIntoRow(item.id, price, taxes, totalByItem);
 
     } catch (error) {
@@ -155,7 +144,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   }
 
   pickItem(event: any, pItem: MaintenanceItem) {
-    console.log("[pick item]", event.checked, pItem.id);
+
     let idTxt = `#txt_${pItem.id}`;
     let txtAmount: HTMLInputElement = document.querySelector(idTxt);
     let idSpanPrice = `#lbl_price_${pItem.id}`;
@@ -176,7 +165,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   updateAmountOfItem(pItem: MaintenanceItem, amount: number) {
     let oItemTmp = this.lsItemsSelected.find(item => item.id == pItem.id);
     let indexElement = this.lsItemsSelected.indexOf(oItemTmp);
-    console.log("[index of " + pItem.name + "]", indexElement)
+
     this.lsItemsSelected[indexElement].amount = amount;
   }
 
@@ -234,7 +223,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
 
       let nTotalPrice = parseFloat(totalPrice.toFixed(2));
       let totalFormated = this.sharedFunction.formatNumberToString(nTotalPrice);
-      console.log(nTotalPrice);
+
       referencePrice.setValue(totalFormated);
       lblTotalPrice.innerText = totalFormated;
 
@@ -274,7 +263,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
       oMaintenenceRoutine.vehicleModel = this.vehicleService.getVehicleModelSelected();
       oMaintenenceRoutine.frequency = this.maintenanceRoutineService.getFrecuencySelected();
       oMaintenenceRoutine.lsItems = this.lsItemsSelected;
-      console.log(oMaintenenceRoutine);
+
       this.maintenanceRoutineService.setRoutine(oMaintenenceRoutine);
       this.routineWasSaved.emit(true);
     } catch (error) {
@@ -289,7 +278,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
 
   async setDataInForm(pRoutine: MaintenanceRoutine) {
 
-    this.frmMaintenanceRoutine.patchValue(pRoutine);    
+    this.frmMaintenanceRoutine.patchValue(pRoutine);
     this.maintenanceRoutineService.setFrecuencySelected(pRoutine.frequency);
     this.vehicleService.setBrandSelected(pRoutine.vehicleModel.brand);
     this.vehicleService.setVehicleTypeSelected(pRoutine.vehicleModel.type);
@@ -300,7 +289,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
         this.lsMaintenanceItems = data;
 
         setTimeout(() => {
-          console.log(pRoutine.lsItems);
+
           if (pRoutine.lsItems != null) {
             this.validateItemsToRoutine(pRoutine.lsItems);
             this.calculateRoutinePrice();
@@ -324,7 +313,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     try {
       let idChechBox = `#${this.getCheckBoxId(pItem.id)}`;
       let idTextBoxAmount = `#${this.getTextAmountId(pItem.id)}`;
-      console.log("[Checkbox id]", idChechBox);
+
 
       let chkItem: HTMLInputElement = document.querySelector(idChechBox);
       let txtAmount: HTMLInputElement = document.querySelector(idTextBoxAmount);
@@ -382,8 +371,8 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   }
 
   setVehiclType() {
-    this.countChanges += 1; +
-      console.log("cambia el tipo");
+    this.countChanges += 1;
+
   }
 
   setFrequency(frequency:Frequency){
@@ -393,14 +382,14 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     }else{
       this.frequency_id = 0;
     }
-    
+
     if(this.initialRoutine != this.frequency_id){
       this.validateRoutineAndFrequency(this.vehicleModel_id,this.frequency_id);
     }else{
       this.routineIsValid = true;
       this.msgRoutineDuplicated = "";
     }
-    
+
   }
 
   setVehicleModel(vehicleModel:VehicleModel){
@@ -414,12 +403,10 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   }
 
   async validateRoutineAndFrequency(routine_id:number,frequency_id: number){
-    console.log(routine_id,frequency_id);
+
     this.maintenanceRoutineService.ValidateRoutineAndFrequency(routine_id,frequency_id)
     .then( rta => {
-      console.log("[validateRoutineAndFrequency]");
-      console.log(rta.response);
-      console.log(rta.message);
+
       this.routineIsValid = rta.response;
       this.msgRoutineDuplicated = rta.message;
     });

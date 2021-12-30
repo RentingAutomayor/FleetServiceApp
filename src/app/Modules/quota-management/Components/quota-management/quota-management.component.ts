@@ -39,7 +39,7 @@ export class QuotaManagementComponent implements OnInit {
 
   sharedFunction: SharedFunction;
   transactionSelected: Transaction;
-  trx_id:number;    
+  trx_id:number;
 
   constructor(
     private quotaService: QuotaService,
@@ -73,7 +73,7 @@ export class QuotaManagementComponent implements OnInit {
     this.transactionSelected.consecutive = 0;
     this.transactionSelected.code = null;
     this.transactionSelected.movement = new Movement();
-    this.trx_id = 0;    
+    this.trx_id = 0;
   }
 
   ngOnInit(): void {
@@ -104,7 +104,7 @@ export class QuotaManagementComponent implements OnInit {
   async getLsClientsWithQuota() {
     try {
       this.lsClientsWithQuota = await this.quotaService.getClientsWithQuota();
-      console.log(this.lsClientsWithQuota);
+      //console.log(this.lsClientsWithQuota);
       setTimeout(() => {
         this.formatQuantities(this.lsClientsWithQuota);
       }, 500)
@@ -117,7 +117,7 @@ export class QuotaManagementComponent implements OnInit {
   async getTodayTransactions() {
     try {
       this.lsTodayTransactions = await this.trxService.getTodayTransactions();
-      console.log(this.lsTodayTransactions);    
+      //console.log(this.lsTodayTransactions);
 
     } catch (error) {
       console.warn(error);
@@ -188,7 +188,7 @@ export class QuotaManagementComponent implements OnInit {
 
     trxApprovedQuota = this.setDataTransaction(oClient, movement, value, null, null, lsObs, null);
 
-    console.log(trxApprovedQuota);
+
 
     this.saveTransaction(trxApprovedQuota).then((rta) => {
       if (rta) {
@@ -278,7 +278,6 @@ export class QuotaManagementComponent implements OnInit {
 
   getStringHour(trxDate: Date): string {
     let strHour = trxDate.toLocaleString();
-    //console.log(strHour.substr(11,8));
     return strHour.substr(11, 8);
   }
 
@@ -320,9 +319,9 @@ export class QuotaManagementComponent implements OnInit {
 
   formatNumber(event: any) {
     let { txtApprovedQuota } = this.frmApprovedQuota.controls;
-    console.log(event);
+
     let numberToTransform = event.target.value.toString().replace(/\,/g, '');
-    console.log(this.formatNumberToString(numberToTransform));
+
 
     event.target.value = this.formatNumberToString(numberToTransform);
   }
@@ -357,7 +356,7 @@ export class QuotaManagementComponent implements OnInit {
 
         trxFreeUpQuota = this.setDataTransaction(oClient, movement, value, null, null, lsObs, null);
 
-        console.log(trxFreeUpQuota);
+
 
         this.saveTransaction(trxFreeUpQuota).then((rta) => {
           if (rta) {
@@ -390,7 +389,7 @@ export class QuotaManagementComponent implements OnInit {
 
     trxAddQuota = this.setDataTransaction(oClient, movement, value, null, null, lsObs, null);
 
-    console.log(trxAddQuota);
+
 
     this.saveTransaction(trxAddQuota).then((rta) => {
       if (rta) {
@@ -413,7 +412,7 @@ export class QuotaManagementComponent implements OnInit {
           resolve(false);
         } else {
           resolve(true);
-          console.log(rta.message);
+
         }
         this.isAwaiting = false;
         return rta.response;
@@ -434,7 +433,7 @@ export class QuotaManagementComponent implements OnInit {
 
       let observation = txtCancelQuotaObservation.value;
       let movement = this.lsMovements.find(mv => mv.id == this.CANCELACION_DE_CUPO);
-      let lsObs: TransactionObservation[] = [];      
+      let lsObs: TransactionObservation[] = [];
 
       if (observation != '') {
         let trxObservation = new TransactionObservation();
@@ -444,7 +443,7 @@ export class QuotaManagementComponent implements OnInit {
 
       trxCancelQuota = this.setDataTransaction(oClient, movement, value, null, null, lsObs, null);
 
-      console.log(trxCancelQuota);
+
 
       this.saveTransaction(trxCancelQuota).then((rta) => {
         if (rta) {
@@ -460,6 +459,6 @@ export class QuotaManagementComponent implements OnInit {
 
   setTransaction(trx: Transaction){
     this.transactionSelected = trx;
-    this.trx_id = trx.id;    
+    this.trx_id = trx.id;
   }
 }

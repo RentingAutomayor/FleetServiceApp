@@ -12,27 +12,23 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
   frmType: FormGroup;
   lsType: TypeOfMaintenanceItem[];
   lsTypeToUpdate: TypeOfMaintenanceItem;
-  @Input() countChanges:number;
+  @Input() typeOfItem: TypeOfMaintenanceItem;
   @Output() lostFocus = new EventEmitter<boolean>();
-  @Output() chageType = new EventEmitter<boolean>();
+  @Output() chageType = new EventEmitter<TypeOfMaintenanceItem>();
 
   constructor(
     private maintenanceItemService:MaintenanceItemService
-  ) { 
+  ) {
     this.frmType = new FormGroup({
       cmbType: new FormControl('Seleccione ...')
     });
   }
+
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      if (change == "countChanges") {
-        this.lsTypeToUpdate = this.maintenanceItemService.getTypeOfItem();
-        if (this.lsTypeToUpdate != null) {
-          this.setDataInForm(this.lsTypeToUpdate);
-        } else {
-          this.clearForm();
-        }
-      }
+    try {
+      this.setDataInForm(this.typeOfItem);
+    } catch (error) {
+      console.warn(error)
     }
   }
 
@@ -42,9 +38,15 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
 
   async initComponents(){
     try {
-      this.countChanges = 0;
       this.clearForm();
-      this.lsType = await this.maintenanceItemService.getTypeOfMaintenanceItem();
+      this.maintenanceItemService.getTypeOfMaintenanceItem()
+      .then(lsTypes => {
+        this.lsType = lsTypes;
+
+        if(this.typeOfItem !== null){
+          this.setDataInForm(this.typeOfItem)
+        }
+      });
     } catch (err) {
       console.error(err.error.Message);
       alert(err.error.Message);
@@ -53,12 +55,12 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
 
   setType(event:any){
     let typeOfItem = this.lsType.find(tp => tp.id == event.value);
-    this.maintenanceItemService.settypeOfItem(typeOfItem);
-    this.chageType.emit(true);
+    this.chageType.emit(typeOfItem);
   }
 
   setDataInForm(pType:TypeOfMaintenanceItem){
-    this.frmType.controls.cmbType.setValue(pType.id);
+    const indexType = (pType!==null)?pType.id:0;
+    this.frmType.controls.cmbType.setValue(indexType);
   }
 
   clearForm(){

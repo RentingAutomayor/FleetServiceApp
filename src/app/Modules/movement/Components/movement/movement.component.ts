@@ -97,7 +97,7 @@ export class MovementComponent implements OnInit, OnChanges {
     try {
       let oMovement = this.getDataForm();
       let rta = new ResponseApi();
-      console.log(oMovement);
+
 
       this.isAwaiting = true;
 
@@ -134,7 +134,7 @@ export class MovementComponent implements OnInit, OnChanges {
     let containerToShow_id = `container__${container}`;
     let containerToShow = document.getElementById(containerToShow_id);
 
-    ////console.log(containerToShow);
+
 
     containerToShow.setAttribute("style", "display:blick");
   }

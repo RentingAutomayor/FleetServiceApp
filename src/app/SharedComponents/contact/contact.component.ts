@@ -31,7 +31,7 @@ export class ContactComponent implements OnInit, OnChanges {
   btnAddContact: HTMLButtonElement;
   containerErrorAdd: HTMLElement;
   sOwnerName:string;
- 
+
 
   //pagination
   p: number = 1;
@@ -43,8 +43,8 @@ export class ContactComponent implements OnInit, OnChanges {
 
   buttonAddIsVisible:boolean;
   @Input() action: ActionType;
-  
-  
+
+
 
   constructor(
     private personService: PersonService,
@@ -56,42 +56,42 @@ export class ContactComponent implements OnInit, OnChanges {
     this.sOwnerName="";
     this.disableActionButtons = false;
     this.buttonAddIsVisible = false;
-    
+
   }
 
   ngOnInit(): void {
     this.initComponents();
-    setTimeout(()=>{     
+    setTimeout(()=>{
       //await this time because the btn it's no ready yet
       this.validateIfButtonAddMustVisible();
     },1500);
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    
+
     for (let change in changes) {
       if (change == "clientWasSaved") {
-        //console.log("[clientWasSaved]: ", changes["clientWasSaved"].currentValue)
+
         if (changes["clientWasSaved"].currentValue == true) {
-          //console.log("Se ha guardado el cliente ...");
+
           this.activateButtonAdd();
-          this.client = this.clientService.getClientToUpdate();  
-          this.updateTitleComponent();        
+          this.client = this.clientService.getClientToUpdate();
+          this.updateTitleComponent();
         }
       }
 
       if (change == "dealerWasSaved") {
-        console.log("[dealerWasSaved]: ", changes["dealerWasSaved"].currentValue)
+
         if (changes["dealerWasSaved"].currentValue == true) {
-          console.log("Se ha guardado el concesionario ...");
+
           this.activateButtonAdd();
-          this.dealer = this.dealerService.getDealerToUpdate();  
-          this.updateTitleComponent();        
+          this.dealer = this.dealerService.getDealerToUpdate();
+          this.updateTitleComponent();
         }
       }
     }
 
-    setTimeout(()=>{     
+    setTimeout(()=>{
       //await this time because the btn it's no ready yet
       this.validateIfButtonAddMustVisible();
     },1500);
@@ -113,7 +113,7 @@ export class ContactComponent implements OnInit, OnChanges {
     titleComp.innerHTML = `Contactos de: ${this.validateNameOfOwner()}`
   }
 
-  initComponents() {  
+  initComponents() {
     this.isAwaiting = false;
     this.isToInsert = false;
     this.oCountContact = 0;
@@ -121,23 +121,23 @@ export class ContactComponent implements OnInit, OnChanges {
     this.configurePersonComponent();
   }
 
-  async showTableContacts() { 
+  async showTableContacts() {
     if (this.isToClient) {
       this.getListOfContactsByClient();
     }
     if(this.isToDealer){
       this.getListOfContactsByDealer();
-    }   
+    }
   }
 
   async getListOfContactsByClient(){
-    console.log("Validando configuración para clientes");
+
     this.client = this.clientService.getClientToUpdate();
     if (this.client != null) {
       this.updateTitleComponent();
-      console.log("validando contactos para el cliente: " + this.client.name);
+
       this.lsContacts = await this.contactService.getContacts(this.client.id, "client");
-      console.log(this.lsContacts);
+
       this.activateButtonAdd();
     } else {
       this.disableButtonAdd();
@@ -145,13 +145,13 @@ export class ContactComponent implements OnInit, OnChanges {
   }
 
   async getListOfContactsByDealer(){
-    console.log("Validando configuración para concesionarios");
+
     this.dealer = this.dealerService.getDealerToUpdate();
     if(this.dealer != null){
       this.updateTitleComponent();
-      console.log("validando contactos para el concesionario: " + this.dealer.name);
+
       this.lsContacts = await this.contactService.getContacts(this.dealer.id, "dealer");
-      console.log(this.lsContacts);
+
       this.activateButtonAdd();
     } else {
       this.disableButtonAdd();
@@ -165,7 +165,7 @@ export class ContactComponent implements OnInit, OnChanges {
       this.btnAddContact.classList.remove("error");
     }catch(error){
       console.warn(error.message)
-    }   
+    }
   }
 
   removeContainerError(){
@@ -184,7 +184,7 @@ export class ContactComponent implements OnInit, OnChanges {
       this.btnAddContact.className += `${this.btnAddContact.className} error`;
     } catch (error) {
       console.warn(error.message)
-    }     
+    }
   }
 
   addContainerError(){
@@ -220,8 +220,8 @@ export class ContactComponent implements OnInit, OnChanges {
   updateContact(pContact: Contact) {
     this.isToInsert = false;
     this.oCountContact += 1;
-    console.log("[contact component]:");
-    console.log(pContact);
+
+
     this.setDataToUpdatContact(pContact);
     this.showPopUp();
   }
@@ -252,7 +252,7 @@ export class ContactComponent implements OnInit, OnChanges {
 
       if(oContact != null){
         let rta = await this.saveData(oContact);
-      }      
+      }
 
     } catch (err) {
       console.error(err.error.Message);
@@ -261,24 +261,24 @@ export class ContactComponent implements OnInit, OnChanges {
 
   }
 
-  setDataClient_id(oContact:Contact):Contact{    
+  setDataClient_id(oContact:Contact):Contact{
     if (this.client != null) {
-      oContact.Client_id = this.client.id;     
+      oContact.Client_id = this.client.id;
     } else {
       alert("No se puede guardar contacto hasta que no se haya guardado los datos básicos del cliente.");
       return null;
-    } 
+    }
     return oContact;
   }
 
   setDataDealer_id(oContact:Contact): Contact{
     if (this.dealer != null) {
-      oContact.Dealer_id = this.dealer.id;     
+      oContact.Dealer_id = this.dealer.id;
     } else {
       alert("No se puede guardar contacto hasta que no se haya guardado los datos básicos del concesionario.");
       return null;
-    } 
-    return oContact; 
+    }
+    return oContact;
   }
 
   async saveData(oContact: Contact):Promise<ResponseApi>{
@@ -299,9 +299,9 @@ export class ContactComponent implements OnInit, OnChanges {
     } else {
       alert("Pasó algo");
     }
-    
+
     return rta;
-      
+
   }
 
   setDataContact(oPerson: Person): Contact {
@@ -360,7 +360,6 @@ export class ContactComponent implements OnInit, OnChanges {
     this.oPersonToUpdate.website = (pContact.website != null) ? pContact.website.toLowerCase() : "";
     this.oPersonToUpdate.city = pContact.city;
     this.oPersonToUpdate.jobTitle = pContact.jobTitle;
-    console.log("[Person component setted person]");
     this.personService.setPersonToUpdate(this.oPersonToUpdate);
     this.jobtitleService.setJobTitleSelected(pContact.jobTitle);
   }
@@ -385,19 +384,19 @@ export class ContactComponent implements OnInit, OnChanges {
       case ActionType.CREATE:
           this.buttonAddIsVisible = true;
         break;
-    }   
+    }
 
     this.validateData();
   }
 
-  validateData(){  
-    //console.warn("[validateData]",this.client,this.dealer);
+  validateData(){
+
     if((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
-      //console.warn("[validateData] -> Activa botón");
+
       this.activateButtonAdd();
       this.removeContainerError();
     }else{
-      //console.warn("[validateData] -> Inactiva botón");
+
       this.disableButtonAdd();
       this.addContainerError();
     }

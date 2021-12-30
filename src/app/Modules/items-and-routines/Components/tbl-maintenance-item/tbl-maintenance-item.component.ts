@@ -5,6 +5,7 @@ import { VehicleModel } from 'src/app/Models/VehicleModel';
 import { MaintenanceItemService } from 'src/app/Modules/items-and-routines/Services/MaintenanceItem/maintenance-item.service';
 import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.service';
 import { CompanyType } from 'src/app/Models/CompanyType';
+import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem';
 
 
 @Component({
@@ -94,7 +95,7 @@ export class TblMaintenanceItemComponent implements OnInit {
   async updateMaintenanceItem(pItem: MaintenanceItem) {
     this.isToUpdate = true;
     let oMaintenanceItemDB = await this.maintenanceItemService.getMaintenanceItemById(pItem.id);
-    console.log("[tbl-maintence-item]: ", oMaintenanceItemDB);
+    //console.log("[tbl-maintence-item]: ", oMaintenanceItemDB);
     this.maintenanceItemService.setItemToUpdate(oMaintenanceItemDB);
     this.oCountChanges += 1;
     this.showPopUp();
@@ -130,7 +131,7 @@ export class TblMaintenanceItemComponent implements OnInit {
   async saveMaintenanceItem() {
     try {
       let oItem = this.maintenanceItemService.getItem();
-      console.log("[tbl-item component]: ", oItem);
+
       this.saveDataInDB(oItem);
     } catch (err) {
       console.error(err.error.Message);
@@ -182,17 +183,16 @@ export class TblMaintenanceItemComponent implements OnInit {
     }
   }
 
-  filterItems() {
-    let type = this.maintenanceItemService.getTypeOfItem();
-    this.lsMaintenanceItems = this.lsMaintenanceItemsTmp;
-    this.lsMaintenanceItems = this.lsMaintenanceItems.filter(mi => mi.type.id == type.id);
+  filterItems(typeOfItem: TypeOfMaintenanceItem) {
+     this.lsMaintenanceItems = this.lsMaintenanceItemsTmp;
+     this.lsMaintenanceItems = this.lsMaintenanceItems.filter(mi => mi.type.id == typeOfItem.id);
   }
 
   filterItemsByDescription(event: any) {
     let value = event.target.value;
-    console.log(value);
 
-    this.lsMaintenanceItems = this.lsMaintenanceItemsTmp;   
+
+    this.lsMaintenanceItems = this.lsMaintenanceItemsTmp;
     this.lsMaintenanceItems = this.lsMaintenanceItems.filter(mi => (mi.code.toLowerCase().includes(value.toLowerCase()) || mi.name.toLowerCase().includes(value.toLowerCase())));
   }
 

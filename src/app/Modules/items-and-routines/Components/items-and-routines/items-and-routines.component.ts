@@ -29,7 +29,7 @@ export class ItemsAndRoutinesComponent implements OnInit {
     this.hideContainerTabs();
   }
 
-  
+
 
   openTab(oButton: any, container: string) {
     let tabLinks = document.getElementsByClassName("tab_link");
@@ -47,7 +47,7 @@ export class ItemsAndRoutinesComponent implements OnInit {
     let containerToShow_id = `container__${container}`;
     let containerToShow = document.getElementById(containerToShow_id);
 
-    //console.log(containerToShow);
+
 
     containerToShow.setAttribute("style", "display:block");
     this.vehicleService.setBrandSelected(null);
@@ -63,7 +63,7 @@ export class ItemsAndRoutinesComponent implements OnInit {
 
 
   moveContent(event: any) {
-    console.log(event);
+
     let containerContent: HTMLDivElement = document.querySelector("#container__content");
     if (event) {
       containerContent.style.marginLeft = "250px";

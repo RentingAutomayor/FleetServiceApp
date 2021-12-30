@@ -28,7 +28,7 @@ export class TblContractComponent implements OnInit {
   constructor(
     private contractService:ContractService,
     private router: Router
-  ) { 
+  ) {
     this.hideButtonAdd  = false;
   }
 
@@ -42,7 +42,7 @@ export class TblContractComponent implements OnInit {
       this.companyStorage = SecurityValidators.validateUserAndCompany();
     } catch (error) {
       console.warn(error);
-    }    
+    }
   }
 
   async initComponents(){
@@ -73,23 +73,22 @@ export class TblContractComponent implements OnInit {
           this.enableButtonsEditAndDelete =  true;
           break;
       }
-     
+
       this.isAwaiting = false;
-    }catch(error){  
+    }catch(error){
       console.error(error);
     }
   }
-  
+
   moveContent(event:any){
-    console.log(event);
-    let containerContent:HTMLDivElement  = document.querySelector("#container__content"); 
-    
-    if(event){     
+    let containerContent:HTMLDivElement  = document.querySelector("#container__content");
+
+    if(event){
       containerContent.style.marginLeft = "250px";
     }else{
       containerContent.style.marginLeft = "0px";
     }
-    
+
   }
 
   insertContract(){
@@ -105,12 +104,11 @@ export class TblContractComponent implements OnInit {
       let oContractDetails = await this.contractService.getContractByID(pContract.id);
       this.isAwaiting = false;
       this.contractService.setAction(ActionType.READ);
-      console.log("[tbl-contract contract-to-see-details]: ",oContractDetails);
       this.contractService.setContract(oContractDetails);
       this.router.navigate(['/MasterContracts/Contract']);
     } catch (error) {
       console.error(error);
-    }    
+    }
   }
 
   async updateContract(pContract:Contract){
@@ -119,12 +117,11 @@ export class TblContractComponent implements OnInit {
       let oContractToUpdate = await this.contractService.getContractByID(pContract.id);
       this.isAwaiting = false;
       this.contractService.setAction(ActionType.UPDATE);
-      console.log("[tbl-contract contract-to-update]: ",oContractToUpdate);
       this.contractService.setContract(oContractToUpdate);
       this.router.navigate(['/MasterContracts/Contract']);
     } catch (error) {
       console.error(error);
-    }     
+    }
   }
 
   async deleteContract(pContract: Contract){

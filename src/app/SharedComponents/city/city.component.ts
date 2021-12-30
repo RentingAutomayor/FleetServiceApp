@@ -34,11 +34,11 @@ export class CityComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
-      try {        
-        //console.log("[Cambios componente ciudad]");
-        //console.log(changes);
+      try {
+
+
         this.city = this.cityService.getSelectedCity();
-        //console.log("[ciudad]:",this.city);
+
         if (this.city != null) {
           this.searchCities(this.city.departmentId);
           this.setDataInForm(this.city);
@@ -84,7 +84,7 @@ export class CityComponent implements OnInit, OnChanges {
         this.frmCity.enable();
       }
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   }
 

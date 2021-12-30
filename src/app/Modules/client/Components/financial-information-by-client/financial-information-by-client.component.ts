@@ -28,13 +28,13 @@ export class FinancialInformationByClientComponent implements OnInit {
     private clientService:ClientService,
     private transactionService: TransactionService,
     private quotaService: QuotaService
-  ) { 
+  ) {
     this.frmQuota = new FormGroup({
       txtApprovedQuota: new FormControl(''),
       txtCurrentQuota: new FormControl(''),
       txtConsumedQuota: new FormControl(''),
       txtInTransitQuota: new FormControl('')
-    }); 
+    });
 
   }
 
@@ -44,27 +44,26 @@ export class FinancialInformationByClientComponent implements OnInit {
 
   async initComponents(){
     this.isAwaiting = false;
-    
+
     this.oClient = this.clientService.getClientToUpdate();
 
     this.sharedFunctions = new SharedFunction();
-    
- 
+
+
     if(this.oClient != null){
       this.isAwaiting = true;
       this.getQuotaByClient(this.oClient.id);
-      this.getTransactionsByClient( this.oClient.id);    
+      this.getTransactionsByClient( this.oClient.id);
       this.isAwaiting = false;
     }
-    
-   
+
+
   }
 
   async getTransactionsByClient(client_id : number){
     try {
         this.transactionService.getTransactionsByClient(client_id).then(logTrx => {
           this.lsTransactionByClient = logTrx;
-          console.log(this.lsTransactionByClient);
         })
     } catch (error) {
       console.warn(error);
@@ -77,7 +76,7 @@ export class FinancialInformationByClientComponent implements OnInit {
         this.financialInformationByClient = infoClient;
         if(this.financialInformationByClient){
           this.setFinancialInformationByClient(this.financialInformationByClient);
-        }        
+        }
       });
     } catch (error) {
       console.warn(error);

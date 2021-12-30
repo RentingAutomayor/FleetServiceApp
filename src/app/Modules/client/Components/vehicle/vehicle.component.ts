@@ -18,7 +18,7 @@ export class VehicleComponent implements OnInit, OnChanges {
   vehicleToUpdate:Vehicle;
   @Output() vehicleWasSaved = new  EventEmitter<boolean>();
   @Output() vehicleWasCancel = new  EventEmitter<boolean>();
-  @Input() countVehicle: number;  
+  @Input() countVehicle: number;
   oCountChanges:number;
   sharedFunction:SharedFunction
 
@@ -26,7 +26,7 @@ export class VehicleComponent implements OnInit, OnChanges {
     private vehicleService: VehicleService,
     private formBuilder: FormBuilder
 
-  ) { 
+  ) {
     this.buildFormVehicle();
     this.sharedFunction = new SharedFunction();
   }
@@ -60,18 +60,16 @@ export class VehicleComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     for (let change in changes) {
       try {
-        //console.log(changes);
         if (change == "countVehicle") {
           this.cleanFormData();
           this.vehicleToUpdate = this.vehicleService.getVehicleToUpdate();
           if(this.vehicleToUpdate != null){
             this.setDataInForm(this.vehicleToUpdate);
-            console.log(this.vehicleToUpdate);
           } else{
-            this.cleanFormData();            
-          }         
-        }  
-        
+            this.cleanFormData();
+          }
+        }
+
       } catch (err) {
         console.error(err);
         continue;
@@ -93,7 +91,6 @@ export class VehicleComponent implements OnInit, OnChanges {
 
   saveVehicle(){
     let oVehicle = this.setDataVehicle();
-    console.log(oVehicle);
     this.saveData(oVehicle);
   }
 
@@ -113,20 +110,17 @@ export class VehicleComponent implements OnInit, OnChanges {
 
     oVehicle.vehicleState = this.vehicleService.getVehicleStateSelected();
     oVehicle.vehicleModel = this.vehicleService.getVehicleModelSelected();
-    
-    console.log(oVehicle);
     return oVehicle;
   }
 
   async saveData(pVehicle:Vehicle){
     this.vehicleService.setVehicle(pVehicle);
-    console.log('[vehículo a guardar]: ', pVehicle);
     this.vehicleWasSaved.emit(true);
   }
 
   setDataInForm(pVehicle:Vehicle){
     this.frmVehicle.patchValue(pVehicle);
-    this.vehicleService.setBrandSelected(pVehicle.vehicleModel.brand); 
+    this.vehicleService.setBrandSelected(pVehicle.vehicleModel.brand);
     this.vehicleService.setVehicleTypeSelected(pVehicle.vehicleModel.type);
     this.vehicleService.setVehicleModelSelected(pVehicle.vehicleModel);
     this.vehicleService.setVehicleStateSelected(pVehicle.vehicleState);
@@ -135,7 +129,7 @@ export class VehicleComponent implements OnInit, OnChanges {
 
   cleanFormData(){
     this.frmVehicle.reset();
-    this.vehicleService.setBrandSelected(null);    
+    this.vehicleService.setBrandSelected(null);
     this.vehicleService.setVehicleTypeSelected(null);
     this.vehicleService.setVehicleModelSelected(null);
     this.vehicleService.setVehicleStateSelected(null);
@@ -147,14 +141,14 @@ export class VehicleComponent implements OnInit, OnChanges {
   }
 
   setVehiclType(){
-    this.oCountChanges += 1;    
+    this.oCountChanges += 1;
   }
   comeBack(){
     this.vehicleWasCancel.emit(true);
   }
 
   valitateTyping(event:any, type:string){
-    InputValidator.validateTyping(event,type);   
+    InputValidator.validateTyping(event,type);
   }
 
 }

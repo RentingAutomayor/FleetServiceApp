@@ -22,7 +22,7 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
 
   constructor(
     private clientService: ClientService
-  ) { 
+  ) {
     this.frmSearchClient = new FormGroup({
       txtClient: new FormControl('')
     });
@@ -39,10 +39,10 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
         }else{
           this.frmSearchClient.reset();
         }
-      }else if(change == "disableField"){      
+      }else if(change == "disableField"){
           this.toggleClientField();
       }
-      
+
     }
   }
 
@@ -62,20 +62,20 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
   }
 
   searchBydescription(sDescription:string){
-    console.log(sDescription);
+
     if(sDescription == ""){
       this.clientService.setClientSelected(null);
     }
     this.listIsvisible = true;
-    this.description.next(sDescription);    
+    this.description.next(sDescription);
   }
 
   getClientDescription(pClient:Client): string{
     return `${pClient.document} | ${pClient.name.toUpperCase()}`;
   }
 
-  setClient(pClient:Client){    
-    console.log(pClient);
+  setClient(pClient:Client){
+
     this.clientSelected = pClient;
     this.setDataInForm(pClient);
     this.listIsvisible = false;
@@ -99,6 +99,6 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
     }else{
       txtClient.enable();
     }
-    
+
   }
 }

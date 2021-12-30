@@ -40,7 +40,7 @@ export class TblMovementsComponent implements OnInit {
     }
   }
 
-  insertMovement(){    
+  insertMovement(){
     this.movementService.setMovementToUpdate(null);
     this.countChanges += 1;
     this.router.navigate(['/MasterMovements/Movement']);
@@ -49,18 +49,18 @@ export class TblMovementsComponent implements OnInit {
   async updateMovement(movement_id:number){
     try {
       let oMovement = await this.movementService.getMovementById(movement_id);
-      console.log(oMovement);    
-      this.movementService.setMovementToUpdate(oMovement);      
+
+      this.movementService.setMovementToUpdate(oMovement);
       this.router.navigate(['/MasterMovements/Movement']);
     } catch (error) {
       console.warn(error);
     }
-   
+
   }
 
   async deleteMovement(pMovement:Movement){
     try {
-      
+
       if(confirm("¿Está seguro que desea eliminar este movimiento?")){
         this.isAwaiting = true;
         let rta = await this.movementService.delete(pMovement);
@@ -69,7 +69,7 @@ export class TblMovementsComponent implements OnInit {
           alert(rta.message);
           this.getMovementList();
         }
-      }     
+      }
     } catch (error) {
       console.warn(error);
     }

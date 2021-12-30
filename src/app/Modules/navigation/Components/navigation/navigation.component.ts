@@ -15,28 +15,28 @@ export class NavigationComponent implements OnInit{
                     this.loadApp();
    }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     this.initComponents();
   }
 
   session: any;
   moduleFathers: any[] = [];
-  loadApp(){    
-    this.session = JSON.parse(sessionStorage.getItem('sessionUser'))    
-    if (this.session == null) {      
-      this.router.navigate(['Login']);      
+  loadApp(){
+    this.session = JSON.parse(sessionStorage.getItem('sessionUser'))
+    if (this.session == null) {
+      this.router.navigate(['Login']);
     }
     this.session.group.modules.forEach(element => {
       if (element.id_moduleF == 0) {
-        this.moduleFathers.push(element);  
-      }      
-    });    
+        this.moduleFathers.push(element);
+      }
+    });
 
-    console.log(this.moduleFathers);
+
   }
 
   initComponents() {
-    this.containerMenu = document.querySelector("#container__menu");   
+    this.containerMenu = document.querySelector("#container__menu");
   }
 
 

@@ -1,23 +1,26 @@
 
-import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { setTime } from 'ngx-bootstrap/chronos/utils/date-setters';
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges, AfterContentChecked, AfterContentInit } from '@angular/core';
 import { Tax } from 'src/app/Models/Tax';
 import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service';
+import { ItemHandleTaxes } from 'src/app/Models/ItemHandleTaxes';
+
 
 @Component({
   selector: 'app-taxes-list',
   templateUrl: './taxes-list.component.html',
   styleUrls: ['./taxes-list.component.scss', '../../../../../assets/styles/checkbox.scss']
 })
-export class TaxesListComponent implements OnInit, OnChanges {
+export class TaxesListComponent implements OnInit, OnChanges, AfterContentInit {
   lsTaxes: Tax[];
   lsTaxesSelected: Tax[];
   itemHandleTax: boolean;
   prefixTaxContainer: string;
   @Input() itmHandleTax: boolean;
   @Input() inpLsTaxSelected: Tax[];
-  @Output() taxWasSelected = new EventEmitter<Tax[]>();
-  
+  @Output() taxWasSelected = new EventEmitter<ItemHandleTaxes>();
+  modelItemHadleTaxes: ItemHandleTaxes = {} as ItemHandleTaxes
+  taxesAreInvalid: boolean;
+
 
   constructor(
     private maintenanceItemService: MaintenanceItemService
@@ -25,35 +28,31 @@ export class TaxesListComponent implements OnInit, OnChanges {
     this.itemHandleTax = false;
     this.prefixTaxContainer = 'chk_tax_';
     this.lsTaxesSelected = [];
+    this.taxesAreInvalid = true;
   }
+
+  ngAfterContentInit(): void {
+    this.activateTaxes(this.itmHandleTax);
+    if(this.itmHandleTax){
+      this.checkTaxButton(this.inpLsTaxSelected);
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
 
-    for (const change in changes) {
-      console.log("[taxt list component]")
-      console.log(change);
-      switch(change){
-        case "itmHandleTax":
-          this.activateTaxes(this.itmHandleTax);
-          break;
-        case "inpLsTaxSelected":
-          this.checkTaxButton(this.inpLsTaxSelected);
-          break;
-      } 
-    }
-    
   }
 
   ngOnInit(): void {
+    //console.log("ngOnInit Taxes")
     this.getTaxesList();
     this.activateTaxes(this.itmHandleTax);
   }
 
-
-
   async getTaxesList() {
     try {
-      this.lsTaxes = await this.maintenanceItemService.getTaxesList();
-      console.log(this.lsTaxes);
+      await this.maintenanceItemService.getTaxesList().then(taxes => {
+        this.lsTaxes = taxes;
+      });
     } catch (error) {
       console.warn(error);
     }
@@ -67,13 +66,24 @@ export class TaxesListComponent implements OnInit, OnChanges {
           inputYes.checked = true;
           inputNo.checked = false;
           this.itemHandleTax = true;
+          this.modelItemHadleTaxes  = {
+            handleTaxes: this.itemHandleTax,
+            lsTaxes: this.lsTaxesSelected
+          }
+          this.taxesAreInvalid = (this.lsTaxesSelected.length>0)?false:true
+          this.taxWasSelected.emit(this.modelItemHadleTaxes);
         } else {
           this.lsTaxesSelected = [];
           inputYes.checked = false;
           inputNo.checked = true;
           this.itemHandleTax = false;
-          this.taxWasSelected.emit(this.lsTaxesSelected);
-        }    
+          this.modelItemHadleTaxes  = {
+            handleTaxes: this.itemHandleTax,
+            lsTaxes: this.lsTaxesSelected
+          }
+          this.taxesAreInvalid = false
+          this.taxWasSelected.emit(this.modelItemHadleTaxes);
+        }
 
 
     } catch (error) {
@@ -88,15 +98,20 @@ export class TaxesListComponent implements OnInit, OnChanges {
   AddOrRemoveTaxToList(event: any, tax: Tax) {
     if (event.target.checked) {
       this.lsTaxesSelected.push(tax);
-      console.log("Agrega impuesto");
+
     } else {
       let taxTemp = this.lsTaxesSelected.find(tx => tx.id == tax.id);
       let index = this.lsTaxesSelected.indexOf(taxTemp);
-      console.log("Elimina impuesto: ", index);
+
       this.lsTaxesSelected.splice(index, 1);
     }
-    console.log(this.lsTaxesSelected);
-    this.taxWasSelected.emit(this.lsTaxesSelected);
+
+    this.taxesAreInvalid  = (this.lsTaxesSelected.length>0)? false : true;
+    this.modelItemHadleTaxes  = {
+      handleTaxes: this.itemHandleTax,
+      lsTaxes: this.lsTaxesSelected
+    }
+    this.taxWasSelected.emit(this.modelItemHadleTaxes);
   }
 
 
@@ -105,22 +120,19 @@ export class TaxesListComponent implements OnInit, OnChanges {
       setTimeout(() => {
         this.disableChecks();
 
-        console.log("[checkTaxButton]");
-        console.log(lsTaxes);
-
-        this.lsTaxesSelected =  lsTaxes;
-        if(lsTaxes.length > 0){
-          for (const tax of lsTaxes) {
-            let idCheck = `#${this.getTaxContainerId(tax.id)}`;
-            let checkTax: HTMLInputElement = document.querySelector(idCheck);
-            checkTax.checked = true;
+          this.lsTaxesSelected =  lsTaxes;
+          if(lsTaxes.length > 0){
+            for (const tax of lsTaxes) {
+              let idCheck = `#${this.getTaxContainerId(tax.id)}`;
+              let checkTax: HTMLInputElement = document.querySelector(idCheck);
+              checkTax.checked = true;
+            }
           }
-        }              
-      }, 300)
+      }, 600)
     } catch (error) {
       console.warn(error);
     }
-    
+
   }
 
   disableChecks(){
@@ -133,7 +145,7 @@ export class TaxesListComponent implements OnInit, OnChanges {
     } catch (error) {
       console.warn(error);
     }
-    
+
   }
 
 }

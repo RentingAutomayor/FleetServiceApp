@@ -27,7 +27,7 @@ export class WorkOrderManagerComponent implements OnInit {
   trx_id:number;
   frm_filter: FormGroup;
   countChanges:number;
- 
+
   public typeOfReport: string;
   company: Company;
   isMainCompanyLogged: boolean;
@@ -58,7 +58,7 @@ export class WorkOrderManagerComponent implements OnInit {
     private clientService:ClientService,
     private movementService:MovementService
 
-  ) { 
+  ) {
     this.transactionSelected = new Transaction();
     this.trx_id = 0;
     this.isDealer = false;
@@ -95,7 +95,7 @@ export class WorkOrderManagerComponent implements OnInit {
     this.getCompany();
     this.lsTransactionStates = await this.transactionService.getTransactionStates();
     this.getMovementList();
-    await this.initDataToGetReport();    
+    await this.initDataToGetReport();
     await this.getDataTransactions();
   }
 
@@ -109,8 +109,8 @@ export class WorkOrderManagerComponent implements OnInit {
     }
   }
 
-  getCompany(){    
-     this.company = SecurityValidators.validateUserAndCompany();   
+  getCompany(){
+     this.company = SecurityValidators.validateUserAndCompany();
   }
 
   async initDataToGetReport() {
@@ -143,13 +143,13 @@ export class WorkOrderManagerComponent implements OnInit {
    }
 
   async getDataTransactions() {
-    try {    
+    try {
       this.isAwaiting = true;
       await this.transactionService.getTransactionsByDealerOrClient(this.dealer_to_filter,this.client_to_filter,
           this.init_date, this.end_date, this.code_to_filter,this.license_plate_toFilter, this.state_to_filter)
-      .then(dataTrx => { 
+      .then(dataTrx => {
         this.lsWorkOrderByDealer = dataTrx;
-        console.log(this.lsWorkOrderByDealer);
+
       });
       this.isAwaiting = false;
     } catch (error) {
@@ -165,7 +165,7 @@ export class WorkOrderManagerComponent implements OnInit {
       switch (transactionState.name.toUpperCase()) {
         case "APROBADA":
           spanState.classList.add("tag-active");
-          break;         
+          break;
         case "FINALIZADA":
           spanState.classList.add("tag-ending");
           break;
@@ -232,7 +232,7 @@ export class WorkOrderManagerComponent implements OnInit {
 
   setTransaction(trx: Transaction){
     this.transactionSelected = trx;
-    this.trx_id = trx.id;    
+    this.trx_id = trx.id;
   }
 
   async toggleBtnFilter(){
@@ -244,7 +244,7 @@ export class WorkOrderManagerComponent implements OnInit {
       this.countChanges += 1;
       this.initDataToGetReport();
     }
-    this.isFiltered = !this.isFiltered;   
+    this.isFiltered = !this.isFiltered;
     await this.setDataToFilters();
     this.isAwaiting = false;
   }
@@ -266,7 +266,7 @@ export class WorkOrderManagerComponent implements OnInit {
       this.dealer_to_filter = dealerSelected.id;
     }else{
       this.dealer_to_filter = null;
-    }    
+    }
   }
 
 
@@ -285,7 +285,7 @@ export class WorkOrderManagerComponent implements OnInit {
       let movement = this.lsMovements.find(mv => mv.id == Movements.FINALIZACION_ORDEN_DE_TRABAJO);
       let {txtObservationApprobation} = this.frmApprovedTrx.controls;
       let trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected,movement,txtObservationApprobation.value);
-      console.log(trxApproveWorkOrder);
+
       this.transactionService.processTransaction(trxApproveWorkOrder)
       .then(rta =>{
         if(rta.response){
@@ -306,7 +306,7 @@ export class WorkOrderManagerComponent implements OnInit {
       let movement = this.lsMovements.find(mv => mv.id == Movements.ANULACION_ORDEN_DE_TRABAJO);
       let {txtObservationCancelation} = this.frmCancelTrx.controls;
       let trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected,movement,txtObservationCancelation.value);
-      console.log(trxApproveWorkOrder);
+
       this.transactionService.processTransaction(trxApproveWorkOrder)
       .then(rta =>{
         if(rta.response){
@@ -322,7 +322,7 @@ export class WorkOrderManagerComponent implements OnInit {
   }
 
 
-  setDataTransaction(trxRelated: Transaction, movement:Movement, observation: string){    
+  setDataTransaction(trxRelated: Transaction, movement:Movement, observation: string){
     let trx= new Transaction();
     trx.movement = movement;
     trx.value = trxRelated.value;
@@ -341,14 +341,14 @@ export class WorkOrderManagerComponent implements OnInit {
     if(observation != ''){
       lsObservation.push(trxObservation);
     }
-    
+
 
     trx.lsObservations = lsObservation;
 
     return trx;
   }
 
-  
+
   clearForms(){
      this.frmApprovedTrx.reset();
      this.frmCancelTrx.reset();

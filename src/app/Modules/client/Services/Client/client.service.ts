@@ -43,26 +43,25 @@ export class ClientService {
       return of([]);
     }
     let urlClientsByDesc = `${this.URL_API}/GetByDescription?sDescription=${sDescription}`  ;
-    //console.log(urlClientsByDesc);
     return this.http.get<Client[]>(urlClientsByDesc)
       .pipe(
         catchError(this.handleError<Client[]>('getClientsByDescriptions', []))
       );
-  } 
+  }
 
   async insertClient(pClient:Client):Promise<ResponseApi>{
     let urlInsertClient = `${this.URL_API}/Insert`
-    return this.http.post<ResponseApi>(urlInsertClient,pClient,this.HttpOptions).toPromise();    
+    return this.http.post<ResponseApi>(urlInsertClient,pClient,this.HttpOptions).toPromise();
   }
 
   async updateClient(pClient:Client):Promise<ResponseApi>{
     let urlUpdateClient = `${this.URL_API}/Update`;
-    return this.http.post<ResponseApi>(urlUpdateClient,pClient,this.HttpOptions).toPromise();   
+    return this.http.post<ResponseApi>(urlUpdateClient,pClient,this.HttpOptions).toPromise();
   }
 
   async deleteClient(pClient:Client):Promise<ResponseApi>{
     let urlDeleteClient = `${this.URL_API}/Delete`;
-    return this.http.post<ResponseApi>(urlDeleteClient,pClient,this.HttpOptions).toPromise();   
+    return this.http.post<ResponseApi>(urlDeleteClient,pClient,this.HttpOptions).toPromise();
   }
 
   setClientToUpdate(pClient:Client){
@@ -95,7 +94,7 @@ export class ClientService {
   setAction(value: ActionType){
     this.action = value;
   }
- 
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);

@@ -12,5 +12,9 @@
             {{vehicleType.name}}
         </label>
     </div>
+    
+</div>
+<div *ngIf="noItemSelected">
+    <span class="error">* Debe seleccionar al menos un tipo de vehículo</span>
 </div>
 

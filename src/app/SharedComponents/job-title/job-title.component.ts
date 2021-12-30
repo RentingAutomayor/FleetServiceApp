@@ -28,22 +28,22 @@ export class JobTitleComponent implements OnInit ,OnChanges{
   ngOnChanges(changes: SimpleChanges) {
     for(let change in changes){
       if(change == "jobTitleSelected")
-      {       
-        let job = this.jobTitleService.getJobTitleSelected(); 
+      {
+        let job = this.jobTitleService.getJobTitleSelected();
         if(job == null){
           this.txtJobTitle.setValue("");
         }else{
-          console.log("[Cambios en job title]:");
-          console.log(job);
+
+
           this.setJobTitleInInput(job);
         }
-       
+
       }
     }
   }
 
   async initComponents(){
-   
+
     this.jobTitleSelected = this.jobTitleService.getJobTitleSelected();
 
     if(this.jobTitleSelected == null){
@@ -68,7 +68,7 @@ export class JobTitleComponent implements OnInit ,OnChanges{
     this.setJobTitleFromInput();
     this.jobTitleService.setJobTitleSelected(null);
   }
-  
+
   setJobTitleInInput(jobTitle:JobTitle){
     this.jobTitleSelected = jobTitle;
     this.lsJobTitlesIsVivible = false;

@@ -12,7 +12,7 @@ import { MaintenanceRoutineService } from '../../../items-and-routines/Services/
 })
 export class RoutinesByVehicleModelComponent implements OnInit,OnChanges {
   frmRoutineByVehicleModel: FormGroup;
-  lsRoutine:MaintenanceRoutine[];  
+  lsRoutine:MaintenanceRoutine[];
   maintenanceRoutineSelected: MaintenanceRoutine;
   @Input() vehicleModel: VehicleModel;
   @Input() countChanges:Number;
@@ -28,14 +28,14 @@ export class RoutinesByVehicleModelComponent implements OnInit,OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     for(let change in changes){
-      console.log("vehicleModel change");
-      console.log(this.vehicleModel);
+
+
       if(change == "vehicleModel"){
         if(this.vehicleModel == null){
           this.frmRoutineByVehicleModel.controls.cmbRoutineByVehicleModel.setValue(0);
         }else{
           this.getListMaintenanceRoutines(this.vehicleModel.id);
-        }        
+        }
       }
     }
   }
@@ -52,7 +52,7 @@ export class RoutinesByVehicleModelComponent implements OnInit,OnChanges {
     try{
       this.maintenanceRoutineService.getMaintenanceRoutineByModel(model_id).then(data =>{
         this.lsRoutine = data;
-        console.log(this.lsRoutine);
+
       });
     }catch(error){
       console.warn(error);

@@ -54,7 +54,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
 
   constructor(
     private reportService:ReportService
-  ) { 
+  ) {
     this.isMainCompanyLogged = false;
     this.dealer_to_filter = null;
     this.client_to_filter = null;
@@ -64,7 +64,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
 
   ngOnInit(): void {
     this.initDataToGetReport();
-   
+
     this.getDataToReport();
   }
 
@@ -100,31 +100,27 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
     if(this.typeOfReport ==  'client'){
       await this.reportService.GetAmountWorkOrdersByClientAndMonth(this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date)
       .then(data => {
-        console.log("[getDataToReport]", data);
         let aLabels = [];
         data.forEach(row => {
           let labelTmp = `${row.Mes}-${row.Anio}`;
           aLabels = this.validateLabels (aLabels, labelTmp)
         });
-        console.log("[getDataToReport]",aLabels);
         this.chartLabels = aLabels;
         this.validateDataSets(data);
       });
     }else if (this.typeOfReport == 'dealer'){
       await this.reportService.GetAmountWorkOrdersByDealerAndMonth(this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date)
       .then(data => {
-        console.log("[getDataToReport]", data);
         let aLabels = [];
         data.forEach(row => {
           let labelTmp = `${row.Mes}-${row.Anio}`;
           aLabels = this.validateLabels (aLabels, labelTmp)
         });
-        console.log("[getDataToReport]",aLabels);
         this.chartLabels = aLabels;
         this.validateDataSets(data);
       });
     }
-   
+
   }
 
   validateLabels(aLabels:string[], label:string):string[]{
@@ -155,7 +151,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
             clientExist = true;
           }
         });
-  
+
         if(!clientExist){
           aDataSet.push(row.Cliente);
         }
@@ -166,19 +162,19 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
             dealerExist = true;
           }
         });
-  
+
         if(!dealerExist){
           aDataSet.push(row.Concesionario);
         }
       }
-     
+
     });
 
     this.chartData = [];
 
     aDataSet.forEach(dts => {
       let dt = {data:[], label:dts};
-      console.log(dt);
+
       this.chartData.push(dt)
     });
 
@@ -202,21 +198,21 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
     data.forEach(row => {
       let labelTmp = `${row.Mes}-${row.Anio}`;
       indexMonth = this.chartLabels.indexOf(labelTmp);
-      console.log("[validateDataPosition]",labelTmp, indexMonth);
+
 
       if(this.typeOfReport == 'client'){
         indexClient = this.chartData.findIndex(dt => dt.label == row.Cliente);
         this.chartData[indexClient].data.splice(indexMonth,1,row.Cantidad);
-        console.log("indexMonth: ", indexMonth , " indexClient: ", indexClient);
+
       }else if(this.typeOfReport == 'dealer'){
         indexDealer = this.chartData.findIndex(dt => dt.label == row.Concesionario);
         this.chartData[indexDealer].data.splice(indexMonth,1,row.Cantidad);
-        console.log("indexMonth: ", indexMonth , " indexDealer: ", indexDealer);
-      }     
-      
+
+      }
+
     });
 
-    console.log("[validateDataPosition]",this.chartData);
+
   }
 
 

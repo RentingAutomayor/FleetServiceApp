@@ -30,12 +30,12 @@ export class DashboardClientComponent implements OnInit {
   trx_id: number;
   transactionSelected: Transaction;
 
-  
+
 
   constructor(
     private transactionService: TransactionService,
     private movementService: MovementService
-  ) { 
+  ) {
     this.frmApprovedTrx = new FormGroup({
       txtObservationApprobation: new FormControl('')
     });
@@ -56,7 +56,7 @@ export class DashboardClientComponent implements OnInit {
 
     //TODO CHANGE THIS FOR THE CLIENT LOGGED
     this.client = new Client();
-    this.client.id = this.getClientId();   
+    this.client.id = this.getClientId();
 
     this.sharedFunctions = new SharedFunction();
     this.getMovementList();
@@ -71,7 +71,7 @@ export class DashboardClientComponent implements OnInit {
   async getTransactionsToApprove(client_id: number){
     try {
       this.isAwaiting = true;
-      await this.transactionService.getTransactionsToApprove(client_id).then( 
+      await this.transactionService.getTransactionsToApprove(client_id).then(
         lsTrx => {
           this.lsTransactionsToApprove = lsTrx;
         });
@@ -107,7 +107,7 @@ export class DashboardClientComponent implements OnInit {
 
   setTransaction(trx: Transaction){
     this.transactionSelected = trx;
-    this.trx_id = trx.id;    
+    this.trx_id = trx.id;
   }
 
   async approveWorkOrder(){
@@ -116,7 +116,6 @@ export class DashboardClientComponent implements OnInit {
       let movement = this.lsMovements.find(mv => mv.id == this.APROBACION_ORDEN_DE_TRABAJO);
       let {txtObservationApprobation} = this.frmApprovedTrx.controls;
       let trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected,movement,txtObservationApprobation.value);
-      console.log(trxApproveWorkOrder);
       this.transactionService.processTransaction(trxApproveWorkOrder)
       .then(rta =>{
         if(rta.response){
@@ -137,7 +136,6 @@ export class DashboardClientComponent implements OnInit {
       let movement = this.lsMovements.find(mv => mv.id == this.CANCELACION_ORDEN_DE_TRABAJO);
       let {txtObservationCancelation} = this.frmCancelTrx.controls;
       let trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected,movement,txtObservationCancelation.value);
-      console.log(trxApproveWorkOrder);
       this.transactionService.processTransaction(trxApproveWorkOrder)
       .then(rta =>{
         if(rta.response){
@@ -153,7 +151,7 @@ export class DashboardClientComponent implements OnInit {
   }
 
   setDataTransaction(trxRelated: Transaction, movement:Movement, observation: string){
-    
+
     let trxApprove = new Transaction();
     trxApprove.movement = movement;
     trxApprove.value = trxRelated.value;
@@ -171,7 +169,7 @@ export class DashboardClientComponent implements OnInit {
     if(observation != null){
       lsObservation.push(trxObservation);
     }
-    
+
 
     trxApprove.lsObservations = lsObservation;
 

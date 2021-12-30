@@ -27,7 +27,7 @@ export class TblDealerComponent implements OnInit {
 
   initComponents(){
     this.dealerService.setDealerToUpdate(null);
-    this.showTableDealers();    
+    this.showTableDealers();
   }
 
   async showTableDealers(){
@@ -68,19 +68,18 @@ export class TblDealerComponent implements OnInit {
       console.error(err.error.Message);
       alert(err.error.Message);
     }
-   
+
   }
 
   moveContent(event:any){
-    console.log(event);
-    let containerContent:HTMLDivElement  = document.querySelector("#container__content"); 
-    
-    if(event){     
+    let containerContent:HTMLDivElement  = document.querySelector("#container__content");
+
+    if(event){
       containerContent.style.marginLeft = "250px";
     }else{
       containerContent.style.marginLeft = "0px";
     }
-    
+
   }
 
   insertDealer(){

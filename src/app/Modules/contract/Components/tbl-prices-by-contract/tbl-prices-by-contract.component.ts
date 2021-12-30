@@ -36,7 +36,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     private maintenanceItemService: MaintenanceItemService,
     private dealerService: DealerService,
     private contractService: ContractService
-  ) { 
+  ) {
     this.lsMaintenanceItems = [];
     this.pricesByDealer = new PricesByDealer()
     this.pricesByDealer.lsMaintenanceItems = [];
@@ -48,11 +48,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-
-    console.log("[CHANGES TBL PRICES BY CONTRACT]")
-    console.log(changes);
     for (let change in changes) {
-
       switch(change){
         case "getPricesOfContract":
           this.setPricesByContract();
@@ -68,7 +64,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
           this.getInfoToShowTable();
           break;
       }
-     
+
     }
   }
 
@@ -105,7 +101,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
   async getInfoToShowTable() {
     await this.getListMaintenanceItems();
-    await this.getPricesByDealer();    
+    await this.getPricesByDealer();
     await this.getPricesByContract();
     await this.setValuesIntoTable();
   }
@@ -130,7 +126,6 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
       this.isAwaiting = true;
       let dealer_id = (this.dealerSelected != null)? this.dealerSelected.id:0;
       this.pricesByDealer = await this.maintenanceItemService.getPricesByDealer(dealer_id);
-      console.log("[prices by contract-- prices by dealer] : ", this.pricesByDealer);     
       this.isAwaiting = false;
     } catch (error) {
       console.warn(error);
@@ -144,7 +139,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
         this.lsMaintenanceItems.forEach(item => {
           let itemTmp:MaintenanceItem = item;
           let contractPrice = this.getContractPrice(item.id);
-          let discValue = this.calculateDiscount(parseFloat(contractPrice));         
+          let discValue = this.calculateDiscount(parseFloat(contractPrice));
           let priceWithoutDiscount = parseFloat(contractPrice) - discValue;
 
           let taxesValue = 0;
@@ -152,7 +147,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
             if(item.lsTaxes.length > 0){
               taxesValue = this.calculateTaxes(priceWithoutDiscount,item.lsTaxes);
             }
-          }         
+          }
 
           let totalByItem =  priceWithoutDiscount + taxesValue;
 
@@ -172,18 +167,17 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
         this.contractService.setItemsWithPrice(this.lsMaintenanceItemsWithPrice);
       },1500);
     } catch (error) {
-      console.warn("[setValuesIntoTable]", error);      
+      console.warn("[setValuesIntoTable]", error);
     }
   }
 
   async getPricesByContract() {
     try {
-   
+
       this.contractSelected = this.contractService.getContract();
       let contract_id = (this.contractSelected != null && this.contractSelected != undefined)? this.contractSelected.id : 0;
       this.isAwaiting = true;
       this.pricesByContract = await this.maintenanceItemService.getPricesByContract(contract_id);
-      console.log("[prices by contract] : ", this.pricesByContract);
       this.isAwaiting = false;
     } catch (error) {
       console.warn(error);
@@ -216,7 +210,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
       }
       return referencePrice;
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
 
   }
@@ -244,10 +238,10 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
           contractPrice = item.referencePrice.toString();
         }
       }
-     
+
       return contractPrice;
     } catch (error) {
-      console.log(error)
+      console.warn(error)
     }
   }
 
@@ -262,7 +256,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     }
   }
 
-  
+
   setDiscoutValue(item_id:number,discountValue:number){
     try {
       let idlblDiscount = `#${this.getLabelDiscount(item_id)}`;
@@ -287,7 +281,6 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
   setTotalValue(item_id:number,totalValue:number){
     try {
-      //console.log(`[setTotalValue] : ${totalValue}`);
       let idLblTotal = `#${this.getLabeTotalId(item_id)}`;
       let labelTotal: HTMLSpanElement  = document.querySelector(idLblTotal);
 
@@ -310,33 +303,26 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
           discount = this.discountValue;
           break;
       }
-      //console.log(`[calculateDiscount] ContractPrice =  ${contractPrice} DiscountValue = ${this.discountValue}  DiscountType = ${this.discountType.name}`);
-      //console.log(discount)
       return discount;
     } catch (error) {
       return 0;
     }
-   
+
   }
 
   calculateTotalByItem(contractPrice:number, item: MaintenanceItem){
-    
     let valueWithoutDiscount = contractPrice
-    //let taxesClue = this.calculateTaxes()
   }
-
-
- 
 
   calculateTaxes(referencePrice: number, lsTaxes: Tax[]): number {
     let taxValue = 0;
     for (const tax of lsTaxes) {
       let taxTmp = referencePrice * (tax.percentValue / 100);
       taxValue += taxTmp;
-    }                                                                                                                                                                 
+    }
     return taxValue
-  }              
-                                                         
+  }
+
 
   async setPricesByContract() {
 
@@ -353,11 +339,10 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
         item.referencePrice = parseFloat(valueFormmated);
       });
 
-      console.log(this.pricesByContract);
-      //this.lsMaintenanceItemsWasSetted.emit(this.pricesByContract.lsMaintenanceItems)
+
 
     } catch (error) {
-      console.log(error)
+      console.warn(error)
     }
 
 

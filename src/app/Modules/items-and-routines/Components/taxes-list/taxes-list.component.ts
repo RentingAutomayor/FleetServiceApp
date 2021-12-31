@@ -23,17 +23,21 @@ export class TaxesListComponent implements OnInit, OnChanges {
   constructor(
     private maintenanceItemService: MaintenanceItemService
   ) {
-    this.itemHandleTax = false;
     this.prefixTaxContainer = 'chk_tax_';
     this.lsTaxesSelected = [];
     this.taxesAreInvalid = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.activateTaxes(this.itemHandleTax);
-    if(this.itemHandleTax){
-      this.checkTaxButton(this.inpLsTaxSelected);
+    try {
+      this.activateTaxes(this.itemHandleTax);
+      if(this.itemHandleTax){
+        this.checkTaxButton(this.inpLsTaxSelected);
+      }
+    } catch (error) {
+      console.warn(error)
     }
+
   }
 
   ngOnInit(): void {

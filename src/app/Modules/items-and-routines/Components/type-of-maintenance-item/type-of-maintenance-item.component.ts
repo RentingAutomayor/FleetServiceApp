@@ -1,5 +1,6 @@
 import { Component, Input, OnInit ,OnChanges, SimpleChange, SimpleChanges, Output, EventEmitter} from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit';
 import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem';
 import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service';
 
@@ -45,6 +46,10 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
 
         if(this.typeOfItem !== null){
           this.setDataInForm(this.typeOfItem)
+        }else{
+          this.setDataInForm(null)
+          const typeByDefault =  this.lsType.find(tp => tp.id == TypeOfMaintenanceItems.REPUESTO);
+          this.setType(typeByDefault)
         }
       });
     } catch (err) {
@@ -59,7 +64,7 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
   }
 
   setDataInForm(pType:TypeOfMaintenanceItem){
-    const indexType = (pType!==null)?pType.id:0;
+    const indexType = (pType!==null)?pType.id:1;
     this.frmType.controls.cmbType.setValue(indexType);
   }
 

@@ -12,6 +12,7 @@ import { ItemHandleTaxes } from 'src/app/Models/ItemHandleTaxes';
 import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem';
 import { PresentationUnit } from 'src/app/Models/PresentationUnit';
 import { Category } from 'src/app/Models/Category';
+import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit';
 
 
 @Component({
@@ -38,6 +39,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   typeOfItem: TypeOfMaintenanceItem;
   presentationUnit: PresentationUnit;
   category: Category;
+  idType: Number;
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -55,6 +57,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
     this.typeOfItem = null;
     this.presentationUnit = null;
     this.category = null;
+    this.idType = 0;
   }
 
 
@@ -142,15 +145,15 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
 
   setDataInForm(pItem: MaintenanceItem) {
     this.frmMaintenanceItem.patchValue(pItem);
-    this.presentationUnit = pItem.presentationUnit;
     this.typeOfItem = pItem.type;
     this.category = pItem.category;
     let oBrandTmp = new Brand();
+    this.idType = pItem.type.id;
+    this.presentationUnit = pItem.presentationUnit;
 
     if (pItem.lsVehicleModel.length > 0) {
       if (pItem.lsVehicleModel[0].brand != null && pItem.lsVehicleModel[0].brand != undefined) {
         oBrandTmp = pItem.lsVehicleModel[0].brand;
-
       } else {
         oBrandTmp.id = 1;
         oBrandTmp.name = "CHEVROLET";
@@ -191,6 +194,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
     this.presentationUnit = null;
     this.typeOfItem	 = null;
     this.category = null;
+    this.idType = TypeOfMaintenanceItems.REPUESTO;
     this.vehicleService.setVehicleModelSelected(null);
     this.vehicleService.setBrandSelected(null);
     this.vehicleService.setListVehicleTypeSelected(null);
@@ -257,9 +261,6 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
 
       this.taxesAreInvalid = false;
     }
-
-
-
     return totalTaxes;
   }
 
@@ -296,14 +297,30 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   }
 
   setTypeOfItem(type: TypeOfMaintenanceItem){
-    this.typeOfItem = type;
+    try {
+      this.typeOfItem = type;
+      this.idType = this.typeOfItem.id
+    } catch (error) {
+      console.warn(error)
+    }
+
   }
 
   setPresentationUnit(presentation: PresentationUnit){
-    this.presentationUnit = presentation;
+    try {
+      this.presentationUnit = presentation;
+    } catch (error) {
+      console.warn(error)
+    }
+
   }
 
   setCategory(category: Category){
-    this.category = category
+    try {
+      this.category = category
+    } catch (error) {
+      console.warn(error)
+    }
+
   }
 }

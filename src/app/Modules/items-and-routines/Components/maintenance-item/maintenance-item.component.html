@@ -46,6 +46,7 @@
                     </div>
                     <div class="col">
                         <app-presentation-unit
+                            [idTypeOfItem]="idType"
                             [presentationUnit]="presentationUnit"
                             (changePresentation)="setPresentationUnit($event)"
                             (lostFocus)="validatePresentationUnit()">

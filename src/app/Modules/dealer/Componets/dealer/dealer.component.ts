@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { Dealer } from 'src/app/Models/Dealer';
 import { Person } from 'src/app/Models/Person';
@@ -6,13 +6,16 @@ import { ResponseApi } from '../../../../Models/ResponseApi';
 import { DealerService } from '../../Services/Dealer/dealer.service';
 import { PersonService } from '../../../../SharedComponents/Services/Person/person.service';
 import { Router } from '@angular/router';
+import { ActionType } from 'src/app/Models/ActionType';
+import { NavigationService } from 'src/app/SharedComponents/Services/navigation.service';
+
 
 @Component({
   selector: 'app-dealer',
   templateUrl: './dealer.component.html',
   styleUrls: ['./dealer.component.scss']
 })
-export class DealerComponent implements OnInit {
+export class DealerComponent implements OnInit, OnChanges {
   oConfigPersonComp: ConfigPersonComponent
   isAwaiting: boolean;
   oDataIsToUpdate: boolean;
@@ -23,18 +26,26 @@ export class DealerComponent implements OnInit {
   bFormHasError:boolean;
   oIsToDealer:boolean;
   oDealerWasSaved:boolean;
+  action: ActionType;
 
   constructor(
     private dealerService: DealerService,
     private personService: PersonService,
+    private navigationService:NavigationService,
     private router:Router
   ) {
     this.sReturnPath = "/MasterDealers";
     this.oIsToDealer = true;
    }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.validateActionToDo();
+  }
+
   ngOnInit(): void {
+    this.validateActionToDo();
     this.initComponents();
+
   }
 
   initComponents() {
@@ -46,6 +57,10 @@ export class DealerComponent implements OnInit {
     this.bFormHasError = false;
     this.oDealerWasSaved = false;
     this.validateDealerToUpdate();
+  }
+
+  validateActionToDo(): void {
+    this.action = this.navigationService.getAction();
   }
 
   validateDealerToUpdate(){

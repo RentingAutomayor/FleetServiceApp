@@ -3,6 +3,8 @@ import { City } from 'src/app/Models/City';
 import { Dealer } from 'src/app/Models/Dealer';
 import { Router } from '@angular/router';
 import { DealerService } from '../../Services/Dealer/dealer.service';
+import { ActionType } from 'src/app/Models/ActionType';
+import { NavigationService } from 'src/app/SharedComponents/Services/navigation.service';
 
 @Component({
   selector: 'app-tbl-dealer',
@@ -14,11 +16,13 @@ export class TblDealerComponent implements OnInit {
   isAwaiting:boolean;
   //pagination
   p:number = 1;
+  action: ActionType
   private oDealerToUpdate : Dealer;
 
   constructor(
     private router:Router,
-    private dealerService: DealerService
+    private dealerService: DealerService,
+    private navigationService:NavigationService
   ) { }
 
   ngOnInit(): void {
@@ -43,6 +47,7 @@ export class TblDealerComponent implements OnInit {
   async updateDealer(pId:number){
     try{
       this.isAwaiting = true;
+      this.navigationService.setAction(ActionType.UPDATE)
       let oDealerDB = await this.dealerService.getDealerById(pId);
       this.dealerService.setDealerToUpdate(oDealerDB);
       this.isAwaiting = false;
@@ -84,6 +89,7 @@ export class TblDealerComponent implements OnInit {
 
   insertDealer(){
     this.dealerService.setDealerToUpdate(null);
+    this.navigationService.setAction(ActionType.CREATE)
     this.router.navigate(["/MasterDealers/Dealer"]);
   }
 

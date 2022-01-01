@@ -91,10 +91,12 @@ export class ContactComponent implements OnInit, OnChanges {
       }
     }
 
+
+
     setTimeout(()=>{
       //await this time because the btn it's no ready yet
       this.validateIfButtonAddMustVisible();
-    },1500);
+    },1000);
   }
 
   validateNameOfOwner():string{

@@ -14,12 +14,12 @@
                 <h3>Datos del concesionario</h3>
             </div>
             <div class="car-body">
-                <app-person 
+                <app-person
                     [configComponent]="oConfigPersonComp"
                     [personToUpdate]="oPersonToUpdate"
-                    [returnPath]="sReturnPath" 
-                    [formHasError]="bFormHasError" 
-                    [error]="errorMessage" 
+                    [returnPath]="sReturnPath"
+                    [formHasError]="bFormHasError"
+                    [error]="errorMessage"
                     (personWasSetted)="SetDataToSaveDealer()"></app-person>
             </div>
         </div>
@@ -27,13 +27,19 @@
 
 
      <div class="tab_content tab_inactive" id="container__contact">
-        <app-contact [isToDealer]="oIsToDealer" [dealerWasSaved]="oDealerWasSaved">
+        <app-contact
+          [action]="action"
+          [isToDealer]="oIsToDealer"
+          [dealerWasSaved]="oDealerWasSaved">
         </app-contact>
     </div>
 
 
     <div class="tab_content tab_inactive" id="container__branch">
-        <app-branch [isToDealer]="oIsToDealer" [dealerWasSaved]="oDealerWasSaved">
+        <app-branch
+          [action]="action"
+          [isToDealer]="oIsToDealer"
+          [dealerWasSaved]="oDealerWasSaved">
         </app-branch>
     </div>
 

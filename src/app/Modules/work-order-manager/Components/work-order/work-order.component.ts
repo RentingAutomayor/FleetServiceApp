@@ -475,9 +475,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   updateAmountByItem(event: any, pItem: MaintenanceItem) {
     let amount =  event.target.value;
-    if(amount < 0){
+    if(amount < 0.1){
       alert("La cantidad ingresada no es válida");
-      event.target.value = 0;
+      event.target.value = 0.1;
       event.preventDefault();
       return false;
     }else{

@@ -1,6 +1,6 @@
 <div class="card">
     <form [formGroup]="frmWorkOrder">
-        
+
         <div class="card-header" id="container__header">
             <legend>Nueva orden de trabajo</legend>
             <div class="container__buttonClose">
@@ -14,8 +14,8 @@
             </div>
             <div class="container__row">
                 <div class="container__col">
-                    <app-input-search-vehicle 
-                    [vehicleSelected]="vehicleSelected"    
+                    <app-input-search-vehicle
+                    [vehicleSelected]="vehicleSelected"
                     (vehicleWasSetted)="SetDataInForm()"></app-input-search-vehicle>
                 </div>
                 <div class="container__col">
@@ -93,8 +93,8 @@
                         disabled>
                 </div>
                 <div class="container__col">
-                    <app-branch-by-dealer 
-                        [dealer]="dealer" 
+                    <app-branch-by-dealer
+                        [dealer]="dealer"
                         [branchSelected]="branchSelected"
                         (branchWasSetted)="setBranchSelected()">
                     </app-branch-by-dealer>
@@ -121,12 +121,12 @@
                     <th>#</th>
                     <th>-</th>
                     <th>Nombre</th>
-                    <th>Presentación</th>                    
+                    <th>Presentación</th>
                     <th>Cantidad</th>
                     <th>Val. Und</th>
-                    <th>Val und x cantidad</th>         
+                    <th>Val und x cantidad</th>
                     <th>Dto</th>
-                    <th>(Val und x cantidad) - Dto</th>                   
+                    <th>(Val und x cantidad) - Dto</th>
                     <th>Valor impuestos</th>
                     <th>Valor total por item</th>
                 </thead>
@@ -145,14 +145,16 @@
                                 {{ mItem.code + ' - ' + mItem.name | titlecase | slice:0:200 }}
                             </Label>
                         </td>
-                        <td>{{mItem.presentationUnit.shortName}}</td>                        
+                        <td>{{mItem.presentationUnit.shortName}}</td>
                         <td>
-                            <input type="number" class="txt-amount form-control" step="0.01"
-                                [id]="getTextAmountId(mItem.id)" 
+                            <input type="number"
+                                class="txt-amount form-control"
+                                step="0.01"
+                                [id]="getTextAmountId(mItem.id)"
                                 (input)="updateAmountByItem($event,mItem)"
                                 [value]="mItem.amount"></td>
                         <td [id]="getPriceId(mItem.id)">{{ formatNumberToString(mItem.referencePrice) }}</td>
-                        
+
                         <td>
                             <span [id]=getLabePriceByAmountId(mItem.id)></span>
                         </td>
@@ -163,7 +165,7 @@
                         <td>
                             <span [id]=getLabePriceByAmountLessDiscountId(mItem.id)></span>
                         </td>
-                        
+
                         <td>
                             <span [id]=getLabeTaxesId(mItem.id)></span>
                         </td>
@@ -178,11 +180,11 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>                       
+                        <td></td>
                         <td><b class="bold">Total mantenimiento</b></td>
                         <td><span id="lbl-total-without-taxes" class="bold"></span></td>
-                        <td><span id="lbl-total-discount" class="bold error"></span></td>      
-                        <td><span id="lbl-total-without-taxes-and-discount" class="bold"></span></td>                        
+                        <td><span id="lbl-total-discount" class="bold error"></span></td>
+                        <td><span id="lbl-total-without-taxes-and-discount" class="bold"></span></td>
                         <td><span id="lbl-total-taxes" class="bold"></span></td>
                         <td><span id="lbl-total-routine" class="bold"></span></td>
                     </tr>
@@ -200,7 +202,7 @@
             <div>
                 <div class="container__infoError" id="cont_error_add_work_order" *ngIf="fieldBranchIsInvalid || fieldMaintenanceRoutineIsInvalid">
                     <span>No se puede guardar la orden de trabajo puesto que hay campos obligatorios sin diligenciar</span>
-                </div>                
+                </div>
             </div>
         </div>
     </form>

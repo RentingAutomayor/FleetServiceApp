@@ -8,7 +8,7 @@ import { ReportTrxByStateComponent } from './Components/report-trx-by-state/repo
 import { ReportTrxByVehicleComponent } from './Components/report-trx-by-vehicle/report-trx-by-vehicle.component';
 import { ReportWorkordersValueByMonthComponent } from './Components/report-workorders-value-by-month/report-workorders-value-by-month.component';
 import { ReportAmountWorkordersByClientOrByDealerComponent } from './Components/report-amount-workorders-by-client-or-by-dealer/report-amount-workorders-by-client-or-by-dealer.component';
-
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 
 @NgModule({
@@ -20,10 +20,11 @@ import { ReportAmountWorkordersByClientOrByDealerComponent } from './Components/
     ReportAmountWorkordersByClientOrByDealerComponent
   ],
   imports: [
-    CommonModule,  
+    CommonModule,
     ChartsModule ,
     HomeRoutingModule,
-    SharedModule 
+    SharedModule,
+    BsDatepickerModule.forRoot(),
   ]
 })
 export class HomeModule { }

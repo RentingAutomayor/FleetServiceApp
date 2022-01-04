@@ -9,21 +9,31 @@
     gap: 15px 10px;
 }
 
+.container__row{
+  display: grid;
+  grid-template-columns: repeat(3fr,3);
+  margin-bottom: 20px;
+}
+
+.container__col{
+  padding: 10px;
+}
+
 .report-bigger{
-    // max-width: 500px;   
+    // max-width: 500px;
 }
 .report-one{
     grid-column-start: 1;
     grid-column-end: 4;
     grid-row-start: 1;
-    grid-row-end: 2;  
+    grid-row-end: 2;
 }
 
 .report-two{
     grid-column-start: 1;
     grid-column-end: 4;
     grid-row-start: 2;
-    grid-row-end: 3;  
+    grid-row-end: 3;
 }
 
 .report-three{
@@ -38,4 +48,17 @@
     grid-column-end: 7;
     grid-row-start: 2;
     grid-row-end: 3;
+}
+
+.btn-search{
+  margin-top: 32px;
+}
+
+.btn-search:disabled{
+  background-color: #ccc;
+}
+
+.error{
+  color: red;
+  margin-top: 16px;
 }

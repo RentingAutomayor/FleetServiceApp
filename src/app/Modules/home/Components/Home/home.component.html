@@ -1,31 +1,79 @@
 <div id="container__content">
+  <div class="container__filter">
+    <div class="container__row">
+      <div class="container__col">
+          <label>Fecha inicio:</label>
+          <input
+              type="text"
+              class="form-control"
+              formControlName="startingDate"
+              [bsValue]="dtStartingDate"
+              (bsValueChange)="validateInitDate($event)"
+              [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
+              placeholder="fecha inicio ..."
+              bsDatepicker>
+
+          <div class="error" *ngIf="datesAreInvalid">
+              <p *ngIf="startingDateField.hasError('required')">* La fecha inicial no puede ser mayor a la final</p>
+          </div>
+      </div>
+      <div class="container__col">
+          <label>Fecha fin:</label>
+          <input
+              type="text"
+              class="form-control"
+              formControlName="endingDate"
+              placeholder="fecha fin ..."
+              (keypress)="validateInputDate($event)"
+              (bsValueChange)="validateEndDate($event)"
+              [bsValue]="dtEndingDate"
+              [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
+              bsDatepicker>
+      </div>
+      <div class="container__col">
+        <input
+          type="button"
+          value="Buscar"
+          class="form-control btn-primary btn-search"
+          (click)="filterData()"
+          [disabled]="btnSearchIsDisabled">
+      </div>
+  </div>
+
+  </div>
     <div class="container__reports">
 
         <div class="report-one report-bigger">
             <app-report-amount-workorders-by-client-or-by-dealer
-                [company]="company">                
+                [init_date]="filterInitDate"
+                [end_date]="filterEndDate"
+                [company]="company">
             </app-report-amount-workorders-by-client-or-by-dealer>
         </div>
-
         <div class="report-three report-bigger">
             <app-report-workorders-value-by-month
+                [init_date]="filterInitDate"
+                [end_date]="filterEndDate"
                 [company]="company">
             </app-report-workorders-value-by-month>
         </div>
-         
         <div class="report-two   report-bigger">
-            <app-report-trx-by-state   
+            <app-report-trx-by-state
+                [init_date]="filterInitDate"
+                [end_date]="filterEndDate"
                 [company]="company">
             </app-report-trx-by-state>
         </div>
 
         <div class="report-four">
-            <app-report-trx-by-vehicle 
-                [company]="company">             
+            <app-report-trx-by-vehicle
+                [init_date]="filterInitDate"
+                [end_date]="filterEndDate"
+                [company]="company">
             </app-report-trx-by-vehicle>
-        </div>  
+        </div>
 
-       
+
     </div>
 </div>
 

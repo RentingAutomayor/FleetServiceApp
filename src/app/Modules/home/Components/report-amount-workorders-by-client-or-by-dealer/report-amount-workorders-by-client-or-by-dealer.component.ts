@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js';
 import { Label } from 'ng2-charts';
 import * as pluginDataLabels from 'chart.js';
@@ -13,7 +13,7 @@ import { CompanyType } from "src/app/Models/CompanyType";
   templateUrl: './report-amount-workorders-by-client-or-by-dealer.component.html',
   styleUrls: ['./report-amount-workorders-by-client-or-by-dealer.component.scss']
 })
-export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit {
+export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit, OnChanges {
   public chartOptions: ChartOptions = {
     responsive: true,
     // We use these empty structures as placeholders for dynamic theming.
@@ -48,8 +48,8 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
   isMainCompanyLogged: boolean;
   dealer_to_filter: number;
   client_to_filter: number;
-  init_date: Date;
-  end_date: Date;
+  @Input() init_date: Date;
+  @Input() end_date: Date;
 
 
   constructor(
@@ -62,9 +62,12 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
     this.end_date = null;
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.getDataToReport()
+  }
+
   ngOnInit(): void {
     this.initDataToGetReport();
-
     this.getDataToReport();
   }
 
@@ -95,6 +98,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
 
 
   async getDataToReport() {
+
     console.warn("[getDataToReport]",this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date);
 
     if(this.typeOfReport ==  'client'){
@@ -139,6 +143,8 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
 
 
   validateDataSets(data:any){
+    console.log('validateDataSets')
+    console.table(data)
     let aDataSet = [];
     let clientExist = false;
     let dealerExist = false;

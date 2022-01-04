@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js';
 import { Label } from 'ng2-charts';
 import * as pluginDataLabels from 'chart.js';
@@ -12,7 +12,7 @@ import { CompanyType } from "src/app/Models/CompanyType";
   templateUrl: './report-trx-by-vehicle.component.html',
   styleUrls: ['./report-trx-by-vehicle.component.scss']
 })
-export class ReportTrxByVehicleComponent implements OnInit {
+export class ReportTrxByVehicleComponent implements OnInit, OnChanges {
 
   public chartOptions: ChartOptions = {
     responsive: true,
@@ -83,8 +83,8 @@ export class ReportTrxByVehicleComponent implements OnInit {
   dealer_to_filter: number;
   client_to_filter: number;
   license_plate_to_filter:string;
-  init_date: Date;
-  end_date: Date;
+  @Input() init_date: Date;
+  @Input() end_date: Date;
 
 
   constructor(
@@ -95,6 +95,35 @@ export class ReportTrxByVehicleComponent implements OnInit {
     this.license_plate_to_filter = null;
     this.init_date = null;
     this.end_date = null;
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.chartLabels = []
+    this.chartData  = [
+      {
+        data: [],
+        label: 'Aprobadas',
+      },
+      {
+        data: [],
+        label: 'Rechazadas',
+      },
+      {
+        data: [],
+        label: 'Pendientes',
+      },
+      {
+        data: [],
+        label: 'Finalizadas',
+      },
+      {
+        data: [],
+        label: 'Anuladas',
+      }
+
+
+    ];
+
+    this.initRepot();
   }
 
   ngOnInit(): void {

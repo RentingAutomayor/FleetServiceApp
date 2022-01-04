@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ReportService } from '../../Services/report.service';
 import { Label, SingleDataSet } from 'ng2-charts';
 import { ChartColor, ChartType } from 'chart.js';
@@ -11,7 +11,7 @@ import { CompanyType } from "src/app/Models/CompanyType";
   templateUrl: './report-trx-by-state.component.html',
   styleUrls: ['./report-trx-by-state.component.scss']
 })
-export class ReportTrxByStateComponent implements OnInit {
+export class ReportTrxByStateComponent implements OnInit, OnChanges {
 
   public chartLabels: Label[] = ["APROBADA","PENDIENTE","RECHAZADA","FINALIZADA","ANULADA"];
   public chartDataset: SingleDataSet = [];
@@ -25,12 +25,17 @@ export class ReportTrxByStateComponent implements OnInit {
   isMainCompanyLogged: boolean;
   dealer_to_filter: number;
   client_to_filter: number;
-  init_date: Date;
-  end_date: Date;
+  @Input() init_date: Date;
+  @Input() end_date: Date;
 
   constructor(
     private reportService:ReportService
   ) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.chartDataset = [];
+    this.chartDataset = this.getData();
+  }
 
   ngOnInit(): void {
     this.initDataToGetReport();

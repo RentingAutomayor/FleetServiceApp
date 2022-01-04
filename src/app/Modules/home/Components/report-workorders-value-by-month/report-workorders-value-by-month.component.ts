@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js';
 import { Label } from 'ng2-charts';
 import * as pluginDataLabels from 'chart.js';
@@ -12,7 +12,7 @@ import { CompanyType } from "src/app/Models/CompanyType";
   templateUrl: './report-workorders-value-by-month.component.html',
   styleUrls: ['./report-workorders-value-by-month.component.scss']
 })
-export class ReportWorkordersValueByMonthComponent implements OnInit {
+export class ReportWorkordersValueByMonthComponent implements OnInit, OnChanges {
   public chartOptions: ChartOptions = {
     responsive: true,
     // We use these empty structures as placeholders for dynamic theming.
@@ -50,12 +50,15 @@ export class ReportWorkordersValueByMonthComponent implements OnInit {
   isMainCompanyLogged: boolean;
   dealer_to_filter: number;
   client_to_filter: number;
-  init_date: Date;
-  end_date: Date;
+  @Input() init_date: Date;
+  @Input() end_date: Date;
 
   constructor(
     private reportService:ReportService
   ) { }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.getDataToReport();
+  }
 
   ngOnInit(): void {
     this.initDataToGetReport();

@@ -47,21 +47,24 @@
             <app-report-amount-workorders-by-client-or-by-dealer
                 [init_date]="filterInitDate"
                 [end_date]="filterEndDate"
-                [company]="company">
+                [company]="company"
+                (dataWasLoad)="dataWasLoadReportAmmountWorkOrdersByClientOrDealer($event)">
             </app-report-amount-workorders-by-client-or-by-dealer>
         </div>
         <div class="report-three report-bigger">
             <app-report-workorders-value-by-month
                 [init_date]="filterInitDate"
                 [end_date]="filterEndDate"
-                [company]="company">
+                [company]="company"
+                (dataWasLoad)="dataWasLoadReportValuesByMonth($event)">
             </app-report-workorders-value-by-month>
         </div>
         <div class="report-two   report-bigger">
             <app-report-trx-by-state
                 [init_date]="filterInitDate"
                 [end_date]="filterEndDate"
-                [company]="company">
+                [company]="company"
+                (dataWasLoad)="dataWasLoadReportTrxByState($event)">
             </app-report-trx-by-state>
         </div>
 
@@ -69,7 +72,8 @@
             <app-report-trx-by-vehicle
                 [init_date]="filterInitDate"
                 [end_date]="filterEndDate"
-                [company]="company">
+                [company]="company"
+                (dataWasLoad)="dataWasLoadReportTrxByVehicle($event)">
             </app-report-trx-by-vehicle>
         </div>
 

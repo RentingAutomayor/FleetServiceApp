@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input,Output, OnChanges, OnInit, SimpleChanges,EventEmitter } from '@angular/core';
 import { ReportService } from '../../Services/report.service';
 import { Label, SingleDataSet } from 'ng2-charts';
 import { ChartColor, ChartType } from 'chart.js';
@@ -27,12 +27,14 @@ export class ReportTrxByStateComponent implements OnInit, OnChanges {
   client_to_filter: number;
   @Input() init_date: Date;
   @Input() end_date: Date;
+  @Output() dataWasLoad = new EventEmitter<boolean>();
 
   constructor(
     private reportService:ReportService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.dataWasLoad.emit(false)
     this.chartDataset = [];
     this.chartDataset = this.getData();
   }
@@ -72,7 +74,7 @@ export class ReportTrxByStateComponent implements OnInit, OnChanges {
         aToReturn.push(item);
       })
     });
-
+    this.dataWasLoad.emit(true)
     return aToReturn;
   }
 

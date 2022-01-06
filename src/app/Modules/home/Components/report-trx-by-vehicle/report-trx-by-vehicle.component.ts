@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input,Output, OnChanges, OnInit, SimpleChanges , EventEmitter} from '@angular/core';
 import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js';
 import { Label } from 'ng2-charts';
 import * as pluginDataLabels from 'chart.js';
@@ -85,6 +85,7 @@ export class ReportTrxByVehicleComponent implements OnInit, OnChanges {
   license_plate_to_filter:string;
   @Input() init_date: Date;
   @Input() end_date: Date;
+  @Output() dataWasLoad = new EventEmitter<boolean>();
 
 
   constructor(
@@ -97,6 +98,7 @@ export class ReportTrxByVehicleComponent implements OnInit, OnChanges {
     this.end_date = null;
   }
   ngOnChanges(changes: SimpleChanges): void {
+    this.dataWasLoad.emit(false)
     this.chartLabels = []
     this.chartData  = [
       {
@@ -138,6 +140,7 @@ export class ReportTrxByVehicleComponent implements OnInit, OnChanges {
     await this.getWorkOrdersPending();
     await this.getWorkOrdersFinished();
     await this.getWorkOrdersAnnul();
+    this.dataWasLoad.emit(true)
   }
 
   initDataToGetReport() {

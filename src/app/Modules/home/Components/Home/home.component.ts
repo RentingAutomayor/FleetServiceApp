@@ -102,13 +102,36 @@ export class HomeComponent implements OnInit {
     this.filterEndDate = this.dtEndingDate;
   }
 
+  dataWasLoadReportAmmountWorkOrdersByClientOrDealer(dataWasLoad: boolean){
+    if(!dataWasLoad){
+      this.isAwaiting = true;
+    }else{
+      this.isAwaiting = false;
+    }
+  }
 
+  dataWasLoadReportTrxByState(dataWasLoad: boolean){
+    if(!dataWasLoad){
+      this.isAwaiting = true;
+    }else{
+      this.isAwaiting = false;
+    }
+  }
 
+  dataWasLoadReportTrxByVehicle(dataWasLoad: boolean){
+    if(!dataWasLoad){
+      this.isAwaiting = true;
+    }else{
+      this.isAwaiting = false;
+    }
+  }
 
-
-
-
-
-
+  dataWasLoadReportValuesByMonth(dataWasLoad: boolean){
+    if(!dataWasLoad){
+      this.isAwaiting = true;
+    }else{
+      this.isAwaiting = false;
+    }
+  }
 
 }

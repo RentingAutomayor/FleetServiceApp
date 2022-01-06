@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js';
 import { Label } from 'ng2-charts';
 import * as pluginDataLabels from 'chart.js';
@@ -50,6 +50,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
   client_to_filter: number;
   @Input() init_date: Date;
   @Input() end_date: Date;
+  @Output() dataWasLoad = new EventEmitter<boolean>();
 
 
   constructor(
@@ -63,6 +64,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.dataWasLoad.emit(false)
     this.getDataToReport()
   }
 
@@ -98,9 +100,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
 
 
   async getDataToReport() {
-
     console.warn("[getDataToReport]",this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date);
-
     if(this.typeOfReport ==  'client'){
       await this.reportService.GetAmountWorkOrdersByClientAndMonth(this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date)
       .then(data => {
@@ -124,7 +124,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
         this.validateDataSets(data);
       });
     }
-
+    this.dataWasLoad.emit(true)
   }
 
   validateLabels(aLabels:string[], label:string):string[]{

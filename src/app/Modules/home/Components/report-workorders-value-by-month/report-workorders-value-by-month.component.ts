@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input,Output, OnChanges, OnInit, SimpleChanges,EventEmitter } from '@angular/core';
 import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js';
 import { Label } from 'ng2-charts';
 import * as pluginDataLabels from 'chart.js';
@@ -52,11 +52,13 @@ export class ReportWorkordersValueByMonthComponent implements OnInit, OnChanges 
   client_to_filter: number;
   @Input() init_date: Date;
   @Input() end_date: Date;
+  @Output() dataWasLoad = new EventEmitter<boolean>();
 
   constructor(
     private reportService:ReportService
   ) { }
   ngOnChanges(changes: SimpleChanges): void {
+    this.dataWasLoad.emit(false)
     this.getDataToReport();
   }
 
@@ -103,6 +105,7 @@ export class ReportWorkordersValueByMonthComponent implements OnInit, OnChanges 
 
       this.chartLabels = aLabels;
       this.validateDataSets(data);
+      this.dataWasLoad.emit(true)
     })
   }
 

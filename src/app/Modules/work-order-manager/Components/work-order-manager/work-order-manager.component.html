@@ -72,7 +72,7 @@
                     <td>{{ workOrder.headerDetails.maintenanceRoutine.name }}</td>
                     <td>{{ workOrder.headerDetails.branch.name | uppercase}}</td>
                     <td>{{ workOrder.registrationDate | date:'yyyy/MM/dd' }}</td>
-                    <td>{{ workOrder.value | currency}}</td>
+                    <td>{{ workOrder.value | currency:'USD':'symbol':'1.0-0'}}</td>
                     <td><span [id]="getSpanStateId(workOrder.id)">{{ validateState(workOrder.transactionState,
                             workOrder.id) }}</span></td>
                     <td>

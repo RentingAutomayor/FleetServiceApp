@@ -12,7 +12,11 @@
             (input)="filterItemsByDescription($event)">
         </div>
     </div>
-    <button class="btn-add btn-info" (click)="insertMaintenanceItem()"><i class="fas fa-plus"></i></button>
+    <button
+      class="btn-add btn-info"
+      (click)="insertMaintenanceItem()">
+        <i class="fas fa-plus"></i>
+    </button>
     <table class="table table-striped">
         <thead>
             <th class="col-number col-mobile-hide">#</th>
@@ -32,11 +36,11 @@
                 <td>{{item.name | titlecase | slice:0:50 }}</td>
                 <td>{{item.type.name | titlecase}}</td>
                 <td>{{item.presentationUnit.longName | titlecase}}</td>
-                <td>{{item.referencePrice | currency}}</td>
-                <td>{{ item | calculateTaxes | currency }}</td>
-                <td>{{ item | calculateTotalPrice | currency }}</td>
+                <td>{{item.referencePrice  | currency:'USD':'symbol':'1.0-0'}}</td>
+                <td>{{ item | calculateTaxes  | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td>{{ item | calculateTotalPrice | currency:'USD':'symbol':'1.0-0' }}</td>
                 <td>
-                    <i class="fas fa-info-circle text-info" title="Más información"></i>
+                    <i class="fas fa-info-circle text-info" (click)="seeDetailsMaintenanceItem(item)" title="Más información"></i>
                     <i class="fas fa-edit text-warning" (click)="updateMaintenanceItem(item)" title="Modificar"></i>
                     <i class="fas fa-trash-alt text-danger" (click)="deleteMaintenanceItem(item)" title="Eliminar"></i>
                 </td>
@@ -49,7 +53,8 @@
 </div>
 <div id="container__formMaintenanceItem">
     <app-maintenance-item
-        [countChanges]="oCountChanges"
+        [disableControls]="disableControls"
+        [maintenanceItem]="maintenanceItemSelected"
         (maintenanceItemWasSetted)="saveMaintenanceItem()"
         (maintenanceItemWasCanceled)="comeBackToTable()">
     </app-maintenance-item>

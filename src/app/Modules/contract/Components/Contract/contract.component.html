@@ -13,10 +13,10 @@
         <div class="tab_content tab_active" id="container__basicData">
             <div class="container__row">
                 <div class="container__col">
-                    <app-input-search-client 
-                        [countChanges]="countChanges" 
+                    <app-input-search-client
+                        [countChanges]="countChanges"
                         [disableField]="disableClientField"
-                        (clientWasSetted)="setClientSelected()">                     
+                        (clientWasSetted)="setClientSelected()">
                     </app-input-search-client>
 
                     <div class="error" *ngIf="clientFieldIsInvalid">
@@ -24,8 +24,8 @@
                     </div>
                 </div>
                 <div class="container__col">
-                    <app-input-search-dealer 
-                        [countChanges]="countChanges" 
+                    <app-input-search-dealer
+                        [countChanges]="countChanges"
                         [disableField]="disableDealerField"
                         (dealerWasSetted)="setDealerSelected()">
                     </app-input-search-dealer>
@@ -38,13 +38,13 @@
             <div class="container__row">
                 <div class="container__col">
                     <label>Código de referencia del contrato</label>
-                    <input type="text" 
-                        formControlName="name" 
+                    <input type="text"
+                        formControlName="name"
                         class="form-control"
-                        placeholder="Código de referencia del contrato ...">                   
+                        placeholder="Código de referencia del contrato ...">
                 </div>
                 <div class="container__col">
-                    <app-contract-state 
+                    <app-contract-state
                         [countChanges]="countChanges"
                         (contractStateWasSelected)="setContractState($event)"
                         [cmbStateIsDisable]="disableCmbState"></app-contract-state>
@@ -52,14 +52,14 @@
                     <div class="error" *ngIf="contracStateFieldIsInvalid">
                         <p>* El estado es requerido para guardar el contrato</p>
                     </div>
-                            
+
                 </div>
             </div>
             <div class="container__row">
                 <div class="container__col">
                     <label>Cantidad de vehículos contratados</label>
-                    <input class="form-control" 
-                        type="text" 
+                    <input class="form-control"
+                        type="text"
                         formControlName="amountVehicles"
                         (keypress)="validateNumbers($event)"
                         placeholder="cantidad de vehículos contratados">
@@ -70,22 +70,22 @@
                 </div>
                 <div class="container__col">
                     <label>Duración en meses:</label>
-                    <input type="number" 
-                        formControlName="duration" 
+                    <input type="number"
+                        formControlName="duration"
                         class="form-control"
-                        placeholder="Duración del contrato ..." 
+                        placeholder="Duración del contrato ..."
                         (keypress)="validateNumbers($event)"
                         (input)="calculateEndingDate()">
-                    
+
                     <div class="error" *ngIf="durationField.invalid && (durationField.touched || durationField.dirty) ">
                         <p *ngIf="durationField.hasError('required')">* La duración del contrato es requerida</p>
-                    </div>  
+                    </div>
                 </div>
             </div>
             <div class="container__row">
                 <div class="container__col">
                     <label>Fecha de inicio:</label>
-                    <input type="text" class="form-control" 
+                    <input type="text" class="form-control"
                         formControlName="startingDate" [bsValue]="dtStartingDate"
                         (keypress)="validateInputDate($event)"
                         [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
@@ -100,12 +100,12 @@
                     <input type="text" class="form-control" formControlName="endingDate"
                         placeholder="fecha de finalización ..." [bsValue]="dtEndingDate"
                         [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }" bsDatepicker
-                        disabled>                   
+                        disabled>
                 </div>
             </div>
             <div class="container__row">
                 <div class="container__col">
-                    <app-contract-discount-type 
+                    <app-contract-discount-type
                         [countChanges]="countChanges"
                         [disableField]="disableTypeOfDiscoutnField"
                         (discountWasSelected)="setDiscountType($event)"></app-contract-discount-type>
@@ -115,17 +115,17 @@
                 </div>
                 <div class="container__col">
                     <label>Valor del descuento:</label>
-                    <input 
-                        type="number" 
-                        formControlName="discountValue" 
+                    <input
+                        type="number"
+                        formControlName="discountValue"
                         class="form-control"
                         placeholder="valor del descuento ..."
                         (keypress)="validateNumbers($event)">
-                        
+
                     <div class="error" *ngIf="discountValueField.invalid && (discountValueField.touched || discountValueField.dirty) ">
                         <p *ngIf="discountValueField.hasError('required')">* El valor del descuento que debe aplicarse al contrato es requerido</p>
                     </div>
-                        
+
                 </div>
             </div>
             <div class="container__observation">
@@ -136,20 +136,18 @@
 
         </div>
         <div class="tab_content tab_inactive" id="container__vehicleModels">
-            <app-check-list-vehicle-type 
-                [countChanges]="countChanges" 
+            <app-check-list-vehicle-type
                 [disableChecks]="disableVehicleTypesAndVehicleModels"
                 (vehicleTypeWasSelected)="setListVehicleTypes()">
             </app-check-list-vehicle-type>
-            <app-check-list-vehicle-model 
-                [countChanges]="countChanges"
+            <app-check-list-vehicle-model
                 [disableChecks]="disableVehicleTypesAndVehicleModels"
-                (vehicleModelsWasSetted)="setLisVehicleModels()">
+                (onVehicleModelsWasSetted)="setLisVehicleModels($event)">
             </app-check-list-vehicle-model>
         </div>
         <div class="tab_content tab_inactive" id="container__vehicles">
 
-            <app-tbl-check-vehicles 
+            <app-tbl-check-vehicles
                 [countChanges]="countChanges"
                 [amountAllowed]="amountVehiclesField.value"
                 [disableChecks]="disableVehicles"
@@ -159,18 +157,18 @@
         </div>
 
         <div class="tab_content tab_inactive" id="container__prices">
-            <app-tbl-prices-by-contract 
-                [changeDealer]="oChangeDealer" 
+            <app-tbl-prices-by-contract
+                [changeDealer]="oChangeDealer"
                 [getPricesOfContract]="oGetPricesOfContract"
                 [discountType]="discountType"
                 [discountValue]="discountValueField.value"
                 (lsMaintenanceItemsWasSetted)="setItemsByContract($event)">
-            </app-tbl-prices-by-contract> 
+            </app-tbl-prices-by-contract>
         </div>
 
         <div class="buttons__container" id="container__buttons">
             <button type="button" class="btn btn-danger" (click)="comeBackTable()">Cancelar</button>
-            <button type="submit" class="btn btn-success" 
+            <button type="submit" class="btn btn-success"
                 [disabled]="frmContract.invalid || clientFieldIsInvalid || dealerFieldIsInvalid  || contracStateFieldIsInvalid || discountFieldIsInvalid || buttonSaveIsDisable">Guardar</button>
         </div>
         <div>

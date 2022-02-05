@@ -13,8 +13,23 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
   frmCategory: FormGroup;
   lsCategory: Category[];
   categorySelected: Category;
+
+
   @Input() category: Category;
-  @Output() changeCategory  = new EventEmitter<Category>()
+
+  @Output() changeCategory  = new EventEmitter<Category>();
+  @Output() onFocusOut = new EventEmitter<Category>();
+
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+    if(this.disableControls){
+      this.frmCategory.disable()
+    }else{
+      this.frmCategory.enable()
+    }
+  }
 
   constructor(
     private maintenanceItemService: MaintenanceItemService
@@ -32,18 +47,21 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
     this.initComponents();
   }
 
-  async initComponents() {
+   initComponents() {
     try {
       this.frmCategory.controls.cmbCategory.setValue(0);
-      this.lsCategory = await this.maintenanceItemService.getCategories();
+      this.maintenanceItemService.getCategories()
+      .then(categories => {
+        this.lsCategory =  categories;
+      })
     } catch (error) {
       console.error(error);
     }
   }
 
   setCategory(event: any) {
-    let oCategory = this.lsCategory.find(ct => ct.id == event.value);
-    this.changeCategory.emit(oCategory);
+    this.categorySelected = this.lsCategory.find(ct => ct.id == event.value);
+    this.changeCategory.emit(this.categorySelected);
   }
 
   showDataInForm(pCategory: Category) {
@@ -53,6 +71,10 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
 
   clearDataForm() {
     this.frmCategory.controls.cmbCategory.setValue(0);
+  }
+
+  focusOut(){
+    this.onFocusOut.emit(this.categorySelected)
   }
 
 }

@@ -5,7 +5,11 @@
     <div class="container__handleTax">
         <div class="container__input">
             <label class="container__checkbox" for="chkYes">
-                <input type="checkbox" id="chkYes" (click)="activateTaxes(true)">
+                <input
+                  type="checkbox"
+                  id="chkYes"
+                  (click)="activateTaxes(true)"
+                  [disabled]="disableControls">
                 <span class="checkmark"></span>
             </label>
             <label for="chkYes">
@@ -14,7 +18,11 @@
         </div>
         <div class="container__input">
             <label class="container__checkbox" for="chkNo">
-                <input type="checkbox" id="chkNo" (click)="activateTaxes(false)">
+                <input
+                  type="checkbox"
+                  id="chkNo"
+                  (click)="activateTaxes(false)"
+                  [disabled]="disableControls">
                 <span class="checkmark"></span>
             </label>
             <label for="chkNo">
@@ -27,9 +35,11 @@
         <div class="row__container_tax" *ngIf="itemHandleTax">
             <div *ngFor="let tax of lsTaxes" class="container__tax">
                 <label class="container__checkbox" [for]="getTaxContainerId(tax.id)">
-                    <input type="checkbox"
+                    <input
+                        type="checkbox"
                         [id]="getTaxContainerId(tax.id)"
-                        (click)="AddOrRemoveTaxToList($event,tax)">
+                        (click)="AddOrRemoveTaxToList($event,tax)"
+                        [disabled]="disableControls">
                     <span class="checkmark"></span>
                 </label>
                 <label [for]="getTaxContainerId(tax.id)">
@@ -39,7 +49,6 @@
             </div>
         </div>
     </div>
-
     <div
         *ngIf="taxesAreInvalid"
         class="container-error">

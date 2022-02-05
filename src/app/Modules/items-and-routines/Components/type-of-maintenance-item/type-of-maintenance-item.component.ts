@@ -1,4 +1,4 @@
-import { Component, Input, OnInit ,OnChanges, SimpleChange, SimpleChanges, Output, EventEmitter} from '@angular/core';
+import { Component, Input, OnInit , Output, EventEmitter} from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit';
 import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem';
@@ -9,13 +9,36 @@ import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenan
   templateUrl: './type-of-maintenance-item.component.html',
   styleUrls: ['./type-of-maintenance-item.component.scss']
 })
-export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
+export class TypeOfMaintenanceItemComponent implements OnInit {
   frmType: FormGroup;
   lsType: TypeOfMaintenanceItem[];
-  lsTypeToUpdate: TypeOfMaintenanceItem;
-  @Input() typeOfItem: TypeOfMaintenanceItem;
-  @Output() lostFocus = new EventEmitter<boolean>();
+
+  @Output() lostFocus = new EventEmitter<TypeOfMaintenanceItem>();
   @Output() chageType = new EventEmitter<TypeOfMaintenanceItem>();
+
+  typeOfItemSelected: TypeOfMaintenanceItem;
+  @Input('typeOfItem')
+  set setTypeOfItem(type: TypeOfMaintenanceItem){
+    this.typeOfItemSelected = type;
+    if(this.typeOfItemSelected !== null && this.typeOfItemSelected !== undefined){
+      this.setDataInForm(this.typeOfItemSelected)
+      this.chageType.emit(this.typeOfItemSelected);
+    }else{
+      this.clearForm()
+      this.chageType.emit(null);
+    }
+  }
+
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+    if(this.disableControls){
+      this.frmType.disable()
+    }else{
+      this.frmType.enable()
+    }
+  }
 
   constructor(
     private maintenanceItemService:MaintenanceItemService
@@ -23,14 +46,6 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
     this.frmType = new FormGroup({
       cmbType: new FormControl('Seleccione ...')
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    try {
-      this.setDataInForm(this.typeOfItem);
-    } catch (error) {
-      console.warn(error)
-    }
   }
 
   ngOnInit(): void {
@@ -43,13 +58,11 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
       this.maintenanceItemService.getTypeOfMaintenanceItem()
       .then(lsTypes => {
         this.lsType = lsTypes;
-
-        if(this.typeOfItem !== null){
-          this.setDataInForm(this.typeOfItem)
+        if(this.typeOfItemSelected !== null){
+          this.setDataInForm(this.typeOfItemSelected)
+          this.setType(this.typeOfItemSelected)
         }else{
-          this.setDataInForm(null)
-          const typeByDefault =  this.lsType.find(tp => tp.id == TypeOfMaintenanceItems.REPUESTO);
-          this.setType(typeByDefault)
+          this.clearForm()
         }
       });
     } catch (err) {
@@ -59,8 +72,8 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
   }
 
   setType(event:any){
-    let typeOfItem = this.lsType.find(tp => tp.id == event.value);
-    this.chageType.emit(typeOfItem);
+    this.typeOfItemSelected = this.lsType.find(tp => tp.id == event.value);
+    this.chageType.emit(this.typeOfItemSelected);
   }
 
   setDataInForm(pType:TypeOfMaintenanceItem){
@@ -73,6 +86,6 @@ export class TypeOfMaintenanceItemComponent implements OnInit,OnChanges {
   }
 
   focusoutType(){
-    this.lostFocus.emit(true);
+    this.lostFocus.emit(this.typeOfItemSelected);
   }
 }

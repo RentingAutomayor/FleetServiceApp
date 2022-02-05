@@ -1,6 +1,13 @@
-import { createOfflineCompileUrlResolver } from '@angular/compiler';
-import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
-import { FasDirective } from 'angular-bootstrap-md';
+import {
+   Component,
+   EventEmitter,
+   Input,
+   OnInit,
+   Output,
+   OnChanges,
+   SimpleChanges,
+   AfterViewInit
+} from '@angular/core';
 import { VehicleType } from 'src/app/Models/VehicleType';
 import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.service';
 
@@ -9,44 +16,52 @@ import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.se
   templateUrl: './check-list-vehicle-type.component.html',
   styleUrls: ['./check-list-vehicle-type.component.scss', '../../../assets/styles/checkbox.scss']
 })
-export class CheckListVehicleTypeComponent implements OnInit,OnChanges {
-  lsVehicleTypeSelected: VehicleType[] = [];
+export class CheckListVehicleTypeComponent implements OnInit {
+  lsVehicleTypeSelected?: VehicleType[];
   lsVehicleTypes: VehicleType[];
-  @Input() countChanges:number;
-  @Input() disableChecks: boolean;
-  @Output() vehicleTypeWasSelected = new EventEmitter<boolean>();
+
+
+  @Output() onVehicleTypeWasSelected = new EventEmitter<VehicleType[]>();
+
   noItemSelected: boolean ;
+
+  @Input('lsTypes')
+  set setVehicleTypesSelected(lsTypes: VehicleType[]){
+    this.lsVehicleTypeSelected = (lsTypes !== null && lsTypes !== undefined)?lsTypes: [];
+    if( this.lsVehicleTypeSelected.length > 0){
+      this.showDataInForm(this.lsVehicleTypeSelected);
+    }else{
+      this.clearDataForm();
+    }
+    this.toogleError(this.lsVehicleTypeSelected)
+    this.onVehicleTypeWasSelected.emit(this.lsVehicleTypeSelected)
+  }
+
+  disableChecks: boolean;
+  @Input('disableChecks')
+  set setDisableChecks(value:boolean){
+    this.disableChecks=value;
+    if(this.disableChecks){
+      this.toggleChecks();
+    }
+  }
+
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+  }
 
   constructor(
     private vehicleService: VehicleService
   ) {
     this.disableChecks = false;
     this.noItemSelected = false;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      if (change == "countChanges") {
-        this.lsVehicleTypeSelected = this.vehicleService.getListVehicleTypeSelected();
-        if(this.lsVehicleTypeSelected != null && this.lsVehicleTypeSelected != undefined){
-          if (this.lsVehicleTypeSelected.length > 0) {
-            this.showDataInForm(this.lsVehicleTypeSelected);
-          } else {
-            this.clearDataForm();
-          }
-        }else{
-          this.clearDataForm();
-        }
-      }else if(change == "disableChecks"){
-        this.toggleChecks();
-      }
-    }
+    this.lsVehicleTypeSelected = [];
   }
 
   ngOnInit(): void {
-    this.vehicleTypeWasSelected.emit(false)
     this.lsVehicleTypeSelected =[]
-    this.countChanges = 0;
     this.getVehicleTypes();
   }
 
@@ -63,29 +78,20 @@ export class CheckListVehicleTypeComponent implements OnInit,OnChanges {
   }
 
   setVehicleType(event:any, pVehicleType: VehicleType){
-    ////console.log(event.checked);
-    ////console.log("[Vehicle type component Antes]", this.lsVehicleTypeSelected);
     if(event.checked){
       if( this.lsVehicleTypeSelected == null &&  this.lsVehicleTypeSelected == undefined){
         this.lsVehicleTypeSelected = [];
       }
       this.lsVehicleTypeSelected.push(pVehicleType);
-
-
     }else{
       let oVehicleTypeTmp = this.lsVehicleTypeSelected.find(item => item.id == pVehicleType.id)
       let index = this.lsVehicleTypeSelected.indexOf(oVehicleTypeTmp);
       if(index != -1){
-        ////console.log("index element to delete: ",index);
         this.lsVehicleTypeSelected.splice(index,1);
       }
-
     }
-    ////console.log("[Vehicle type component Después]", this.lsVehicleTypeSelected);
-
-    this.vehicleService.setListVehicleTypeSelected(this.lsVehicleTypeSelected);
     this.toogleError(this.lsVehicleTypeSelected)
-    this.vehicleTypeWasSelected.emit(true);
+    this.onVehicleTypeWasSelected.emit(this.lsVehicleTypeSelected);
   }
 
   toogleError(lsVehicleType): void{
@@ -96,24 +102,24 @@ export class CheckListVehicleTypeComponent implements OnInit,OnChanges {
     }
   }
 
-  async showDataInForm(lsVehicleSelected: VehicleType[]){
+  showDataInForm(lsVehicleSelected: VehicleType[]){
     try{
-      await lsVehicleSelected.forEach(item => {
+      lsVehicleSelected.forEach(item => {
         let idCheck = `#${this.getIdChk(item.id)}`;
         let oCheckBox: HTMLInputElement = document.querySelector(idCheck);
         oCheckBox.checked = true;
       });
 
-      this.toggleChecks();
+      //this.toggleChecks();
     }
     catch(error){
-      console.warn("[Puede que no exista una lista de tipo de vehículos aún]");
-      setTimeout(() => {
-        this.lsVehicleTypeSelected = this.vehicleService.getListVehicleTypeSelected();
-        //console.warn("Intenta de nuevo mostrar información", this.lsVehicleTypeSelected);
-        this.showDataInForm(this.lsVehicleTypeSelected);
-        this.toggleChecks();
-      },800);
+      // console.warn("[Puede que no exista una lista de tipo de vehículos aún]");
+      // setTimeout(() => {
+      //   this.lsVehicleTypeSelected = this.vehicleService.getListVehicleTypeSelected();
+      //   //console.warn("Intenta de nuevo mostrar información", this.lsVehicleTypeSelected);
+      //   this.showDataInForm(this.lsVehicleTypeSelected);
+      //   this.toggleChecks();
+      // },800);
     }
   }
 

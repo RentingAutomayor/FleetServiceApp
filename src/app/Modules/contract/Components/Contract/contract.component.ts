@@ -237,9 +237,9 @@ export class ContractComponent implements OnInit, OnChanges {
     this.countChanges += 1;
   }
 
-  setLisVehicleModels() {
+  setLisVehicleModels(lsVehicleModels: VehicleModel[]) {
     this.countChanges += 1;
-    this.contract.lsVehicleModels = this.vehicleService.getListVehicleModelsSelected();
+    this.contract.lsVehicleModels = lsVehicleModels;
   }
 
   setClientSelected() {

@@ -12,10 +12,10 @@ export class CalculateTotalPricePipe implements PipeTransform {
 
     if(item.handleTax){
       for (const tax of item.lsTaxes) {
-        let taxTmp = item.referencePrice * (tax.percentValue / 100);
+        let taxTmp = Math.round(item.referencePrice * (tax.percentValue / 100));
         taxValue += taxTmp;
       }
-    }  
+    }
 
     totalPrice += item.referencePrice + taxValue;
     return totalPrice;

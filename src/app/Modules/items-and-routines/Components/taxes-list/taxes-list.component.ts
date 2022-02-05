@@ -19,6 +19,12 @@ export class TaxesListComponent implements OnInit, OnChanges {
   modelItemHadleTaxes: ItemHandleTaxes = {} as ItemHandleTaxes
   taxesAreInvalid: boolean;
 
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+  }
+
 
   constructor(
     private maintenanceItemService: MaintenanceItemService
@@ -35,7 +41,7 @@ export class TaxesListComponent implements OnInit, OnChanges {
         this.checkTaxButton(this.inpLsTaxSelected);
       }
     } catch (error) {
-      console.warn(error)
+      ////console.warn(error)
     }
 
   }
@@ -52,7 +58,7 @@ export class TaxesListComponent implements OnInit, OnChanges {
 
       });
     } catch (error) {
-      console.warn(error);
+      //console.warn(error);
     }
   }
 
@@ -84,7 +90,7 @@ export class TaxesListComponent implements OnInit, OnChanges {
 
 
     } catch (error) {
-      console.warn(error);
+      //console.warn(error);
     }
   }
 
@@ -134,7 +140,7 @@ export class TaxesListComponent implements OnInit, OnChanges {
 
 
     } catch (error) {
-      console.warn(error);
+      //console.warn(error);
     }
 
   }
@@ -147,7 +153,7 @@ export class TaxesListComponent implements OnInit, OnChanges {
         checkTax.checked = false;
       }
     } catch (error) {
-      console.warn(error);
+      //console.warn(error);
     }
 
   }

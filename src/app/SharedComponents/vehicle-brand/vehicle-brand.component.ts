@@ -17,6 +17,17 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
   @Output() vehicleBrandWasSetted = new EventEmitter<boolean>();
   @Input() defaultBrandId: number = 0
 
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+    if(this.disableControls){
+      this.frmBrand.disable()
+    }else{
+      this.frmBrand.enable()
+    }
+  }
+
   constructor(
     private vehicleService: VehicleService
   ) {

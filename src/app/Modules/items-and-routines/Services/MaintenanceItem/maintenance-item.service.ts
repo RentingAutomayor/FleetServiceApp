@@ -34,7 +34,7 @@ export class MaintenanceItemService {
   setCategorySelected(pCategory:Category){
     this.category = pCategory;
   }
-  
+
   getPresentationUnit():PresentationUnit{
     return this.presentationUnit;
   }
@@ -61,7 +61,7 @@ export class MaintenanceItemService {
 
   getItemToUpdate():MaintenanceItem{
     return this.itemToUpdate;
-  } 
+  }
 
   setItemToUpdate(pItem:MaintenanceItem){
     this.itemToUpdate = pItem;
@@ -144,5 +144,21 @@ export class MaintenanceItemService {
     let urlDelete = `${this.URL_API}/Delete`;
     return this.http.post<ResponseApi>(urlDelete,pItem,this.HttpOptions).toPromise();
   }
+
+
+  calculateTaxes(referencePriceWithoutDiscount:number, lsTaxes: Tax[]){
+    let totalTaxes = 0;
+    if(lsTaxes.length > 0){
+      for (let tax of lsTaxes) {
+        totalTaxes += Math.round(referencePriceWithoutDiscount * (tax.percentValue / 100));
+      }
+    }
+    return totalTaxes;
+  }
+
+  calculateTotalByItem(referencePrice:number,discount: number, taxesValue: number){
+    return Math.round(referencePrice - discount + taxesValue)
+  }
+
 
 }

@@ -12,14 +12,48 @@ import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem';
   templateUrl: './presentation-unit.component.html',
   styleUrls: ['./presentation-unit.component.scss']
 })
-export class PresentationUnitComponent implements OnInit, OnChanges {
+export class PresentationUnitComponent implements OnInit {
   lsPresentationUnit: PresentationUnit[];
   lsPresentationUnitFiltered: PresentationUnit[];
   frmPresentationUnit: FormGroup;
-  @Input() presentationUnit: PresentationUnit;
-  @Input() idTypeOfItem: number
-  @Output() lostFocus = new EventEmitter<boolean>();
+
+
+  @Output() lostFocus = new EventEmitter<PresentationUnit>();
   @Output() changePresentation = new EventEmitter<PresentationUnit>();
+
+  presentationUnitSelected: PresentationUnit;
+  @Input('presentationUnit')
+  set setPresentationUnit(presentation: PresentationUnit){
+    this.presentationUnitSelected = presentation;
+    if(this.presentationUnitSelected !== null && this.presentationUnitSelected !== undefined){
+      this.setDataInForm(this.presentationUnitSelected)
+      this.changePresentation.emit(this.presentationUnitSelected);
+    }else{
+      this.clearForm();
+      this.changePresentation.emit(null);
+    }
+
+  }
+
+  idTypeOfItem: number
+  @Input('idTypeOfItem')
+  set setIdTypeOfItem (idType: number){
+    this.idTypeOfItem = idType
+    if (this.idTypeOfItem !== 0) {
+        this.filterPresentationsByType(this.idTypeOfItem)
+    }
+  }
+
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+    if(this.disableControls){
+      this.frmPresentationUnit.disable()
+    }else{
+      this.frmPresentationUnit.enable()
+    }
+  }
 
   constructor(
     private maintenanceItemService: MaintenanceItemService
@@ -29,16 +63,18 @@ export class PresentationUnitComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.idTypeOfItem !== 0) {
-      this.filterPresentationsByType(this.idTypeOfItem)
-    }
-    this.setDataInForm(this.presentationUnit)
-
-  }
-
   ngOnInit(): void {
     this.initComponents();
+  }
+
+
+  async initComponents() {
+    try {
+      this.getPresentationUnits();
+    } catch (err) {
+      console.error(err.error.Message);
+      alert(err.error.Message);
+    }
   }
 
   getPresentationUnits() {
@@ -48,9 +84,8 @@ export class PresentationUnitComponent implements OnInit, OnChanges {
           .then(presentations => {
             this.lsPresentationUnit = presentations
             this.filterPresentationsByType(this.idTypeOfItem)
-
-            if (this.presentationUnit !== null) {
-              this.setDataInForm(this.presentationUnit)
+            if (this.presentationUnitSelected  !== null) {
+              this.setDataInForm(this.presentationUnitSelected )
             }
           })
       }
@@ -67,20 +102,9 @@ export class PresentationUnitComponent implements OnInit, OnChanges {
     }
   }
 
-  async initComponents() {
-    try {
-      //this.clearForm();
-      this.getPresentationUnits();
-
-    } catch (err) {
-      console.error(err.error.Message);
-      alert(err.error.Message);
-    }
-  }
-
-  setPresentationUnit(event: any) {
-    const oPresentation = this.lsPresentationUnitFiltered.find(pu => pu.id == event.value);
-    this.changePresentation.emit(oPresentation);
+  changePresentationUnit(event: any) {
+    this.presentationUnitSelected = this.lsPresentationUnitFiltered.find(pu => pu.id == event.target.value);
+    this.changePresentation.emit(this.presentationUnitSelected );
   }
 
   clearForm() {
@@ -93,7 +117,7 @@ export class PresentationUnitComponent implements OnInit, OnChanges {
   }
 
   presentationUnitFocusOut() {
-    this.lostFocus.emit(true);
+    this.lostFocus.emit(this.presentationUnitSelected);
   }
 
 

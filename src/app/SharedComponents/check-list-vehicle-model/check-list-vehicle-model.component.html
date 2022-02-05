@@ -3,25 +3,26 @@
     <div class="container__row">
         <div
             *ngFor="let vehicleType of lsVehicleType;let index = index"
-            class="container__type" 
+            class="container__type"
             [id]="getContainerTypeId(vehicleType.id)">
-            <h6>{{vehicleType.name}}</h6>            
+            <h6>{{vehicleType.name}}</h6>
         </div>
     </div>
 
-     <div 
+     <div
         *ngFor="let vehicleModel of lsVehicleModels; let last=last"
-        class="container__model" 
+        class="container__model"
         [id]="getContainerModelId(vehicleModel.id)"
         >
         <label class="container__checkbox">
-            <input type="checkbox" 
+            <input type="checkbox"
                 [id]="getIdChk(vehicleModel.id)"
-                (click)="setVehicleModel($event.target,vehicleModel)">
+                (click)="setVehicleModel($event.target,vehicleModel)"
+                [disabled]="disableControls">
             <span class="checkmark"></span>
         </label>
         <label [for]="getIdChk(vehicleModel.id)">
-            {{ vehicleModel.shortName | uppercase }}  {{ last ? showVehicleModelsByContainer(last) : '' }}            
-        </label>    
-    </div> 
+            {{ vehicleModel.shortName | uppercase }}  {{ last ? showVehicleModelsByContainer(last) : '' }}
+        </label>
+    </div>
 </div>

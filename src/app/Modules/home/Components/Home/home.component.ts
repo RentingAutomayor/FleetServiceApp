@@ -26,10 +26,10 @@ export class HomeComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     let now = new Date();
-    this.dtStartingDate = now;
-    this.dtEndingDate = now;
+    this.dtStartingDate = null;
+    this.dtEndingDate = null;
     this.buildFormFilter();
-    this.btnSearchIsDisabled = false
+    this.btnSearchIsDisabled = true
     this.datesAreInvalid = false
 
   }
@@ -90,7 +90,7 @@ export class HomeComponent implements OnInit {
 
   validateDates(initDate, endDate): boolean{
     console.log(`${initDate} - ${endDate}`)
-    if(initDate > endDate){
+    if((initDate > endDate) || initDate == null || endDate == null){
       return false;
     }else{
       return true;

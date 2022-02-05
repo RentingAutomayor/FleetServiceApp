@@ -2,7 +2,7 @@
     <label>Unidad de presentación</label>
     <select formControlName="cmbPresentationUnit"
         class="browser-default custom-select"
-        (change)="setPresentationUnit($event.target)"
+        (change)="changePresentationUnit($event)"
         (focusout)="presentationUnitFocusOut()">
         <option [value]="0" disabled>Seleccione ...</option>
         <option *ngFor="let presentation of lsPresentationUnitFiltered"

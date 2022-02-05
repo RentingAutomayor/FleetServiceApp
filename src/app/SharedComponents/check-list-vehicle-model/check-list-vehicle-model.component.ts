@@ -9,60 +9,56 @@ import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.se
   templateUrl: './check-list-vehicle-model.component.html',
   styleUrls: ['./check-list-vehicle-model.component.scss', '../../../assets/styles/checkbox.scss']
 })
-export class CheckListVehicleModelComponent implements OnInit, OnChanges {
+export class CheckListVehicleModelComponent implements OnInit {
   lsVehicleType: VehicleType[];
   lsVehicleModels: VehicleModel[];
-  //Vehicle Type Selected
-  lsVehicleTypesSelected: VehicleType[] = [];
-  lsVehicleModelsSelected: VehicleModel[] = [];
   lsVehicleModelEnabled: VehicleModel[] = [];
 
   prefixContainerType: string = 'container_type_';
   prefixContainerModel: string = 'container_model_';
 
-  @Input() countChanges: number;
   @Input() disableChecks: boolean;
-  @Output() vehicleModelsWasSetted = new EventEmitter<boolean>();
+  @Output() onVehicleModelsWasSetted = new EventEmitter<VehicleModel[]>();
 
-  count: number = 0;
+  lsVehicleTypesSelected: VehicleType[] = [];
+  @Input('lsVehicleTypesSelected')
+  set setLsVehicleTypeSelected(lsTypes: VehicleType[]){
+    this.lsVehicleTypesSelected = (lsTypes !== null && lsTypes !== undefined)?lsTypes:[];
+    if(!(this.lsVehicleTypesSelected.length > 0)){
+      this.clearDataForm();
+    }
+    this.enableAndDisableVehicleModels(this.lsVehicleTypesSelected)
+  }
+
+  lsVehicleModelsSelected: VehicleModel[] = [];
+  @Input('lsVehicleModelsSelected')
+  set setLsVehicleModelsSelected(vehicleModels:  VehicleModel[]){
+    this.lsVehicleModelsSelected = (vehicleModels !== null && vehicleModels !== undefined)?vehicleModels:[];
+    if(this.lsVehicleModelsSelected.length > 0){
+      this.setDataInForm(this.lsVehicleModelsSelected);
+    }else{
+      this.clearDataForm();
+    }
+  }
+
+  countChanges: number;
+  @Input('countChanges')
+  set setCountChanges(value:number){
+    this.countChanges = value;
+    this.enableAndDisableVehicleModels(this.lsVehicleTypesSelected);
+  }
+
+
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+  }
 
   constructor(
     private vehicleService: VehicleService
   ) {
-
     this.disableChecks = false;
-
-  }
-
-  async ngOnChanges(changes: SimpleChanges) {
-
-    for (let change in changes) {
-      if (change == "countChanges") {
-        this.lsVehicleTypesSelected = this.vehicleService.getListVehicleTypeSelected();
-
-
-        if (this.lsVehicleTypesSelected != null && this.lsVehicleTypesSelected != undefined) {
-          if (this.lsVehicleTypesSelected.length > 0) {
-            this.enableAndDisableVehicleModels(this.lsVehicleTypesSelected);
-          }
-          else {
-            this.disableCheckBox(this.lsVehicleTypesSelected);
-          }
-
-        } else {
-          this.disableCheckBox(this.lsVehicleTypesSelected);
-        }
-
-        this.lsVehicleModelsSelected = this.vehicleService.getListVehicleModelsSelected();
-        if (this.lsVehicleModelsSelected != null && this.lsVehicleModelsSelected != undefined) {
-          this.setDataInForm(this.lsVehicleModelsSelected);
-        } else {
-          this.clearDataForm();
-        }
-      } else if (change == "disableChecks") {
-        this.toggleChecks();
-      }
-    }
   }
 
   ngOnInit(): void {
@@ -70,29 +66,23 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
   }
 
   initComponents() {
-
     this.lsVehicleModels = [];
-    this.countChanges = 0;
-
     this.getLsVehicleTypes();
-    this.getLsVehicleModels().then(() => {
-      this.disableCheckBox(this.lsVehicleTypesSelected);
-      this.toggleChecks();
-    });
-
-
-
+    this.getLsVehicleModels()
+    this.disableCheckBox([]);
+    //this.toggleChecks();
   }
 
   showVehicleModelsByContainer(last: boolean) {
-
     this.validateContainerTypes();
-
   }
 
-  async getLsVehicleModels() {
+  getLsVehicleModels() {
     try {
-      this.lsVehicleModels = await this.vehicleService.getVehicleModelByBrandAndType(0, 0);
+      this.vehicleService.getVehicleModelByBrandAndType(0, 0)
+      .then(vehicleModels=>{
+        this.lsVehicleModels = vehicleModels;
+      });
     } catch (error) {
       console.error(error);
     }
@@ -137,9 +127,13 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
 
   async enableAndDisableVehicleModels(pLsVehicleTypes: VehicleType[]) {
     try {
+      let lsTypes = (pLsVehicleTypes !== null && pLsVehicleTypes !== undefined)?pLsVehicleTypes:[];
       this.disableCheckBox(pLsVehicleTypes);
-
-      this.lsVehicleModelEnabled = await this.vehicleService.getVehicleModelByTypes(pLsVehicleTypes);
+      if(lsTypes.length>0){
+        this.lsVehicleModelEnabled = await this.vehicleService.getVehicleModelByTypes(pLsVehicleTypes);
+      }else{
+        this.lsVehicleModelEnabled = [];
+      }
       this.enableCheckBox(this.lsVehicleTypesSelected, this.lsVehicleModelEnabled);
 
     } catch (error) {
@@ -162,13 +156,11 @@ export class CheckListVehicleModelComponent implements OnInit, OnChanges {
       }
 
     }
-    this.vehicleService.setListVehicleModelsSelected(this.lsVehicleModelsSelected);
-    this.vehicleModelsWasSetted.emit(true);
+    this.onVehicleModelsWasSetted.emit(this.lsVehicleModelsSelected);
   }
 
   async setDataInForm(lsVehicleModel: VehicleModel[]) {
     try {
-
       setTimeout(() => {
         lsVehicleModel.forEach(item => {
           let idCheck = `#${this.getIdChk(item.id)}`;

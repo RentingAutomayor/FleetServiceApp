@@ -22,13 +22,16 @@ export class TblMaintenanceItemComponent implements OnInit {
   lsMaintenanceItemsTmp: MaintenanceItem[];
   isToUpdate: boolean;
   dealer_id: number;
+  maintenanceItemSelected: MaintenanceItem;
+  disableControls: boolean;
 
 
   constructor(
     private vehicleService: VehicleService,
     private maintenanceItemService: MaintenanceItemService
   ) {
-
+    this.maintenanceItemSelected = null;
+    this.disableControls = false;
   }
 
   ngOnInit(): void {
@@ -72,6 +75,7 @@ export class TblMaintenanceItemComponent implements OnInit {
 
 
   insertMaintenanceItem() {
+    this.disableControls = false;
     this.isToUpdate = false;
     this.oCountChanges += 1;
     this.maintenanceItemService.setItemToUpdate(null);
@@ -92,14 +96,21 @@ export class TblMaintenanceItemComponent implements OnInit {
     containerTable.setAttribute("style", "display:none");
   }
 
-  async updateMaintenanceItem(pItem: MaintenanceItem) {
+  updateMaintenanceItem(pItem: MaintenanceItem) {
+    this.disableControls = false;
     this.isToUpdate = true;
-    let oMaintenanceItemDB = await this.maintenanceItemService.getMaintenanceItemById(pItem.id);
+
+    this.maintenanceItemService.getMaintenanceItemById(pItem.id)
+    .then(item => {
+      this.maintenanceItemSelected = item;
+      this.showPopUp();
+      this.hideTable();
+    })
+
     //console.log("[tbl-maintence-item]: ", oMaintenanceItemDB);
-    this.maintenanceItemService.setItemToUpdate(oMaintenanceItemDB);
-    this.oCountChanges += 1;
-    this.showPopUp();
-    this.hideTable();
+    //this.maintenanceItemService.setItemToUpdate(oMaintenanceItemDB);
+    //this.oCountChanges += 1;
+
   }
 
   async deleteMaintenanceItem(pItem: MaintenanceItem) {
@@ -190,10 +201,18 @@ export class TblMaintenanceItemComponent implements OnInit {
 
   filterItemsByDescription(event: any) {
     let value = event.target.value;
-
-
     this.lsMaintenanceItems = this.lsMaintenanceItemsTmp;
     this.lsMaintenanceItems = this.lsMaintenanceItems.filter(mi => (mi.code.toLowerCase().includes(value.toLowerCase()) || mi.name.toLowerCase().includes(value.toLowerCase())));
+  }
+
+  seeDetailsMaintenanceItem(maintenanceItem: MaintenanceItem){
+    this.disableControls = true;
+    this.maintenanceItemService.getMaintenanceItemById(maintenanceItem.id)
+    .then(item => {
+      this.maintenanceItemSelected = item;
+      this.showPopUp();
+      this.hideTable();
+    })
   }
 
 }

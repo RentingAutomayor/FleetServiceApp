@@ -1,18 +1,19 @@
 <p>Tipo de vehículo</p>
 <div class="container__row">
     <div class="container__type" *ngFor="let vehicleType of lsVehicleTypes">
-        <label class="container__checkbox" [for]="getIdChk(vehicleType.id)">           
-            <input 
-                type="checkbox" 
-                [id]="getIdChk(vehicleType.id)" 
-                (click)="setVehicleType($event.target,vehicleType)">
+        <label class="container__checkbox" [for]="getIdChk(vehicleType.id)">
+            <input
+                type="checkbox"
+                [id]="getIdChk(vehicleType.id)"
+                (click)="setVehicleType($event.target,vehicleType)"
+                [disabled]="disableControls">
             <span class="checkmark"></span>
         </label>
         <label class="lbl-description" [for]="getIdChk(vehicleType.id)">
             {{vehicleType.name}}
         </label>
     </div>
-    
+
 </div>
 <div *ngIf="noItemSelected">
     <span class="error">* Debe seleccionar al menos un tipo de vehículo</span>

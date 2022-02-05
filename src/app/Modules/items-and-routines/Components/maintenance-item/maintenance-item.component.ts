@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, OnChanges, SimpleChange, Input, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, OnChanges, SimpleChange, Input, SimpleChanges, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Brand } from 'src/app/Models/Brand';
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
@@ -13,6 +13,9 @@ import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem';
 import { PresentationUnit } from 'src/app/Models/PresentationUnit';
 import { Category } from 'src/app/Models/Category';
 import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit';
+import { VehicleType } from 'src/app/Models/VehicleType';
+import { VehicleModel } from 'src/app/Models/VehicleModel';
+
 
 
 @Component({
@@ -20,7 +23,7 @@ import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit';
   templateUrl: './maintenance-item.component.html',
   styleUrls: ['./maintenance-item.component.scss', '../../../../../assets/styles/app.scss', '../../../../../assets/styles/checkbox.scss']
 })
-export class MaintenanceItemComponent implements OnInit, OnChanges {
+export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
   frmMaintenanceItem: FormGroup;
   item: MaintenanceItem;
   itemToUpdate: MaintenanceItem;
@@ -41,6 +44,32 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   category: Category;
   idType: Number;
 
+  //TODO: Refactor about maintenance Items
+  maintenanceItem: MaintenanceItem
+  lsVehicleTypes: VehicleType[]
+  lsVehicleModels: VehicleModel[]
+  amountChangesVehicleType: number;
+
+  @Input('maintenanceItem')
+  set setMaintenanceItem (item: MaintenanceItem){
+    this.maintenanceItem = item;
+    this.lsVehicleTypes = item.lsVehicleType;
+    this.lsVehicleModels = item.lsVehicleModel;
+    this.setDataInForm(this.maintenanceItem)
+  }
+
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+    if(this.disableControls){
+      this.frmMaintenanceItem.disable()
+    }else{
+      this.frmMaintenanceItem.enable()
+    }
+  }
+
+
   constructor(
     private maintenanceItemService: MaintenanceItemService,
     private vehicleService: VehicleService,
@@ -58,6 +87,11 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
     this.presentationUnit = null;
     this.category = null;
     this.idType = 0;
+    this.amountChangesVehicleType = 0;
+  }
+
+  ngOnDestroy(): void {
+    this.clearDataForm()
   }
 
 
@@ -72,18 +106,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      if (change == "countChanges") {
-        this.itemToUpdate = this.maintenanceItemService.getItemToUpdate();
-        if (this.itemToUpdate != null) {
-          this.typeOfItem = this.itemToUpdate.type
-          this.presentationUnit = this.itemToUpdate.presentationUnit
-          this.setDataInForm(this.itemToUpdate);
-        } else {
-          this.clearDataForm();
-        }
-      }
-    }
+
   }
 
   ngOnInit(): void {
@@ -92,7 +115,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
   }
 
   async initComponents() {
-    this.itemToUpdate = this.maintenanceItemService.getItemToUpdate();
+    //this.itemToUpdate = this.maintenanceItemService.getItemToUpdate();
     this.itemHandleTax = false;
   }
 
@@ -108,8 +131,8 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
       let oItem = new MaintenanceItem();
       oItem = this.frmMaintenanceItem.value;
 
-      if (this.itemToUpdate != null) {
-        oItem.id = this.itemToUpdate.id;
+      if (this.maintenanceItem != null) {
+        oItem.id = this.maintenanceItem.id;
       }
 
       if(this.lsTaxesSelected.length > 0){
@@ -205,6 +228,9 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
     let txtTotalValue: HTMLInputElement = document.querySelector('#totalValue');
     txtTaxesValue.value = ''
     txtTotalValue.value = ''
+    this.maintenanceItem = null;
+    this.lsVehicleTypes = null;
+    this.lsVehicleModels = null;
   }
 
   comeBack() {
@@ -219,44 +245,37 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
     this.countChanges += 1;
   }
 
-  setListVehicleTypes() {
-    this.countChanges += 1;
-    const vehicleSelectedLength = (this.vehicleService.getListVehicleTypeSelected() != null) ? this.vehicleService.getListVehicleTypeSelected().length : 0;
-    console.warn(`setListVehicleTypes ${vehicleSelectedLength}`)
+  setListVehicleTypes(lsVehicleTypeSelected: VehicleType[]) {
+    this.lsVehicleTypes = lsVehicleTypeSelected;
+    const vehicleSelectedLength = (this.lsVehicleTypes != null) ? this.lsVehicleTypes.length : 0;
 
     if(vehicleSelectedLength==0){
       this.vehicleTypeIsValid = true;
     }else{
       this.vehicleTypeIsValid = false;
     }
+
+    this.amountChangesVehicleType++;
   }
 
-  setLisVehicleModels() {
-
+  setLisVehicleModels(lsVehicleModels: VehicleModel[]) {
+    this.lsVehicleModels = lsVehicleModels;
   }
 
   calculateTaxesByItem(itemAndTaxes: ItemHandleTaxes) {
-
-
     if(itemAndTaxes.handleTaxes){
-
-
+      let txtTaxesValue: HTMLInputElement = document.querySelector('#taxesValue');
+      let txtTotalValue: HTMLInputElement = document.querySelector('#totalValue');
       this.lsTaxesSelected = itemAndTaxes.lsTaxes;
       let {referencePrice} = this.frmMaintenanceItem.controls;
       this.taxesAreInvalid = (this.lsTaxesSelected.length>0)? false : true;
-
       let value = (referencePrice.value != null)?referencePrice.value:0;
       var totalTaxes = 0;
-      if(itemAndTaxes.lsTaxes.length > 0){
-        for (let tax of itemAndTaxes.lsTaxes) {
-          totalTaxes += value * (tax.percentValue / 100);
-        }
-      }
+      totalTaxes = this.maintenanceItemService.calculateTaxes(value,this.lsTaxesSelected);
 
-      let txtTaxesValue: HTMLInputElement = document.querySelector('#taxesValue');
-      let txtTotalValue: HTMLInputElement = document.querySelector('#totalValue');
       txtTaxesValue.value = totalTaxes.toString();
-      txtTotalValue.value = (parseFloat(value.toString()) + parseFloat(totalTaxes.toString())).toString();
+      let totalByItem = this.maintenanceItemService.calculateTotalByItem(value,0,totalTaxes)
+      txtTotalValue.value = totalByItem.toString();
     }else{
 
       this.taxesAreInvalid = false;
@@ -264,20 +283,22 @@ export class MaintenanceItemComponent implements OnInit, OnChanges {
     return totalTaxes;
   }
 
-  validatePresentationUnit(){
-    if(this.presentationUnit == null || this.presentationUnit == undefined){
+  validatePresentationUnit(presentation: PresentationUnit){
+    if(presentation == null || presentation == undefined){
       this.presentationUnitIsInvalid = true;
     }else{
       this.presentationUnitIsInvalid = false;
+      this.presentationUnit = presentation
     }
   }
 
-  validateTypeOfMaintenanceItem(){
+  validateTypeOfMaintenanceItem(typeOfMaintenanceItem:TypeOfMaintenanceItem){
     try {
-      if(this.typeOfItem == null || this.typeOfItem == undefined){
+      if(typeOfMaintenanceItem == null || typeOfMaintenanceItem == undefined){
         this.typeIsInvalid = true;
       }else{
         this.typeIsInvalid = false;
+        this.typeOfItem = typeOfMaintenanceItem
       }
     } catch (error) {
       console.warn(error)

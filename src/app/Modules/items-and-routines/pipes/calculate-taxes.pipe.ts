@@ -12,11 +12,11 @@ export class CalculateTaxesPipe implements PipeTransform {
 
     if(item.handleTax){
       for (const tax of item.lsTaxes) {
-        let taxTmp = item.referencePrice * (tax.percentValue / 100);
+        let taxTmp = Math.round(item.referencePrice * (tax.percentValue / 100));
         taxValue += taxTmp;
       }
     }
-    
+
     return taxValue;
   }
 

@@ -21,6 +21,17 @@ export class VehicleModelComponent implements OnInit, OnChanges {
   @Output() vehicleModelWasSetted = new EventEmitter<boolean>();
   @Output() VehicleModelWasSelected = new EventEmitter<VehicleModel>();
 
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+    if(this.disableControls){
+      this.frmVehicleModel.disable()
+    }else{
+      this.frmVehicleModel.enable()
+    }
+  }
+
   constructor(
     private vehicleService: VehicleService
   ) {

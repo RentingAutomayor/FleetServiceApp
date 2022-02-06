@@ -16,9 +16,20 @@ export class FrequencyComponent implements OnInit, OnChanges {
   frequencytoUpdate:Frequency;
   @Output() frequencyWasSelected = new EventEmitter<Frequency>();
 
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+    if(this.disableControls){
+      this.frmFrequency.disable()
+    }else{
+      this.frmFrequency.enable()
+    }
+  }
+
   constructor(
     private maintenanceRoutineService: MaintenanceRoutineService
-  ) { 
+  ) {
     this.frmFrequency = new FormGroup({
       cmbFrequency: new FormControl('Seleccione ...')
     });
@@ -46,7 +57,7 @@ export class FrequencyComponent implements OnInit, OnChanges {
   }
 
   setFrequency(event:any){
-    let oFrequency = this.lsFrequency.find(fq => fq.id == event.value) 
+    let oFrequency = this.lsFrequency.find(fq => fq.id == event.value)
     this.maintenanceRoutineService.setFrecuencySelected(oFrequency);
     this.frequencyWasSelected.emit(oFrequency);
   }

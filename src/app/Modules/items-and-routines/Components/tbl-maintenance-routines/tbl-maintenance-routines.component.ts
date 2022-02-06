@@ -20,6 +20,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   oCountChanges:number;
   frequency_id: number;
   vehicleModel_id: number;
+  disableControls: boolean;
 
   constructor(
     private maintenanceRoutineService: MaintenanceRoutineService
@@ -54,6 +55,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   }
 
   insertRoutine() {
+    this.disableControls = false;
     this.isToUpdate = false;
     this.oCountChanges += 1;
     this.maintenanceRoutineService.setRoutine(null);
@@ -68,7 +70,6 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   showTable() {
     this.containerTable.style.display = "block";
     this.containerFromRoutine.style.display = "none";
-
   }
 
 
@@ -106,7 +107,19 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     }
   }
 
+  async seeDetailsRoutine(pRoutine:MaintenanceRoutine){
+    this.disableControls = true;
+    this.isToUpdate = false;
+    this.isAwaiting = true;
+    let routineToUpdate = await this.maintenanceRoutineService.getMaintenanceRoutineByID(pRoutine.id);
+    this.isAwaiting = false;
+    this.maintenanceRoutineService.setRoutine(routineToUpdate);
+    this.oCountChanges += 1;
+    this.hideTable();
+  }
+
   async updateRoutine(pRoutine:MaintenanceRoutine){
+    this.disableControls = false;
     this.isToUpdate = true;
     this.isAwaiting = true;
     let routineToUpdate = await this.maintenanceRoutineService.getMaintenanceRoutineByID(pRoutine.id);

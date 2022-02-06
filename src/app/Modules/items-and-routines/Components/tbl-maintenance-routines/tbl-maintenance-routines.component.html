@@ -1,5 +1,5 @@
 <div id="container__table">
-    <h2>Rutinas de mantenimiento</h2>  
+    <h2>Rutinas de mantenimiento</h2>
     <div class="container__filter">
         <div>
             <app-vehicle-model
@@ -10,9 +10,13 @@
             <app-frequency
                 (frequencyWasSelected)="filterByFrequency($event)">
             </app-frequency>
-        </div>        
-    </div>  
-    <button class="btn-add btn-info" (click)="insertRoutine()"><i class="fas fa-plus"></i></button>
+        </div>
+    </div>
+    <button
+      class="btn-add btn-info"
+      (click)="insertRoutine()">
+        <i class="fas fa-plus"></i>
+    </button>
     <table class="table table-striped">
         <thead>
             <th>#</th>
@@ -29,11 +33,20 @@
                 <td>{{ routine.name }}</td>
                 <td>{{ routine.vehicleModel.shortName }}</td>
                 <td>{{ routine.frequency.name }}</td>
-                <td>{{ routine.referencePrice | currency }}</td>
+                <td>{{ routine.referencePrice | currency:'USD':'symbol':'1.0-0' }}</td>
                 <td>
-                    <i class="fas fa-info-circle text-info" title="Más información"></i>
-                    <i class="fas fa-edit text-warning" (click)="updateRoutine(routine)" title="Modificar"></i>
-                    <i class="fas fa-trash-alt text-danger"  (click)="deleteRoutine(routine)" title="Eliminar"></i>
+                    <i
+                      (click)="seeDetailsRoutine(routine)"
+                      class="fas fa-info-circle text-info"
+                      title="Más información"></i>
+                    <i
+                      class="fas fa-edit text-warning"
+                      (click)="updateRoutine(routine)"
+                      title="Modificar"></i>
+                    <i
+                      class="fas fa-trash-alt text-danger"
+                      (click)="deleteRoutine(routine)"
+                      title="Eliminar"></i>
                 </td>
             </tr>
         </tbody>
@@ -43,10 +56,12 @@
     </div>
 </div>
 <div id="container__maintenanceRoutine">
-    <app-maintenance-routine 
+    <app-maintenance-routine
+        [disableControls]="disableControls"
         [countChanges]="oCountChanges"
-        (routineWasSaved) ="saveDataRoutine()"
-        (routinewasCanceled)="cancelRoutine()"></app-maintenance-routine>
+        (routineWasSaved)="saveDataRoutine()"
+        (routinewasCanceled)="cancelRoutine()">
+    </app-maintenance-routine>
 </div>
 
 

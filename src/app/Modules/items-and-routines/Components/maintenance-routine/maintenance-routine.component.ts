@@ -30,6 +30,17 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   msgRoutineDuplicated:string;
   initialRoutine: number;
 
+  disableControls:boolean
+  @Input('disableControls')
+  set setDisableControls(value:boolean){
+    this.disableControls = value;
+    if(this.disableControls){
+      this.frmMaintenanceRoutine.controls.name.disable()
+    }else{
+      this.frmMaintenanceRoutine.controls.name.enable()
+    }
+  }
+
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -79,7 +90,6 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
 
   async GetItemsByVehicleModel() {
     let oVehicleModel = this.vehicleService.getVehicleModelSelected();
-
     this.lsMaintenanceItems = await this.maintenanceItemService.getItemsByVehicleModel(oVehicleModel.id);
   }
 
@@ -111,7 +121,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     try {
       let price = amount * item.referencePrice;
       let taxes = parseFloat(this.calculateTaxesByItem(item, amount));
-      let totalByItem = (price + taxes);
+      let totalByItem = Math.round((price + taxes));
       this.showInfoItemIntoRow(item.id, price, taxes, totalByItem);
 
     } catch (error) {
@@ -131,9 +141,9 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
       let idSpanTotalWithTaxes = `#${this.getLabelTotalWithTaxes(item_id)}`;
       let spanTotalByItem: HTMLSpanElement = document.querySelector(idSpanTotalWithTaxes);
 
-      priceWothoutTaxes = parseFloat(priceWothoutTaxes.toFixed(2));
-      taxes = parseFloat(taxes.toFixed(2));
-      priceWithTaxes = parseFloat(priceWithTaxes.toFixed(2));
+      priceWothoutTaxes = Math.round(parseFloat(priceWothoutTaxes.toFixed(2)));
+      taxes = Math.round(parseFloat(taxes.toFixed(2)));
+      priceWithTaxes = Math.round(parseFloat(priceWithTaxes.toFixed(2)));
 
       spanPrice.innerText = this.sharedFunction.formatNumberToString(priceWothoutTaxes);
       spanTaxes.innerText = this.sharedFunction.formatNumberToString(taxes);
@@ -217,11 +227,11 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
         let priceItem = aTotalByItem[i].textContent;
         if (priceItem.trim() != '') {
           let priceFormated = priceItem.replace(/,/g, '');
-          totalPrice += parseFloat(priceFormated);
+          totalPrice += Math.round(parseFloat(priceFormated));
         }
       }
 
-      let nTotalPrice = parseFloat(totalPrice.toFixed(2));
+      let nTotalPrice = Math.round(parseFloat(totalPrice.toFixed(2)));
       let totalFormated = this.sharedFunction.formatNumberToString(nTotalPrice);
 
       referencePrice.setValue(totalFormated);
@@ -239,7 +249,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
       let taxesValue = 0
       if (item.handleTax) {
         for (const tax of item.lsTaxes) {
-          taxesValue += priceWithoutTaxes * (tax.percentValue / 100);
+          taxesValue += Math.round(priceWithoutTaxes * (tax.percentValue / 100));
         }
       }
       return taxesValue.toFixed(2);
@@ -319,7 +329,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
       let txtAmount: HTMLInputElement = document.querySelector(idTextBoxAmount);
 
       chkItem.checked = true;
-      txtAmount.disabled = false;
+      txtAmount.disabled = this.disableControls;
       txtAmount.value = pItem.amount.toString();
 
       this.calculatePriceByItem(pItem.amount, pItem);

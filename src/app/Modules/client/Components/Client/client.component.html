@@ -10,65 +10,59 @@
         </div>
     </div>
 
-    <div class="tab_content tab_active" id="container__basicData">        
+    <div class="tab_content tab_active" id="container__basicData">
         <div class="card">
             <div class="card-header">
                 <h3>Datos del cliente</h3>
             </div>
             <div class="car-body">
-                <app-person 
-                [configComponent]="oConfigPersonComp" 
-                [formHasError]="bFormHasError" 
-                [error]="errorMessage"                    
-                [returnPath]="sReturnPath" 
-                [personToUpdate]="oPersonToUpdate"
-                [frmPersonMustBeBlocked]="blockFormClient"
-                (personWasSetted)="SetDataToSaveClient()"></app-person>
+                <app-person
+                  [configComponent]="oConfigPersonComp"
+                  [formHasError]="bFormHasError"
+                  [error]="errorMessage"
+                  [returnPath]="sReturnPath"
+                  [personToUpdate]="client"
+                  [frmPersonMustBeBlocked]="blockFormClient"
+                  (personWasSetted)="SetDataToSaveClient()"></app-person>
             </div>
         </div>
     </div>
 
-    <div class="tab_content tab_inactive" id="container__contact">  
-        
+    <div class="tab_content tab_inactive" id="container__contact">
+
         <div class="container__table__contact">
             <app-contact
-                [action]="action" 
-                [isToClient]="oIsToClient" 
+                [action]="action"
+                [isToClient]="oIsToClient"
                 [clientWasSaved]="oClientWasSaved"
                 [disableActionButtons]="blockFormClient">
-            </app-contact> 
+            </app-contact>
         </div>
-        
+
     </div>
 
     <div class="tab_content tab_inactive" id="container__branch">
-        <app-branch 
-            [action]="action"    
-            [isToClient]="oIsToClient" 
+        <app-branch
+            [action]="action"
+            [isToClient]="oIsToClient"
             [clientWasSaved]="oClientWasSaved"
             [disableActionButtons]="blockFormClient">
         </app-branch>
     </div>
 
     <div class="tab_content tab_inactive" id="container__vehicles">
-        <app-vehicles-by-client 
+        <app-vehicles-by-client
             [action]="action"
             [clientWasSaved]="oClientWasSaved"
             [disableActionButtons]="blockFormClient">
         </app-vehicles-by-client>
-    </div> 
-
-    <!-- <div class="tab_content tab_inactive" id="container__contracts">
-        <app-tbl-contracts-by-client
-        [client_id]="(this.oClientToUpdate != null) ? this.oClientToUpdate.id : 0">            
-        </app-tbl-contracts-by-client>        
-    </div>  -->
+    </div>
 
     <div class="tab_content tab_inactive" id="container__financialInformation">
-        <app-financial-information-by-client>            
+        <app-financial-information-by-client>
         </app-financial-information-by-client>
     </div>
 
-    
+
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

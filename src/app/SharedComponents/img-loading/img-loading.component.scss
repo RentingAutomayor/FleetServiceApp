@@ -39,12 +39,12 @@
     display: grid;
     grid-template-columns: repeat(3fr);
     grid-template-rows: repeat(3fr);
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
-    background-color: rgba(6, 129, 230, 0.1);    
+    background-color: rgba(6, 129, 230, 0.1);
     border-radius: 15px;
     align-items: center;
     justify-items: center;

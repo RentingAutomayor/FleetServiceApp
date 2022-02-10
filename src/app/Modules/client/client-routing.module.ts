@@ -13,6 +13,7 @@ const routes: Routes = [
         children: [
             { path: '', component: TblClientComponent },
             { path: 'Client', component: ClientComponent },
+            { path: 'Client/:id', component: ClientComponent },
         ]
     }
 ];

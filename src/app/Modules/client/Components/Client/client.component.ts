@@ -1,14 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Client } from 'src/app/Models/Client';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { PersonService } from '../../../../SharedComponents/Services/Person/person.service';
 import { ClientService } from '../../Services/Client/client.service';
 import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { Person } from 'src/app/Models/Person';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CityService } from '../../../../SharedComponents/Services/City/city.service';
 import { City } from 'src/app/Models/City';
 import { ActionType } from 'src/app/Models/ActionType';
+
 
 @Component({
   selector: 'app-client',
@@ -21,47 +22,66 @@ export class ClientComponent implements OnInit {
   errorMessage:string;
   isAwaiting:boolean;
   oPersonToUpdate: Person;
-  oClientToUpdate: Client;
+  client: Client;
   oDataIsToUpdate: boolean;
   sReturnPath:string;
   ROUTE_MASTER_CLIENT:string = "/MasterClients";
   oIsToClient:boolean;
   oClientWasSaved:boolean;
-  blockFormClient:boolean;
+  blockFormClient:boolean = false;
   action:ActionType;
+  //Refactor component
+  clientID: string;
 
 
   constructor(
     private personService:PersonService,
     private ClientService:ClientService,
     private cityService:CityService,
-    private router:Router
+    private router: ActivatedRoute,
+
   ) {
     this.bFormHasError = false;
     this.errorMessage = "";
     this.isAwaiting = false;
     this.oDataIsToUpdate = false;
     this.oIsToClient= true;
-    this.blockFormClient = false;
+    this.oClientWasSaved = false;
+    this.sReturnPath = this.ROUTE_MASTER_CLIENT;
+
   }
 
   ngOnInit(): void {
     this.initComponents();
+    this.configurePersonComponent()
+    this.extractDataFromParams()
+
+  }
+
+  extractDataFromParams(){
+    this.router.paramMap
+    .subscribe(params => {
+      this.clientID = params.get('id');
+      this.ClientService.getClientById(parseInt(this.clientID))
+      .then(client => {
+        if(client != null){
+          this.client = client;
+          this.oDataIsToUpdate = true;
+        }
+      })
+    })
   }
 
   initComponents(){
-    this.oClientWasSaved = false;
-    this.configurePersonComponent();
-    this.hideContainerTabs();
-    this.sReturnPath = this.ROUTE_MASTER_CLIENT;
-    this.oClientToUpdate = this.ClientService.getClientToUpdate();
-    this.blockFormClient = this.ClientService.getBlockFormClient();
-    if(this.oClientToUpdate != null){
-      this.setDataToUpdateClient(this.oClientToUpdate);
-      this.oDataIsToUpdate = true;
-    }
+    //this.hideContainerTabs();
     this.action = this.ClientService.getAction();
-    if(this.action == ActionType.CREATE){
+    this.validateActionToDo(this.action)
+  }
+
+  validateActionToDo(action: ActionType){
+    if(action === ActionType.READ){
+      this.blockFormClient = true;
+    }else{
       this.blockFormClient = false;
     }
   }
@@ -76,19 +96,6 @@ export class ClientComponent implements OnInit {
     this.oConfigPersonComp.websiteIsVisible = true;
     this.oConfigPersonComp.cityIsVisible = true;
   }
-
-  setDataToUpdateClient(pClient:Client){
-    this.oPersonToUpdate = new Person();
-    this.oPersonToUpdate.id = pClient.id;
-    this.oPersonToUpdate.document = pClient.document;
-    this.oPersonToUpdate.name = pClient.name.toLocaleLowerCase();
-    this.oPersonToUpdate.phone = pClient.phone;
-    this.oPersonToUpdate.cellphone = pClient.cellphone;
-    this.oPersonToUpdate.address = (pClient.address != null)?pClient.address.toLowerCase(): "";
-    this.oPersonToUpdate.website = (pClient.website != null)?pClient.website.toLowerCase():"";
-    this.oPersonToUpdate.city = pClient.city;
-  }
-
 
   async SetDataToSaveClient(){
     this.isAwaiting = true;

@@ -80,33 +80,23 @@ export class TblClientComponent implements OnInit {
   }
 
 
-  async getDetailsClient(pId:number){
+  getDetailsClient(pId:number){
     try{
+
       this.action = ActionType.READ;
       this.clientService.setAction(this.action);
-      this.isAwaiting = true;
-      this.clientService.setBlockFormClient(true);
-      let oClientDB = await this.clientService.getClientById(pId);
-      this.clientService.setClientToUpdate(oClientDB);
-      this.isAwaiting = false;
-      this.router.navigate(["/MasterClients/Client"]);
+      this.router.navigate(["/MasterClients/Client",pId]);
     }catch(err){
       console.error(err.error.Message);
       alert(err.error.Message);
     }
   }
 
-  async updateClient(pId:number){
+  updateClient(pId:number){
     try{
       this.action = ActionType.UPDATE;
       this.clientService.setAction(this.action);
-      this.isAwaiting = true;
-      this.clientService.setBlockFormClient(false);
-      let oClientDB = await this.clientService.getClientById(pId);
-      this.clientService.setClientToUpdate(oClientDB);
-      this.isAwaiting = false;
-
-      this.router.navigate(["/MasterClients/Client"]);
+      this.router.navigate(["/MasterClients/Client",pId]);
     }catch(err){
       console.error(err.error.Message);
       alert(err.error.Message);

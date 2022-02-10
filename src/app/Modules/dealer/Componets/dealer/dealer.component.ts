@@ -146,7 +146,6 @@ export class DealerComponent implements OnInit, OnChanges {
   }
 
   setDataToUpdateDealer(pDealer: Dealer){
-    this.oPersonToUpdate = new Person();
     this.oPersonToUpdate.id = pDealer.id;
     this.oPersonToUpdate.document = pDealer.document;
     this.oPersonToUpdate.name = pDealer.name.toLocaleLowerCase();

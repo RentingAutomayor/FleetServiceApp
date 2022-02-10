@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder,FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { Person } from 'src/app/Models/Person';
@@ -6,9 +6,10 @@ import { PersonService } from '../Services/Person/person.service';
 import { CityService } from '../Services/City/city.service';
 import { JobTitleService } from '../Services/JobTitle/job-title.service';
 import { City } from 'src/app/Models/City';
-import { Event, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { JobTitle } from 'src/app/Models/JobTitle';
 import { InputValidator } from 'src/app/Utils/InputValidator';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 @Component({
@@ -22,11 +23,10 @@ export class PersonComponent implements OnInit, OnChanges {
   @Input() formHasError: boolean;
   @Input() error: string;
   @Input() oCountChanges:number;
-  @Input() personToUpdate: Person;
   @Input() returnPath: string;
   @Input() countContact: number;
 
-  @Input() configRenderComponent: ConfigPersonComponent;
+
   @Output() personWasSetted = new EventEmitter<boolean>();
   @Output() personWasCanceled = new EventEmitter<boolean>();
   formPerson: FormGroup;
@@ -36,7 +36,44 @@ export class PersonComponent implements OnInit, OnChanges {
 
   isContact:boolean = true;
 
-  @Input() frmPersonMustBeBlocked: boolean;
+  frmPersonMustBeBlocked: boolean = false;
+  @Input('frmPersonMustBeBlocked')
+  set setFrmPersonMustBeBlocked(value:boolean){
+    this.frmPersonMustBeBlocked = value
+    this.enableDisableForm(this.frmPersonMustBeBlocked)
+  }
+
+  personToUpdate: Person = {
+    id:0,
+    document:'',
+    name:'',
+    lastname:'',
+    phone:'',
+    cellphone:'',
+    address:'',
+    email:'',
+    website:'',
+    city: null,
+    jobTitle:null,
+    state:false,
+    registrationDate: new Date()
+  };
+
+  @Input('personToUpdate')
+  set setPersonToUpdate(person: Person){
+    if(person){
+      this.personToUpdate = person
+      this.setDataInForm(this.personToUpdate)
+      this.enableDisableForm(this.frmPersonMustBeBlocked)
+    }
+  }
+
+  configRenderComponent: ConfigPersonComponent;
+  @Input('configRenderComponent')
+  set setConfigRenderComponent(config: ConfigPersonComponent){
+    this.configRenderComponent = config;
+    this.renderComponent();
+  }
 
   constructor(
     private personService: PersonService,
@@ -49,12 +86,10 @@ export class PersonComponent implements OnInit, OnChanges {
     this.configRenderComponent = new ConfigPersonComponent();
     this.isRequiredDataComponent = false;
     this.formHasError = false;
-    this.frmPersonMustBeBlocked = false;
-
+    this.buildPersonForm(this.configComponent);
   }
 
   buildPersonForm(configComponent:ConfigPersonComponent){
-
     try {
       if(configComponent.documentIsVisible){
         this.formPerson = this.formBuilder.group({
@@ -90,28 +125,11 @@ export class PersonComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.buildPersonForm(this.configComponent);
+
     for (let change in changes) {
       try {
-
-        if (change == "configRenderComponent") {
-          this.configComponent = this.configRenderComponent;
-          this.renderComponent();
-        }
-
         if (change == 'configComponent') {
           this.buildPersonForm(this.configComponent);
-        }
-
-        if (change == "countContact") {
-          this.cleanFormData();
-          this.personToUpdate = this.personService.getPersonToUpdate();
-          if (this.personToUpdate != null) {
-            this.setDataInForm(this.personToUpdate);
-          } else {
-            this.cleanFormData();
-            this.oCity = null;
-          }
         }
 
       } catch (err) {
@@ -121,34 +139,25 @@ export class PersonComponent implements OnInit, OnChanges {
     }
   }
 
+  enableDisableForm(formIsBlocked:boolean){
+    if(formIsBlocked){
+      this.formPerson.disable();
+    }else{
+      this.formPerson.enable();
+    }
+  }
+
 
   ngOnInit(): void {
     this.initComponents();
-    this.validateBlockForm();
   }
 
   initComponents() {
     this.oCountChanges = 0;
     this.cleanFormData();
     this.renderComponent();
-    if (this.personToUpdate != null) {
-
-
-      this.setDataInForm(this.personToUpdate);
-    }
   }
 
-  validateBlockForm(){
-    try {
-      if(this.frmPersonMustBeBlocked){
-        this.formPerson.disable();
-      }else{
-        this.formPerson.enable();
-      }
-    } catch (error) {
-      //console.log(error);
-    }
-  }
 
 
   renderComponent() {
@@ -192,14 +201,16 @@ export class PersonComponent implements OnInit, OnChanges {
   }
 
   setDataInForm(pPerson: Person) {
-    this.formPerson.patchValue(pPerson);
-    if(pPerson.city != null){
-      this.oCity = pPerson.city;
+    if(pPerson){
+      this.formPerson.patchValue(pPerson);
+      if(pPerson.city != null){
+        this.oCity = pPerson.city;
+      }else{
+        this.oCity = null;
+      }
     }else{
-      this.oCity = null;
+      this.formPerson.reset()
     }
-
-    this.cityService.setSelectedCity(this.oCity);
   }
 
   cleanFormData() {

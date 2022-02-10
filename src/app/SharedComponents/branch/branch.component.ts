@@ -260,7 +260,7 @@ export class BranchComponent implements OnInit, OnChanges {
 
   async saveBranch() {
     try {
-      let oPerson = new Person();
+      let oPerson :Person
       oPerson = this.personService.getPerson();
       let oBranch = new Branch();
       oBranch = this.setDataBranch(oPerson);
@@ -364,7 +364,6 @@ export class BranchComponent implements OnInit, OnChanges {
 
 
   setDataToUpdatBranch(pBranch: Branch) {
-    this.oPersonToUpdate = new Person();
     this.oPersonToUpdate.id = pBranch.id;
     this.oPersonToUpdate.name = pBranch.name;
     this.oPersonToUpdate.phone = pBranch.phone;

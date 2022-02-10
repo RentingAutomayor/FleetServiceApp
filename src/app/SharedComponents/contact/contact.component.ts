@@ -239,7 +239,7 @@ export class ContactComponent implements OnInit, OnChanges {
 
   async saveContact() {
     try {
-      let oPerson = new Person();
+      let oPerson :Person
       oPerson = this.personService.getPerson();
       let oContact = new Contact();
       oContact = this.setDataContact(oPerson);
@@ -350,7 +350,6 @@ export class ContactComponent implements OnInit, OnChanges {
 
 
   setDataToUpdatContact(pContact: Contact) {
-    this.oPersonToUpdate = new Person();
     this.oPersonToUpdate.id = pContact.id;
     this.oPersonToUpdate.document = "0";
     this.oPersonToUpdate.name = pContact.name;

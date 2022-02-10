@@ -10,15 +10,33 @@ import { CityService } from '../Services/City/city.service';
   templateUrl: './city.component.html',
   styleUrls: ['./city.component.scss']
 })
-export class CityComponent implements OnInit, OnChanges {
-  @Input() city: City;
+export class CityComponent implements OnInit {
+
   @Input() countChanges: number;
+  blockFieldCity: boolean;
+
+  city: City;
+  @Input('city')
+  set setCity(city: City) {
+    if(city){
+      this.city = city
+      this.searchCitiesByDepartmentId(this.city.departmentId)
+    }
+    this.setDataInForm(this.city);
+  }
+
+  @Input('blockFieldCity')
+  set setBlockFieldCity(value: boolean) {
+    this.blockFieldCity = value;
+    if (this.blockFieldCity) {
+      this.frmCity.disable()
+    } else {
+      this.frmCity.enable()
+    }
+  }
   frmCity: FormGroup;
   lsDepartment: Department[];
   lsCities: City[];
-
-  @Input() blockFieldCity:boolean;
-
 
   constructor(
     private cityService: CityService
@@ -32,68 +50,47 @@ export class CityComponent implements OnInit, OnChanges {
   }
 
 
-  ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      try {
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   for (let change in changes) {
+  //     try {
 
+  //       //this.city = this.cityService.getSelectedCity();
 
-        this.city = this.cityService.getSelectedCity();
+  //       // if (this.city != null) {
+  //       //   this.searchCities(this.city.departmentId);
+  //       //   this.cityService.setSelectedCity(this.city);
+  //       // } else {
 
-        if (this.city != null) {
-          this.searchCities(this.city.departmentId);
-          this.setDataInForm(this.city);
-          this.cityService.setSelectedCity(this.city);
-        } else {
-          this.frmCity.controls.cmbDepartment.setValue(0);
-          this.frmCity.controls.cmbCity.setValue(0);
-        }
+  //       // }
 
-      } catch (err) {
-        console.error(err);
-        continue;
-      }
-    }
-  }
+  //     } catch (err) {
+  //       console.error(err);
+  //       continue;
+  //     }
+  //   }
+  // }
 
   ngOnInit(): void {
     this.initComponents();
   }
 
-  async initComponents() {
+  initComponents() {
     this.countChanges = 0;
-    this.lsDepartment = await this.cityService.getDepartments();
-
-    if (this.city != null) {
-      this.lsCities = await this.cityService.getCitiesByDepartmentId(this.city.departmentId);
-      this.setDataInForm(this.city);
-      this.cityService.setSelectedCity(this.city);
-    } else {
-      this.frmCity.controls.cmbDepartment.setValue(0);
-      this.frmCity.controls.cmbCity.setValue(0);
-    }
-
-    this.validateBlockFields();
-
+    this.getDepartmentsList();
   }
 
-  validateBlockFields(){
-    try {
-      if(this.blockFieldCity){
-        this.frmCity.disable();
-      }else{
-        this.frmCity.enable();
-      }
-    } catch (error) {
-      console.warn(error);
-    }
+  getDepartmentsList(){
+    this.cityService.getDepartments().then(departments => {
+      this.lsDepartment = departments;
+    });
   }
 
-  async searchCities(pDepartment_id: number) {
-    this.lsCities = await this.cityService.getCitiesByDepartmentId(pDepartment_id);
-  }
-  async searchCitiesByDepartmentID(obj: any) {
-    let department_id = obj.value;
-    this.searchCities(department_id);
+  searchCitiesByDepartmentId(departmentID: number) {
+    let department_id = departmentID;
+    this.cityService.getCitiesByDepartmentId(department_id)
+      .then(cities => {
+        this.lsCities = cities;
+      });
   }
 
   setSelectedCity(obj: any) {
@@ -101,9 +98,17 @@ export class CityComponent implements OnInit, OnChanges {
     this.cityService.setSelectedCity(selectedCity);
   }
 
-  async setDataInForm(pCity: City) {
-    this.frmCity.controls.cmbDepartment.setValue(pCity.departmentId);
-    this.frmCity.controls.cmbCity.setValue(pCity.id);
+  setDataInForm(pCity: City) {
+    if (pCity) {
+      this.frmCity.controls.cmbDepartment.setValue(pCity.departmentId);
+      this.frmCity.controls.cmbCity.setValue(pCity.id);
+    } else {
+      this.frmCity.controls.cmbDepartment.setValue(0);
+      this.frmCity.controls.cmbCity.setValue(0);
+    }
+
   }
+
+
 
 }

@@ -21,16 +21,16 @@ import { ContractRoutingModule } from './contract-routing.module';
     ContractStateComponent,
     TblCheckVehiclesComponent,
     TblContractComponent,
-    TblPricesByContractComponent    
+    TblPricesByContractComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     ContractRoutingModule,
     BsDatepickerModule.forRoot(),
-    
+
   ]
 })
 export class ContractModule { }

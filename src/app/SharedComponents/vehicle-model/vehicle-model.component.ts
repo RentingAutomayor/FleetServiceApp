@@ -21,14 +21,14 @@ export class VehicleModelComponent implements OnInit, OnChanges {
   @Output() vehicleModelWasSetted = new EventEmitter<boolean>();
   @Output() VehicleModelWasSelected = new EventEmitter<VehicleModel>();
 
-  disableControls:boolean
+  disableControls: boolean;
   @Input('disableControls')
-  set setDisableControls(value:boolean){
+  set setDisableControls(value: boolean){
     this.disableControls = value;
-    if(this.disableControls){
-      this.frmVehicleModel.disable()
+    if (this.disableControls){
+      this.frmVehicleModel.disable();
     }else{
-      this.frmVehicleModel.enable()
+      this.frmVehicleModel.enable();
     }
   }
 
@@ -43,9 +43,9 @@ export class VehicleModelComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
+    for (const change in changes) {
 
-      if (change == "countChanges") {
+      if (change == 'countChanges') {
 
         this.oBrand = this.vehicleService.getBrandSelected();
 
@@ -72,28 +72,28 @@ export class VehicleModelComponent implements OnInit, OnChanges {
     this.getDataToLists( 0, 0);
   }
 
-  async getDataToLists(brandId:number,typeId:number) {
+  async getDataToLists(brandId: number, typeId: number) {
     try {
-      this.lsVehicleModel = await this.vehicleService.getVehicleModelByBrandAndType(brandId,typeId);
+      this.lsVehicleModel = await this.vehicleService.getVehicleModelByBrandAndType(brandId, typeId);
     } catch (error) {
       console.error(error);
     }
 
   }
 
-  filterVehicleModels(pBrand: Brand, pVehicleType:VehicleType){
-    let idBrand = (pBrand !== null && pBrand !== undefined)? pBrand.id: 0;
-    let idType = (pVehicleType !== null && pVehicleType !== undefined)?pVehicleType.id: 0;
+  filterVehicleModels(pBrand: Brand, pVehicleType: VehicleType){
+    const idBrand = (pBrand !== null && pBrand !== undefined) ? pBrand.id : 0;
+    const idType = (pVehicleType !== null && pVehicleType !== undefined) ? pVehicleType.id : 0;
 
 
-    this.getDataToLists(idBrand,idType);
+    this.getDataToLists(idBrand, idType);
   }
 
   setVehicleModel(event: any) {
-    let vehicleModel = this.lsVehicleModel.find(vm => vm.id == event.value);
+    const vehicleModel = this.lsVehicleModel.find(vm => vm.id == event.value);
 
 
-    if(vehicleModel != null){
+    if (vehicleModel != null){
       this.vehicleService.setVehicleModelSelected(vehicleModel);
       this.vehicleModelWasSetted.emit(true);
       this.VehicleModelWasSelected.emit(vehicleModel);
@@ -104,7 +104,7 @@ export class VehicleModelComponent implements OnInit, OnChanges {
 
   async setDataInFields(pVehicleModel: VehicleModel) {
      setTimeout(() => {
-      let { cmbVehicleModel } = this.frmVehicleModel.controls;
+      const { cmbVehicleModel } = this.frmVehicleModel.controls;
 
       cmbVehicleModel.setValue(pVehicleModel.id);
      }, 500);

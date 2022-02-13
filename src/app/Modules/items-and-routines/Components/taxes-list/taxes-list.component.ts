@@ -16,12 +16,12 @@ export class TaxesListComponent implements OnInit, OnChanges {
   @Input() itemHandleTax: boolean;
   @Input() inpLsTaxSelected: Tax[];
   @Output() taxWasSelected = new EventEmitter<ItemHandleTaxes>();
-  modelItemHadleTaxes: ItemHandleTaxes = {} as ItemHandleTaxes
+  modelItemHadleTaxes: ItemHandleTaxes = {} as ItemHandleTaxes;
   taxesAreInvalid: boolean;
 
-  disableControls:boolean
+  disableControls: boolean;
   @Input('disableControls')
-  set setDisableControls(value:boolean){
+  set setDisableControls(value: boolean){
     this.disableControls = value;
   }
 
@@ -37,11 +37,11 @@ export class TaxesListComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     try {
       this.activateTaxes(this.itemHandleTax);
-      if(this.itemHandleTax){
+      if (this.itemHandleTax){
         this.checkTaxButton(this.inpLsTaxSelected);
       }
     } catch (error) {
-      ////console.warn(error)
+      //// console.warn(error)
     }
 
   }
@@ -58,14 +58,14 @@ export class TaxesListComponent implements OnInit, OnChanges {
 
       });
     } catch (error) {
-      //console.warn(error);
+      // console.warn(error);
     }
   }
 
   activateTaxes(value: boolean) {
     try {
-      let inputYes: HTMLInputElement = document.querySelector("#chkYes");
-      let inputNo: HTMLInputElement = document.querySelector("#chkNo");
+      const inputYes: HTMLInputElement = document.querySelector('#chkYes');
+      const inputNo: HTMLInputElement = document.querySelector('#chkNo');
       this.itemHandleTax = value;
       if (value) {
         inputYes.checked = true;
@@ -73,8 +73,8 @@ export class TaxesListComponent implements OnInit, OnChanges {
         this.modelItemHadleTaxes  = {
           handleTaxes: this.itemHandleTax,
           lsTaxes: this.lsTaxesSelected
-        }
-        this.taxesAreInvalid = (this.lsTaxesSelected.length>0)?false:true
+        };
+        this.taxesAreInvalid = (this.lsTaxesSelected.length > 0) ? false : true;
         this.taxWasSelected.emit(this.modelItemHadleTaxes);
       } else {
         this.lsTaxesSelected = [];
@@ -83,14 +83,14 @@ export class TaxesListComponent implements OnInit, OnChanges {
         this.modelItemHadleTaxes  = {
           handleTaxes: this.itemHandleTax,
           lsTaxes: this.lsTaxesSelected
-        }
-        this.taxesAreInvalid = false
+        };
+        this.taxesAreInvalid = false;
         this.taxWasSelected.emit(this.modelItemHadleTaxes);
       }
 
 
     } catch (error) {
-      //console.warn(error);
+      // console.warn(error);
     }
   }
 
@@ -102,16 +102,16 @@ export class TaxesListComponent implements OnInit, OnChanges {
     if (event.target.checked) {
       this.lsTaxesSelected.push(tax);
     } else {
-      let taxTemp = this.lsTaxesSelected.find(tx => tx.id == tax.id);
-      let index = this.lsTaxesSelected.indexOf(taxTemp);
+      const taxTemp = this.lsTaxesSelected.find(tx => tx.id == tax.id);
+      const index = this.lsTaxesSelected.indexOf(taxTemp);
       this.lsTaxesSelected.splice(index, 1);
     }
 
-    this.taxesAreInvalid  = (this.lsTaxesSelected.length>0)? false : true;
+    this.taxesAreInvalid  = (this.lsTaxesSelected.length > 0) ? false : true;
     this.modelItemHadleTaxes  = {
       handleTaxes: this.itemHandleTax,
       lsTaxes: this.lsTaxesSelected
-    }
+    };
     this.taxWasSelected.emit(this.modelItemHadleTaxes);
   }
 
@@ -121,26 +121,26 @@ export class TaxesListComponent implements OnInit, OnChanges {
       this.disableChecks();
       await setTimeout(() => {
         this.lsTaxesSelected =  lsTaxes;
-        if(lsTaxes.length > 0){
+        if (lsTaxes.length > 0){
           this.taxesAreInvalid = false;
           for (const tax of lsTaxes) {
-            let idCheck = `#${this.getTaxContainerId(tax.id)}`;
-            let checkTax: HTMLInputElement = document.querySelector(idCheck);
+            const idCheck = `#${this.getTaxContainerId(tax.id)}`;
+            const checkTax: HTMLInputElement = document.querySelector(idCheck);
             checkTax.checked = true;
             this.modelItemHadleTaxes  = {
               handleTaxes: this.itemHandleTax,
               lsTaxes: this.lsTaxesSelected
-            }
+            };
             this.taxWasSelected.emit(this.modelItemHadleTaxes);
           }
         }else{
           this.taxesAreInvalid = true;
         }
-      }, 100)
+      }, 100);
 
 
     } catch (error) {
-      //console.warn(error);
+      // console.warn(error);
     }
 
   }
@@ -148,12 +148,12 @@ export class TaxesListComponent implements OnInit, OnChanges {
   disableChecks(){
     try {
       for (const tax of this.lsTaxes) {
-        let idCheck = `#${this.getTaxContainerId(tax.id)}`;
-        let checkTax: HTMLInputElement = document.querySelector(idCheck);
+        const idCheck = `#${this.getTaxContainerId(tax.id)}`;
+        const checkTax: HTMLInputElement = document.querySelector(idCheck);
         checkTax.checked = false;
       }
     } catch (error) {
-      //console.warn(error);
+      // console.warn(error);
     }
 
   }

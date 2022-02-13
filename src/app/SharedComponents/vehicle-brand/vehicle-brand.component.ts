@@ -1,4 +1,4 @@
-import { Component, OnInit,OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { from } from 'rxjs';
 import { Brand } from 'src/app/Models/Brand';
@@ -10,21 +10,21 @@ import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.se
   styleUrls: ['./vehicle-brand.component.scss']
 })
 export class VehicleBrandComponent implements OnInit, OnChanges {
-  frmBrand : FormGroup;
+  frmBrand: FormGroup;
   lsBrand: Brand[];
   oBrand: Brand;
-  @Input() countChanges:number;
+  @Input() countChanges: number;
   @Output() vehicleBrandWasSetted = new EventEmitter<boolean>();
-  @Input() defaultBrandId: number = 0
+  @Input() defaultBrandId = 0;
 
-  disableControls:boolean
+  disableControls: boolean;
   @Input('disableControls')
-  set setDisableControls(value:boolean){
+  set setDisableControls(value: boolean){
     this.disableControls = value;
-    if(this.disableControls){
-      this.frmBrand.disable()
+    if (this.disableControls){
+      this.frmBrand.disable();
     }else{
-      this.frmBrand.enable()
+      this.frmBrand.enable();
     }
   }
 
@@ -37,9 +37,9 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
    }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
+    for (const change in changes) {
 
-      if (change == "countChanges") {
+      if (change == 'countChanges') {
         this.oBrand = this.vehicleService.getBrandSelected();
         if (this.oBrand != null) {
           this.setDataInForm(this.oBrand);
@@ -57,20 +57,20 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
   async initComponents(){
     try{
       this.countChanges = 0;
-      if(this.defaultBrandId !== 0){
+      if (this.defaultBrandId !== 0){
         this.frmBrand.controls.cmbBrand.setValue(this.defaultBrandId);
       }else{
         this.frmBrand.controls.cmbBrand.setValue(0);
       }
 
       this.lsBrand = await this.vehicleService.getBrands();
-    }catch(error){
+    }catch (error){
       console.error(error.Message);
     }
   }
 
-  setBrand(event:any){
-    let oBrand = this.lsBrand.find(br => br.id == event.value);
+  setBrand(event: any){
+    const oBrand = this.lsBrand.find(br => br.id == event.value);
     this.vehicleService.setBrandSelected(oBrand);
     this.vehicleBrandWasSetted.emit(true);
   }
@@ -80,10 +80,10 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
   }
 
   clearDataForm(){
-    const defaultValue = (this.defaultBrandId!==0)?this.defaultBrandId:0
+    const defaultValue = (this.defaultBrandId !== 0) ? this.defaultBrandId : 0;
     this.frmBrand.controls.cmbBrand.setValue(defaultValue);
-    if(defaultValue!==0){
-      let oBrand = this.lsBrand.find(br => br.id == defaultValue);
+    if (defaultValue !== 0){
+      const oBrand = this.lsBrand.find(br => br.id == defaultValue);
       this.vehicleService.setBrandSelected(oBrand);
       this.vehicleBrandWasSetted.emit(true);
     }

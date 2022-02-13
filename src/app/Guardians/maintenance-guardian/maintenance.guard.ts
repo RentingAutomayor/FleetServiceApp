@@ -8,7 +8,7 @@ import { Modules , } from 'src/app/Models/Modules';
   providedIn: 'root'
 })
 export class MaintenanceGuard implements CanActivate {
-  constructor (
+  constructor(
     private router: Router
   ){
 
@@ -16,24 +16,24 @@ export class MaintenanceGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      let allowAccess = this.validateModule();   
-      if(!allowAccess){
+      const allowAccess = this.validateModule();
+      if (!allowAccess){
         this.router.navigate(['/Home']);
       }
       return allowAccess;
     }
-  
-    
-    validateModule():boolean{
-      let session = JSON.parse(sessionStorage.getItem('sessionUser'));     
-      let rta = false;  
-      for (let AppModule of session.group.modules) {
+
+
+    validateModule(): boolean{
+      const session = JSON.parse(sessionStorage.getItem('sessionUser'));
+      let rta = false;
+      for (const AppModule of session.group.modules) {
         if (AppModule.id_module == Modules.MANTENIMIENTOS) {
-          return true;        
+          return true;
         }else{
           rta = false;
         }
       }
-       return rta;
+      return rta;
     }
 }

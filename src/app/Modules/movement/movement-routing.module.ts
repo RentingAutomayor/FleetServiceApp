@@ -15,7 +15,7 @@ const routes: Routes = [
             { path: '', component: TblMovementsComponent },
             { path: 'Movement', component: MovementComponent },
           ]
-     
+
     }
 ];
 

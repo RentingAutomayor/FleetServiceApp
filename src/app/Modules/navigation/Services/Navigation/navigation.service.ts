@@ -5,15 +5,15 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class NavigationService {
-  private itemActive:string;
+  private itemActive: string;
 
   constructor() { }
 
-  getItemActive():string{
+  getItemActive(): string{
     return this.itemActive;
   }
 
-  setItemActive(pItem:string){
+  setItemActive(pItem: string){
     this.itemActive = pItem;
   }
 }

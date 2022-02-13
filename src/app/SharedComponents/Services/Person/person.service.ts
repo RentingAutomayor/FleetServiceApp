@@ -5,23 +5,23 @@ import { Person } from '../../../Models/Person';
   providedIn: 'root'
 })
 export class PersonService {
-  private objPerson : Person;
-  private personToUpdate:Person;
+  private objPerson: Person;
+  private personToUpdate: Person;
   constructor() { }
 
-  setPerson(pPerson:Person){
+  setPerson(pPerson: Person){
     this.objPerson = pPerson;
   }
 
-  getPerson():Person{
+  getPerson(): Person{
     return this.objPerson;
   }
 
-  setPersonToUpdate(pPerson:Person){
+  setPersonToUpdate(pPerson: Person){
     this.personToUpdate = pPerson;
   }
 
-  getPersonToUpdate():Person{
+  getPersonToUpdate(): Person{
     return this.personToUpdate;
   }
 }

@@ -12,15 +12,15 @@ import { SharedFunction } from 'src/app/Models/SharedFunctions' ;
   styleUrls: ['./vehicle.component.scss']
 })
 export class VehicleComponent implements OnInit, OnChanges {
-  frmVehicle:FormGroup;
-  error:string;
-  formHasError:boolean;
-  vehicleToUpdate:Vehicle;
+  frmVehicle: FormGroup;
+  error: string;
+  formHasError: boolean;
+  vehicleToUpdate: Vehicle;
   @Output() vehicleWasSaved = new  EventEmitter<boolean>();
   @Output() vehicleWasCancel = new  EventEmitter<boolean>();
   @Input() countVehicle: number;
-  oCountChanges:number;
-  sharedFunction:SharedFunction
+  oCountChanges: number;
+  sharedFunction: SharedFunction;
 
   constructor(
     private vehicleService: VehicleService,
@@ -33,11 +33,11 @@ export class VehicleComponent implements OnInit, OnChanges {
 
   buildFormVehicle(){
     this.frmVehicle = this.formBuilder.group({
-      licensePlate : ['', [Validators.required ,Validators.minLength(6),Validators.maxLength(6)]],
-      chasisCode: ['', [Validators.required ,Validators.minLength(10),Validators.maxLength(17)]],
+      licensePlate : ['', [Validators.required , Validators.minLength(6), Validators.maxLength(6)]],
+      chasisCode: ['', [Validators.required , Validators.minLength(10), Validators.maxLength(17)]],
       year: [''],
       mileage: ['']
-    })
+    });
   }
 
   get licensePlateField(){
@@ -58,12 +58,12 @@ export class VehicleComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
+    for (const change in changes) {
       try {
-        if (change == "countVehicle") {
+        if (change == 'countVehicle') {
           this.cleanFormData();
           this.vehicleToUpdate = this.vehicleService.getVehicleToUpdate();
-          if(this.vehicleToUpdate != null){
+          if (this.vehicleToUpdate != null){
             this.setDataInForm(this.vehicleToUpdate);
           } else{
             this.cleanFormData();
@@ -83,20 +83,20 @@ export class VehicleComponent implements OnInit, OnChanges {
 
   initComponents(){
     this.formHasError = false;
-    this.error='';
+    this.error = '';
     this.countVehicle = 0;
     this.oCountChanges = 0;
 
   }
 
   saveVehicle(){
-    let oVehicle = this.setDataVehicle();
+    const oVehicle = this.setDataVehicle();
     this.saveData(oVehicle);
   }
 
-  setDataVehicle():Vehicle{
-    let oVehicle = new Vehicle();
-    if(this.vehicleToUpdate != null){
+  setDataVehicle(): Vehicle{
+    const oVehicle = new Vehicle();
+    if (this.vehicleToUpdate != null){
       oVehicle.id = this.vehicleToUpdate.id;
     }
 
@@ -113,12 +113,12 @@ export class VehicleComponent implements OnInit, OnChanges {
     return oVehicle;
   }
 
-  async saveData(pVehicle:Vehicle){
+  async saveData(pVehicle: Vehicle){
     this.vehicleService.setVehicle(pVehicle);
     this.vehicleWasSaved.emit(true);
   }
 
-  setDataInForm(pVehicle:Vehicle){
+  setDataInForm(pVehicle: Vehicle){
     this.frmVehicle.patchValue(pVehicle);
     this.vehicleService.setBrandSelected(pVehicle.vehicleModel.brand);
     this.vehicleService.setVehicleTypeSelected(pVehicle.vehicleModel.type);
@@ -147,8 +147,8 @@ export class VehicleComponent implements OnInit, OnChanges {
     this.vehicleWasCancel.emit(true);
   }
 
-  valitateTyping(event:any, type:string){
-    InputValidator.validateTyping(event,type);
+  valitateTyping(event: any, type: string){
+    InputValidator.validateTyping(event, type);
   }
 
 }

@@ -19,12 +19,12 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
   btnAddVehicle: HTMLButtonElement;
   containerErrorAdd: HTMLElement;
   oClient: Client;
-  p: number = 1;
+  p = 1;
   @Input() clientWasSaved: boolean;
   oCountVehicle: number;
-  @Input() disableActionButtons:boolean;
+  @Input() disableActionButtons: boolean;
   @Input() action: ActionType;
-  buttonAddIsVisible:boolean;
+  buttonAddIsVisible: boolean;
 
   constructor(
     private vehicleService: VehicleService,
@@ -39,12 +39,12 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    for (let change in changes) {
-      if (change == "clientWasSaved") {
-        setTimeout(()=>{
-          //await this time because the btn it's no ready jet
+    for (const change in changes) {
+      if (change == 'clientWasSaved') {
+        setTimeout(() => {
+          // await this time because the btn it's no ready jet
           this.validateIfButtonAddMustVisible();
-        },1500);
+        }, 1500);
       }
     }
   }
@@ -62,10 +62,10 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
       this.lsVehicles = await this.vehicleService.getVehiclesByClient(this.oClient.id);
     }
 
-    setTimeout(()=>{
-      //await this time because the btn it's no ready jet
+    setTimeout(() => {
+      // await this time because the btn it's no ready jet
       this.validateIfButtonAddMustVisible();
-    },1500);
+    }, 1500);
   }
 
   insertVehicle() {
@@ -84,7 +84,7 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
   async saveVehicle() {
     try {
       let rta = new ResponseApi();
-      let oVehicle = this.vehicleService.getVehicle();
+      const oVehicle = this.vehicleService.getVehicle();
       oVehicle.Client_id = this.oClient.id;
       this.isAwaiting = true;
       if (this.isToUpdate) {
@@ -119,13 +119,13 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
   }
 
   showPopUp() {
-    let containerForm = document.getElementById("container__formVehicle");
-    containerForm.setAttribute("style", "display:block");
+    const containerForm = document.getElementById('container__formVehicle');
+    containerForm.setAttribute('style', 'display:block');
   }
 
   hidePopUp() {
-    let containerForm = document.getElementById("container__formVehicle");
-    containerForm.setAttribute("style", "display:none");
+    const containerForm = document.getElementById('container__formVehicle');
+    containerForm.setAttribute('style', 'display:none');
   }
 
 
@@ -133,7 +133,7 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
     try {
       this.btnAddVehicle = document.querySelector('#btnAddVehicle');
       this.btnAddVehicle.disabled = false;
-      this.btnAddVehicle.classList.remove("error");
+      this.btnAddVehicle.classList.remove('error');
 
     } catch (error) {
       console.warn(error.message);
@@ -145,7 +145,7 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
     try{
       this.containerErrorAdd = document.querySelector('#cont_error_add_vehicle');
       this.containerErrorAdd.style.display = 'none';
-    }catch(error){
+    }catch (error){
       console.warn(error.message);
     }
   }
@@ -155,7 +155,7 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
       this.btnAddVehicle = document.querySelector('#btnAddVehicle');
       this.btnAddVehicle.disabled = true;
       this.btnAddVehicle.className += `${this.btnAddVehicle.className} error`;
-    }catch(error){
+    }catch (error){
       console.warn(error.message);
     }
   }
@@ -164,7 +164,7 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
     try{
       this.containerErrorAdd = document.querySelector('#cont_error_add_vehicle');
       this.containerErrorAdd.style.display = 'block';
-    }catch(error){
+    }catch (error){
       console.warn(error.message);
     }
 
@@ -180,9 +180,9 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
   }
 
   async deleteVehicle(pVehicle: Vehicle) {
-    if (confirm("¿Está seguro que desea eliminar este vehículo?")) {
+    if (confirm('¿Está seguro que desea eliminar este vehículo?')) {
       this.isAwaiting = true;
-      let rta = await this.vehicleService.Delete(pVehicle);
+      const rta = await this.vehicleService.Delete(pVehicle);
       if (rta.response) {
         alert(rta.message);
         this.showTableVehicles();
@@ -191,20 +191,20 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
     }
   }
 
-  getStateID(vehicle_id:number):string{
+  getStateID(vehicle_id: number): string{
     return `state_${vehicle_id}`;
 
   }
 
-  validateTag(state_name:string,vehicle_id: number):string{
-    let idElement = `#state_${vehicle_id}`;
-    let tag: HTMLElement = document.querySelector(idElement);
-    switch(state_name.toUpperCase()){
+  validateTag(state_name: string, vehicle_id: number): string{
+    const idElement = `#state_${vehicle_id}`;
+    const tag: HTMLElement = document.querySelector(idElement);
+    switch (state_name.toUpperCase()){
       case 'INACTIVO':
-        tag.classList.add("tag-error");
+        tag.classList.add('tag-error');
         break;
         case 'ACTIVO':
-          tag.classList.add("tag-active");
+          tag.classList.add('tag-active');
           break;
     }
     return state_name;
@@ -212,20 +212,20 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
   }
 
   validateIfButtonAddMustVisible(){
-    switch(this.action){
+    switch (this.action){
       case ActionType.READ:
           this.buttonAddIsVisible = false;
-        break;
+          break;
       case ActionType.UPDATE:
       case ActionType.CREATE:
           this.buttonAddIsVisible = true;
-        break;
+          break;
     }
     this.validateDataClient();
   }
 
   validateDataClient(){
-    if(this.oClient != null && this.oClient != undefined){
+    if (this.oClient != null && this.oClient != undefined){
       this.activateButtonAdd();
       this.removeContainerError();
     }else{

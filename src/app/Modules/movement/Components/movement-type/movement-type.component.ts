@@ -16,7 +16,7 @@ export class MovementTypeComponent implements OnInit, OnChanges {
   @Input() countChanges: number;
 
   constructor(
-    private movementService:MovementService
+    private movementService: MovementService
   ) {
     this.frmMovementType = new FormGroup({
       cmbMovementType: new FormControl('Seleccione...')
@@ -24,8 +24,8 @@ export class MovementTypeComponent implements OnInit, OnChanges {
    }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      if (change == "countChanges") {
+    for (const change in changes) {
+      if (change == 'countChanges') {
         this.validateMovementTypeSelected();
       }
     }
@@ -50,7 +50,7 @@ export class MovementTypeComponent implements OnInit, OnChanges {
 
   validateMovementTypeSelected(){
     this.movementTypeSelected = this.movementService.getMovementTypeSelected();
-    if(this.movementTypeSelected != null && this.movementTypeSelected != undefined){
+    if (this.movementTypeSelected != null && this.movementTypeSelected != undefined){
 
       this.setDataInForm(this.movementTypeSelected);
     }else{
@@ -58,23 +58,23 @@ export class MovementTypeComponent implements OnInit, OnChanges {
     }
   }
 
-  setMovementType(event:any){
-    let oMovementType = this.lsMovementType.find(mt => mt.id == event.value);
+  setMovementType(event: any){
+    const oMovementType = this.lsMovementType.find(mt => mt.id == event.value);
 
     this.movementService.setMovementTypeSelected(oMovementType);
   }
 
   setDataInForm(movementType: MovementType){
-    let { cmbMovementType } = this.frmMovementType.controls;
+    const { cmbMovementType } = this.frmMovementType.controls;
 
     setTimeout(() => {
       cmbMovementType.setValue(movementType.id);
       this.movementService.setMovementTypeSelected(movementType);
-    },300);
+    }, 300);
   }
 
   clearDataInForm(){
-    let { cmbMovementType } = this.frmMovementType.controls;
+    const { cmbMovementType } = this.frmMovementType.controls;
     cmbMovementType.setValue(0);
   }
 }

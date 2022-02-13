@@ -8,33 +8,33 @@ import { ResponseApi } from '../../../Models/ResponseApi';
   providedIn: 'root'
 })
 export class ContactService {
-  private URL_API =  "/API_FleetService/api/Contact/";
+  private URL_API =  '/API_FleetService/api/Contact/';
   private  HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
   constructor(
-    private http:HttpClient
+    private http: HttpClient
   ) {
 
   }
 
-  async getContacts(pOwner_id:number,pKinOfOwner:string):Promise<Contact[]>{
-    let urlGetContacts = `${this.URL_API}/Get?pOwner_id=${pOwner_id}&pKindOfOwner=${pKinOfOwner}`;
+  async getContacts(pOwner_id: number, pKinOfOwner: string): Promise<Contact[]>{
+    const urlGetContacts = `${this.URL_API}/Get?pOwner_id=${pOwner_id}&pKindOfOwner=${pKinOfOwner}`;
     return this.http.get<Contact[]>(urlGetContacts).toPromise();
   }
 
-  insert(contact:CreateContactDTO):Observable<Contact>{
-    let urlInsertContacts = `${this.URL_API}/Insert`;
-    return this.http.post<Contact>(urlInsertContacts,contact,this.HttpOptions);
+  insert(contact: CreateContactDTO): Observable<Contact>{
+    const urlInsertContacts = `${this.URL_API}/Insert`;
+    return this.http.post<Contact>(urlInsertContacts, contact, this.HttpOptions);
   }
 
-  update(pContact:Contact): Observable<Contact>{
-    let urlUpdateContacts = `${this.URL_API}/Update`;
-    return this.http.put<Contact>(urlUpdateContacts,pContact,this.HttpOptions);
+  update(pContact: Contact): Observable<Contact>{
+    const urlUpdateContacts = `${this.URL_API}/Update`;
+    return this.http.put<Contact>(urlUpdateContacts, pContact, this.HttpOptions);
   }
 
-  delete(contactId:number):Observable<ResponseApi>{
-    let urlDeletetContacts = `${this.URL_API}/Delete?contactId=${contactId}`;
+  delete(contactId: number): Observable<ResponseApi>{
+    const urlDeletetContacts = `${this.URL_API}/Delete?contactId=${contactId}`;
     return this.http.delete<ResponseApi>(urlDeletetContacts);
   }
 

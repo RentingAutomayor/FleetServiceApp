@@ -37,10 +37,10 @@ import { TaxesListComponent } from './Components/taxes-list/taxes-list.component
   ],
   imports: [
     CommonModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     SharedModule,
-    ItemsAndRoutinesRoutingModule 
+    ItemsAndRoutinesRoutingModule
   ],
 })
 export class ItemsAndRoutinesModule { }

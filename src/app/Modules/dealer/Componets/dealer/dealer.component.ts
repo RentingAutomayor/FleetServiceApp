@@ -16,25 +16,25 @@ import { NavigationService } from 'src/app/SharedComponents/Services/navigation.
   styleUrls: ['./dealer.component.scss']
 })
 export class DealerComponent implements OnInit, OnChanges {
-  oConfigPersonComp: ConfigPersonComponent
+  oConfigPersonComp: ConfigPersonComponent;
   isAwaiting: boolean;
   oDataIsToUpdate: boolean;
-  sReturnPath:string;
+  sReturnPath: string;
   oPersonToUpdate: Person;
   oDealerToUpdate: Dealer;
   errorMessage: string;
-  bFormHasError:boolean;
-  oIsToDealer:boolean;
-  oDealerWasSaved:boolean;
+  bFormHasError: boolean;
+  oIsToDealer: boolean;
+  oDealerWasSaved: boolean;
   action: ActionType;
 
   constructor(
     private dealerService: DealerService,
     private personService: PersonService,
-    private navigationService:NavigationService,
-    private router:Router
+    private navigationService: NavigationService,
+    private router: Router
   ) {
-    this.sReturnPath = "/MasterDealers";
+    this.sReturnPath = '/MasterDealers';
     this.oIsToDealer = true;
    }
 
@@ -53,7 +53,7 @@ export class DealerComponent implements OnInit, OnChanges {
     this.hideContainerTabs();
     this.isAwaiting = false;
     this.oDataIsToUpdate = false;
-    this.errorMessage = "";
+    this.errorMessage = '';
     this.bFormHasError = false;
     this.oDealerWasSaved = false;
     this.validateDealerToUpdate();
@@ -65,7 +65,7 @@ export class DealerComponent implements OnInit, OnChanges {
 
   validateDealerToUpdate(){
     this.oDealerToUpdate = this.dealerService.getDealerToUpdate();
-    if(this.oDealerToUpdate != null){
+    if (this.oDealerToUpdate != null){
       this.setDataToUpdateDealer(this.oDealerToUpdate);
       this.oDataIsToUpdate = true;
     }
@@ -78,7 +78,7 @@ export class DealerComponent implements OnInit, OnChanges {
   }
 
   SetDataToSaveDealer() {
-    let oDealer = this.personService.getPerson();
+    const oDealer = this.personService.getPerson();
     this.saveDealer(oDealer);
   }
 
@@ -94,9 +94,9 @@ export class DealerComponent implements OnInit, OnChanges {
       }
       this.isAwaiting = false;
 
-      if(rta.response){
+      if (rta.response){
         alert(rta.message);
-        let dealerTmp = await this.dealerService.getDealersByDocument(pDealer.document);
+        const dealerTmp = await this.dealerService.getDealersByDocument(pDealer.document);
         this.dealerService.setDealerToUpdate(dealerTmp);
         this.oDealerWasSaved = true;
       }
@@ -109,38 +109,38 @@ export class DealerComponent implements OnInit, OnChanges {
   }
 
   openTab(oButton: any, container: string) {
-    let tabLinks = document.getElementsByClassName("tab_link");
+    const tabLinks = document.getElementsByClassName('tab_link');
 
     for (let i = 0; i < tabLinks.length; i++) {
-      tabLinks[i].classList.remove("active");
+      tabLinks[i].classList.remove('active');
     }
-    oButton.target.className += " active";
-    let containerTabs = document.getElementsByClassName("tab_content");
+    oButton.target.className += ' active';
+    const containerTabs = document.getElementsByClassName('tab_content');
 
     for (let i = 0; i < containerTabs.length; i++) {
-      containerTabs[i].setAttribute("style", "display:none");
+      containerTabs[i].setAttribute('style', 'display:none');
     }
 
-    let containerToShow_id = `container__${container}`;
-    let containerToShow = document.getElementById(containerToShow_id);
-    containerToShow.setAttribute("style", "display:blick");
+    const containerToShow_id = `container__${container}`;
+    const containerToShow = document.getElementById(containerToShow_id);
+    containerToShow.setAttribute('style', 'display:blick');
   }
 
   hideContainerTabs() {
-    let containers = document.getElementsByClassName("tab_inactive");
+    const containers = document.getElementsByClassName('tab_inactive');
     for (let i = 0; i < containers.length; i++) {
-      containers[i].setAttribute("style", "display:none");
+      containers[i].setAttribute('style', 'display:none');
     }
   }
 
 
   moveContent(event: any) {
-    let containerContent: HTMLDivElement = document.querySelector("#container__content");
+    const containerContent: HTMLDivElement = document.querySelector('#container__content');
 
     if (event) {
-      containerContent.style.marginLeft = "250px";
+      containerContent.style.marginLeft = '250px';
     } else {
-      containerContent.style.marginLeft = "60px";
+      containerContent.style.marginLeft = '60px';
     }
   }
 

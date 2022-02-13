@@ -17,12 +17,12 @@ import { SecurityValidators } from 'src/app/Models/SecurityValidators';
   styleUrls: ['./dashboard-client.component.scss']
 })
 export class DashboardClientComponent implements OnInit {
-  isAwaiting:boolean;
+  isAwaiting: boolean;
   lsTransactionsToApprove: Transaction[];
-  client:Client;
+  client: Client;
   sharedFunctions: SharedFunction;
   frmApprovedTrx: FormGroup;
-  frmCancelTrx:FormGroup;
+  frmCancelTrx: FormGroup;
 
   lsMovements: Movement[];
   APROBACION_ORDEN_DE_TRABAJO = 5;
@@ -42,7 +42,7 @@ export class DashboardClientComponent implements OnInit {
 
     this.frmCancelTrx = new FormGroup({
       txtObservationCancelation: new FormControl('')
-    })
+    });
 
     this.trx_id = 0;
   }
@@ -54,7 +54,7 @@ export class DashboardClientComponent implements OnInit {
   initComponents(){
     this.isAwaiting = false;
 
-    //TODO CHANGE THIS FOR THE CLIENT LOGGED
+    // TODO CHANGE THIS FOR THE CLIENT LOGGED
     this.client.id = this.getClientId();
 
     this.sharedFunctions = new SharedFunction();
@@ -62,8 +62,8 @@ export class DashboardClientComponent implements OnInit {
     this.getTransactionsToApprove(this.client.id);
   }
 
-  getClientId():number{
-    let userSession :SessionUser = JSON.parse(sessionStorage.getItem('sessionUser'));
+  getClientId(): number{
+    const userSession: SessionUser = JSON.parse(sessionStorage.getItem('sessionUser'));
     return userSession.company.id;
   }
 
@@ -74,7 +74,7 @@ export class DashboardClientComponent implements OnInit {
         lsTrx => {
           this.lsTransactionsToApprove = lsTrx;
         });
-        this.isAwaiting = false;
+      this.isAwaiting = false;
     } catch (error) {
       console.warn(error);
     }
@@ -82,25 +82,25 @@ export class DashboardClientComponent implements OnInit {
 
   async getMovementList(){
     try {
-      this.movementService.getMovements().then(lsMov =>{
+      this.movementService.getMovements().then(lsMov => {
         this.lsMovements = lsMov;
-      })
+      });
     } catch (error) {
       console.warn(error);
     }
   }
 
   closePopUp(idPopUp) {
-    let popUp = document.getElementById(idPopUp);
+    const popUp = document.getElementById(idPopUp);
     popUp.style.display = 'none';
   }
 
   openPopUp(idPopUp) {
-    let popUp = document.getElementById(idPopUp);
+    const popUp = document.getElementById(idPopUp);
     popUp.style.display = 'block';
   }
 
-  formatNumberToString(oData:number){
+  formatNumberToString(oData: number){
     return this.sharedFunctions.formatNumberToString(oData);
   }
 
@@ -112,12 +112,12 @@ export class DashboardClientComponent implements OnInit {
   async approveWorkOrder(){
     try {
       this.isAwaiting = true;
-      let movement = this.lsMovements.find(mv => mv.id == this.APROBACION_ORDEN_DE_TRABAJO);
-      let {txtObservationApprobation} = this.frmApprovedTrx.controls;
-      let trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected,movement,txtObservationApprobation.value);
+      const movement = this.lsMovements.find(mv => mv.id == this.APROBACION_ORDEN_DE_TRABAJO);
+      const {txtObservationApprobation} = this.frmApprovedTrx.controls;
+      const trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected, movement, txtObservationApprobation.value);
       this.transactionService.processTransaction(trxApproveWorkOrder)
-      .then(rta =>{
-        if(rta.response){
+      .then(rta => {
+        if (rta.response){
           alert(rta.message);
           this.getTransactionsToApprove(this.client.id);
           this.closePopUp('container__Approbation');
@@ -132,12 +132,12 @@ export class DashboardClientComponent implements OnInit {
   async cancelWorkOrder(){
     try {
       this.isAwaiting = true;
-      let movement = this.lsMovements.find(mv => mv.id == this.CANCELACION_ORDEN_DE_TRABAJO);
-      let {txtObservationCancelation} = this.frmCancelTrx.controls;
-      let trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected,movement,txtObservationCancelation.value);
+      const movement = this.lsMovements.find(mv => mv.id == this.CANCELACION_ORDEN_DE_TRABAJO);
+      const {txtObservationCancelation} = this.frmCancelTrx.controls;
+      const trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected, movement, txtObservationCancelation.value);
       this.transactionService.processTransaction(trxApproveWorkOrder)
-      .then(rta =>{
-        if(rta.response){
+      .then(rta => {
+        if (rta.response){
           alert(rta.message);
           this.getTransactionsToApprove(this.client.id);
           this.closePopUp('container__Cancelation');
@@ -149,23 +149,23 @@ export class DashboardClientComponent implements OnInit {
     }
   }
 
-  setDataTransaction(trxRelated: Transaction, movement:Movement, observation: string){
+  setDataTransaction(trxRelated: Transaction, movement: Movement, observation: string){
 
-    let trxApprove = new Transaction();
+    const trxApprove = new Transaction();
     trxApprove.movement = movement;
     trxApprove.value = trxRelated.value;
-    trxApprove.usu_id = SecurityValidators.validateUserLogged();;
+    trxApprove.usu_id = SecurityValidators.validateUserLogged();
     trxApprove.client = trxRelated.client;
 
     trxApprove.headerDetails = new TransactionDetail();
     trxApprove.headerDetails.relatedTransaction = trxRelated;
 
-    let trxObservation = new TransactionObservation();
+    const trxObservation = new TransactionObservation();
     trxObservation.usu_id = SecurityValidators.validateUserLogged();
     trxObservation.description = observation;
 
-    let lsObservation = [];
-    if(observation != null){
+    const lsObservation = [];
+    if (observation != null){
       lsObservation.push(trxObservation);
     }
 

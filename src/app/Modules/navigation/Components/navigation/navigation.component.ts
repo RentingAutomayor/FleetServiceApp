@@ -8,21 +8,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./navigation.component.scss']
 })
 export class NavigationComponent implements OnInit{
-  containerMenu: HTMLDivElement;
-  @Output() showCloseMenu = new EventEmitter<boolean>();
   constructor(private navigationService: NavigationService,
               private router: Router) {
                     this.loadApp();
    }
+  containerMenu: HTMLDivElement;
+  @Output() showCloseMenu = new EventEmitter<boolean>();
+
+  session: any;
+  moduleFathers: any[] = [];
 
   ngOnInit(): void {
     this.initComponents();
   }
-
-  session: any;
-  moduleFathers: any[] = [];
   loadApp(){
-    this.session = JSON.parse(sessionStorage.getItem('sessionUser'))
+    this.session = JSON.parse(sessionStorage.getItem('sessionUser'));
     if (this.session == null) {
       this.router.navigate(['Login']);
     }
@@ -36,7 +36,7 @@ export class NavigationComponent implements OnInit{
   }
 
   initComponents() {
-    this.containerMenu = document.querySelector("#container__menu");
+    this.containerMenu = document.querySelector('#container__menu');
   }
 
 

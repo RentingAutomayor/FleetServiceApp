@@ -10,12 +10,12 @@ export class TransactionDetail {
     public vehicle: Vehicle;
     public dealer: Dealer;
     public branch: Branch;
-    //This transaction rela
+    // This transaction rela
     public relatedTransaction: Transaction;
     public maintenanceRoutine: MaintenanceRoutine;
     public contract: Contract;
-    //TODO: Change this for model of users
-    //Maybe this can change because this informations is for transaction
+    // TODO: Change this for model of users
+    // Maybe this can change because this informations is for transaction
     public userApprobation: Number;
     public userReject: Number;
     public userAnulation: Number;

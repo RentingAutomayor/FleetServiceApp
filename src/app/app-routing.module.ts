@@ -53,32 +53,32 @@ const routes: Routes = [
   {
     path: 'ItemsAndRoutines',
     canActivate: [MaintenanceGuard],
-    loadChildren: () => import('../app/Modules/items-and-routines/items-and-routines.module').then(m => m.ItemsAndRoutinesModule)   
+    loadChildren: () => import('../app/Modules/items-and-routines/items-and-routines.module').then(m => m.ItemsAndRoutinesModule)
   },
   {
     path: 'MasterMovements',
     canActivate: [MovementGuard],
-    loadChildren: () => import('../app/Modules/movement/movement.module').then(m => m.MovementModule)   
+    loadChildren: () => import('../app/Modules/movement/movement.module').then(m => m.MovementModule)
   },
   {
     path: 'MasterContracts',
     canActivate: [ContractGuard],
-    loadChildren: () => import('../app/Modules/contract/contract.module').then(m => m.ContractModule)    
-  }, 
+    loadChildren: () => import('../app/Modules/contract/contract.module').then(m => m.ContractModule)
+  },
   {
     path: 'QuotaManagement',
     canActivate: [QuotaGuard],
-    loadChildren: () => import('../app/Modules/quota-management/quota-management.module').then(m => m.QuotaManagementModule)  
+    loadChildren: () => import('../app/Modules/quota-management/quota-management.module').then(m => m.QuotaManagementModule)
   },
   {
     path: 'WorkOrderManagement',
     canActivate: [WorkorderGuard],
-    loadChildren: ()=> import('../app/Modules/work-order-manager/work-order-manager.module').then(m=> m.WorkOrderManagerModule)   
+    loadChildren: () => import('../app/Modules/work-order-manager/work-order-manager.module').then(m => m.WorkOrderManagerModule)
   },
   {
     path: 'DashboardClient',
     canActivate: [DashboardClientGuard],
-    loadChildren: () => import('../app/Modules/dashboard-client/dashboard-client.module').then(m => m.DashboardClientModule)   
+    loadChildren: () => import('../app/Modules/dashboard-client/dashboard-client.module').then(m => m.DashboardClientModule)
   },
 ];
 

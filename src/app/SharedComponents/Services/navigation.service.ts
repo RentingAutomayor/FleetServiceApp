@@ -5,15 +5,15 @@ import { ActionType } from 'src/app/Models/ActionType';
   providedIn: 'root'
 })
 export class NavigationService {
-  actionToDo:ActionType;
+  actionToDo: ActionType;
 
   constructor() { }
 
   setAction(action: ActionType){
-    this.actionToDo = action
+    this.actionToDo = action;
   }
 
   getAction(): ActionType{
-    return this.actionToDo
+    return this.actionToDo;
   }
 }

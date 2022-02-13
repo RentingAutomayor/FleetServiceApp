@@ -10,31 +10,31 @@ import { JobTitleService } from '../Services/JobTitle/job-title.service';
   templateUrl: './job-title.component.html',
   styleUrls: ['./job-title.component.scss']
 })
-export class JobTitleComponent implements OnInit ,OnChanges{
+export class JobTitleComponent implements OnInit , OnChanges{
 
-  lsJobTitlesIsVivible:boolean;
+  lsJobTitlesIsVivible: boolean;
   lsJobTitle$: Observable<JobTitle[]>;
   description = new Subject<string>();
   txtJobTitle = new FormControl('');
 
   jobTitleSelected: JobTitle = null;
   @Input('jobTitleSelected')
-  set setJobTitleSelected(jobTitle:JobTitle){
+  set setJobTitleSelected(jobTitle: JobTitle){
     this.jobTitleSelected = jobTitle;
-    if(!this.jobTitleSelected){
-      this.txtJobTitle.reset()
+    if (!this.jobTitleSelected){
+      this.txtJobTitle.reset();
     }
   }
 
-  isFormDisable: boolean = false;
+  isFormDisable = false;
   @Input('isFormDisable')
-  set setIsFormDisable(value:boolean){
+  set setIsFormDisable(value: boolean){
     this.isFormDisable = value;
-    this.enableOrDisbaleField(this.isFormDisable)
+    this.enableOrDisbaleField(this.isFormDisable);
   }
 
   constructor(
-    private jobTitleService:JobTitleService
+    private jobTitleService: JobTitleService
   ) { }
 
   ngOnInit(): void {
@@ -42,12 +42,12 @@ export class JobTitleComponent implements OnInit ,OnChanges{
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    for(let change in changes){
-      if(change == "jobTitleSelected")
+    for (const change in changes){
+      if (change == 'jobTitleSelected')
       {
-        let job = this.jobTitleService.getJobTitleSelected();
-        if(job == null){
-          this.txtJobTitle.setValue("");
+        const job = this.jobTitleService.getJobTitleSelected();
+        if (job == null){
+          this.txtJobTitle.setValue('');
         }else{
 
 
@@ -58,11 +58,11 @@ export class JobTitleComponent implements OnInit ,OnChanges{
     }
   }
 
-  enableOrDisbaleField(isFormBlocked:boolean){
-    if(isFormBlocked){
-      this.txtJobTitle.disable()
+  enableOrDisbaleField(isFormBlocked: boolean){
+    if (isFormBlocked){
+      this.txtJobTitle.disable();
     }else{
-      this.txtJobTitle.enable()
+      this.txtJobTitle.enable();
     }
 
   }
@@ -71,7 +71,7 @@ export class JobTitleComponent implements OnInit ,OnChanges{
 
     this.jobTitleSelected = this.jobTitleService.getJobTitleSelected();
 
-    if(this.jobTitleSelected == null){
+    if (this.jobTitleSelected == null){
       this.jobTitleSelected = new JobTitle();
       this.jobTitleSelected.description = '';
       this.lsJobTitlesIsVivible = true;
@@ -80,28 +80,28 @@ export class JobTitleComponent implements OnInit ,OnChanges{
     }
 
     this.lsJobTitle$ = this.description.pipe(
-      debounceTime(300),//await 300 ms to send other search
-      distinctUntilChanged(), //Avoid if the term is equals to the term before
+      debounceTime(300), // await 300 ms to send other search
+      distinctUntilChanged(), // Avoid if the term is equals to the term before
       switchMap( (desc: string) => this.jobTitleService.getJobTitlesByDescription(desc)
       )
-    )
+    );
   }
 
-  getJobtitleByDescription(description:string){
+  getJobtitleByDescription(description: string){
     this.description.next(description);
     this.lsJobTitlesIsVivible = true;
     this.setJobTitleFromInput();
     this.jobTitleService.setJobTitleSelected(null);
   }
 
-  setJobTitleInInput(jobTitle:JobTitle){
+  setJobTitleInInput(jobTitle: JobTitle){
     this.jobTitleSelected = jobTitle;
     this.lsJobTitlesIsVivible = false;
     this.jobTitleService.setJobTitleSelected(jobTitle);
   }
 
   setJobTitleFromInput(){
-    let jobtitle = new JobTitle();
+    const jobtitle = new JobTitle();
     jobtitle.id = 0;
     jobtitle.description = this.txtJobTitle.value;
     this.jobTitleService.setJobTitleByInput(jobtitle);

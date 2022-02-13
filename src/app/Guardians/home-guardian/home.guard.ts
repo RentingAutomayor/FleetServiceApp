@@ -8,26 +8,26 @@ import { Modules , } from 'src/app/Models/Modules';
   providedIn: 'root'
 })
 export class HomeGuard implements CanActivate {
-  constructor (
+  constructor(
     private router: Router
   ){ }
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      let allowAccess = true;
+      const allowAccess = true;
       // if(!allowAccess){
       //   this.router.navigate(['/Login']);
       // }
       return allowAccess;
     }
-  
-    
+
+
     // validateModule():boolean{
-    //   let session = JSON.parse(sessionStorage.getItem('sessionUser'));     
-    //   let rta = true;      
+    //   let session = JSON.parse(sessionStorage.getItem('sessionUser'));
+    //   let rta = true;
     //    return rta;
     // }
-  
-  
+
+
 }

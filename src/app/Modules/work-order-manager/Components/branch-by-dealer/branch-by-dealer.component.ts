@@ -25,8 +25,8 @@ export class BranchByDealerComponent implements OnInit , OnChanges{
    }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let  change in changes) {
-      if(change == "dealer"){
+    for (const  change in changes) {
+      if (change == 'dealer'){
         this.getListBranchByDealer(this.dealer.id);
       }
     }
@@ -40,16 +40,16 @@ export class BranchByDealerComponent implements OnInit , OnChanges{
     this.getListBranchByDealer(this.dealer.id);
   }
 
-  async getListBranchByDealer(dealer_id:number){
-    this.branchService.getBranchs(dealer_id, "DEALER").subscribe(
+  async getListBranchByDealer(dealer_id: number){
+    this.branchService.getBranchs(dealer_id, 'DEALER').subscribe(
       data => {
         this.lsBranch = data;
       }
-    )
+    );
   }
 
-  setBranch(event:any){
-    let oBranch = this.lsBranch.find(br => br.id == event.value);
+  setBranch(event: any){
+    const oBranch = this.lsBranch.find(br => br.id == event.value);
     this.branchService.setBranchSelected(oBranch);
     this.branchWasSetted.emit(true);
   }

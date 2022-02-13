@@ -19,10 +19,10 @@ import { DealerRoutingModule } from './dealer-routing.module';
   imports: [
     CommonModule,
     SharedModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     DealerRoutingModule
-  ],schemas: [
+  ], schemas: [
     CUSTOM_ELEMENTS_SCHEMA
 ],
 })

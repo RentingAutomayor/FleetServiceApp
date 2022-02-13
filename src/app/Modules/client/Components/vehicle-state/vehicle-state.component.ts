@@ -9,15 +9,15 @@ import { Vehicle } from 'src/app/Models/Vehicle';
   templateUrl: './vehicle-state.component.html',
   styleUrls: ['./vehicle-state.component.scss']
 })
-export class VehicleStateComponent implements OnInit ,OnChanges{
+export class VehicleStateComponent implements OnInit , OnChanges{
   lsStates: VehicleState[];
   frmVehicleState: FormGroup;
-  vehicleToUpdate:Vehicle;
+  vehicleToUpdate: Vehicle;
   stateSelected: VehicleState;
 
   @Input() countChanges: number;
   constructor(
-    private vehicleService:VehicleService
+    private vehicleService: VehicleService
   ) {
     this.frmVehicleState = new FormGroup({
       cmbState : new FormControl('Seleccione ...')
@@ -25,8 +25,8 @@ export class VehicleStateComponent implements OnInit ,OnChanges{
    }
 
    ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      if (change == "countChanges") {
+    for (const change in changes) {
+      if (change == 'countChanges') {
         this.stateSelected = this.vehicleService.getVehicleStateSelected();
         if (this.stateSelected != null) {
           this.setDataInFields(this.stateSelected);
@@ -45,18 +45,18 @@ export class VehicleStateComponent implements OnInit ,OnChanges{
     this.lsStates = await this.vehicleService.getVehicleStates();
   }
 
-  setState(event:any){
-    let vehicleState = this.lsStates.find(st => st.id == event.value);
+  setState(event: any){
+    const vehicleState = this.lsStates.find(st => st.id == event.value);
     this.vehicleService.setVehicleStateSelected(vehicleState);
   }
 
-  async setDataInFields(vehicleState:VehicleState){
+  async setDataInFields(vehicleState: VehicleState){
     this.vehicleService.getVehicleStates()
     .then( data => {
       this.lsStates = data;
       setTimeout(() => {
         this.frmVehicleState.controls.cmbState.setValue(vehicleState.id);
-      },500);
+      }, 500);
     });
   }
 

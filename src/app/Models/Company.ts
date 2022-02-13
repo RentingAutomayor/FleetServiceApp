@@ -1,7 +1,7 @@
-import { CompanyType } from "./CompanyType";
+import { CompanyType } from './CompanyType';
 
 export class Company{
     id: number;
     type: CompanyType;
-    usr_id : number;
+    usr_id: number;
 }

@@ -3,7 +3,7 @@ export interface QuotaType{
    name: string;
    description: string;
    state: boolean;
-   registrationDate:Date;
-   updateDate:Date;
-   deleteDate:Date;
+   registrationDate: Date;
+   updateDate: Date;
+   deleteDate: Date;
 }

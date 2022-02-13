@@ -59,7 +59,7 @@ export class TblMaintenanceMatrixComponent implements OnInit {
   }
 
   async setVehicleModel() {
-    let oVehicleModel = this.vehicleService.getVehicleModelSelected();
+    const oVehicleModel = this.vehicleService.getVehicleModelSelected();
 
     this.isAwaiting = true;
     this.lsMaintenanceRoutinesByModel = await this.getRoutinesByModel(oVehicleModel.id);
@@ -78,19 +78,19 @@ export class TblMaintenanceMatrixComponent implements OnInit {
     }
   }
 
-  checkItemsByRoutines(lsRoutines:MaintenanceRoutine[]){
+  checkItemsByRoutines(lsRoutines: MaintenanceRoutine[]){
     lsRoutines.forEach( routine => {
       try {
         routine.lsItems.forEach(item => {
           try{
 
-            if(item.type.id == this.TIPO_MANO_DE_OBRA){
-              let idCheck = this.getChkId(item.id,routine.frequency.id);
+            if (item.type.id == this.TIPO_MANO_DE_OBRA){
+              const idCheck = this.getChkId(item.id, routine.frequency.id);
 
-              let itemCheck: HTMLInputElement = document.querySelector(`#${idCheck}`);
+              const itemCheck: HTMLInputElement = document.querySelector(`#${idCheck}`);
               itemCheck.checked = true;
             }
-          }catch(error){
+          }catch (error){
             console.warn(error);
           }
         });
@@ -105,31 +105,31 @@ export class TblMaintenanceMatrixComponent implements OnInit {
     try{
       this.lsMaintenanceItems.forEach(item => {
         this.lsFrequency.forEach(frequency => {
-          if(item.type.id == this.TIPO_MANO_DE_OBRA){
-            let idCheck = `#${this.getChkId(item.id,frequency.id)}`;
+          if (item.type.id == this.TIPO_MANO_DE_OBRA){
+            const idCheck = `#${this.getChkId(item.id, frequency.id)}`;
 
-            let itemCheck: HTMLInputElement = document.querySelector(idCheck);
+            const itemCheck: HTMLInputElement = document.querySelector(idCheck);
             itemCheck.checked = false;
           }
         });
       });
-    }catch(error){
-      setTimeout(()=> { this.clearCheckBoxSelected() },800);
+    }catch (error){
+      setTimeout(() => { this.clearCheckBoxSelected(); }, 800);
     }
 
   }
 
-  getClass(frequency:string): string{
-    let frequencyNumber = parseInt(frequency);
-    let className = (frequencyNumber>50)?'col_frequency inactive':'col_frequency active';
+  getClass(frequency: string): string{
+    const frequencyNumber = parseInt(frequency);
+    const className = (frequencyNumber > 50) ? 'col_frequency inactive' : 'col_frequency active';
     return className;
   }
 
   showOtherRoutines(){
-    let aColum = document.getElementsByClassName('col_frequency');;
+    const aColum = document.getElementsByClassName('col_frequency');
 
-    for(let i = 0 ; i < aColum.length; i++){
-        if(aColum[i].classList.contains('inactive')){
+    for (let i = 0 ; i < aColum.length; i++){
+        if (aColum[i].classList.contains('inactive')){
           aColum[i].classList.remove('inactive');
           aColum[i].classList.add('active');
         }else{

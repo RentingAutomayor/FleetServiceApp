@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
@@ -16,9 +16,9 @@ export class LayoutComponent implements OnInit {
   }
 
   logout(){
-    if(confirm('¿Está seguro que desea cerrar sesión?')){
+    if (confirm('¿Está seguro que desea cerrar sesión?')){
       sessionStorage.removeItem('sessionUser');
-      this.router.navigate(['/Login']);      
+      this.router.navigate(['/Login']);
     }
   }
 }

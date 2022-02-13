@@ -18,8 +18,8 @@ export class Branch implements Person{
     registrationDate: Date;
     updateDate: Date;
     deleteDate: Date;
-    public isMain:boolean;
-    public Client_id:number;
-    public Dealer_id:number;
+    public isMain: boolean;
+    public Client_id: number;
+    public Dealer_id: number;
 }
 

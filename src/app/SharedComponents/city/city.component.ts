@@ -15,9 +15,9 @@ export class CityComponent implements OnInit {
   city: City;
   @Input('city')
   set setCity(city: City) {
-    this.city = city
-    if(this.city){
-      this.searchCitiesByDepartmentId(this.city.departmentId)
+    this.city = city;
+    if (this.city){
+      this.searchCitiesByDepartmentId(this.city.departmentId);
     }
     this.setDataInForm(this.city);
   }
@@ -27,9 +27,9 @@ export class CityComponent implements OnInit {
   set setBlockFieldCity(value: boolean) {
     this.blockFieldCity = value;
     if (this.blockFieldCity) {
-      this.frmCity.disable()
+      this.frmCity.disable();
     } else {
-      this.frmCity.enable()
+      this.frmCity.enable();
     }
   }
   frmCity: FormGroup;
@@ -42,7 +42,7 @@ export class CityComponent implements OnInit {
     this.frmCity = new FormGroup({
       cmbDepartment: new FormControl('Seleccione ...'),
       cmbCity: new FormControl('Seleccione ...')
-    })
+    });
 
     this.blockFieldCity = false;
   }
@@ -62,7 +62,7 @@ export class CityComponent implements OnInit {
   }
 
   searchCitiesByDepartmentId(departmentID: number) {
-    let department_id = departmentID;
+    const department_id = departmentID;
     this.cityService.getCitiesByDepartmentId(department_id)
       .then(cities => {
         this.lsCities = cities;
@@ -70,7 +70,7 @@ export class CityComponent implements OnInit {
   }
 
   setSelectedCity(obj: any) {
-    let selectedCity = this.lsCities.find(cty => cty.id == obj.value);
+    const selectedCity = this.lsCities.find(cty => cty.id == obj.value);
     this.cityService.setSelectedCity(selectedCity);
   }
 

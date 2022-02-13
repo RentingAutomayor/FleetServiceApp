@@ -17,18 +17,18 @@ export class TransactionReviewComponent implements OnInit {
 
   frmTransaction: FormGroup;
   transaction: Transaction;
-  sharedFunction:SharedFunction;
-  companyStorage:Company;
+  sharedFunction: SharedFunction;
+  companyStorage: Company;
   infoClientIsVisible: boolean;
-  infoVehicleIsVisible:boolean;
-  infoWorkOrderIsVisible:boolean;
+  infoVehicleIsVisible: boolean;
+  infoWorkOrderIsVisible: boolean;
   infoTransactionIsVisible: boolean;
   infoObservationsIsVisible: boolean;
-  @Input() trx_id:number;
+  @Input() trx_id: number;
 
 
   constructor(
-    private transactionService:TransactionService
+    private transactionService: TransactionService
   ) {
     this.infoClientIsVisible = false;
     this.infoVehicleIsVisible = false;
@@ -62,9 +62,9 @@ export class TransactionReviewComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for(let change in changes){
-      switch(change){
-        case "trx_id":
+    for (const change in changes){
+      switch (change){
+        case 'trx_id':
           this.validateCompany();
           this.clearBufferTransaction();
           this.getTransactionById(this.trx_id);
@@ -77,7 +77,7 @@ export class TransactionReviewComponent implements OnInit {
     try {
       this.companyStorage = SecurityValidators.validateUserAndCompany();
 
-      if(this.companyStorage.type == CompanyType.DEALER || this.companyStorage.type == CompanyType.MAIN_COMPANY){
+      if (this.companyStorage.type == CompanyType.DEALER || this.companyStorage.type == CompanyType.MAIN_COMPANY){
         this.infoClientIsVisible = true;
       }else{
         this.infoClientIsVisible = false;
@@ -102,9 +102,9 @@ export class TransactionReviewComponent implements OnInit {
         this.setDataInForm(this.transaction);
         this.validateRenderComponent(this.transaction.movement);
 
-      }).catch((error)=>{
+      }).catch((error) => {
         console.warn(error);
-      })
+      });
     } catch (error) {
       console.warn(error);
     }
@@ -112,7 +112,7 @@ export class TransactionReviewComponent implements OnInit {
 
   validateRenderComponent(movement: Movement){
     try {
-      switch(movement.id){
+      switch (movement.id){
         case Movements.CREACION_DE_CUPO:
         case Movements.APROBACION_DE_ORDEN_DE_TRABAJO:
         case Movements.CANCELACION_DE_ORDEN_DE_TRABAJO:
@@ -137,13 +137,13 @@ export class TransactionReviewComponent implements OnInit {
     }
   }
 
-  setDataInForm(transaction:Transaction){
-    let { client_document, client_name,
-      contract_code,vehicle_licensePlate,
-      vehicle_year, vehicle_mileage ,vehicle_brand,
-      vehicle_type, vehicle_model,dealer_name,
-      dealer_branch, maintenance_routine, trx_valueWithoutTaxes,trx_valueTaxes,
-      trx_valueWithTaxes,trx_valueWithoutDiscount,trx_valueDiscount, trx_valueWithDiscountWithoutTaxes
+  setDataInForm(transaction: Transaction){
+    const { client_document, client_name,
+      contract_code, vehicle_licensePlate,
+      vehicle_year, vehicle_mileage , vehicle_brand,
+      vehicle_type, vehicle_model, dealer_name,
+      dealer_branch, maintenance_routine, trx_valueWithoutTaxes, trx_valueTaxes,
+      trx_valueWithTaxes, trx_valueWithoutDiscount, trx_valueDiscount, trx_valueWithDiscountWithoutTaxes
 
     } = this.frmTransaction.controls;
 
@@ -151,45 +151,45 @@ export class TransactionReviewComponent implements OnInit {
     client_name.setValue(transaction.client.name.toUpperCase());
 
 
-    if(transaction.headerDetails != null){
-      contract_code.setValue((transaction.headerDetails.contract!=null)?transaction.headerDetails.contract.code:'');
+    if (transaction.headerDetails != null){
+      contract_code.setValue((transaction.headerDetails.contract != null) ? transaction.headerDetails.contract.code : '');
 
-      if(transaction.headerDetails.vehicle != null){
-        let licensePlate = (transaction.headerDetails.vehicle!=null)?transaction.headerDetails.vehicle.licensePlate:'';
+      if (transaction.headerDetails.vehicle != null){
+        const licensePlate = (transaction.headerDetails.vehicle != null) ? transaction.headerDetails.vehicle.licensePlate : '';
         vehicle_licensePlate.setValue(licensePlate);
-        let year = (transaction.headerDetails.vehicle!=null)?transaction.headerDetails.vehicle.year:'';
+        const year = (transaction.headerDetails.vehicle != null) ? transaction.headerDetails.vehicle.year : '';
         vehicle_year.setValue(year);
-        let mileage = (transaction.headerDetails.vehicle.mileage!=null)?transaction.headerDetails.vehicle.mileage:0;
+        const mileage = (transaction.headerDetails.vehicle.mileage != null) ? transaction.headerDetails.vehicle.mileage : 0;
         vehicle_mileage.setValue(this.sharedFunction.formatNumberToString(mileage));
 
-        if(transaction.headerDetails.vehicle.vehicleModel!=null){
-          let brand = (transaction.headerDetails.vehicle.vehicleModel.brand.name!=null)?transaction.headerDetails.vehicle.vehicleModel.brand.name:'';
+        if (transaction.headerDetails.vehicle.vehicleModel != null){
+          const brand = (transaction.headerDetails.vehicle.vehicleModel.brand.name != null) ? transaction.headerDetails.vehicle.vehicleModel.brand.name : '';
           vehicle_brand.setValue(brand.toUpperCase());
-          let type = (transaction.headerDetails.vehicle.vehicleModel.type.name != null)? transaction.headerDetails.vehicle.vehicleModel.type.name:'';
+          const type = (transaction.headerDetails.vehicle.vehicleModel.type.name != null) ? transaction.headerDetails.vehicle.vehicleModel.type.name : '';
           vehicle_type.setValue(type.toUpperCase());
-          let model = (transaction.headerDetails.vehicle.vehicleModel.shortName != null) ? transaction.headerDetails.vehicle.vehicleModel.shortName: '';
+          const model = (transaction.headerDetails.vehicle.vehicleModel.shortName != null) ? transaction.headerDetails.vehicle.vehicleModel.shortName : '';
           vehicle_model.setValue(model.toUpperCase());
         }
       }
 
-      if(transaction.headerDetails.dealer.name != null){
+      if (transaction.headerDetails.dealer.name != null){
         dealer_name.setValue(transaction.headerDetails.dealer.name.toUpperCase());
       }
 
-      if(transaction.headerDetails.branch.name != null){
+      if (transaction.headerDetails.branch.name != null){
         dealer_branch.setValue(transaction.headerDetails.branch.name.toUpperCase());
       }
 
-      if(transaction.headerDetails.maintenanceRoutine.name != null){
+      if (transaction.headerDetails.maintenanceRoutine.name != null){
         maintenance_routine.setValue(transaction.headerDetails.maintenanceRoutine.name.toUpperCase());
       }
     }
 
-    trx_valueWithoutDiscount.setValue(this.sharedFunction.formatNumberToString((transaction.valueWithoutDiscount!=null)?transaction.valueWithoutDiscount:0));
-    trx_valueDiscount.setValue(this.sharedFunction.formatNumberToString((transaction.discountValue!=null)?transaction.discountValue:0));
-    trx_valueWithDiscountWithoutTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.valueWithDiscountWithoutTaxes!=null)?transaction.valueWithDiscountWithoutTaxes:0));
-    trx_valueTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.taxesValue!=null)?transaction.taxesValue:0));
-    trx_valueWithTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.value!=null)?transaction.value:0));
+    trx_valueWithoutDiscount.setValue(this.sharedFunction.formatNumberToString((transaction.valueWithoutDiscount != null) ? transaction.valueWithoutDiscount : 0));
+    trx_valueDiscount.setValue(this.sharedFunction.formatNumberToString((transaction.discountValue != null) ? transaction.discountValue : 0));
+    trx_valueWithDiscountWithoutTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.valueWithDiscountWithoutTaxes != null) ? transaction.valueWithDiscountWithoutTaxes : 0));
+    trx_valueTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.taxesValue != null) ? transaction.taxesValue : 0));
+    trx_valueWithTaxes.setValue(this.sharedFunction.formatNumberToString((transaction.value != null) ? transaction.value : 0));
   }
 
   clearBufferTransaction(){

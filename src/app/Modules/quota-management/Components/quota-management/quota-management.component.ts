@@ -11,7 +11,7 @@ import { QuotaService } from '../../Services/Quota/quota.service';
 import { MovementService } from '../../../movement/Services/Movement/movement.service';
 import { FinancialInformation } from 'src/app/Models/FinancialInformation';
 import { SharedFunction } from 'src/app/Models/SharedFunctions';
-import { SecurityValidators } from 'src/app/Models/SecurityValidators'
+import { SecurityValidators } from 'src/app/Models/SecurityValidators';
 
 
 @Component({
@@ -39,7 +39,7 @@ export class QuotaManagementComponent implements OnInit {
 
   sharedFunction: SharedFunction;
   transactionSelected: Transaction;
-  trx_id:number;
+  trx_id: number;
 
   constructor(
     private quotaService: QuotaService,
@@ -104,10 +104,10 @@ export class QuotaManagementComponent implements OnInit {
   async getLsClientsWithQuota() {
     try {
       this.lsClientsWithQuota = await this.quotaService.getClientsWithQuota();
-      //console.log(this.lsClientsWithQuota);
+      // console.log(this.lsClientsWithQuota);
       setTimeout(() => {
         this.formatQuantities(this.lsClientsWithQuota);
-      }, 500)
+      }, 500);
 
     } catch (error) {
       console.warn(error);
@@ -117,7 +117,7 @@ export class QuotaManagementComponent implements OnInit {
   async getTodayTransactions() {
     try {
       this.lsTodayTransactions = await this.trxService.getTodayTransactions();
-      //console.log(this.lsTodayTransactions);
+      // console.log(this.lsTodayTransactions);
 
     } catch (error) {
       console.warn(error);
@@ -132,7 +132,7 @@ export class QuotaManagementComponent implements OnInit {
   }
 
   closePopUp(idPopUp) {
-    let popUp = document.getElementById(idPopUp);
+    const popUp = document.getElementById(idPopUp);
     this.clearFormQuotaApproved();
     this.clearFormFreeUpQuota();
     this.clearFormAddQuota();
@@ -141,7 +141,7 @@ export class QuotaManagementComponent implements OnInit {
   }
 
   openPopUp(idPopUp) {
-    let popUp = document.getElementById(idPopUp);
+    const popUp = document.getElementById(idPopUp);
     popUp.style.display = 'block';
   }
 
@@ -149,39 +149,39 @@ export class QuotaManagementComponent implements OnInit {
     this.clientSelected = pClient;
 
     if (idPopUp == 'container__QuotaManager') {
-      let { txtApprovedQuotaClient } = this.frmApprovedQuota.controls;
+      const { txtApprovedQuotaClient } = this.frmApprovedQuota.controls;
       txtApprovedQuotaClient.setValue(pClient.name);
     }
 
     if (idPopUp == 'container__freeUpQuota') {
-      let { txtFreeUpQuotaClient } = this.frmFreeUpQuota.controls;
+      const { txtFreeUpQuotaClient } = this.frmFreeUpQuota.controls;
       txtFreeUpQuotaClient.setValue(pClient.name);
     }
 
     if (idPopUp == 'container__addQuota') {
-      let { txtAddQuotaClient } = this.frmAddQuota.controls;
+      const { txtAddQuotaClient } = this.frmAddQuota.controls;
       txtAddQuotaClient.setValue(pClient.name);
     }
 
     if (idPopUp == 'container__cancelQuota') {
-      let { txtCancelQuotaClient } = this.frmCancelQuota.controls;
+      const { txtCancelQuotaClient } = this.frmCancelQuota.controls;
       txtCancelQuotaClient.setValue(pClient.name);
     }
   }
 
   saveApprovedQuota() {
-    let { txtApprovedQuota, txtApprovedQuotaObservation } = this.frmApprovedQuota.controls;
+    const { txtApprovedQuota, txtApprovedQuotaObservation } = this.frmApprovedQuota.controls;
     let trxApprovedQuota = new Transaction();
 
-    let oClient = this.clientSelected;
+    const oClient = this.clientSelected;
     let value = txtApprovedQuota.value;
-    let observation = txtApprovedQuotaObservation.value;
-    let movement = this.lsMovements.find(mv => mv.id == this.CREACION_DE_CUPO);
-    let lsObs: TransactionObservation[] = [];
+    const observation = txtApprovedQuotaObservation.value;
+    const movement = this.lsMovements.find(mv => mv.id == this.CREACION_DE_CUPO);
+    const lsObs: TransactionObservation[] = [];
     value = value.toString().replace(/\,/g, '');
 
     if (observation != '') {
-      let trxObservation = new TransactionObservation();
+      const trxObservation = new TransactionObservation();
       trxObservation.description = observation;
       lsObs.push(trxObservation);
     }
@@ -203,17 +203,17 @@ export class QuotaManagementComponent implements OnInit {
   }
 
   setDataTransaction(pClient: Client, pMovement: Movement, pValue: number,
-    pState: TransactionState = null, pHeaderDetails: TransactionDetail = null,
-    pListObservations: TransactionObservation[] = null, usu_id: number = null): Transaction {
+                     pState: TransactionState = null, pHeaderDetails: TransactionDetail = null,
+                     pListObservations: TransactionObservation[] = null, usu_id: number = null): Transaction {
 
-    let trx = new Transaction();
+    const trx = new Transaction();
     trx.client = pClient;
     trx.movement = pMovement;
     trx.value = pValue;
     trx.transactionState = pState;
     trx.headerDetails = pHeaderDetails;
     trx.lsObservations = pListObservations;
-    trx.usu_id = SecurityValidators.validateUserLogged();;
+    trx.usu_id = SecurityValidators.validateUserLogged();
     return trx;
   }
 
@@ -221,7 +221,7 @@ export class QuotaManagementComponent implements OnInit {
     return new Promise(async (resolve, reject) => {
       try {
         this.isAwaiting = true;
-        let rta = await this.trxService.processTransaction(trx);
+        const rta = await this.trxService.processTransaction(trx);
         this.isAwaiting = false;
         if (rta.response) {
           alert(rta.message);
@@ -236,76 +236,76 @@ export class QuotaManagementComponent implements OnInit {
   }
 
   clearFormQuotaApproved() {
-    let { txtApprovedQuota, txtApprovedQuotaObservation } = this.frmApprovedQuota.controls;
+    const { txtApprovedQuota, txtApprovedQuotaObservation } = this.frmApprovedQuota.controls;
     txtApprovedQuota.setValue('');
     txtApprovedQuotaObservation.setValue('');
   }
 
   clearFormFreeUpQuota() {
-    let { txtFreeUpQuota, txtFreeUpQuotaObservation } = this.frmFreeUpQuota.controls;
+    const { txtFreeUpQuota, txtFreeUpQuotaObservation } = this.frmFreeUpQuota.controls;
     txtFreeUpQuota.setValue('');
     txtFreeUpQuotaObservation.setValue('');
   }
 
   clearFormAddQuota() {
-    let { txtAddQuota, txtAddQuotaObservation } = this.frmAddQuota.controls;
+    const { txtAddQuota, txtAddQuotaObservation } = this.frmAddQuota.controls;
     txtAddQuota.setValue('');
     txtAddQuotaObservation.setValue('');
   }
   clearFormCancelQuota() {
-    let { txtCancelQuotaObservation } = this.frmCancelQuota.controls;
+    const { txtCancelQuotaObservation } = this.frmCancelQuota.controls;
     txtCancelQuotaObservation.setValue('');
   }
 
   showElements(container_description: string) {
     this.hideElements();
-    let idIndicator = `indicator__${container_description}`;
-    let idContainer = `container__${container_description}`;
+    const idIndicator = `indicator__${container_description}`;
+    const idContainer = `container__${container_description}`;
 
-    let indicator = document.getElementById(idIndicator);
-    let container = document.getElementById(idContainer);
+    const indicator = document.getElementById(idIndicator);
+    const container = document.getElementById(idContainer);
 
-    indicator.setAttribute("style", "display:block");
-    container.setAttribute("style", "display:block");
+    indicator.setAttribute('style', 'display:block');
+    container.setAttribute('style', 'display:block');
   }
 
   hideElements() {
-    let aElementsToHide = document.getElementsByClassName('element-to-hide');
+    const aElementsToHide = document.getElementsByClassName('element-to-hide');
     for (let i = 0; i < aElementsToHide.length; i++) {
-      aElementsToHide[i].setAttribute("style", "display:none");
+      aElementsToHide[i].setAttribute('style', 'display:none');
     }
   }
 
   getStringHour(trxDate: Date): string {
-    let strHour = trxDate.toLocaleString();
+    const strHour = trxDate.toLocaleString();
     return strHour.substr(11, 8);
   }
 
   formatQuantities(lsFinancialInformationByClient: FinancialInformation[]) {
 
-    for (let finInfo of lsFinancialInformationByClient) {
+    for (const finInfo of lsFinancialInformationByClient) {
       try {
-        let idApprovedQuota = this.getElementId('approvedQuota', finInfo.client.id);
-        let elementApprovedQuota = document.getElementById(idApprovedQuota);
-        let approvedQuotaFormated = this.formatNumberToString(finInfo.approvedQuota);
+        const idApprovedQuota = this.getElementId('approvedQuota', finInfo.client.id);
+        const elementApprovedQuota = document.getElementById(idApprovedQuota);
+        const approvedQuotaFormated = this.formatNumberToString(finInfo.approvedQuota);
         elementApprovedQuota.innerText = approvedQuotaFormated;
 
 
-        let idCurrentQuota = this.getElementId('currentQuota', finInfo.client.id);
-        let elementCurrentQuota = document.getElementById(idCurrentQuota);
-        let CurrentQuotaFormated = this.formatNumberToString(finInfo.currentQuota);
+        const idCurrentQuota = this.getElementId('currentQuota', finInfo.client.id);
+        const elementCurrentQuota = document.getElementById(idCurrentQuota);
+        const CurrentQuotaFormated = this.formatNumberToString(finInfo.currentQuota);
         elementCurrentQuota.innerText = CurrentQuotaFormated;
 
 
-        let idConsumedQuota = this.getElementId('consumedQuota', finInfo.client.id);
-        let elementConsumedQuota = document.getElementById(idConsumedQuota);
-        let ConsumedQuotaFormated = this.formatNumberToString(finInfo.consumedQuota);
+        const idConsumedQuota = this.getElementId('consumedQuota', finInfo.client.id);
+        const elementConsumedQuota = document.getElementById(idConsumedQuota);
+        const ConsumedQuotaFormated = this.formatNumberToString(finInfo.consumedQuota);
         elementConsumedQuota.innerText = ConsumedQuotaFormated;
 
 
-        let idInTransitQuota = this.getElementId('inTransitQuota', finInfo.client.id);
-        let elementInTransitQuota = document.getElementById(idInTransitQuota);
-        let InTransitQuotaFormated = this.formatNumberToString(finInfo.inTransitQuota);
+        const idInTransitQuota = this.getElementId('inTransitQuota', finInfo.client.id);
+        const elementInTransitQuota = document.getElementById(idInTransitQuota);
+        const InTransitQuotaFormated = this.formatNumberToString(finInfo.inTransitQuota);
         elementInTransitQuota.innerText = InTransitQuotaFormated;
 
       } catch (ex) {
@@ -318,9 +318,9 @@ export class QuotaManagementComponent implements OnInit {
 
 
   formatNumber(event: any) {
-    let { txtApprovedQuota } = this.frmApprovedQuota.controls;
+    const { txtApprovedQuota } = this.frmApprovedQuota.controls;
 
-    let numberToTransform = event.target.value.toString().replace(/\,/g, '');
+    const numberToTransform = event.target.value.toString().replace(/\,/g, '');
 
 
     event.target.value = this.formatNumberToString(numberToTransform);
@@ -335,21 +335,21 @@ export class QuotaManagementComponent implements OnInit {
   }
 
   saveFreeUpQuota() {
-    let { txtFreeUpQuota, txtFreeUpQuotaObservation } = this.frmFreeUpQuota.controls;
+    const { txtFreeUpQuota, txtFreeUpQuotaObservation } = this.frmFreeUpQuota.controls;
     let trxFreeUpQuota = new Transaction();
 
-    let oClient = this.clientSelected;
+    const oClient = this.clientSelected;
     let value = txtFreeUpQuota.value;
     value = value.toString().replace(/\,/g, '');
 
-    let observation = txtFreeUpQuotaObservation.value;
-    let movement = this.lsMovements.find(mv => mv.id == this.LIBERACION_DE_CUPO);
-    let lsObs: TransactionObservation[] = [];
+    const observation = txtFreeUpQuotaObservation.value;
+    const movement = this.lsMovements.find(mv => mv.id == this.LIBERACION_DE_CUPO);
+    const lsObs: TransactionObservation[] = [];
 
     this.validatePayment(oClient, value).then(response => {
       if (response) {
         if (observation != '') {
-          let trxObservation = new TransactionObservation();
+          const trxObservation = new TransactionObservation();
           trxObservation.description = observation;
           lsObs.push(trxObservation);
         }
@@ -371,18 +371,18 @@ export class QuotaManagementComponent implements OnInit {
   }
 
   saveAddQuota() {
-    let { txtAddQuota, txtAddQuotaObservation } = this.frmAddQuota.controls;
+    const { txtAddQuota, txtAddQuotaObservation } = this.frmAddQuota.controls;
     let trxAddQuota = new Transaction();
 
-    let oClient = this.clientSelected;
+    const oClient = this.clientSelected;
     let value = txtAddQuota.value;
-    let observation = txtAddQuotaObservation.value;
-    let movement = this.lsMovements.find(mv => mv.id == this.ADICION_DE_CUPO);
-    let lsObs: TransactionObservation[] = [];
+    const observation = txtAddQuotaObservation.value;
+    const movement = this.lsMovements.find(mv => mv.id == this.ADICION_DE_CUPO);
+    const lsObs: TransactionObservation[] = [];
     value = value.toString().replace(/\,/g, '');
 
     if (observation != '') {
-      let trxObservation = new TransactionObservation();
+      const trxObservation = new TransactionObservation();
       trxObservation.description = observation;
       lsObs.push(trxObservation);
     }
@@ -406,7 +406,7 @@ export class QuotaManagementComponent implements OnInit {
     try {
       return new Promise(async (resolve, reject) => {
         this.isAwaiting = true;
-        let rta = await this.quotaService.validatePaymentVsConsumedQuota(pClient.id, paymentValue);
+        const rta = await this.quotaService.validatePaymentVsConsumedQuota(pClient.id, paymentValue);
         if (!rta.response) {
           alert(rta.message);
           resolve(false);
@@ -425,18 +425,18 @@ export class QuotaManagementComponent implements OnInit {
   }
 
   cancelQuota() {
-    let oClient = this.clientSelected;
+    const oClient = this.clientSelected;
     if (confirm(`¿Está seguro de anular el cupo para el cliente ${oClient.name}?`)) {
-      let value = 0;
-      let { txtCancelQuotaObservation } = this.frmCancelQuota.controls;
+      const value = 0;
+      const { txtCancelQuotaObservation } = this.frmCancelQuota.controls;
       let trxCancelQuota = new Transaction();
 
-      let observation = txtCancelQuotaObservation.value;
-      let movement = this.lsMovements.find(mv => mv.id == this.CANCELACION_DE_CUPO);
-      let lsObs: TransactionObservation[] = [];
+      const observation = txtCancelQuotaObservation.value;
+      const movement = this.lsMovements.find(mv => mv.id == this.CANCELACION_DE_CUPO);
+      const lsObs: TransactionObservation[] = [];
 
       if (observation != '') {
-        let trxObservation = new TransactionObservation();
+        const trxObservation = new TransactionObservation();
         trxObservation.description = observation;
         lsObs.push(trxObservation);
       }

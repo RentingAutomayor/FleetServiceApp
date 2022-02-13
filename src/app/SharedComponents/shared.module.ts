@@ -6,7 +6,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { BranchComponent } from './branch/branch.component';
 import { CheckListVehicleModelComponent } from './check-list-vehicle-model/check-list-vehicle-model.component';
 import { CheckListVehicleTypeComponent } from './check-list-vehicle-type/check-list-vehicle-type.component';
-import { CityComponent } from './city/city.component'
+import { CityComponent } from './city/city.component';
 import { ContactComponent } from './contact/contact.component';
 import { ImgLoadingComponent } from './img-loading/img-loading.component';
 import { InputSearchClientComponent } from './input-search-client/input-search-client.component';
@@ -45,7 +45,7 @@ import {MatButtonModule} from '@angular/material/button';
     NgxPaginationModule,
     MatButtonModule
   ],
-  exports:[
+  exports: [
     BranchComponent,
     CheckListVehicleModelComponent,
     CheckListVehicleTypeComponent,

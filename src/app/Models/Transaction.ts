@@ -9,19 +9,19 @@ import { User } from './User';
 export class Transaction{
     public id: number;
     public consecutive: number;
-    public code:string;
+    public code: string;
     public movement: Movement;
     public valueWithoutDiscount: number;
     public discountValue: number;
     public valueWithDiscountWithoutTaxes: number;
 	public taxesValue: number;
-    public value:number;
+    public value: number;
     public client: Client;
     public transactionState: TransactionState;
     public headerDetails: TransactionDetail;
     public lsItems: MaintenanceItem[];
-    public lsObservations: TransactionObservation[];    
-    //TODO change this for model of user
+    public lsObservations: TransactionObservation[];
+    // TODO change this for model of user
     public usu_id: number;
     public user: User;
     public state: boolean;

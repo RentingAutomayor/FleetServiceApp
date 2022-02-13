@@ -25,12 +25,12 @@ export class MovementComponent implements OnInit, OnChanges {
     this.frmMovement = new FormGroup({
       txtName: new FormControl(''),
       txtDescription: new FormControl('')
-    })
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      if (change == "countChanges") {
+    for (const change in changes) {
+      if (change == 'countChanges') {
         this.validateMovementToUpdate();
       }
     }
@@ -61,8 +61,8 @@ export class MovementComponent implements OnInit, OnChanges {
 
   getDataForm(): Movement {
 
-    let { txtName, txtDescription } = this.frmMovement.controls;
-    let oMovement = new Movement();
+    const { txtName, txtDescription } = this.frmMovement.controls;
+    const oMovement = new Movement();
 
     if (this.movementToUpdate != null && this.movementToUpdate != undefined) {
       oMovement.id = this.movementToUpdate.id;
@@ -78,7 +78,7 @@ export class MovementComponent implements OnInit, OnChanges {
   }
 
   setDataInForm(pMovement: Movement) {
-    let { txtName, txtDescription } = this.frmMovement.controls;
+    const { txtName, txtDescription } = this.frmMovement.controls;
     txtName.setValue(pMovement.name.toLocaleLowerCase());
     txtDescription.setValue(pMovement.description.toLocaleLowerCase());
     this.movementService.setMovementTypeSelected(pMovement.type);
@@ -86,7 +86,7 @@ export class MovementComponent implements OnInit, OnChanges {
   }
 
   clearDataInForm() {
-    let { txtName, txtDescription } = this.frmMovement.controls;
+    const { txtName, txtDescription } = this.frmMovement.controls;
     txtName.setValue('');
     txtDescription.setValue('');
     this.movementService.setMovementTypeSelected(null);
@@ -95,7 +95,7 @@ export class MovementComponent implements OnInit, OnChanges {
 
   async saveMovement() {
     try {
-      let oMovement = this.getDataForm();
+      const oMovement = this.getDataForm();
       let rta = new ResponseApi();
 
 
@@ -119,30 +119,30 @@ export class MovementComponent implements OnInit, OnChanges {
   }
 
   openTab(oButton: any, container: string) {
-    let tabLinks = document.getElementsByClassName("tab_link");
+    const tabLinks = document.getElementsByClassName('tab_link');
 
     for (let i = 0; i < tabLinks.length; i++) {
-      tabLinks[i].classList.remove("active");
+      tabLinks[i].classList.remove('active');
     }
-    oButton.target.className += " active";
-    let containerTabs = document.getElementsByClassName("tab_content");
+    oButton.target.className += ' active';
+    const containerTabs = document.getElementsByClassName('tab_content');
 
     for (let i = 0; i < containerTabs.length; i++) {
-      containerTabs[i].setAttribute("style", "display:none");
+      containerTabs[i].setAttribute('style', 'display:none');
     }
 
-    let containerToShow_id = `container__${container}`;
-    let containerToShow = document.getElementById(containerToShow_id);
+    const containerToShow_id = `container__${container}`;
+    const containerToShow = document.getElementById(containerToShow_id);
 
 
 
-    containerToShow.setAttribute("style", "display:blick");
+    containerToShow.setAttribute('style', 'display:blick');
   }
 
   hideContainerTabs() {
-    let containers = document.getElementsByClassName("tab_inactive");
+    const containers = document.getElementsByClassName('tab_inactive');
     for (let i = 0; i < containers.length; i++) {
-      containers[i].setAttribute("style", "display:none");
+      containers[i].setAttribute('style', 'display:none');
     }
   }
 

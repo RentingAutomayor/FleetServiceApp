@@ -9,11 +9,11 @@ import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.
 @Component({
   selector: 'app-input-search-vehicle',
   templateUrl: './input-search-vehicle.component.html',
-  styleUrls: ['./input-search-vehicle.component.scss','../../../assets/styles/searchList.scss']
+  styleUrls: ['./input-search-vehicle.component.scss', '../../../assets/styles/searchList.scss']
 })
-export class InputSearchVehicleComponent implements OnInit,OnChanges {
+export class InputSearchVehicleComponent implements OnInit, OnChanges {
   frmSearchVehicle: FormGroup;
-  listIsvisible:boolean;
+  listIsvisible: boolean;
   description = new Subject<string>();
   lsVehicles: Vehicle[];
   lsVehicleSuggestion$: Observable<Vehicle[]>;
@@ -21,17 +21,17 @@ export class InputSearchVehicleComponent implements OnInit,OnChanges {
   @Output() vehicleWasSetted = new EventEmitter<boolean>();
 
   constructor(
-    private vehicleService:VehicleService,
-   
-  ) { 
+    private vehicleService: VehicleService,
+
+  ) {
     this.frmSearchVehicle = new FormGroup({
       txtLicensePlate : new FormControl('')
-    })
+    });
   }
   ngOnChanges(changes: SimpleChanges): void {
     for (const change in changes) {
-      if(change == "vehicleSelected"){
-        if(this.vehicleSelected == null){
+      if (change == 'vehicleSelected'){
+        if (this.vehicleSelected == null){
           this.frmSearchVehicle.reset();
         }
       }
@@ -39,7 +39,7 @@ export class InputSearchVehicleComponent implements OnInit,OnChanges {
   }
 
   ngOnInit(): void {
-    this.initComponents();    
+    this.initComponents();
   }
 
   async initComponents(){
@@ -51,21 +51,21 @@ export class InputSearchVehicleComponent implements OnInit,OnChanges {
     this.lsVehicleSuggestion$ = this.description.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((desc:string) => this.vehicleService.getVehiclesByLicensePlate(desc))
-    )
+      switchMap((desc: string) => this.vehicleService.getVehiclesByLicensePlate(desc))
+    );
   }
 
-  setVehicle(oVehicle:Vehicle){
-    let {txtLicensePlate} = this.frmSearchVehicle.controls;
-    txtLicensePlate.setValue(oVehicle.licensePlate);    
+  setVehicle(oVehicle: Vehicle){
+    const {txtLicensePlate} = this.frmSearchVehicle.controls;
+    txtLicensePlate.setValue(oVehicle.licensePlate);
     this.listIsvisible = false;
     this.vehicleService.setVehicle(oVehicle);
     this.vehicleWasSetted.emit(true);
-  }  
+  }
 
-  
 
-  searchBydescription(description:string){
+
+  searchBydescription(description: string){
     this.listIsvisible = true;
     this.description.next(description);
   }

@@ -14,13 +14,13 @@ export class ContractStateComponent implements OnInit, OnChanges {
   frmContractState: FormGroup;
   lsStates: ContractState[];
   contractStateSelected: ContractState;
-  @Input() countChanges:number;
+  @Input() countChanges: number;
   @Output() contractStateWasSelected = new EventEmitter<ContractState>();
-  @Input() cmbStateIsDisable:boolean;
-  
+  @Input() cmbStateIsDisable: boolean;
+
   constructor(
     private contractService: ContractService
-  ) { 
+  ) {
     this.frmContractState = new FormGroup({
       cmbStates: new FormControl('Seleccione ...')
     });
@@ -29,22 +29,22 @@ export class ContractStateComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges){
-    for (let change in changes) {
-      if (change == "countChanges") {       
+    for (const change in changes) {
+      if (change == 'countChanges') {
         this.contractStateSelected = this.contractService.getContractStateSelected();
-        if(this.contractStateSelected != null && this.contractStateSelected != undefined){
+        if (this.contractStateSelected != null && this.contractStateSelected != undefined){
           this.setDataInForm(this.contractStateSelected);
           this.contractStateWasSelected.emit(this.contractStateSelected);
         }
       }
     }
 
-    if(this.cmbStateIsDisable){
+    if (this.cmbStateIsDisable){
       this.frmContractState.disable();
     }else{
       this.frmContractState.enable();
     }
-    
+
   }
 
   ngOnInit(): void {
@@ -55,21 +55,21 @@ export class ContractStateComponent implements OnInit, OnChanges {
     try{
       this.countChanges = 0;
       this.lsStates = await this.contractService.getContractStates();
-    }catch(error){
+    }catch (error){
       console.error(error);
     }
   }
 
-  setContractState(event:any){    
-    let valueOption = event.value;
-    let oStateTemp = this.lsStates.find(st => st.id == valueOption);    
+  setContractState(event: any){
+    const valueOption = event.value;
+    const oStateTemp = this.lsStates.find(st => st.id == valueOption);
     this.contractStateSelected = oStateTemp;
     this.contractService.setContractStateSelected(oStateTemp);
     this.contractStateWasSelected.emit(this.contractStateSelected);
   }
 
   setDataInForm(state: ContractState){
-    let { cmbStates } = this.frmContractState.controls;
+    const { cmbStates } = this.frmContractState.controls;
     this.contractStateSelected = state;
     cmbStates.setValue(state.id);
   }
@@ -79,6 +79,6 @@ export class ContractStateComponent implements OnInit, OnChanges {
   }
 
 
-  
+
 
 }

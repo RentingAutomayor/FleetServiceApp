@@ -13,11 +13,11 @@ import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/mai
 export class TblMaintenanceRoutinesComponent implements OnInit {
   lsMaintenanceRoutines: MaintenanceRoutine[];
   isAwaiting: boolean;
-  p: number = 1;
+  p = 1;
   containerTable: HTMLDivElement;
   containerFromRoutine: HTMLDivElement;
   isToUpdate: boolean;
-  oCountChanges:number;
+  oCountChanges: number;
   frequency_id: number;
   vehicleModel_id: number;
   disableControls: boolean;
@@ -37,8 +37,8 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     this.oCountChanges = 0;
     this.isAwaiting = false;
     this.isToUpdate = false;
-    this.containerTable = document.querySelector("#container__table");
-    this.containerFromRoutine = document.querySelector("#container__maintenanceRoutine");
+    this.containerTable = document.querySelector('#container__table');
+    this.containerFromRoutine = document.querySelector('#container__maintenanceRoutine');
     this.showTableRoutines();
   }
 
@@ -63,13 +63,13 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   }
 
   hideTable() {
-    this.containerTable.style.display = "none";
-    this.containerFromRoutine.style.display = "block";
+    this.containerTable.style.display = 'none';
+    this.containerFromRoutine.style.display = 'block';
   }
 
   showTable() {
-    this.containerTable.style.display = "block";
-    this.containerFromRoutine.style.display = "none";
+    this.containerTable.style.display = 'block';
+    this.containerFromRoutine.style.display = 'none';
   }
 
 
@@ -81,7 +81,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   async saveDataInDB() {
     try {
       let rta = new ResponseApi();
-      let oMaintenanceRoutine = this.maintenanceRoutineService.getRoutine();
+      const oMaintenanceRoutine = this.maintenanceRoutineService.getRoutine();
       this.isAwaiting = true;
       if (this.isToUpdate) {
         rta = await this.maintenanceRoutineService.update(oMaintenanceRoutine);
@@ -102,27 +102,27 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   }
 
   cancelRoutine() {
-    if (confirm("¿Está seguro de querer cerrar esta ventana?, al cerrar esta ventana se perdera toda la infromación consignada acá")) {
+    if (confirm('¿Está seguro de querer cerrar esta ventana?, al cerrar esta ventana se perdera toda la infromación consignada acá')) {
       this.showTable();
     }
   }
 
-  async seeDetailsRoutine(pRoutine:MaintenanceRoutine){
+  async seeDetailsRoutine(pRoutine: MaintenanceRoutine){
     this.disableControls = true;
     this.isToUpdate = false;
     this.isAwaiting = true;
-    let routineToUpdate = await this.maintenanceRoutineService.getMaintenanceRoutineByID(pRoutine.id);
+    const routineToUpdate = await this.maintenanceRoutineService.getMaintenanceRoutineByID(pRoutine.id);
     this.isAwaiting = false;
     this.maintenanceRoutineService.setRoutine(routineToUpdate);
     this.oCountChanges += 1;
     this.hideTable();
   }
 
-  async updateRoutine(pRoutine:MaintenanceRoutine){
+  async updateRoutine(pRoutine: MaintenanceRoutine){
     this.disableControls = false;
     this.isToUpdate = true;
     this.isAwaiting = true;
-    let routineToUpdate = await this.maintenanceRoutineService.getMaintenanceRoutineByID(pRoutine.id);
+    const routineToUpdate = await this.maintenanceRoutineService.getMaintenanceRoutineByID(pRoutine.id);
 
     this.isAwaiting = false;
     this.maintenanceRoutineService.setRoutine(routineToUpdate);
@@ -132,9 +132,9 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
 
   async deleteRoutine(pRoutine: MaintenanceRoutine) {
     try {
-      if (confirm("¿Está seguro que desea eliminar esta rutina de mantenimiento?")) {
+      if (confirm('¿Está seguro que desea eliminar esta rutina de mantenimiento?')) {
         this.isAwaiting = true;
-        let rta = await this.maintenanceRoutineService.delete(pRoutine);
+        const rta = await this.maintenanceRoutineService.delete(pRoutine);
         this.isAwaiting = false;
         if (rta.response) {
           alert(rta.message);
@@ -147,23 +147,23 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     }
   }
 
-  async filterByVehicleModel(vehicleModel:VehicleModel){
+  async filterByVehicleModel(vehicleModel: VehicleModel){
     try{
       this.isAwaiting = true;
 
-      if(vehicleModel != null){
+      if (vehicleModel != null){
         this.vehicleModel_id = vehicleModel.id;
       }else{
         this.vehicleModel_id = 0;
       }
 
       this.maintenanceRoutineService.getMaintenanceRoutines( this.vehicleModel_id )
-      .then( lsMaintenanceRoutines =>{
-        this.lsMaintenanceRoutines = lsMaintenanceRoutines
+      .then( lsMaintenanceRoutines => {
+        this.lsMaintenanceRoutines = lsMaintenanceRoutines;
         this.isAwaiting = false;
-      })
+      });
 
-    }catch(error){
+    }catch (error){
       console.warn(error);
     }
 
@@ -173,17 +173,17 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     try {
       this.isAwaiting = true;
 
-      if(frequency != null){
+      if (frequency != null){
         this.frequency_id = frequency.id;
       }else{
         this.frequency_id = 0;
       }
 
       this.maintenanceRoutineService.getMaintenanceRoutines(0 , this.frequency_id)
-      .then( lsMaintenanceRoutines =>{
-        this.lsMaintenanceRoutines = lsMaintenanceRoutines
+      .then( lsMaintenanceRoutines => {
+        this.lsMaintenanceRoutines = lsMaintenanceRoutines;
         this.isAwaiting = false;
-      })
+      });
     } catch (error) {
       console.warn(error);
     }

@@ -16,17 +16,17 @@ import { ActionType } from 'src/app/Models/ActionType';
   styleUrls: ['./tbl-contract.component.scss']
 })
 export class TblContractComponent implements OnInit {
-  isAwaiting:boolean;
-  p:number = 1;
+  isAwaiting: boolean;
+  p = 1;
   lsContracts: Contract[];
-  isToUpdate:boolean;
-  companyStorage:Company;
+  isToUpdate: boolean;
+  companyStorage: Company;
   hideButtonAdd: boolean;
-  enableButtonsEditAndDelete:boolean;
-  action:ActionType;
+  enableButtonsEditAndDelete: boolean;
+  action: ActionType;
 
   constructor(
-    private contractService:ContractService,
+    private contractService: ContractService,
     private router: Router
   ) {
     this.hideButtonAdd  = false;
@@ -56,17 +56,17 @@ export class TblContractComponent implements OnInit {
     try{
       this.isAwaiting = true;
 
-      switch(this.companyStorage.type){
+      switch (this.companyStorage.type){
         case CompanyType.DEALER:
           this.lsContracts = await this.contractService.getContracts(this.companyStorage.id);
           this.hideButtonAdd = true;
           this.enableButtonsEditAndDelete = false;
-        break;
+          break;
         case CompanyType.CLIENT:
-          this.lsContracts = await this.contractService.getContracts(0,this.companyStorage.id);
+          this.lsContracts = await this.contractService.getContracts(0, this.companyStorage.id);
           this.hideButtonAdd = true;
           this.enableButtonsEditAndDelete = false;
-        break;
+          break;
         default:
           this.lsContracts = await this.contractService.getContracts();
           this.hideButtonAdd = false;
@@ -75,18 +75,18 @@ export class TblContractComponent implements OnInit {
       }
 
       this.isAwaiting = false;
-    }catch(error){
+    }catch (error){
       console.error(error);
     }
   }
 
-  moveContent(event:any){
-    let containerContent:HTMLDivElement  = document.querySelector("#container__content");
+  moveContent(event: any){
+    const containerContent: HTMLDivElement  = document.querySelector('#container__content');
 
-    if(event){
-      containerContent.style.marginLeft = "250px";
+    if (event){
+      containerContent.style.marginLeft = '250px';
     }else{
-      containerContent.style.marginLeft = "0px";
+      containerContent.style.marginLeft = '0px';
     }
 
   }
@@ -98,10 +98,10 @@ export class TblContractComponent implements OnInit {
     this.router.navigate(['/MasterContracts/Contract']);
   }
 
-  async getDetailsContract(pContract:Contract){
+  async getDetailsContract(pContract: Contract){
     try {
       this.isAwaiting = true;
-      let oContractDetails = await this.contractService.getContractByID(pContract.id);
+      const oContractDetails = await this.contractService.getContractByID(pContract.id);
       this.isAwaiting = false;
       this.contractService.setAction(ActionType.READ);
       this.contractService.setContract(oContractDetails);
@@ -111,10 +111,10 @@ export class TblContractComponent implements OnInit {
     }
   }
 
-  async updateContract(pContract:Contract){
+  async updateContract(pContract: Contract){
     try {
       this.isAwaiting = true;
-      let oContractToUpdate = await this.contractService.getContractByID(pContract.id);
+      const oContractToUpdate = await this.contractService.getContractByID(pContract.id);
       this.isAwaiting = false;
       this.contractService.setAction(ActionType.UPDATE);
       this.contractService.setContract(oContractToUpdate);
@@ -126,16 +126,16 @@ export class TblContractComponent implements OnInit {
 
   async deleteContract(pContract: Contract){
     try{
-      if(confirm("¿Está seguro que desea elminar este contrato?, al hacerlo se eliminará toda la información relacionada")){
+      if (confirm('¿Está seguro que desea elminar este contrato?, al hacerlo se eliminará toda la información relacionada')){
         this.isAwaiting = true;
-        let rta = await this.contractService.delete(pContract);
+        const rta = await this.contractService.delete(pContract);
         this.isAwaiting = false;
-        if(rta.response){
+        if (rta.response){
           alert(rta.message);
           this.getListContracts();
         }
       }
-    }catch(error){
+    }catch (error){
       console.error(error);
       alert(error);
     }

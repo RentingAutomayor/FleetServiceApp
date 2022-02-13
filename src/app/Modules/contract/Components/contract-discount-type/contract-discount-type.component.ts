@@ -1,4 +1,4 @@
-import { Component, Input, OnInit ,OnChanges, SimpleChanges, Output, EventEmitter} from '@angular/core';
+import { Component, Input, OnInit , OnChanges, SimpleChanges, Output, EventEmitter} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DiscountType } from 'src/app/Models/DiscountType';
 import { ContractService} from '../../Services/Contract/contract.service';
@@ -8,13 +8,13 @@ import { ContractService} from '../../Services/Contract/contract.service';
   templateUrl: './contract-discount-type.component.html',
   styleUrls: ['./contract-discount-type.component.scss']
 })
-export class ContractDiscountTypeComponent implements OnInit,OnChanges {
-  frmDiscountType  : FormGroup;
+export class ContractDiscountTypeComponent implements OnInit, OnChanges {
+  frmDiscountType: FormGroup;
   lsDiscount: DiscountType[];
   discountSelected: DiscountType;
-  @Input() countChanges:number;
+  @Input() countChanges: number;
   @Output() discountWasSelected = new EventEmitter<DiscountType>();
-  @Input() disableField:boolean;
+  @Input() disableField: boolean;
 
   constructor(
     private contractService: ContractService
@@ -26,14 +26,14 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
    }
 
   ngOnChanges(changes: SimpleChanges) {
-    for (let change in changes) {
+    for (const change in changes) {
       if (change == 'countChanges') {
         this.discountSelected = this.contractService.getDiscountTypeSelected();
-        if(this.discountSelected != null && this.discountSelected != undefined){
+        if (this.discountSelected != null && this.discountSelected != undefined){
           this.setDataInForm(this.discountSelected);
           this.discountWasSelected.emit(this.discountSelected);
-        }        
-      }else if(change == 'disableField'){
+        }
+      }else if (change == 'disableField'){
         this.toggleDisableDiscountFiled();
       }
     }
@@ -52,15 +52,15 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
     }
   }
 
-  setDiscountType(event:any){
-    let oDiscountTmp = this.lsDiscount.find(ds => ds.id == event.value);
+  setDiscountType(event: any){
+    const oDiscountTmp = this.lsDiscount.find(ds => ds.id == event.value);
     this.discountSelected = oDiscountTmp;
     this.contractService.setDiscountTypeSelected(oDiscountTmp);
     this.discountWasSelected.emit(this.discountSelected);
   }
 
-  setDataInForm(pDiscount:DiscountType){
-    let { cmbDiscount } = this.frmDiscountType.controls;
+  setDataInForm(pDiscount: DiscountType){
+    const { cmbDiscount } = this.frmDiscountType.controls;
     cmbDiscount.setValue(pDiscount.id);
   }
 
@@ -69,8 +69,8 @@ export class ContractDiscountTypeComponent implements OnInit,OnChanges {
   }
 
   toggleDisableDiscountFiled(){
-    let { cmbDiscount } = this.frmDiscountType.controls;
-    if(this.disableField){
+    const { cmbDiscount } = this.frmDiscountType.controls;
+    if (this.disableField){
       cmbDiscount.disable();
     }else{
       cmbDiscount.enable();

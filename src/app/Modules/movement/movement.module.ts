@@ -18,8 +18,8 @@ import { MovementRoutingModule } from './movement-routing.module';
   ],
   imports: [
     CommonModule,
-    FormsModule, 
-    ReactiveFormsModule, 
+    FormsModule,
+    ReactiveFormsModule,
     SharedModule,
     MovementRoutingModule
   ]

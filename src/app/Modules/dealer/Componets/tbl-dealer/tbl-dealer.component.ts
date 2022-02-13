@@ -13,16 +13,16 @@ import { NavigationService } from 'src/app/SharedComponents/Services/navigation.
 })
 export class TblDealerComponent implements OnInit {
   lsDealer: Dealer[];
-  isAwaiting:boolean;
-  //pagination
-  p:number = 1;
-  action: ActionType
-  private oDealerToUpdate : Dealer;
+  isAwaiting: boolean;
+  // pagination
+  p = 1;
+  action: ActionType;
+  private oDealerToUpdate: Dealer;
 
   constructor(
-    private router:Router,
+    private router: Router,
     private dealerService: DealerService,
-    private navigationService:NavigationService
+    private navigationService: NavigationService
   ) { }
 
   ngOnInit(): void {
@@ -44,56 +44,56 @@ export class TblDealerComponent implements OnInit {
     }
   }
 
-  async updateDealer(pId:number){
+  async updateDealer(pId: number){
     try{
       this.isAwaiting = true;
-      this.navigationService.setAction(ActionType.UPDATE)
-      let oDealerDB = await this.dealerService.getDealerById(pId);
+      this.navigationService.setAction(ActionType.UPDATE);
+      const oDealerDB = await this.dealerService.getDealerById(pId);
       this.dealerService.setDealerToUpdate(oDealerDB);
       this.isAwaiting = false;
-      this.router.navigate(["/MasterDealers/Dealer"]);
-    }catch(err){
+      this.router.navigate(['/MasterDealers/Dealer']);
+    }catch (err){
       console.error(err.error.Message);
       alert(err.error.Message);
     }
   }
 
-  async deleteDealer(pDealer:Dealer){
+  async deleteDealer(pDealer: Dealer){
     try{
-      if(confirm("¿Está seguro que desea eliminar este concesionario?")){
+      if (confirm('¿Está seguro que desea eliminar este concesionario?')){
         this.isAwaiting = true;
-        let rta = await this.dealerService.deleteDealer(pDealer);
+        const rta = await this.dealerService.deleteDealer(pDealer);
         this.isAwaiting = false;
-        if(rta.response){
+        if (rta.response){
           alert(rta.message);
           this.initComponents();
         }
       }
-    }catch(err){
+    }catch (err){
       console.error(err.error.Message);
       alert(err.error.Message);
     }
 
   }
 
-  moveContent(event:any){
-    let containerContent:HTMLDivElement  = document.querySelector("#container__content");
+  moveContent(event: any){
+    const containerContent: HTMLDivElement  = document.querySelector('#container__content');
 
-    if(event){
-      containerContent.style.marginLeft = "250px";
+    if (event){
+      containerContent.style.marginLeft = '250px';
     }else{
-      containerContent.style.marginLeft = "0px";
+      containerContent.style.marginLeft = '0px';
     }
 
   }
 
   insertDealer(){
     this.dealerService.setDealerToUpdate(null);
-    this.navigationService.setAction(ActionType.CREATE)
-    this.router.navigate(["/MasterDealers/Dealer"]);
+    this.navigationService.setAction(ActionType.CREATE);
+    this.router.navigate(['/MasterDealers/Dealer']);
   }
 
-  validateCityName(pCity:City):string{
+  validateCityName(pCity: City): string{
     return '';
   }
 

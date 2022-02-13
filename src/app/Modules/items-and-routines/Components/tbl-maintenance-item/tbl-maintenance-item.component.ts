@@ -48,7 +48,7 @@ export class TblMaintenanceItemComponent implements OnInit {
 
   validateUserCompany() {
     try {
-      let userSession = JSON.parse(sessionStorage.getItem('sessionUser'));
+      const userSession = JSON.parse(sessionStorage.getItem('sessionUser'));
       if (userSession.company.type == CompanyType.DEALER) {
         this.dealer_id = userSession.company.id;
       }else{
@@ -87,13 +87,13 @@ export class TblMaintenanceItemComponent implements OnInit {
   }
 
   showTable() {
-    let containerTable = document.getElementById('container__table_items');
-    containerTable.setAttribute("style", "display:block");
+    const containerTable = document.getElementById('container__table_items');
+    containerTable.setAttribute('style', 'display:block');
   }
 
   hideTable() {
-    let containerTable = document.getElementById('container__table_items');
-    containerTable.setAttribute("style", "display:none");
+    const containerTable = document.getElementById('container__table_items');
+    containerTable.setAttribute('style', 'display:none');
   }
 
   updateMaintenanceItem(pItem: MaintenanceItem) {
@@ -105,19 +105,19 @@ export class TblMaintenanceItemComponent implements OnInit {
       this.maintenanceItemSelected = item;
       this.showPopUp();
       this.hideTable();
-    })
+    });
 
-    //console.log("[tbl-maintence-item]: ", oMaintenanceItemDB);
-    //this.maintenanceItemService.setItemToUpdate(oMaintenanceItemDB);
-    //this.oCountChanges += 1;
+    // console.log("[tbl-maintence-item]: ", oMaintenanceItemDB);
+    // this.maintenanceItemService.setItemToUpdate(oMaintenanceItemDB);
+    // this.oCountChanges += 1;
 
   }
 
   async deleteMaintenanceItem(pItem: MaintenanceItem) {
     try {
-      if (confirm("¿Está seguro que desea eliminar este artículo de mantenimiento?")) {
+      if (confirm('¿Está seguro que desea eliminar este artículo de mantenimiento?')) {
         this.isAwaiting = true;
-        let rta = await this.maintenanceItemService.delete(pItem);
+        const rta = await this.maintenanceItemService.delete(pItem);
         if (rta.response) {
           alert(rta.message);
           this.showTableItems();
@@ -141,7 +141,7 @@ export class TblMaintenanceItemComponent implements OnInit {
 
   async saveMaintenanceItem() {
     try {
-      let oItem = this.maintenanceItemService.getItem();
+      const oItem = this.maintenanceItemService.getItem();
 
       this.saveDataInDB(oItem);
     } catch (err) {
@@ -178,13 +178,13 @@ export class TblMaintenanceItemComponent implements OnInit {
   }
 
   showPopUp() {
-    let containerForm = document.getElementById("container__formMaintenanceItem");
-    containerForm.setAttribute("style", "display:block");
+    const containerForm = document.getElementById('container__formMaintenanceItem');
+    containerForm.setAttribute('style', 'display:block');
   }
 
   hidePopUp() {
-    let containerForm = document.getElementById("container__formMaintenanceItem");
-    containerForm.setAttribute("style", "display:none");
+    const containerForm = document.getElementById('container__formMaintenanceItem');
+    containerForm.setAttribute('style', 'display:none');
   }
   getVehicleModel(vehicleModel: VehicleModel) {
     if (vehicleModel == null) {
@@ -200,7 +200,7 @@ export class TblMaintenanceItemComponent implements OnInit {
   }
 
   filterItemsByDescription(event: any) {
-    let value = event.target.value;
+    const value = event.target.value;
     this.lsMaintenanceItems = this.lsMaintenanceItemsTmp;
     this.lsMaintenanceItems = this.lsMaintenanceItems.filter(mi => (mi.code.toLowerCase().includes(value.toLowerCase()) || mi.name.toLowerCase().includes(value.toLowerCase())));
   }
@@ -212,7 +212,7 @@ export class TblMaintenanceItemComponent implements OnInit {
       this.maintenanceItemSelected = item;
       this.showPopUp();
       this.hideTable();
-    })
+    });
   }
 
 }

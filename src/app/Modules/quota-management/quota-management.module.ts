@@ -13,7 +13,7 @@ import { QuotaManagementRoutingModule } from './quotaManagement-routing.module';
   imports: [
     CommonModule,
     SharedModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     QuotaManagementRoutingModule
   ]

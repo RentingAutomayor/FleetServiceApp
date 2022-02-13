@@ -31,15 +31,15 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
     private clientService: ClientService
   ) {
     this.clientToFilter = null;
-    this.sModels = "";
+    this.sModels = '';
     this.disableChecks = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
+    for (const change in changes) {
       switch (change) {
-        case "countChanges":
-          this.sModels = "";
+        case 'countChanges':
+          this.sModels = '';
           this.clientToFilter = this.clientService.getClientSelected();
           this.lsVehicleModelsToFilter = this.vehicleService.getListVehicleModelsSelected();
           this.setModelsString();
@@ -52,7 +52,7 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
           }
 
           break;
-        case "amountAllowed":
+        case 'amountAllowed':
           this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected();
           if (this.lsVehiclesSelected != null && this.lsVehiclesSelected != undefined) {
             this.checkVehiclesSelected(this.lsVehiclesSelected);
@@ -61,7 +61,7 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
             this.lsVehiclesEmty = true;
           }
           break;
-        case "contractToFilter":
+        case 'contractToFilter':
           this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected();
           if (this.lsVehiclesSelected != null && this.lsVehiclesSelected != undefined) {
             this.checkVehiclesSelected(this.lsVehiclesSelected);
@@ -71,7 +71,7 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
           }
           this.getVehicles();
           break;
-        case "disableChecks":
+        case 'disableChecks':
           this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected();
           if (this.lsVehiclesSelected != null && this.lsVehiclesSelected != undefined) {
             this.checkVehiclesSelected(this.lsVehiclesSelected);
@@ -95,9 +95,9 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
   async initComponents() {
     this.countChanges = 0;
     this.getVehicles();
-    setTimeout(()=>{
+    setTimeout(() => {
       this.toggleChecks();
-    },800)
+    }, 800);
 
   }
 
@@ -106,8 +106,8 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
       if (this.lsVehicleModelsToFilter != null && this.lsVehicleModelsToFilter != undefined) {
         this.lsVehicleModelsToFilter.forEach(vm => this.sModels += `${vm.id},`);
         this.sModels = this.sModels.substr(0, (this.sModels.length - 1));
-        if (this.sModels == "") {
-          this.sModels = "0";
+        if (this.sModels == '') {
+          this.sModels = '0';
         }
       }
 
@@ -119,8 +119,8 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
 
   async getVehicles() {
     try {
-      if (this.clientToFilter != null && this.clientToFilter != undefined && this.sModels != "") {
-        let contract_id = (this.contractToFilter != null && this.contractToFilter != undefined) ? this.contractToFilter.id : 0;
+      if (this.clientToFilter != null && this.clientToFilter != undefined && this.sModels != '') {
+        const contract_id = (this.contractToFilter != null && this.contractToFilter != undefined) ? this.contractToFilter.id : 0;
         this.lsVehicles = await this.vehicleService.getVehiclesByClientAndModel(this.clientToFilter.id, this.sModels, contract_id);
       } else {
         this.lsVehicles = [];
@@ -147,8 +147,8 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
       }
 
     } else {
-      let vehicle = this.lsVehiclesSelected.find(vh => vh.id == pVehicle.id);
-      let index = this.lsVehiclesSelected.indexOf(vehicle);
+      const vehicle = this.lsVehiclesSelected.find(vh => vh.id == pVehicle.id);
+      const index = this.lsVehiclesSelected.indexOf(vehicle);
       if (index != -1) {
         this.lsVehiclesSelected.splice(index, 1);
       }
@@ -160,30 +160,30 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
     setTimeout(() => {
       lsVehicles.forEach(vh => {
         try {
-          let idCheck = `#${this.getIdChk(vh.id)}`;
-          console.warn("[checkVehiclesSelected]", idCheck);
-          let vehicleCheckbox: HTMLInputElement = document.querySelector(idCheck);
+          const idCheck = `#${this.getIdChk(vh.id)}`;
+          console.warn('[checkVehiclesSelected]', idCheck);
+          const vehicleCheckbox: HTMLInputElement = document.querySelector(idCheck);
           vehicleCheckbox.checked = true;
         } catch (error) {
           console.warn(error);
         }
       });
-    }, 1500)
+    }, 1500);
 
   }
 
 
   toggleChecks(){
     try {
-      setTimeout(()=>{
-        this.lsVehicles.forEach(vehicle =>{
-          let idCheck = `#${this.getIdChk(vehicle.id)}`;
-          let vehicleCheckbox: HTMLInputElement = document.querySelector(idCheck);
+      setTimeout(() => {
+        this.lsVehicles.forEach(vehicle => {
+          const idCheck = `#${this.getIdChk(vehicle.id)}`;
+          const vehicleCheckbox: HTMLInputElement = document.querySelector(idCheck);
           vehicleCheckbox.disabled = this.disableChecks;
-        })
-      },800)
+        });
+      }, 800);
     } catch (error) {
-      console.warn("[toggleChecks VEHI]",error);
+      console.warn('[toggleChecks VEHI]', error);
     }
   }
 

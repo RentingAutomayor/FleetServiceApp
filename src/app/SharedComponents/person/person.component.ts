@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder,FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { Person } from 'src/app/Models/Person';
 import { PersonService } from '../Services/Person/person.service';
@@ -22,7 +22,7 @@ export class PersonComponent implements OnInit, OnChanges {
   @Input() isRequiredDataComponent: boolean;
   @Input() formHasError: boolean;
   @Input() error: string;
-  @Input() oCountChanges:number;
+  @Input() oCountChanges: number;
   @Input() returnPath: string;
   @Output() personWasSetted = new EventEmitter<boolean>();
   @Output() personWasCanceled = new EventEmitter<boolean>();
@@ -31,39 +31,39 @@ export class PersonComponent implements OnInit, OnChanges {
   oJobTitleSelected: JobTitle;
   oInputvalidator: InputValidator;
 
-  isContact:boolean = true;
+  isContact = true;
 
-  frmPersonMustBeBlocked: boolean = false;
+  frmPersonMustBeBlocked = false;
   @Input('frmPersonMustBeBlocked')
-  set setFrmPersonMustBeBlocked(value:boolean){
-    this.frmPersonMustBeBlocked = value
-    this.enableDisableForm(this.frmPersonMustBeBlocked)
+  set setFrmPersonMustBeBlocked(value: boolean){
+    this.frmPersonMustBeBlocked = value;
+    this.enableDisableForm(this.frmPersonMustBeBlocked);
   }
 
   personToUpdate: Person = {
-    id:0,
-    document:'',
-    name:'',
-    lastname:'',
-    phone:'',
-    cellphone:'',
-    address:'',
-    email:'',
-    website:'',
+    id: 0,
+    document: '',
+    name: '',
+    lastname: '',
+    phone: '',
+    cellphone: '',
+    address: '',
+    email: '',
+    website: '',
     city: null,
-    jobTitle:null,
-    state:false,
+    jobTitle: null,
+    state: false,
     registrationDate: new Date(),
     updateDate: new Date(),
     deleteDate: new Date()
   };
 
-  jobTitleSelected: JobTitle = null
+  jobTitleSelected: JobTitle = null;
   oCity: City = null;
 
   @Input('personToUpdate')
   set setPersonToUpdate(person: Person){
-    if(person){
+    if (person){
       this.personToUpdate = person;
       this.jobTitleSelected = this.personToUpdate.jobTitle;
       this.oCity = this.personToUpdate.city;
@@ -84,10 +84,10 @@ export class PersonComponent implements OnInit, OnChanges {
     this.renderComponent();
   }
 
-  areVisibleButtonActions:boolean = false;
+  areVisibleButtonActions = false;
   @Input('areVisibleButtonActions')
-  set setAreVisibleButtonActions(value:boolean){
-    console.log(`buttons are visibles ${value}`)
+  set setAreVisibleButtonActions(value: boolean){
+    console.log(`buttons are visibles ${value}`);
     this.areVisibleButtonActions = value;
   }
 
@@ -100,7 +100,7 @@ export class PersonComponent implements OnInit, OnChanges {
   //   }
   // }
 
-  @Output() onNextStepClicked = new EventEmitter<boolean>()
+  @Output() onNextStepClicked = new EventEmitter<boolean>();
 
   constructor(
     private personService: PersonService,
@@ -116,31 +116,31 @@ export class PersonComponent implements OnInit, OnChanges {
     this.buildPersonForm(this.configComponent);
   }
 
-  buildPersonForm(configComponent:ConfigPersonComponent){
+  buildPersonForm(configComponent: ConfigPersonComponent){
     try {
-      if(configComponent.documentIsVisible){
+      if (configComponent.documentIsVisible){
         this.formPerson = this.formBuilder.group({
-          document : ['',[ Validators.required, Validators.minLength(8), Validators.maxLength(10) ]],
+          document : ['', [ Validators.required, Validators.minLength(8), Validators.maxLength(10) ]],
           name: ['', [Validators.required]],
-          lastname:[''],
+          lastname: [''],
           phone: [''],
-          cellphone: ['',[ Validators.minLength(10), Validators.maxLength(10) ]],
-          email: ['',[ Validators.email ]],
+          cellphone: ['', [ Validators.minLength(10), Validators.maxLength(10) ]],
+          email: ['', [ Validators.email ]],
           website: [''],
           address: ['']
         });
 
         this.formPerson.get('document').valueChanges.subscribe(val => {
-          //console.log(val)
-          //console.log(this.documentField.errors);
+          // console.log(val)
+          // console.log(this.documentField.errors);
         });
       }else{
         this.formPerson = this.formBuilder.group({
           name: ['', [Validators.required]],
-          lastname:[''],
+          lastname: [''],
           phone: [''],
-          cellphone: ['',[ Validators.minLength(10), Validators.maxLength(10) ]],
-          email: ['',[ Validators.email ]],
+          cellphone: ['', [ Validators.minLength(10), Validators.maxLength(10) ]],
+          email: ['', [ Validators.email ]],
           website: [''],
           address: ['']
         });
@@ -153,7 +153,7 @@ export class PersonComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
 
-    for (let change in changes) {
+    for (const change in changes) {
       try {
         if (change == 'configComponent') {
           this.buildPersonForm(this.configComponent);
@@ -166,8 +166,8 @@ export class PersonComponent implements OnInit, OnChanges {
     }
   }
 
-  enableDisableForm(formIsBlocked:boolean){
-    if(formIsBlocked){
+  enableDisableForm(formIsBlocked: boolean){
+    if (formIsBlocked){
       this.formPerson.disable();
     }else{
       this.formPerson.enable();
@@ -188,11 +188,11 @@ export class PersonComponent implements OnInit, OnChanges {
 
 
   renderComponent() {
-    let containerDocument = document.querySelector("#container__document");
-    let containerName = document.querySelector("#container__name");
-    let containerPhone = document.querySelector("#container__phone");
-    let containerEmail = document.querySelector("#container__email");
-    let containerAddress = document.querySelector("#container__address");
+    const containerDocument = document.querySelector('#container__document');
+    const containerName = document.querySelector('#container__name');
+    const containerPhone = document.querySelector('#container__phone');
+    const containerEmail = document.querySelector('#container__email');
+    const containerAddress = document.querySelector('#container__address');
 
 
 
@@ -213,8 +213,8 @@ export class PersonComponent implements OnInit, OnChanges {
 
 
     if (this.configComponent.websiteIsVisible && this.configComponent.emailIsVisible) {
-       console.warn("Validación de visibilidad de container Email");
-       console.warn(` email: ${this.configComponent.emailIsVisible}  website: ${this.configComponent.websiteIsVisible }`)
+       console.warn('Validación de visibilidad de container Email');
+       console.warn(` email: ${this.configComponent.emailIsVisible}  website: ${this.configComponent.websiteIsVisible }`);
       //  containerEmail.classList.remove("row__container_single" );
       //  containerEmail.classList.add("row__container");
 
@@ -228,15 +228,15 @@ export class PersonComponent implements OnInit, OnChanges {
   }
 
   setDataInForm(pPerson: Person) {
-    if(pPerson){
+    if (pPerson){
       this.formPerson.patchValue(pPerson);
-      if(pPerson.city != null){
+      if (pPerson.city != null){
         this.oCity = pPerson.city;
       }else{
         this.oCity = null;
       }
     }else{
-      this.formPerson.reset()
+      this.formPerson.reset();
     }
   }
 
@@ -248,7 +248,7 @@ export class PersonComponent implements OnInit, OnChanges {
     this.oCity = null;
   }
 
-  setDataPerson(event:any) {
+  setDataPerson(event: any) {
     event.preventDefault();
     const objPerson = this.getDataPersonForm();
     this.personService.setPerson(objPerson);
@@ -256,14 +256,14 @@ export class PersonComponent implements OnInit, OnChanges {
     this.formPerson.reset();
   }
 
-  getDataPersonForm():Person{
+  getDataPersonForm(): Person{
     let objPerson: Person;
 
     objPerson = this.formPerson.value;
 
-     if(this.personToUpdate != null){
+    if (this.personToUpdate != null){
       objPerson.id = this.personToUpdate.id;
-      console.warn("Detecta información de cliente para actualizar");
+      console.warn('Detecta información de cliente para actualizar');
     }
 
     if (this.configComponent.cityIsVisible) {
@@ -321,7 +321,7 @@ export class PersonComponent implements OnInit, OnChanges {
     return this.formPerson.get('email');
   }
 
-  validateTyping(event:any, type:string){
-    InputValidator.validateTyping(event,type);
+  validateTyping(event: any, type: string){
+    InputValidator.validateTyping(event, type);
   }
 }

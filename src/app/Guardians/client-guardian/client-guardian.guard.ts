@@ -12,7 +12,7 @@ import { Modules , } from 'src/app/Models/Modules';
 export class ClientGuardianGuard implements CanActivate {
 
   constructor(
-    private router:Router
+    private router: Router
   ){
 
   }
@@ -22,24 +22,24 @@ export class ClientGuardianGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    let allowAccess = this.validateModule();   
-    if(!allowAccess){
+    const allowAccess = this.validateModule();
+    if (!allowAccess){
       this.router.navigate(['/Home']);
     }
     return allowAccess;
   }
 
-  validateModule():boolean{
-    let session = JSON.parse(sessionStorage.getItem('sessionUser'));     
-    let rta = false;  
-    for (let AppModule of session.group.modules) {
+  validateModule(): boolean{
+    const session = JSON.parse(sessionStorage.getItem('sessionUser'));
+    let rta = false;
+    for (const AppModule of session.group.modules) {
       if (AppModule.id_module == Modules.CLIENTES) {
-        return true;        
+        return true;
       }else{
         rta = false;
       }
     }
-     return rta;
+    return rta;
   }
-  
+
 }

@@ -24,9 +24,9 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
   priceByDealer: PricesByDealer;
   @Input() countChanges: number;
   @Output() pricesWasCanceled = new EventEmitter<boolean>();
-  pag: number = 1;
+  pag = 1;
   companyStorage: Company;
-  sharedFunction:SharedFunction;
+  sharedFunction: SharedFunction;
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -36,8 +36,8 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
    }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      if (change == "countChanges") {
+    for (const change in changes) {
+      if (change == 'countChanges') {
         this.dealerSelected = this.dealerService.getDealerToUpdate();
       }
     }
@@ -62,7 +62,7 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
     return `lbl_taxes_${idItem}`;
   }
 
-  getLabelTotalId(idItem:number){
+  getLabelTotalId(idItem: number){
     return `lbl_total_${idItem}`;
   }
 
@@ -112,10 +112,10 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
   }
 
   diableScrollBehaviorOnInputs() {
-    let aElements = document.querySelectorAll("input[type=number]");
+    const aElements = document.querySelectorAll('input[type=number]');
 
     for (let i = 0; i < aElements.length; i++) {
-      aElements[i].addEventListener('wheel', function (event) {
+      aElements[i].addEventListener('wheel', function(event) {
         event.preventDefault();
       });
     }
@@ -129,47 +129,47 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
     try {
       if (lsItemPrice == null || lsItemPrice == undefined) {
         lsItemReference.forEach(item => {
-          let idTxt = `#${this.getInputId(item.id)}`;
-          let inputItem: HTMLInputElement = document.querySelector(idTxt);
+          const idTxt = `#${this.getInputId(item.id)}`;
+          const inputItem: HTMLInputElement = document.querySelector(idTxt);
 
 
-          let valueFormated = this.sharedFunction.formatNumberToString(parseFloat(item.referencePrice.toFixed(2)))
+          const valueFormated = this.sharedFunction.formatNumberToString(parseFloat(item.referencePrice.toFixed(2)));
           inputItem.value = valueFormated;
           this.showTaxesAndTotal(valueFormated, item);
         });
       } else {
         lsItemReference.forEach(item => {
-          let priceByDealer = lsItemPrice.find(it => it.id == item.id);
-          let idTxt = `#${this.getInputId(item.id)}`;
-          let inputItem: HTMLInputElement = document.querySelector(idTxt);
-          let valueToShow =   (priceByDealer != null) ? priceByDealer.referencePrice.toString() : item.referencePrice;
+          const priceByDealer = lsItemPrice.find(it => it.id == item.id);
+          const idTxt = `#${this.getInputId(item.id)}`;
+          const inputItem: HTMLInputElement = document.querySelector(idTxt);
+          const valueToShow =   (priceByDealer != null) ? priceByDealer.referencePrice.toString() : item.referencePrice;
 
-          let valueFormatedToShow = parseFloat(valueToShow.toString());
-          let numToShow = this.sharedFunction.formatNumberToString(parseFloat(valueFormatedToShow.toString()))
-          let valueFormated = numToShow;
+          const valueFormatedToShow = parseFloat(valueToShow.toString());
+          const numToShow = this.sharedFunction.formatNumberToString(parseFloat(valueFormatedToShow.toString()));
+          const valueFormated = numToShow;
 
           inputItem.value = valueFormated;
           this.showTaxesAndTotal(valueFormated, item);
         });
       }
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
     }
 
   }
 
   async savePrices() {
-    //Clone the ls items
-    let pricesByDealer = new PricesByDealer();
+    // Clone the ls items
+    const pricesByDealer = new PricesByDealer();
     pricesByDealer.dealer = this.dealerSelected;
 
-    let lsNewPrices = cloneDeep(this.lsMaintenanceItems);
+    const lsNewPrices = cloneDeep(this.lsMaintenanceItems);
 
     lsNewPrices.forEach(item => {
-      let idTxt = `#${this.getInputId(item.id)}`;
-      let txtPrice: HTMLInputElement = document.querySelector(idTxt);
+      const idTxt = `#${this.getInputId(item.id)}`;
+      const txtPrice: HTMLInputElement = document.querySelector(idTxt);
 
-      let valueFormmated = txtPrice.value.replace(/,/g,'');
+      const valueFormmated = txtPrice.value.replace(/,/g, '');
       item.referencePrice = parseFloat(valueFormmated);
     });
 
@@ -177,7 +177,7 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
 
     try {
       this.isAwaiting = true;
-      let rta = await this.maintenanceItemService.setPricesByDealer(pricesByDealer);
+      const rta = await this.maintenanceItemService.setPricesByDealer(pricesByDealer);
       this.isAwaiting = false;
       if (rta.response) {
         alert(rta.message);
@@ -191,7 +191,7 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
 
 
   cancelPrices() {
-    if (confirm("¿Está seguro que desea cancelar?, si lo hace puede que pierda la información consignada acá")) {
+    if (confirm('¿Está seguro que desea cancelar?, si lo hace puede que pierda la información consignada acá')) {
       this.pricesWasCanceled.emit(true);
     }
   }
@@ -200,41 +200,41 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
     InputValidator.validateTyping(event, 'numbers');
   }
 
-  formatNumber(event:any){
-    let numberToTransform = event.target.value.toString().replace(/\,/g, '');
+  formatNumber(event: any){
+    const numberToTransform = event.target.value.toString().replace(/\,/g, '');
     event.target.value = this.sharedFunction.formatNumberToString(numberToTransform);
   }
 
-  showTaxesAndTotal(price:string, item: MaintenanceItem) {
+  showTaxesAndTotal(price: string, item: MaintenanceItem) {
     try {
-      let newPrice = parseFloat(price.replace(/\,/g, ''));
-      let taxesValue:number = 0;
-      let total:number = 0;
+      const newPrice = parseFloat(price.replace(/\,/g, ''));
+      let taxesValue = 0;
+      let total = 0;
 
       if (item.handleTax) {
-        if(item.lsTaxes.length > 0){
+        if (item.lsTaxes.length > 0){
           taxesValue = this.calculateTaxes(newPrice, item.lsTaxes);
         }
       }
       total = parseFloat(newPrice.toString()) + parseFloat(taxesValue.toString());
 
-      this.printTaxesAndTotal(item.id,taxesValue,total);
+      this.printTaxesAndTotal(item.id, taxesValue, total);
 
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
     }
   }
 
-  printTaxesAndTotal(idItem:number ,taxes: number, total: number){
+  printTaxesAndTotal(idItem: number , taxes: number, total: number){
     try {
-      let idSpanTax = `#${this.getLabelTaxesId(idItem)}`;
-      let spanElementTax: HTMLSpanElement = document.querySelector(idSpanTax);
-      let taxesFormmated = taxes.toFixed(2);
+      const idSpanTax = `#${this.getLabelTaxesId(idItem)}`;
+      const spanElementTax: HTMLSpanElement = document.querySelector(idSpanTax);
+      const taxesFormmated = taxes.toFixed(2);
       spanElementTax.innerText = this.sharedFunction.formatNumberToString(parseFloat(taxesFormmated));
 
-      let idSpantotal = `#${this.getLabelTotalId(idItem)}`;
-      let spanElementTotal: HTMLSpanElement = document.querySelector(idSpantotal);
-      let totalFormmaed = total.toFixed(2)
+      const idSpantotal = `#${this.getLabelTotalId(idItem)}`;
+      const spanElementTotal: HTMLSpanElement = document.querySelector(idSpantotal);
+      const totalFormmaed = total.toFixed(2);
       spanElementTotal.innerText = this.sharedFunction.formatNumberToString(parseFloat(totalFormmaed));
 
     } catch (error) {
@@ -246,10 +246,10 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
   calculateTaxes(referencePrice: number, lsTaxes: Tax[]): number {
     let taxValue = 0;
     for (const tax of lsTaxes) {
-      let taxTmp = referencePrice * (tax.percentValue / 100);
+      const taxTmp = referencePrice * (tax.percentValue / 100);
       taxValue += taxTmp;
     }
-    return taxValue
+    return taxValue;
   }
 
 }

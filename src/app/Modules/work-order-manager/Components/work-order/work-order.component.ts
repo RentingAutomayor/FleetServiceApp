@@ -51,8 +51,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   totalRoutine: number;
   totalTaxes: number;
   totalWithoutTaxes: number;
-  totalWithoutTaxesAndDiscount:number;
-  totalDiscount:number;
+  totalWithoutTaxesAndDiscount: number;
+  totalDiscount: number;
   lsMovements: Movement[];
   vehicleSelected: Vehicle;
   ORDEN_DE_TRABAJO = 4;
@@ -95,7 +95,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       txtInTransitQuota: new FormControl('')
     });
 
-    //this.setTotalWithoutTaxesByItem = this.setTotalWithoutTaxesByItem.bind(this);
+    // this.setTotalWithoutTaxesByItem = this.setTotalWithoutTaxesByItem.bind(this);
 
     this.totalTaxes = 0;
     this.totalWithoutTaxes = 0;
@@ -141,11 +141,11 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
   getLabePriceByAmountId(idItem: number) {
-    return `lbl_price_amount_${idItem}`
+    return `lbl_price_amount_${idItem}`;
   }
 
   getLabePriceByAmountLessDiscountId(idItem: number){
-    return `lbl_price_amount_less_discount_${idItem}`
+    return `lbl_price_amount_less_discount_${idItem}`;
   }
 
   getLabelDiscountId(idItem: number) {
@@ -154,7 +154,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
 
   getDealer() {
-    let userSession: SessionUser = JSON.parse(sessionStorage.getItem('sessionUser'));
+    const userSession: SessionUser = JSON.parse(sessionStorage.getItem('sessionUser'));
     this.dealerService.getDealerById(userSession.company.id)
       .then(dealer => {
         this.dealer = dealer;
@@ -175,9 +175,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
         pricesByContract => {
           this.pricesByContract = pricesByContract;
 
-          this.updateAmountsAndPrices(this.lsMaintenanceItems, this.pricesByContract)
+          this.updateAmountsAndPrices(this.lsMaintenanceItems, this.pricesByContract);
         }
-      )
+      );
     } catch (error) {
       console.warn(error);
     }
@@ -185,7 +185,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   getLsMovements() {
     try {
-      this.movementService.getMovements().then(dataMovements => { this.lsMovements = dataMovements });
+      this.movementService.getMovements().then(dataMovements => { this.lsMovements = dataMovements; });
     } catch (error) {
       console.warn(error);
     }
@@ -196,7 +196,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     this.totalRoutine = 0;
     lsMaintenanceItems.forEach(mItem => {
       try {
-        let priceContract = pricesByContract.lsMaintenanceItems.find(mi => mi.id == mItem.id);
+        const priceContract = pricesByContract.lsMaintenanceItems.find(mi => mi.id == mItem.id);
 
         mItem.referencePrice = priceContract.referencePrice;
 
@@ -214,20 +214,20 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
   updateLabelTotalRoutine(totalRoutine: number) {
-    let totalFormatted = totalRoutine.toFixed(2);
-    let lblTotalRoutine: HTMLElement = document.querySelector('#lbl-total-routine');
-    lblTotalRoutine.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalFormatted));;
+    const totalFormatted = totalRoutine.toFixed(2);
+    const lblTotalRoutine: HTMLElement = document.querySelector('#lbl-total-routine');
+    lblTotalRoutine.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalFormatted));
   }
 
   updateLabelWithoutTaxes(totalWithoutTaxes: number) {
-    let totalFormatted = totalWithoutTaxes.toFixed(2);
-    let lblTotalWithoutTaxes: HTMLSpanElement = document.querySelector('#lbl-total-without-taxes');
+    const totalFormatted = totalWithoutTaxes.toFixed(2);
+    const lblTotalWithoutTaxes: HTMLSpanElement = document.querySelector('#lbl-total-without-taxes');
     lblTotalWithoutTaxes.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalFormatted));
   }
 
   updateLabelTotalTaxes(totalTaxes: number) {
-    let totalFormatted = totalTaxes.toFixed(2);
-    let lblTotalTaxes: HTMLSpanElement = document.querySelector('#lbl-total-taxes');
+    const totalFormatted = totalTaxes.toFixed(2);
+    const lblTotalTaxes: HTMLSpanElement = document.querySelector('#lbl-total-taxes');
     lblTotalTaxes.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalFormatted));
   }
 
@@ -235,7 +235,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   async searchVehicleOwner(client_id: number) {
     try {
       this.ClientService.getClientById(client_id).then(data => {
-        let oClient = data;
+        const oClient = data;
 
       });
     } catch (error) {
@@ -245,7 +245,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   async SetDataInForm() {
     try {
-      let { txtYear, txtMileage, txtBrand, txtVehicleType, txtVehicleModel, txtClient,
+      const { txtYear, txtMileage, txtBrand, txtVehicleType, txtVehicleModel, txtClient,
         txtClientDocument, txtContract, txtCurrentQuota, txtConsumedQuota, txtInTransitQuota } = this.frmWorkOrder.controls;
 
       this.resetItemsToRoutine();
@@ -255,9 +255,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.vehicleSelected = this.vehicleService.getVehicle();
 
 
-      let VEHICLE_STATE_ACTIVE = 1;
-      if(!(this.vehicleSelected.vehicleState.id == VEHICLE_STATE_ACTIVE)){
-        throw ("El vehículo que seleccionó se encuentra en un estado INACTIVO, por favor comuniquese con el administrador");
+      const VEHICLE_STATE_ACTIVE = 1;
+      if (!(this.vehicleSelected.vehicleState.id == VEHICLE_STATE_ACTIVE)){
+        throw new Error(('El vehículo que seleccionó se encuentra en un estado INACTIVO, por favor comuniquese con el administrador'));
       }
 
       this.contractService.getContractByVehicleId(this.vehicleSelected.id).then(dataContract => {
@@ -265,8 +265,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
         if (this.contractSelected != null) {
 
-          if(this.contractSelected.contractState.id != ConstractStates.ACTIVO){
-              throw(`El vehículo que intenta asociar cuenta con un contrato en estado: ${this.contractSelected.contractState.name } , por tal motivo, NO se puede generar una orden de trabajo. Por favor comuniquese con el administrador.`);
+          if (this.contractSelected.contractState.id != ConstractStates.ACTIVO){
+              throw new Error((`El vehículo que intenta asociar cuenta con un contrato en estado: ${this.contractSelected.contractState.name } , por tal motivo, NO se puede generar una orden de trabajo. Por favor comuniquese con el administrador.`));
           }
 
 
@@ -277,16 +277,16 @@ export class WorkOrderComponent implements OnInit, OnChanges {
           txtVehicleModel.setValue(this.vehicleSelected.vehicleModel.shortName.toUpperCase());
           txtClientDocument.setValue(this.contractSelected.client.document);
           txtClient.setValue(this.contractSelected.client.name.toUpperCase());
-          let contractDescription = `${this.contractSelected.code} - ${this.contractSelected.name}`;
+          const contractDescription = `${this.contractSelected.code} - ${this.contractSelected.name}`;
           txtContract.setValue(contractDescription);
           this.vehicleModelSelected = this.vehicleSelected.vehicleModel;
 
           this.quotaService.getFinancialInformationByClient(this.contractSelected.client.id).then(
             data => {
               if (data == null || data == undefined) {
-                throw ("El cliente no tiene un cupo asignado aún, por favor comuniquese con el administrador para que se realice la correspondiente gestión.")
+                throw new Error(('El cliente no tiene un cupo asignado aún, por favor comuniquese con el administrador para que se realice la correspondiente gestión.'));
               } else {
-                let financialInformation = data;
+                const financialInformation = data;
                 txtCurrentQuota.setValue(this.sharedFunctions.formatNumberToString(parseFloat(financialInformation.currentQuota.toString())));
                 txtConsumedQuota.setValue(this.sharedFunctions.formatNumberToString(parseFloat(financialInformation.consumedQuota.toString())));
                 txtInTransitQuota.setValue(this.sharedFunctions.formatNumberToString(parseFloat(financialInformation.inTransitQuota.toString())));
@@ -299,10 +299,10 @@ export class WorkOrderComponent implements OnInit, OnChanges {
             this.resetMaintenanceItems();
             this.resetMaintenanceRoutines();
             alert(error);
-          });;
+          });
 
         } else {
-          throw ("El vehículo que ingresó no tienen un contrato vínculado, por favor comuniquese con el administrador")
+          throw new Error(('El vehículo que ingresó no tienen un contrato vínculado, por favor comuniquese con el administrador'));
         }
       }).catch((error) => {
         this.clearFrmWorkOrder();
@@ -368,70 +368,70 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
   enableTxtAmount(pItem: MaintenanceItem) {
-    let idTxt = `#${this.getTextAmountId(pItem.id)}`;
-    let txtAmount: HTMLInputElement = document.querySelector(idTxt);
+    const idTxt = `#${this.getTextAmountId(pItem.id)}`;
+    const txtAmount: HTMLInputElement = document.querySelector(idTxt);
     txtAmount.value = pItem.amount.toString();
     txtAmount.disabled = false;
 
-    let totalByItemWithoutTaxes = (pItem.amount * pItem.referencePrice);
+    const totalByItemWithoutTaxes = (pItem.amount * pItem.referencePrice);
 
     let taxValue = 0;
     if (pItem.handleTax) {
       taxValue = this.calculateTaxes(totalByItemWithoutTaxes, pItem.lsTaxes);
     }
 
-    let idLabelPriceByAmount = `#${this.getLabePriceByAmountId(pItem.id)}`;
-    let labelPriceByAmount: HTMLSpanElement = document.querySelector(idLabelPriceByAmount);
-    let totalWithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2);
+    const idLabelPriceByAmount = `#${this.getLabePriceByAmountId(pItem.id)}`;
+    const labelPriceByAmount: HTMLSpanElement = document.querySelector(idLabelPriceByAmount);
+    const totalWithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2);
     labelPriceByAmount.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalWithoutTaxesFormatted));
 
-    let idLabelTax = `#${this.getLabeTaxesId(pItem.id)}`;
-    let labelTax: HTMLSpanElement = document.querySelector(idLabelTax);
-    let taxesFormatted = taxValue.toFixed(2)
+    const idLabelTax = `#${this.getLabeTaxesId(pItem.id)}`;
+    const labelTax: HTMLSpanElement = document.querySelector(idLabelTax);
+    const taxesFormatted = taxValue.toFixed(2);
     labelTax.innerText = this.sharedFunctions.formatNumberToString(parseFloat(taxesFormatted));
 
 
-    let idLblTotalByItem = `#${this.getLabeTotalId(pItem.id)}`;
-    let lblPriceTotalByItem: HTMLElement = document.querySelector(idLblTotalByItem);
+    const idLblTotalByItem = `#${this.getLabeTotalId(pItem.id)}`;
+    const lblPriceTotalByItem: HTMLElement = document.querySelector(idLblTotalByItem);
 
-    let totalByItem = totalByItemWithoutTaxes + taxValue;
-    let totalFormatted = totalByItem.toFixed(2);
+    const totalByItem = totalByItemWithoutTaxes + taxValue;
+    const totalFormatted = totalByItem.toFixed(2);
     lblPriceTotalByItem.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalFormatted));
 
   }
 
   disableTxtAmount(pItem) {
-    let idTxt = `#${this.getTextAmountId(pItem.id)}`;
-    let txtAmount: HTMLInputElement = document.querySelector(idTxt);
+    const idTxt = `#${this.getTextAmountId(pItem.id)}`;
+    const txtAmount: HTMLInputElement = document.querySelector(idTxt);
     txtAmount.value = '0';
     txtAmount.disabled = true;
 
-    let idLabelPriceByAmount = `#${this.getLabePriceByAmountId(pItem.id)}`;
-    let labelPriceByAmount: HTMLSpanElement = document.querySelector(idLabelPriceByAmount);
+    const idLabelPriceByAmount = `#${this.getLabePriceByAmountId(pItem.id)}`;
+    const labelPriceByAmount: HTMLSpanElement = document.querySelector(idLabelPriceByAmount);
     labelPriceByAmount.innerText = '';
 
-    let idLabelDiscount = `#${this.getLabelDiscountId(pItem.id)}`;
-    let labelDiscount: HTMLSpanElement = document.querySelector(idLabelDiscount);
+    const idLabelDiscount = `#${this.getLabelDiscountId(pItem.id)}`;
+    const labelDiscount: HTMLSpanElement = document.querySelector(idLabelDiscount);
     labelDiscount.innerText = '';
 
-    let idLabelPriceWithoutDiscount = `#${this.getLabePriceByAmountLessDiscountId(pItem.id)}`;
-    let LabelPriceWithoutDiscount: HTMLSpanElement = document.querySelector(idLabelPriceWithoutDiscount);
+    const idLabelPriceWithoutDiscount = `#${this.getLabePriceByAmountLessDiscountId(pItem.id)}`;
+    const LabelPriceWithoutDiscount: HTMLSpanElement = document.querySelector(idLabelPriceWithoutDiscount);
     LabelPriceWithoutDiscount.innerText = '';
 
-    let idLabelTax = `#${this.getLabeTaxesId(pItem.id)}`;
-    let labelTax: HTMLSpanElement = document.querySelector(idLabelTax);
+    const idLabelTax = `#${this.getLabeTaxesId(pItem.id)}`;
+    const labelTax: HTMLSpanElement = document.querySelector(idLabelTax);
     labelTax.innerText = '';
 
-    let idLabelTotal = `#${this.getLabeTotalId(pItem.id)}`;
-    let lblPriceWithTaxes: HTMLElement = document.querySelector(idLabelTotal);
+    const idLabelTotal = `#${this.getLabeTotalId(pItem.id)}`;
+    const lblPriceWithTaxes: HTMLElement = document.querySelector(idLabelTotal);
     lblPriceWithTaxes.innerText = '';
 
 
   }
 
   turnOnCheckbox(pItem: MaintenanceItem) {
-    let idChkItem = `#${this.getCheckBoxId(pItem.id)}`;
-    let chkItem: HTMLInputElement = document.querySelector(idChkItem);
+    const idChkItem = `#${this.getCheckBoxId(pItem.id)}`;
+    const chkItem: HTMLInputElement = document.querySelector(idChkItem);
     chkItem.checked = true;
   }
 
@@ -455,7 +455,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     if (this.lsMaintenanceItemsSelected == null || this.lsMaintenanceItemsSelected == undefined) {
       this.resetItemsToRoutine();
     }
-    let totalByItemWithoutTaxes = (item.amount * item.referencePrice);
+    const totalByItemWithoutTaxes = (item.amount * item.referencePrice);
     let taxValue = 0;
     if (item.handleTax) {
       taxValue = this.calculateTaxes(totalByItemWithoutTaxes, item.lsTaxes);
@@ -467,34 +467,34 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   deleteItemToRoutine(item: MaintenanceItem) {
 
-    let itemTMP = this.lsMaintenanceItemsSelected.find(it => it.id == item.id);
-    let indexOfItem = this.lsMaintenanceItemsSelected.indexOf(itemTMP);
+    const itemTMP = this.lsMaintenanceItemsSelected.find(it => it.id == item.id);
+    const indexOfItem = this.lsMaintenanceItemsSelected.indexOf(itemTMP);
     this.lsMaintenanceItemsSelected.splice(indexOfItem, 1);
 
   }
 
   updateAmountByItem(event: any, pItem: MaintenanceItem) {
-    let amount =  event.target.value;
-    if(amount < 0.1){
-      alert("La cantidad ingresada no es válida");
+    const amount =  event.target.value;
+    if (amount < 0.1){
+      alert('La cantidad ingresada no es válida');
       event.target.value = 0.1;
       event.preventDefault();
       return false;
     }else{
       this.lsMaintenanceItemsSelected.find(item => item.id == pItem.id).amount = amount;
-      let mItem = this.lsMaintenanceItemsSelected.find(item => item.id == pItem.id);
+      const mItem = this.lsMaintenanceItemsSelected.find(item => item.id == pItem.id);
       this.updateLabelTotalItem(mItem);
       this.calculateTotalRoutine(this.lsMaintenanceItemsSelected);
     }
   }
 
   updateLabelPriceByAmount(mItem: MaintenanceItem) {
-    let totalByItemWithoutTaxes = (mItem.amount * mItem.referencePrice);
+    const totalByItemWithoutTaxes = (mItem.amount * mItem.referencePrice);
     this.setTotalWithoutTaxesByItem(mItem.id, totalByItemWithoutTaxes);
   }
 
   updateLabelTotalItem(mItem: MaintenanceItem) {
-    let totalByItemWithoutTaxes = (mItem.amount * mItem.referencePrice);
+    const totalByItemWithoutTaxes = (mItem.amount * mItem.referencePrice);
     this.setTotalWithoutTaxesByItem(mItem.id, totalByItemWithoutTaxes);
   }
 
@@ -508,33 +508,33 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     return this.sharedFunctions.formatNumberToString(oNumber);
   }
 
-  getValueWithoutTaxesByItem(idItem:number): number{
+  getValueWithoutTaxesByItem(idItem: number): number{
     try {
-      let idSpanWithoutTaxes = `#${this.getLabePriceByAmountId(idItem)}`;
-      let spanWithoutTaxes: HTMLSpanElement = document.querySelector(idSpanWithoutTaxes);
+      const idSpanWithoutTaxes = `#${this.getLabePriceByAmountId(idItem)}`;
+      const spanWithoutTaxes: HTMLSpanElement = document.querySelector(idSpanWithoutTaxes);
       return parseFloat(spanWithoutTaxes.innerText.replace(/,/g, ''));
     } catch (error) {
-      console.warn("[getValueWithoutTaxesByItem]", error);
+      console.warn('[getValueWithoutTaxesByItem]', error);
     }
   }
 
-  getValueTaxesByItem(idItem:number):number{
+  getValueTaxesByItem(idItem: number): number{
     try {
-      let idSpanTax = `#${this.getLabeTaxesId(idItem)}`;
-      let spanTaxes: HTMLSpanElement = document.querySelector(idSpanTax);
+      const idSpanTax = `#${this.getLabeTaxesId(idItem)}`;
+      const spanTaxes: HTMLSpanElement = document.querySelector(idSpanTax);
       return parseFloat(spanTaxes.innerText.replace(/,/g, ''));
     } catch (error) {
-      console.warn("[getValueTaxesByItem]", error);
+      console.warn('[getValueTaxesByItem]', error);
     }
   }
 
-  getValueTotalByItem(idItem:number):number{
+  getValueTotalByItem(idItem: number): number{
     try {
-      let idItemReference = `#${this.getLabeTotalId(idItem)}`;
-      let spanElemt: HTMLSpanElement = document.querySelector(idItemReference);
+      const idItemReference = `#${this.getLabeTotalId(idItem)}`;
+      const spanElemt: HTMLSpanElement = document.querySelector(idItemReference);
       return parseFloat(spanElemt.innerText.replace(/,/g, ''));
     } catch (error) {
-      console.warn("[getValueTotalByItem]", error);
+      console.warn('[getValueTotalByItem]', error);
     }
   }
 
@@ -548,7 +548,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.totalDiscount = 0;
 
       lsMaintenanceItemsSelected.forEach(item => {
-        let valueWithoutTaxes = this.getValueWithoutTaxesByItem(item.id);
+        const valueWithoutTaxes = this.getValueWithoutTaxesByItem(item.id);
         this.totalWithoutTaxes += valueWithoutTaxes;
       });
       this.updateLabelWithoutTaxes(this.totalWithoutTaxes);
@@ -558,24 +558,24 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.calculateDiscount(this.lsMaintenanceItemsSelected);
 
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
     }
 
   }
 
   async saveWorkOrder() {
     try {
-      if (confirm("¿Está seguro de guardar los datos de esta órden de trabajo?")) {
-        let trxWorkOrder = this.setDataToWorkOrder();
+      if (confirm('¿Está seguro de guardar los datos de esta órden de trabajo?')) {
+        const trxWorkOrder = this.setDataToWorkOrder();
 
 
         this.isAwaiting = true;
-        let financialInformationByClient = await this.quotaService.getFinancialInformationByClient(trxWorkOrder.client.id);
-        let trxWillBePorcesed = ((parseFloat(financialInformationByClient.currentQuota.toString()) - trxWorkOrder.value) > 0) ? true : false;
+        const financialInformationByClient = await this.quotaService.getFinancialInformationByClient(trxWorkOrder.client.id);
+        const trxWillBePorcesed = ((parseFloat(financialInformationByClient.currentQuota.toString()) - trxWorkOrder.value) > 0) ? true : false;
         if (trxWillBePorcesed) {
 
           await this.transactionService.processTransaction(trxWorkOrder).then(response => {
-            let rta = response;
+            const rta = response;
             if (rta.response) {
               alert(rta.message);
               this.clearBufferForm();
@@ -583,7 +583,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
             }
           });
         } else {
-          alert("¡No se puede procesar esta órden de trabajo puesto que el cliente no cuenta con el suficiente cupo disponible!");
+          alert('¡No se puede procesar esta órden de trabajo puesto que el cliente no cuenta con el suficiente cupo disponible!');
         }
         this.isAwaiting = false;
       }
@@ -595,8 +595,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   setDataToWorkOrder(): Transaction {
     try {
-      let { txtObservation, txtMileage } = this.frmWorkOrder.controls;
-      let trxWorkOrder = new Transaction();
+      const { txtObservation, txtMileage } = this.frmWorkOrder.controls;
+      const trxWorkOrder = new Transaction();
       trxWorkOrder.movement = this.lsMovements.find(mv => mv.id == this.ORDEN_DE_TRABAJO);
 
       trxWorkOrder.valueWithoutDiscount = this.totalWithoutTaxes ;
@@ -607,20 +607,20 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       trxWorkOrder.client = this.contractSelected.client;
       trxWorkOrder.usu_id = SecurityValidators.validateUserLogged();
 
-      let trxDetail = new TransactionDetail();
+      const trxDetail = new TransactionDetail();
       trxDetail.dealer = this.dealer;
 
       if (this.branchSelected == null || this.branchSelected == undefined) {
-        throw ("La sucursal es un dato obligatorio para poder cerrar la orden de trabajo");
+        throw new Error(('La sucursal es un dato obligatorio para poder cerrar la orden de trabajo'));
       } else {
         trxDetail.branch = this.branchSelected;
       }
 
       if (this.vehicleSelected == null || this.vehicleSelected == undefined) {
-        throw ("El vehículo ingresado no es válido, por favor rectifique la placa");
+        throw new Error(('El vehículo ingresado no es válido, por favor rectifique la placa'));
       } else {
         trxDetail.vehicle = this.vehicleSelected;
-        let currentMileage = txtMileage.value
+        const currentMileage = txtMileage.value;
         trxDetail.vehicle.mileage = currentMileage.replace(/\,/g, '');
       }
 
@@ -637,14 +637,14 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       trxWorkOrder.headerDetails = trxDetail;
       trxWorkOrder.lsItems = this.lsMaintenanceItemsSelected;
 
-      let aObservation = [];
+      const aObservation = [];
 
-      let observation = new TransactionObservation()
-      let observationDesc = txtObservation.value;
+      const observation = new TransactionObservation();
+      const observationDesc = txtObservation.value;
 
       if (observationDesc.toString().trim() != '') {
         observation.description = observationDesc;
-        observation.usu_id = SecurityValidators.validateUserLogged();;
+        observation.usu_id = SecurityValidators.validateUserLogged();
         aObservation.push(observation);
       }
 
@@ -659,13 +659,13 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
   formatMileageToString(event: any) {
-    let numberToTransform = event.target.value.toString().replace(/\,/g, '');
+    const numberToTransform = event.target.value.toString().replace(/\,/g, '');
 
     event.target.value = this.formatNumberToString(numberToTransform);
   }
 
   closeWorkOrder() {
-    if (confirm("¿está seguro que desea cerrar la orden de trabajo?, sí lo realiza se perderan todos los cambios consignados acá")) {
+    if (confirm('¿está seguro que desea cerrar la orden de trabajo?, sí lo realiza se perderan todos los cambios consignados acá')) {
       this.clearFrmWorkOrder();
       this.clearBufferForm();
       this.workOrderWasCanceled.emit(true);
@@ -676,19 +676,19 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   calculateTaxes(referencePrice: number, lsTaxes: Tax[]): number {
     let taxValue = 0;
     for (const tax of lsTaxes) {
-      let taxTmp = referencePrice * (tax.percentValue / 100);
+      const taxTmp = referencePrice * (tax.percentValue / 100);
       taxValue += taxTmp;
     }
-    return taxValue
+    return taxValue;
   }
 
 
 
   setTaxesValue(item_id: number, taxesValue: number) {
     try {
-      let idLblTaxes = `#${this.getLabeTaxesId(item_id)}`;
-      let labelTaxes: HTMLSpanElement = document.querySelector(idLblTaxes);
-      let taxesFormatted = this.sharedFunctions.formatNumberToString(parseFloat(taxesValue.toFixed(2)))
+      const idLblTaxes = `#${this.getLabeTaxesId(item_id)}`;
+      const labelTaxes: HTMLSpanElement = document.querySelector(idLblTaxes);
+      const taxesFormatted = this.sharedFunctions.formatNumberToString(parseFloat(taxesValue.toFixed(2)));
       labelTaxes.innerText = taxesFormatted;
     } catch (error) {
       console.warn(error);
@@ -699,10 +699,10 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   setTotalValue(item_id: number, totalValue: number) {
     try {
 
-      let idLblTotal = `#${this.getLabeTotalId(item_id)}`;
-      let labelTotal: HTMLSpanElement = document.querySelector(idLblTotal);
+      const idLblTotal = `#${this.getLabeTotalId(item_id)}`;
+      const labelTotal: HTMLSpanElement = document.querySelector(idLblTotal);
 
-      let totalFormatted = this.sharedFunctions.formatNumberToString(parseFloat(totalValue.toFixed(2)))
+      const totalFormatted = this.sharedFunctions.formatNumberToString(parseFloat(totalValue.toFixed(2)));
       labelTotal.innerText = totalFormatted;
     } catch (error) {
       console.warn(error);
@@ -711,13 +711,13 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
 
   closePopUp(idPopUp) {
-    let popUp = document.getElementById(idPopUp);
+    const popUp = document.getElementById(idPopUp);
     popUp.style.display = 'none';
   }
 
   openPopUp(idPopUp) {
     this.oCountChanges += 1;
-    let popUp = document.getElementById(idPopUp);
+    const popUp = document.getElementById(idPopUp);
     popUp.style.display = 'block';
   }
 
@@ -730,9 +730,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
     maintenanceItemsToAdd.forEach(newItem => {
       try {
-        let exitsItem = this.lsMaintenanceItemsSelected.find(it => it.id == newItem.id);
+        const exitsItem = this.lsMaintenanceItemsSelected.find(it => it.id == newItem.id);
         if (exitsItem) {
-          console.warn("[addNewMaintenanceItemsToRoutine]: Ya existe el item seleccionado en la rutina");
+          console.warn('[addNewMaintenanceItemsToRoutine]: Ya existe el item seleccionado en la rutina');
         } else {
           newItem.amount = 1;
           this.lsMaintenanceItems.push(newItem);
@@ -756,7 +756,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   getTotalWithoutTaxes() {
     let totalWithoutTaxes = 0;
-    let lblTotalWithoutTaxes: HTMLSpanElement = document.querySelector('#lbl-total-without-taxes');
+    const lblTotalWithoutTaxes: HTMLSpanElement = document.querySelector('#lbl-total-without-taxes');
     totalWithoutTaxes = parseFloat(lblTotalWithoutTaxes.innerText.replace(/,/g, ''));
     return totalWithoutTaxes;
   }
@@ -765,7 +765,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   calculateDiscount(lsItemsSelected: MaintenanceItem[]) {
     try {
       this.totalDiscount = 0;
-      let totalWithoutTaxes = this.getTotalWithoutTaxes();
+      const totalWithoutTaxes = this.getTotalWithoutTaxes();
 
       switch (this.contractSelected.discountType.id) {
         case DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO:
@@ -793,7 +793,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   }
 
-  calculateDiscountAndTaxesByItem(totalWithoutTaxes: number,totalDiscount: number) {
+  calculateDiscountAndTaxesByItem(totalWithoutTaxes: number, totalDiscount: number) {
     try {
 
       let valueWithoutTaxesAndDiscount = 0;
@@ -802,21 +802,21 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.lsMaintenanceItemsSelected.forEach(item => {
 
         let discountByItem = 0;
-        let valueWithoutTaxesByItem = (item.referencePrice * item.amount) ;
+        const valueWithoutTaxesByItem = (item.referencePrice * item.amount) ;
         item.valueWithoutDiscount = valueWithoutTaxesByItem;
 
-        if(totalDiscount > 0){
-          let participationPercent = valueWithoutTaxesByItem / totalWithoutTaxes;
+        if (totalDiscount > 0){
+          const participationPercent = valueWithoutTaxesByItem / totalWithoutTaxes;
 
           discountByItem = participationPercent * totalDiscount;
         }
         item.discountValue = discountByItem;
         this.setDiscountByItem(item.id, discountByItem);
 
-        let totalWithoutTaxesAndDiscountByItem = valueWithoutTaxesByItem - discountByItem;
+        const totalWithoutTaxesAndDiscountByItem = valueWithoutTaxesByItem - discountByItem;
         item.valueWithDiscountWithoutTaxes = totalWithoutTaxesAndDiscountByItem ;
         valueWithoutTaxesAndDiscount += totalWithoutTaxesAndDiscountByItem;
-        this.setTotalWithoutTaxesAndDiscountByItem(item.id,totalWithoutTaxesAndDiscountByItem);
+        this.setTotalWithoutTaxesAndDiscountByItem(item.id, totalWithoutTaxesAndDiscountByItem);
 
         let taxValue = 0;
         if (item.handleTax) {
@@ -826,7 +826,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
         valueTotaTaxes += taxValue;
         this.setTaxesValue(item.id, taxValue);
 
-        let totalByItem = totalWithoutTaxesAndDiscountByItem + taxValue ;
+        const totalByItem = totalWithoutTaxesAndDiscountByItem + taxValue ;
         this.setTotalByItem(item.id, totalByItem);
       });
 
@@ -843,9 +843,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   setTotalWithoutTaxesByItem(idItem: number, totalByItemWithoutTaxes: number) {
     try {
-      let idTotalWithoutTaxes = `#${this.getLabePriceByAmountId(idItem)}`;
-      let labelTotalWithoutTaxes: HTMLSpanElement = document.querySelector(idTotalWithoutTaxes);
-      let totalwithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2);
+      const idTotalWithoutTaxes = `#${this.getLabePriceByAmountId(idItem)}`;
+      const labelTotalWithoutTaxes: HTMLSpanElement = document.querySelector(idTotalWithoutTaxes);
+      const totalwithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2);
       labelTotalWithoutTaxes.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalwithoutTaxesFormatted));
     } catch (error) {
       console.warn(error);
@@ -854,9 +854,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   setDiscountByItem(idItem: number, discount: number) {
     try {
-      let idDiscountByItem = `#${this.getLabelDiscountId(idItem)}`;
-      let labelDiscountByItem: HTMLSpanElement = document.querySelector(idDiscountByItem);
-      let discountFormatted = discount.toFixed(2);
+      const idDiscountByItem = `#${this.getLabelDiscountId(idItem)}`;
+      const labelDiscountByItem: HTMLSpanElement = document.querySelector(idDiscountByItem);
+      const discountFormatted = discount.toFixed(2);
       labelDiscountByItem.innerText = this.sharedFunctions.formatNumberToString(parseFloat(discountFormatted));
     } catch (error) {
       console.warn(error);
@@ -866,9 +866,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   setTotalWithoutTaxesAndDiscountByItem(idItem: number, totalByItemWithoutTaxesAndDiscount: number) {
     try {
-      let idTotalWithoutTaxesAndDiscount = `#${this.getLabePriceByAmountLessDiscountId(idItem)}`;
-      let labelTotalWithoutTaxesAndDiscount: HTMLSpanElement = document.querySelector(idTotalWithoutTaxesAndDiscount);
-      let totalByItemWithoutTaxesAndDiscountFormatted = totalByItemWithoutTaxesAndDiscount.toFixed(2);
+      const idTotalWithoutTaxesAndDiscount = `#${this.getLabePriceByAmountLessDiscountId(idItem)}`;
+      const labelTotalWithoutTaxesAndDiscount: HTMLSpanElement = document.querySelector(idTotalWithoutTaxesAndDiscount);
+      const totalByItemWithoutTaxesAndDiscountFormatted = totalByItemWithoutTaxesAndDiscount.toFixed(2);
       labelTotalWithoutTaxesAndDiscount.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalByItemWithoutTaxesAndDiscountFormatted));
     } catch (error) {
       console.warn(error);
@@ -879,9 +879,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   setTotalByItem(idItem: number, totalByItem: number) {
     try {
-      let idTotalByItem = this.getLabeTotalId(idItem);
-      let labelTotalByItem: HTMLElement = document.querySelector(`#${idTotalByItem}`);
-      let TotalFormatted = totalByItem.toFixed(2)
+      const idTotalByItem = this.getLabeTotalId(idItem);
+      const labelTotalByItem: HTMLElement = document.querySelector(`#${idTotalByItem}`);
+      const TotalFormatted = totalByItem.toFixed(2);
       labelTotalByItem.innerText = this.sharedFunctions.formatNumberToString(parseFloat(TotalFormatted));
     } catch (error) {
       console.warn(error);
@@ -890,14 +890,14 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
 
   updateLabelDiscount(totalDiscount: number) {
-    let totalDiscountFormatted = totalDiscount.toFixed(2);
-    let lblTotalDiscount: HTMLSpanElement = document.querySelector('#lbl-total-discount');
+    const totalDiscountFormatted = totalDiscount.toFixed(2);
+    const lblTotalDiscount: HTMLSpanElement = document.querySelector('#lbl-total-discount');
     lblTotalDiscount.innerText = `-${this.sharedFunctions.formatNumberToString(parseFloat(totalDiscountFormatted))}`;
   }
 
   updateLabelWithoutTaxesAndDiscount(totalWithoutTaxesAndDiscount: number) {
-    let totalWithoutTaxesAndDiscountFormatted = totalWithoutTaxesAndDiscount.toFixed(2);
-    let lblTotalWithoutTaxesDiscount: HTMLSpanElement = document.querySelector('#lbl-total-without-taxes-and-discount');
+    const totalWithoutTaxesAndDiscountFormatted = totalWithoutTaxesAndDiscount.toFixed(2);
+    const lblTotalWithoutTaxesDiscount: HTMLSpanElement = document.querySelector('#lbl-total-without-taxes-and-discount');
     lblTotalWithoutTaxesDiscount.innerText = this.sharedFunctions.formatNumberToString(parseFloat(totalWithoutTaxesAndDiscountFormatted));
   }
 

@@ -4,7 +4,7 @@ import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
 @Component({
   selector: 'app-tbl-items-to-add',
   templateUrl: './tbl-items-to-add.component.html',
-  styleUrls: ['./tbl-items-to-add.component.scss', '../../../../../assets/styles/checkbox.scss','../../../../../assets/styles/app.scss']
+  styleUrls: ['./tbl-items-to-add.component.scss', '../../../../../assets/styles/checkbox.scss', '../../../../../assets/styles/app.scss']
 })
 export class TblItemsToAddComponent implements OnInit , OnChanges{
 
@@ -14,8 +14,8 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
   lsItemsToAddSelected: MaintenanceItem[];
   @Output() newItemsWasSetted = new EventEmitter<MaintenanceItem[]>();
   @Output() addItemsWasCanceled = new EventEmitter<boolean>();
-  p: number = 1;
-  clearFilterIsVisible:boolean;
+  p = 1;
+  clearFilterIsVisible: boolean;
 
   constructor() {
     this.clearFilterIsVisible = false;
@@ -25,12 +25,12 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
 
   ngOnChanges(changes: SimpleChanges): void {
     this.lsMaintenanceItemsTemp = this.lsMaintenanceItems;
-    for(let change in changes){
-      switch(change){
+    for (const change in changes){
+      switch (change){
         case 'countChanges':
             this.turnOffCheckBoxes();
             this.lsItemsToAddSelected = [];
-          break;
+            break;
       }
     }
   }
@@ -40,13 +40,13 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
   }
 
 
-  pickItemToAdd(event:any, item: MaintenanceItem){
+  pickItemToAdd(event: any, item: MaintenanceItem){
     if (event.checked) {
       this.lsItemsToAddSelected.push(item);
     } else {
-      let itemTmp  = this.lsItemsToAddSelected.find(it => it.id == item.id);
-      let index = this.lsItemsToAddSelected.indexOf(itemTmp);
-      this.lsItemsToAddSelected.splice(index,1);
+      const itemTmp  = this.lsItemsToAddSelected.find(it => it.id == item.id);
+      const index = this.lsItemsToAddSelected.indexOf(itemTmp);
+      this.lsItemsToAddSelected.splice(index, 1);
     }
 
 
@@ -57,12 +57,12 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
     return `chk_add_${pId}`;
   }
 
-  filterItems(event:any){
+  filterItems(event: any){
     try {
       this.validateItemsChecked();
-      let valueToFilter = event.target.value.toString().toLowerCase();
+      const valueToFilter = event.target.value.toString().toLowerCase();
 
-      if(valueToFilter.trim() != ''){
+      if (valueToFilter.trim() != ''){
         this.clearFilterIsVisible = true;
         this.lsMaintenanceItemsTemp = this.lsMaintenanceItems.filter(item => item.code.toLowerCase().includes(valueToFilter) || item.name.toLowerCase().includes(valueToFilter) );
       }else{
@@ -78,27 +78,27 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
     try{
       this.validateItemsChecked();
       this.lsMaintenanceItemsTemp = this.lsMaintenanceItems;
-      let inputFilter:HTMLInputElement = document.querySelector("#txtFilter");
+      const inputFilter: HTMLInputElement = document.querySelector('#txtFilter');
       inputFilter.value = '';
       this.clearFilterIsVisible = false;
       this.p = 1;
-    }catch(error){
+    }catch (error){
 
     }
   }
 
   validateItemsChecked(){
-    setTimeout(()=>{
+    setTimeout(() => {
       this.lsItemsToAddSelected.forEach(item => {
         try {
-          let idCheckbox = `#${this.getCheckBoxId(item.id)}`;
-          let checkElement: HTMLInputElement = document.querySelector(idCheckbox);
+          const idCheckbox = `#${this.getCheckBoxId(item.id)}`;
+          const checkElement: HTMLInputElement = document.querySelector(idCheckbox);
           checkElement.checked = true;
         } catch (error) {
-          //console.warn(error);
+          // console.warn(error);
         }
-      })
-    },300)
+      });
+    }, 300);
   }
 
   addItemsToWorkOrder(){
@@ -106,7 +106,7 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
   }
 
   cancelAddItems(){
-    if(confirm("¿Está seguro que desea cancelar la adición de items?, sí lo hace perdera todo el avance registrado")){
+    if (confirm('¿Está seguro que desea cancelar la adición de items?, sí lo hace perdera todo el avance registrado')){
       this.lsItemsToAddSelected = [];
       this.addItemsWasCanceled.emit(true);
     }
@@ -117,13 +117,13 @@ export class TblItemsToAddComponent implements OnInit , OnChanges{
   turnOffCheckBoxes(){
     this.lsItemsToAddSelected.forEach(item => {
       try {
-        let idCheckbox = `#${this.getCheckBoxId(item.id)}`;
-        let checkElement: HTMLInputElement = document.querySelector(idCheckbox);
+        const idCheckbox = `#${this.getCheckBoxId(item.id)}`;
+        const checkElement: HTMLInputElement = document.querySelector(idCheckbox);
         checkElement.checked = false;
       } catch (error) {
-        //console.warn(error);
+        // console.warn(error);
       }
-    })
+    });
   }
 
 

@@ -8,7 +8,7 @@ import { ResponseApi } from '../../../../Models/ResponseApi';
   providedIn: 'root'
 })
 export class QuotaService {
-  private URL_API =  "/API_FleetService/api/FinancialInformation";
+  private URL_API =  '/API_FleetService/api/FinancialInformation';
   private HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
@@ -17,22 +17,22 @@ export class QuotaService {
   ) {
 
    }
-   async getClientsWithQuota():Promise<FinancialInformation[]>{
-     let urlClientsWithQuota = `${this.URL_API}/GetClientsWithQuota`;
+   async getClientsWithQuota(): Promise<FinancialInformation[]>{
+     const urlClientsWithQuota = `${this.URL_API}/GetClientsWithQuota`;
      return this.http.get<FinancialInformation[]>(urlClientsWithQuota).toPromise();
    }
-   async getClientsWithoutQuota():Promise<Client[]>{
-     let urlClientsWithoutQuota = `${this.URL_API}/GetClientsWithoutQuota`;
+   async getClientsWithoutQuota(): Promise<Client[]>{
+     const urlClientsWithoutQuota = `${this.URL_API}/GetClientsWithoutQuota`;
      return this.http.get<Client[]>(urlClientsWithoutQuota).toPromise();
    }
 
    async getFinancialInformationByClient(client_id: number): Promise<FinancialInformation>{
-    let urlGetFinancialInformation = `${this.URL_API}/GetFinancialInformationByClient?client_id=${client_id}`; 
+    const urlGetFinancialInformation = `${this.URL_API}/GetFinancialInformationByClient?client_id=${client_id}`;
     return this.http.get<FinancialInformation>(urlGetFinancialInformation).toPromise();
    }
 
-   async validatePaymentVsConsumedQuota(pClient_id:Number,  paymentValue: Number):Promise<ResponseApi>{
-     let urlValidatePayment = `${this.URL_API}/ValidatePaymentVsConsumedQuota?pClient_id=${pClient_id}&paymentValue=${paymentValue}`
+   async validatePaymentVsConsumedQuota(pClient_id: Number,  paymentValue: Number): Promise<ResponseApi>{
+     const urlValidatePayment = `${this.URL_API}/ValidatePaymentVsConsumedQuota?pClient_id=${pClient_id}&paymentValue=${paymentValue}`;
      return this.http.get<ResponseApi>(urlValidatePayment).toPromise();
    }
 }

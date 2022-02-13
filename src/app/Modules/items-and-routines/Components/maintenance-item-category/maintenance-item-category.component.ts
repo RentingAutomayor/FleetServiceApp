@@ -20,14 +20,14 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
   @Output() changeCategory  = new EventEmitter<Category>();
   @Output() onFocusOut = new EventEmitter<Category>();
 
-  disableControls:boolean
+  disableControls: boolean;
   @Input('disableControls')
-  set setDisableControls(value:boolean){
+  set setDisableControls(value: boolean){
     this.disableControls = value;
-    if(this.disableControls){
-      this.frmCategory.disable()
+    if (this.disableControls){
+      this.frmCategory.disable();
     }else{
-      this.frmCategory.enable()
+      this.frmCategory.enable();
     }
   }
 
@@ -53,7 +53,7 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
       this.maintenanceItemService.getCategories()
       .then(categories => {
         this.lsCategory =  categories;
-      })
+      });
     } catch (error) {
       console.error(error);
     }
@@ -65,7 +65,7 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
   }
 
   showDataInForm(pCategory: Category) {
-    const indexCategory = (pCategory !== null)?pCategory.id:0;
+    const indexCategory = (pCategory !== null) ? pCategory.id : 0;
     this.frmCategory.controls.cmbCategory.setValue(indexCategory);
   }
 
@@ -74,7 +74,7 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
   }
 
   focusOut(){
-    this.onFocusOut.emit(this.categorySelected)
+    this.onFocusOut.emit(this.categorySelected);
   }
 
 }

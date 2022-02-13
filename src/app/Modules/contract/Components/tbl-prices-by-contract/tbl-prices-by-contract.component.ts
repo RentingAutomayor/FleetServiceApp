@@ -30,7 +30,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
   @Input() discountType: DiscountType;
   @Input() discountValue: number;
   @Output() lsMaintenanceItemsWasSetted = new EventEmitter<MaintenanceItem[]>();
-  sharedFunction: SharedFunction
+  sharedFunction: SharedFunction;
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -38,7 +38,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     private contractService: ContractService
   ) {
     this.lsMaintenanceItems = [];
-    this.pricesByDealer = new PricesByDealer()
+    this.pricesByDealer = new PricesByDealer();
     this.pricesByDealer.lsMaintenanceItems = [];
     this.discountValue = 0;
     this.discountType = new DiscountType();
@@ -48,19 +48,19 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
-      switch(change){
-        case "getPricesOfContract":
+    for (const change in changes) {
+      switch (change){
+        case 'getPricesOfContract':
           this.setPricesByContract();
           break;
-        case "changeDealer":
+        case 'changeDealer':
             this.dealerSelected = this.dealerService.getDealerSelected();
             if (this.dealerSelected != null && this.dealerSelected != undefined) {
               this.getInfoToShowTable();
             }
-          break;
-        case "discountValue":
-        case "discountType":
+            break;
+        case 'discountValue':
+        case 'discountType':
           this.getInfoToShowTable();
           break;
       }
@@ -91,11 +91,11 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     return `lbl_discount_${idItem}`;
   }
 
-  getLabeTaxesId(idItem:number):string{
+  getLabeTaxesId(idItem: number): string{
     return `lbl_taxes_${idItem}`;
   }
 
-  getLabeTotalId(idItem:number):string{
+  getLabeTotalId(idItem: number): string{
     return `lbl_total_${idItem}`;
   }
 
@@ -112,7 +112,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     */
     try {
       this.isAwaiting = true;
-      let dealer_id = (this.dealerSelected != null)? this.dealerSelected.id:0;
+      const dealer_id = (this.dealerSelected != null) ? this.dealerSelected.id : 0;
       this.lsMaintenanceItems = await this.maintenanceItemService.getMaintenanceItems(dealer_id);
       this.isAwaiting = false;
     } catch (error) {
@@ -124,7 +124,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     try {
       this.dealerSelected = this.dealerService.getDealerSelected();
       this.isAwaiting = true;
-      let dealer_id = (this.dealerSelected != null)? this.dealerSelected.id:0;
+      const dealer_id = (this.dealerSelected != null) ? this.dealerSelected.id : 0;
       this.pricesByDealer = await this.maintenanceItemService.getPricesByDealer(dealer_id);
       this.isAwaiting = false;
     } catch (error) {
@@ -134,40 +134,40 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
   setValuesIntoTable(){
     try {
-      setTimeout(() =>{
+      setTimeout(() => {
         this.lsMaintenanceItemsWithPrice = [];
         this.lsMaintenanceItems.forEach(item => {
-          let itemTmp:MaintenanceItem = item;
-          let contractPrice = this.getContractPrice(item.id);
-          let discValue = this.calculateDiscount(parseFloat(contractPrice));
-          let priceWithoutDiscount = parseFloat(contractPrice) - discValue;
+          const itemTmp: MaintenanceItem = item;
+          const contractPrice = this.getContractPrice(item.id);
+          const discValue = this.calculateDiscount(parseFloat(contractPrice));
+          const priceWithoutDiscount = parseFloat(contractPrice) - discValue;
 
           let taxesValue = 0;
-          if(item.handleTax){
-            if(item.lsTaxes.length > 0){
-              taxesValue = this.calculateTaxes(priceWithoutDiscount,item.lsTaxes);
+          if (item.handleTax){
+            if (item.lsTaxes.length > 0){
+              taxesValue = this.calculateTaxes(priceWithoutDiscount, item.lsTaxes);
             }
           }
 
-          let totalByItem =  priceWithoutDiscount + taxesValue;
+          const totalByItem =  priceWithoutDiscount + taxesValue;
 
           itemTmp.referencePrice = parseFloat(contractPrice);
           itemTmp.discountValue = discValue;
           itemTmp.taxesValue = taxesValue;
 
-          this.setContractPrice(item.id,priceWithoutDiscount);
-          this.setDiscoutValue(item.id,discValue);
+          this.setContractPrice(item.id, priceWithoutDiscount);
+          this.setDiscoutValue(item.id, discValue);
           this.setTaxesValue(item.id, taxesValue);
-          this.setTotalValue(item.id,totalByItem)
+          this.setTotalValue(item.id, totalByItem);
 
           this.lsMaintenanceItemsWithPrice.push(itemTmp);
 
-        })
+        });
 
         this.contractService.setItemsWithPrice(this.lsMaintenanceItemsWithPrice);
-      },1500);
+      }, 1500);
     } catch (error) {
-      console.warn("[setValuesIntoTable]", error);
+      console.warn('[setValuesIntoTable]', error);
     }
   }
 
@@ -175,7 +175,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     try {
 
       this.contractSelected = this.contractService.getContract();
-      let contract_id = (this.contractSelected != null && this.contractSelected != undefined)? this.contractSelected.id : 0;
+      const contract_id = (this.contractSelected != null && this.contractSelected != undefined) ? this.contractSelected.id : 0;
       this.isAwaiting = true;
       this.pricesByContract = await this.maintenanceItemService.getPricesByContract(contract_id);
       this.isAwaiting = false;
@@ -190,27 +190,27 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
       let referencePrice = '0';
 
       if (this.pricesByDealer.lsMaintenanceItems != null && this.pricesByDealer.lsMaintenanceItems != undefined && this.pricesByDealer.lsMaintenanceItems.length > 0) {
-        //Reference price by dealer
-        let itemDealer = this.pricesByDealer.lsMaintenanceItems.find(item => item.id == itemId);
+        // Reference price by dealer
+        const itemDealer = this.pricesByDealer.lsMaintenanceItems.find(item => item.id == itemId);
         let valueToShow = '0';
-        if(itemDealer == null){
-          //This case appear when someone create a new product
-          let item = this.lsMaintenanceItems.find(mi => mi.id == itemId);
-          valueToShow = (item != null)?item.referencePrice.toString():'0';
+        if (itemDealer == null){
+          // This case appear when someone create a new product
+          const item = this.lsMaintenanceItems.find(mi => mi.id == itemId);
+          valueToShow = (item != null) ? item.referencePrice.toString() : '0';
         }else{
           valueToShow = itemDealer.referencePrice.toString();
         }
         referencePrice = valueToShow;
       } else {
-        //Reference price by item
+        // Reference price by item
         if (this.lsMaintenanceItems != null && this.lsMaintenanceItems != undefined) {
-          let item = this.lsMaintenanceItems.find(item => item.id == itemId);
+          const item = this.lsMaintenanceItems.find(item => item.id == itemId);
           referencePrice = item.referencePrice.toString();
         }
       }
       return referencePrice;
     } catch (error) {
-      //console.log(error);
+      // console.log(error);
     }
 
   }
@@ -220,36 +220,36 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
       let contractPrice = '0';
 
       if (this.pricesByDealer.lsMaintenanceItems != null && this.pricesByDealer.lsMaintenanceItems != undefined && this.pricesByDealer.lsMaintenanceItems.length > 0) {
-        //Reference price by dealer
-        let itemDealer = this.pricesByDealer.lsMaintenanceItems.find(item => item.id == itemId);
+        // Reference price by dealer
+        const itemDealer = this.pricesByDealer.lsMaintenanceItems.find(item => item.id == itemId);
         let valueToShow = '0';
-        if(itemDealer == null){
-          //This case appear when someone create a new product
-          let item = this.lsMaintenanceItems.find(mi => mi.id == itemId);
-          valueToShow = (item != null)?item.referencePrice.toString():'0';
+        if (itemDealer == null){
+          // This case appear when someone create a new product
+          const item = this.lsMaintenanceItems.find(mi => mi.id == itemId);
+          valueToShow = (item != null) ? item.referencePrice.toString() : '0';
         }else{
           valueToShow = itemDealer.referencePrice.toString();
         }
         contractPrice = valueToShow;
       } else {
-        //Reference price by item
+        // Reference price by item
         if (this.lsMaintenanceItems != null && this.lsMaintenanceItems != undefined) {
-          let item = this.lsMaintenanceItems.find(item => item.id == itemId);
+          const item = this.lsMaintenanceItems.find(item => item.id == itemId);
           contractPrice = item.referencePrice.toString();
         }
       }
 
       return contractPrice;
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
     }
   }
 
-  setContractPrice(item_id:number,contractPrice:number){
+  setContractPrice(item_id: number, contractPrice: number){
     try {
-      let idInputPrice = `#${this.getLabelContractPrice(item_id)}`;
-      let inputPrice: HTMLSpanElement = document.querySelector(idInputPrice);
-      let contractPriceFormatted = this.sharedFunction.formatNumberToString(parseFloat(contractPrice.toFixed(2)))
+      const idInputPrice = `#${this.getLabelContractPrice(item_id)}`;
+      const inputPrice: HTMLSpanElement = document.querySelector(idInputPrice);
+      const contractPriceFormatted = this.sharedFunction.formatNumberToString(parseFloat(contractPrice.toFixed(2)));
       inputPrice.innerText = contractPriceFormatted;
     } catch (error) {
       console.warn(error);
@@ -257,34 +257,34 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
   }
 
 
-  setDiscoutValue(item_id:number,discountValue:number){
+  setDiscoutValue(item_id: number, discountValue: number){
     try {
-      let idlblDiscount = `#${this.getLabelDiscount(item_id)}`;
-      let labelDiscount: HTMLSpanElement = document.querySelector(idlblDiscount);
-      let discountFormatted = this.sharedFunction.formatNumberToString(parseFloat(discountValue.toFixed(2)))
+      const idlblDiscount = `#${this.getLabelDiscount(item_id)}`;
+      const labelDiscount: HTMLSpanElement = document.querySelector(idlblDiscount);
+      const discountFormatted = this.sharedFunction.formatNumberToString(parseFloat(discountValue.toFixed(2)));
       labelDiscount.innerText = discountFormatted;
     } catch (error) {
       console.warn(error);
     }
   }
 
-  setTaxesValue(item_id:number,taxesValue:number){
+  setTaxesValue(item_id: number, taxesValue: number){
     try {
-      let idLblTaxes = `#${this.getLabeTaxesId(item_id)}`;
-      let labelTaxes: HTMLSpanElement  = document.querySelector(idLblTaxes);
-      let taxesFormatted = this.sharedFunction.formatNumberToString(parseFloat(taxesValue.toFixed(2)))
+      const idLblTaxes = `#${this.getLabeTaxesId(item_id)}`;
+      const labelTaxes: HTMLSpanElement  = document.querySelector(idLblTaxes);
+      const taxesFormatted = this.sharedFunction.formatNumberToString(parseFloat(taxesValue.toFixed(2)));
       labelTaxes.innerText = taxesFormatted;
     } catch (error) {
       console.warn(error);
     }
   }
 
-  setTotalValue(item_id:number,totalValue:number){
+  setTotalValue(item_id: number, totalValue: number){
     try {
-      let idLblTotal = `#${this.getLabeTotalId(item_id)}`;
-      let labelTotal: HTMLSpanElement  = document.querySelector(idLblTotal);
+      const idLblTotal = `#${this.getLabeTotalId(item_id)}`;
+      const labelTotal: HTMLSpanElement  = document.querySelector(idLblTotal);
 
-      let totalFormatted = this.sharedFunction.formatNumberToString(parseFloat(totalValue.toFixed(2)))
+      const totalFormatted = this.sharedFunction.formatNumberToString(parseFloat(totalValue.toFixed(2)));
       labelTotal.innerText = totalFormatted;
     } catch (error) {
       console.warn(error);
@@ -292,10 +292,10 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
   }
 
 
-  calculateDiscount(contractPrice:number):number{
+  calculateDiscount(contractPrice: number): number{
     let discount = 0;
     try {
-      switch(this.discountType.id){
+      switch (this.discountType.id){
         case DiscountTypes.PORCENTAJE_POR_REPUESTOS:
           discount = contractPrice * (this.discountValue / 100);
           break;
@@ -310,17 +310,17 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
   }
 
-  calculateTotalByItem(contractPrice:number, item: MaintenanceItem){
-    let valueWithoutDiscount = contractPrice
+  calculateTotalByItem(contractPrice: number, item: MaintenanceItem){
+    const valueWithoutDiscount = contractPrice;
   }
 
   calculateTaxes(referencePrice: number, lsTaxes: Tax[]): number {
     let taxValue = 0;
     for (const tax of lsTaxes) {
-      let taxTmp = referencePrice * (tax.percentValue / 100);
+      const taxTmp = referencePrice * (tax.percentValue / 100);
       taxValue += taxTmp;
     }
-    return taxValue
+    return taxValue;
   }
 
 
@@ -333,16 +333,16 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
       this.pricesByContract.lsMaintenanceItems = cloneDeep(this.lsMaintenanceItems);
 
       this.pricesByContract.lsMaintenanceItems.forEach(item => {
-        let idElement = `#${this.getLabelContractPrice(item.id)}`;
-        let inputElement: HTMLSpanElement = document.querySelector(idElement);
-        let valueFormmated = inputElement.innerText.toString().replace(/,/g,'');
+        const idElement = `#${this.getLabelContractPrice(item.id)}`;
+        const inputElement: HTMLSpanElement = document.querySelector(idElement);
+        const valueFormmated = inputElement.innerText.toString().replace(/,/g, '');
         item.referencePrice = parseFloat(valueFormmated);
       });
 
 
 
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
     }
 
 

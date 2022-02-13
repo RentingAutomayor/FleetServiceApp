@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { FormGroup,FormControl } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Frequency } from 'src/app/Models/Frequency';
 import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/maintenance-routine.service';
 
@@ -7,23 +7,23 @@ import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/mai
 @Component({
   selector: 'app-frequency',
   templateUrl: './frequency.component.html',
-  styleUrls: ['./frequency.component.scss','../../../../../assets/styles/app.scss']
+  styleUrls: ['./frequency.component.scss', '../../../../../assets/styles/app.scss']
 })
 export class FrequencyComponent implements OnInit, OnChanges {
-  frmFrequency:FormGroup;
-  lsFrequency:Frequency[];
+  frmFrequency: FormGroup;
+  lsFrequency: Frequency[];
   @Input() countChanges: number;
-  frequencytoUpdate:Frequency;
+  frequencytoUpdate: Frequency;
   @Output() frequencyWasSelected = new EventEmitter<Frequency>();
 
-  disableControls:boolean
+  disableControls: boolean;
   @Input('disableControls')
-  set setDisableControls(value:boolean){
+  set setDisableControls(value: boolean){
     this.disableControls = value;
-    if(this.disableControls){
-      this.frmFrequency.disable()
+    if (this.disableControls){
+      this.frmFrequency.disable();
     }else{
-      this.frmFrequency.enable()
+      this.frmFrequency.enable();
     }
   }
 
@@ -35,10 +35,10 @@ export class FrequencyComponent implements OnInit, OnChanges {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    for(let change in changes){
-      if(change == "countChanges"){
+    for (const change in changes){
+      if (change == 'countChanges'){
         this.frequencytoUpdate = this.maintenanceRoutineService.getFrecuencySelected();
-        if(this.frequencytoUpdate  != null){
+        if (this.frequencytoUpdate  != null){
           this.setDataInForm(this.frequencytoUpdate );
         }else{
           this.clearForm();
@@ -56,18 +56,18 @@ export class FrequencyComponent implements OnInit, OnChanges {
     this.lsFrequency = await this.maintenanceRoutineService.getFrequency();
   }
 
-  setFrequency(event:any){
-    let oFrequency = this.lsFrequency.find(fq => fq.id == event.value)
+  setFrequency(event: any){
+    const oFrequency = this.lsFrequency.find(fq => fq.id == event.value);
     this.maintenanceRoutineService.setFrecuencySelected(oFrequency);
     this.frequencyWasSelected.emit(oFrequency);
   }
 
-  setDataInForm(pFrequency:Frequency){
+  setDataInForm(pFrequency: Frequency){
     this.frmFrequency.controls.cmbFrequency.setValue(pFrequency.id);
   }
 
   clearForm(){
-    let {cmbFrequency} = this.frmFrequency.controls;
+    const {cmbFrequency} = this.frmFrequency.controls;
     cmbFrequency.setValue(0);
   }
 

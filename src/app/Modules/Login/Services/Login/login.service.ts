@@ -9,7 +9,7 @@ import { variable } from '@angular/compiler/src/output/output_ast';
 export class LoginService {
 
   private URL_API = '/API_FleetService/api/Users/GetAuthenticate';
-  
+
   constructor(private http: HttpClient) { }
 
   // tslint:disable-next-line: typedef

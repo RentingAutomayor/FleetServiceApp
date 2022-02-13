@@ -5,7 +5,7 @@ import * as pluginDataLabels from 'chart.js';
 import { ReportService } from '../../Services/report.service';
 import { Color } from 'angular-bootstrap-md';
 import { Company } from 'src/app/Models/Company';
-import { CompanyType } from "src/app/Models/CompanyType";
+import { CompanyType } from 'src/app/Models/CompanyType';
 
 
 @Component({
@@ -35,7 +35,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
         align: 'end',
       }
     }
-  }
+  };
 
   public chartLabels: Label[] = [];
   public chartType: ChartType = 'line';
@@ -54,7 +54,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
 
 
   constructor(
-    private reportService:ReportService
+    private reportService: ReportService
   ) {
     this.isMainCompanyLogged = false;
     this.dealer_to_filter = null;
@@ -64,8 +64,8 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.dataWasLoad.emit(false)
-    this.getDataToReport()
+    this.dataWasLoad.emit(false);
+    this.getDataToReport();
   }
 
   ngOnInit(): void {
@@ -75,21 +75,21 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
 
 
   initDataToGetReport() {
-   switch(this.company.type){
+   switch (this.company.type){
      case CompanyType.CLIENT:
-        this.typeOfReport = "dealer";
+        this.typeOfReport = 'dealer';
         this.isMainCompanyLogged = false;
         this.client_to_filter = this.company.id;
         this.dealer_to_filter = null;
-       break;
+        break;
       case CompanyType.DEALER:
-        this.typeOfReport = "client";
+        this.typeOfReport = 'client';
         this.isMainCompanyLogged = false;
         this.dealer_to_filter = this.company.id;
         this.client_to_filter = null;
         break;
       case CompanyType.MAIN_COMPANY:
-        this.typeOfReport = "client";
+        this.typeOfReport = 'client';
         this.isMainCompanyLogged = true;
         this.client_to_filter = null;
         this.dealer_to_filter = null;
@@ -100,76 +100,76 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
 
 
   async getDataToReport() {
-    console.warn("[getDataToReport]",this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date);
-    if(this.typeOfReport ==  'client'){
-      await this.reportService.GetAmountWorkOrdersByClientAndMonth(this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date)
+    console.warn('[getDataToReport]', this.client_to_filter, this.dealer_to_filter, this.init_date, this.end_date);
+    if (this.typeOfReport ==  'client'){
+      await this.reportService.GetAmountWorkOrdersByClientAndMonth(this.client_to_filter, this.dealer_to_filter, this.init_date, this.end_date)
       .then(data => {
         let aLabels = [];
         data.forEach(row => {
-          let labelTmp = `${row.Mes}-${row.Anio}`;
-          aLabels = this.validateLabels (aLabels, labelTmp)
+          const labelTmp = `${row.Mes}-${row.Anio}`;
+          aLabels = this.validateLabels (aLabels, labelTmp);
         });
         this.chartLabels = aLabels;
         this.validateDataSets(data);
       });
     }else if (this.typeOfReport == 'dealer'){
-      await this.reportService.GetAmountWorkOrdersByDealerAndMonth(this.client_to_filter,this.dealer_to_filter,this.init_date,this.end_date)
+      await this.reportService.GetAmountWorkOrdersByDealerAndMonth(this.client_to_filter, this.dealer_to_filter, this.init_date, this.end_date)
       .then(data => {
         let aLabels = [];
         data.forEach(row => {
-          let labelTmp = `${row.Mes}-${row.Anio}`;
-          aLabels = this.validateLabels (aLabels, labelTmp)
+          const labelTmp = `${row.Mes}-${row.Anio}`;
+          aLabels = this.validateLabels (aLabels, labelTmp);
         });
         this.chartLabels = aLabels;
         this.validateDataSets(data);
       });
     }
-    this.dataWasLoad.emit(true)
+    this.dataWasLoad.emit(true);
   }
 
-  validateLabels(aLabels:string[], label:string):string[]{
+  validateLabels(aLabels: string[], label: string): string[]{
     let labelExists = false;
     aLabels.forEach(aLabel => {
-      if(aLabel == label){
+      if (aLabel == label){
         labelExists = true;
       }
     });
 
-    if(!labelExists){
+    if (!labelExists){
       aLabels.push(label);
     }
     return aLabels;
   }
 
 
-  validateDataSets(data:any){
-    console.log('validateDataSets')
-    console.table(data)
-    let aDataSet = [];
+  validateDataSets(data: any){
+    console.log('validateDataSets');
+    console.table(data);
+    const aDataSet = [];
     let clientExist = false;
     let dealerExist = false;
 
     data.forEach(row => {
-      if(this.typeOfReport == 'client'){
-        clientExist = false
+      if (this.typeOfReport == 'client'){
+        clientExist = false;
         aDataSet.forEach(client => {
-          if(client == row.Cliente){
+          if (client == row.Cliente){
             clientExist = true;
           }
         });
 
-        if(!clientExist){
+        if (!clientExist){
           aDataSet.push(row.Cliente);
         }
-      }else if(this.typeOfReport == 'dealer'){
-        dealerExist = false
+      }else if (this.typeOfReport == 'dealer'){
+        dealerExist = false;
         aDataSet.forEach(dealer => {
-          if(dealer == row.Concesionario){
+          if (dealer == row.Concesionario){
             dealerExist = true;
           }
         });
 
-        if(!dealerExist){
+        if (!dealerExist){
           aDataSet.push(row.Concesionario);
         }
       }
@@ -179,40 +179,40 @@ export class ReportAmountWorkordersByClientOrByDealerComponent implements OnInit
     this.chartData = [];
 
     aDataSet.forEach(dts => {
-      let dt = {data:[], label:dts};
+      const dt = {data: [], label: dts};
 
-      this.chartData.push(dt)
+      this.chartData.push(dt);
     });
 
-    this.validateDataPosition(data)
+    this.validateDataPosition(data);
 
   }
 
 
-  validateDataPosition(data:any){
+  validateDataPosition(data: any){
     let indexClient = 0;
     let indexDealer = 0;
     let indexMonth = 0;
 
-    //INIT char data In 0
+    // INIT char data In 0
     this.chartData.forEach(dataReport => {
       this.chartLabels.forEach(lbl => {
         dataReport.data.push(0);
-      })
+      });
     });
 
     data.forEach(row => {
-      let labelTmp = `${row.Mes}-${row.Anio}`;
+      const labelTmp = `${row.Mes}-${row.Anio}`;
       indexMonth = this.chartLabels.indexOf(labelTmp);
 
 
-      if(this.typeOfReport == 'client'){
+      if (this.typeOfReport == 'client'){
         indexClient = this.chartData.findIndex(dt => dt.label == row.Cliente);
-        this.chartData[indexClient].data.splice(indexMonth,1,row.Cantidad);
+        this.chartData[indexClient].data.splice(indexMonth, 1, row.Cantidad);
 
-      }else if(this.typeOfReport == 'dealer'){
+      }else if (this.typeOfReport == 'dealer'){
         indexDealer = this.chartData.findIndex(dt => dt.label == row.Concesionario);
-        this.chartData[indexDealer].data.splice(indexMonth,1,row.Cantidad);
+        this.chartData[indexDealer].data.splice(indexMonth, 1, row.Cantidad);
 
       }
 

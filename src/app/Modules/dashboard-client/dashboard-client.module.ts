@@ -19,8 +19,8 @@ import { SharedModule } from 'src/app/SharedComponents/shared.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule,    
-    DashboardClientRoutingModule 
+    SharedModule,
+    DashboardClientRoutingModule
   ]
 })
 export class DashboardClientModule { }

@@ -19,13 +19,13 @@ import { FinancialInformation } from 'src/app/Models/FinancialInformation';
 export class FinancialInformationByClientComponent implements OnInit {
   lsTransactionByClient: LogTransaction[];
   sharedFunctions: SharedFunction;
-  isAwaiting:boolean;
+  isAwaiting: boolean;
   oClient: Client;
   frmQuota: FormGroup;
   financialInformationByClient: FinancialInformation;
 
   constructor(
-    private clientService:ClientService,
+    private clientService: ClientService,
     private transactionService: TransactionService,
     private quotaService: QuotaService
   ) {
@@ -50,7 +50,7 @@ export class FinancialInformationByClientComponent implements OnInit {
     this.sharedFunctions = new SharedFunction();
 
 
-    if(this.oClient != null){
+    if (this.oClient != null){
       this.isAwaiting = true;
       this.getQuotaByClient(this.oClient.id);
       this.getTransactionsByClient( this.oClient.id);
@@ -60,11 +60,11 @@ export class FinancialInformationByClientComponent implements OnInit {
 
   }
 
-  async getTransactionsByClient(client_id : number){
+  async getTransactionsByClient(client_id: number){
     try {
         this.transactionService.getTransactionsByClient(client_id).then(logTrx => {
           this.lsTransactionByClient = logTrx;
-        })
+        });
     } catch (error) {
       console.warn(error);
     }
@@ -74,7 +74,7 @@ export class FinancialInformationByClientComponent implements OnInit {
     try {
       this.quotaService.getFinancialInformationByClient(client_id).then( infoClient => {
         this.financialInformationByClient = infoClient;
-        if(this.financialInformationByClient){
+        if (this.financialInformationByClient){
           this.setFinancialInformationByClient(this.financialInformationByClient);
         }
       });
@@ -84,30 +84,30 @@ export class FinancialInformationByClientComponent implements OnInit {
   }
 
   setFinancialInformationByClient(financialInfo: FinancialInformation){
-    let {txtApprovedQuota,txtCurrentQuota,txtConsumedQuota,txtInTransitQuota} = this.frmQuota.controls;
+    const {txtApprovedQuota, txtCurrentQuota, txtConsumedQuota, txtInTransitQuota} = this.frmQuota.controls;
     txtApprovedQuota.setValue(this.sharedFunctions.formatNumberToString(financialInfo.approvedQuota));
     txtCurrentQuota.setValue(this.sharedFunctions.formatNumberToString(financialInfo.currentQuota));
     txtConsumedQuota.setValue(this.sharedFunctions.formatNumberToString(financialInfo.consumedQuota));
     txtInTransitQuota.setValue(this.sharedFunctions.formatNumberToString(financialInfo.inTransitQuota));
   }
 
-  getState(trxState:TransactionState){
-    if(trxState != null){
+  getState(trxState: TransactionState){
+    if (trxState != null){
       return trxState.name;
     }else{
       return '';
     }
   }
 
-  formatNumber(oData:number){
+  formatNumber(oData: number){
     return this.sharedFunctions.formatNumberToString(oData);
   }
 
-  getResponsable(oTrx:Transaction){
+  getResponsable(oTrx: Transaction){
     return '';
   }
 
-  getBranch(oTrx:Transaction){
+  getBranch(oTrx: Transaction){
     return '';
   }
 }

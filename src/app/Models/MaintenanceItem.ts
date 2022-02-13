@@ -20,8 +20,8 @@ export class MaintenanceItem {
     public valueWithoutDiscount: number;
     public discountValue: number;
     public valueWithDiscountWithoutTaxes: number;
-    public taxesValue:number;
-    public amount:number;
+    public taxesValue: number;
+    public amount: number;
     public state: boolean;
     public handleTax: boolean;
     public lsTaxes: Tax[];

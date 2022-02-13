@@ -21,30 +21,30 @@ import { Branch } from 'src/app/Models/Branch';
 })
 export class ClientComponent implements OnInit {
   oConfigPersonComp: ConfigPersonComponent;
-  bFormHasError:boolean;
-  errorMessage:string;
-  isAwaiting:boolean;
+  bFormHasError: boolean;
+  errorMessage: string;
+  isAwaiting: boolean;
   oPersonToUpdate: Person;
-  areVisibleButtonsForBasicData:boolean =false;
-  client: Client= {
+  areVisibleButtonsForBasicData = false;
+  client: Client = {
     id : 0,
     document: '',
     name: '',
     lastname: '',
-    phone:'',
-    cellphone:'',
-    address:'',
-    email:'',
-    website:'',
+    phone: '',
+    cellphone: '',
+    address: '',
+    email: '',
+    website: '',
     city: {
       id: 0,
-      name :'',
-      departmentId:0,
+      name : '',
+      departmentId: 0,
       state: false
     },
     jobTitle: {
-      id:0,
-      description:'',
+      id: 0,
+      description: '',
       state: false
     },
     state: false,
@@ -52,34 +52,34 @@ export class ClientComponent implements OnInit {
     updateDate: null,
     deleteDate: null,
     contacts: [],
-    branchs:[]
+    branchs: []
   };
-  lsContacts:Contact[] = [];
+  lsContacts: Contact[] = [];
   lsBranchs: Branch[] = [];
   oDataIsToUpdate: boolean;
-  sReturnPath:string;
-  ROUTE_MASTER_CLIENT:string = "/MasterClients";
-  oIsToClient:boolean;
-  oClientWasSaved:boolean;
-  blockFormClient:boolean = false;
-  action:ActionType;
-  //Refactor component
+  sReturnPath: string;
+  ROUTE_MASTER_CLIENT = '/MasterClients';
+  oIsToClient: boolean;
+  oClientWasSaved: boolean;
+  blockFormClient = false;
+  action: ActionType;
+  // Refactor component
   clientID: string;
-  getPersonInfo:boolean = false;
+  getPersonInfo = false;
 
   constructor(
-    private personService:PersonService,
-    private ClientService:ClientService,
-    private cityService:CityService,
+    private personService: PersonService,
+    private ClientService: ClientService,
+    private cityService: CityService,
     private router: ActivatedRoute,
 
   ) {
-    this.client
+    this.client;
     this.bFormHasError = false;
-    this.errorMessage = "";
+    this.errorMessage = '';
     this.isAwaiting = false;
     this.oDataIsToUpdate = false;
-    this.oIsToClient= true;
+    this.oIsToClient = true;
     this.oClientWasSaved = false;
     this.sReturnPath = this.ROUTE_MASTER_CLIENT;
 
@@ -87,8 +87,8 @@ export class ClientComponent implements OnInit {
 
   ngOnInit(): void {
     this.initComponents();
-    this.configurePersonComponent()
-    this.extractDataFromParams()
+    this.configurePersonComponent();
+    this.extractDataFromParams();
 
   }
 
@@ -97,16 +97,16 @@ export class ClientComponent implements OnInit {
     this.router.paramMap
     .subscribe(params => {
       this.clientID = params.get('id');
-      if(this.clientID){
+      if (this.clientID){
         this.ClientService.getClientById(parseInt(this.clientID))
         .then(client => {
-          if(client != null){
+          if (client != null){
             this.client = client;
             this.lsContacts = this.client.contacts;
             this.lsBranchs = this.client.branchs;
             this.oDataIsToUpdate = true;
           }
-        })
+        });
       }else{
         this.client = null;
         this.oDataIsToUpdate = false;
@@ -116,14 +116,14 @@ export class ClientComponent implements OnInit {
   }
 
   initComponents(){
-    //this.hideContainerTabs();
-    let actionToPerform = getFromStorage('actionToPerform');
-    this.action = parseInt(actionToPerform)
-    this.validateActionToDo(this.action)
+    // this.hideContainerTabs();
+    const actionToPerform = getFromStorage('actionToPerform');
+    this.action = parseInt(actionToPerform);
+    this.validateActionToDo(this.action);
   }
 
   validateActionToDo(action: ActionType){
-    if(action === ActionType.READ){
+    if (action === ActionType.READ){
       this.blockFormClient = true;
     }else{
       this.blockFormClient = false;
@@ -144,24 +144,24 @@ export class ClientComponent implements OnInit {
   async SetDataToSaveClient(){
     this.isAwaiting = true;
     try{
-      let oClient =  this.personService.getPerson();
-      let rta = new ResponseApi();
+      const oClient =  this.personService.getPerson();
+      const rta = new ResponseApi();
 
-      if(this.oDataIsToUpdate){
-       //rta = await this.ClientService.updateClient(oClient);
+      if (this.oDataIsToUpdate){
+       // rta = await this.ClientService.updateClient(oClient);
         this.cityService.setSelectedCity(null);
       }else{
        // rta = await this.ClientService.insertClient(oClient);
       }
 
-      if(rta.response){
+      if (rta.response){
         alert(rta.message);
-        let clientTmp = await this.ClientService.getClientByDocument(oClient.document);
+        const clientTmp = await this.ClientService.getClientByDocument(oClient.document);
         this.ClientService.setClientToUpdate(clientTmp);
         this.oClientWasSaved = true;
 
       }
-    }catch(err){
+    }catch (err){
       this.bFormHasError = true;
       this.errorMessage = err.error.Message;
     }
@@ -169,45 +169,45 @@ export class ClientComponent implements OnInit {
   }
 
 
-  openTab(oButton:any,container:string){
-    let tabLinks = document.getElementsByClassName("tab_link");
+  openTab(oButton: any, container: string){
+    const tabLinks = document.getElementsByClassName('tab_link');
 
-    for(let i = 0 ; i < tabLinks.length; i ++){
-      tabLinks[i].classList.remove("active");
+    for (let i = 0 ; i < tabLinks.length; i ++){
+      tabLinks[i].classList.remove('active');
     }
-    oButton.target.className += " active";
-    let containerTabs = document.getElementsByClassName("tab_content");
+    oButton.target.className += ' active';
+    const containerTabs = document.getElementsByClassName('tab_content');
 
-    for(let i = 0 ; i < containerTabs.length; i ++){
-      containerTabs[i].setAttribute("style","display:none");
+    for (let i = 0 ; i < containerTabs.length; i ++){
+      containerTabs[i].setAttribute('style', 'display:none');
     }
 
-    let containerToShow_id = `container__${container}`;
-    let containerToShow = document.getElementById(containerToShow_id);
+    const containerToShow_id = `container__${container}`;
+    const containerToShow = document.getElementById(containerToShow_id);
 
-    containerToShow.setAttribute("style","display:blick");
+    containerToShow.setAttribute('style', 'display:blick');
   }
 
   hideContainerTabs(){
-    let containers = document.getElementsByClassName("tab_inactive");
-    for(let i = 0 ; i < containers.length; i ++){
-      containers[i].setAttribute("style","display:none");
+    const containers = document.getElementsByClassName('tab_inactive');
+    for (let i = 0 ; i < containers.length; i ++){
+      containers[i].setAttribute('style', 'display:none');
     }
   }
 
 
-  moveContent(event:any){
-    let containerContent:HTMLDivElement  = document.querySelector("#container__content");
+  moveContent(event: any){
+    const containerContent: HTMLDivElement  = document.querySelector('#container__content');
 
-    if(event){
-      containerContent.style.marginLeft = "250px";
+    if (event){
+      containerContent.style.marginLeft = '250px';
     }else{
-      containerContent.style.marginLeft = "60px";
+      containerContent.style.marginLeft = '60px';
     }
 
   }
 
-  updateContactsToClient(contacts:Contact[]){
+  updateContactsToClient(contacts: Contact[]){
     this.client.contacts = contacts;
   }
 
@@ -220,7 +220,7 @@ export class ClientComponent implements OnInit {
   }
 
   nextStepBasicData(){
-    const btnNextStep = document.getElementById("btn-next-step-basic-data");
+    const btnNextStep = document.getElementById('btn-next-step-basic-data');
     btnNextStep.click();
   }
 

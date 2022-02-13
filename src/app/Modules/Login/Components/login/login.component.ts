@@ -26,11 +26,11 @@ export class LoginComponent implements OnInit {
       .subscribe( (user: any) => {
         if (user != null) {
           sessionStorage.setItem('sessionUser', JSON.stringify(user));
-          this.router.navigate(["/Home"]);
+          this.router.navigate(['/Home']);
         }else{
-          this.mensajeErrorLogin = 'El usuario no fue encontrado';  
+          this.mensajeErrorLogin = 'El usuario no fue encontrado';
         }
-      });   
+      });
   }
 
 }

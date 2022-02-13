@@ -26,44 +26,44 @@ export class ContactComponent implements OnInit {
   oPersonToUpdate: Person;
   isToInsert: boolean;
   btnAddContact: HTMLButtonElement;
-  sOwnerName:string;
-  titleComponent: string = 'Contactos';
-  actionsAreVisible: boolean = true;
-  isFormBlocked: boolean = false;
-  buttonsAreVisibles: boolean = true;
-  //pagination
-  p: number = 1;
+  sOwnerName: string;
+  titleComponent = 'Contactos';
+  actionsAreVisible = true;
+  isFormBlocked = false;
+  buttonsAreVisibles = true;
+  // pagination
+  p = 1;
 
-  @Input() disableActionButtons:boolean;
+  @Input() disableActionButtons: boolean;
 
-  buttonAddIsVisible:boolean;
+  buttonAddIsVisible: boolean;
   action: ActionType = ActionType.READ;
 
   @Input('action')
   set setAction(action: ActionType){
     this.action = action;
-    this.validateIfButtonAddMustVisible(this.action)
+    this.validateIfButtonAddMustVisible(this.action);
   }
 
   lsContacts: Contact[] = [];
   @Input('contacts')
   set setLsContacts(contacts: Contact[]){
-    this.lsContacts = contacts
+    this.lsContacts = contacts;
   }
 
   client: Client;
   @Input('client')
-  set setClient(client:Client){
-    this.client = client
+  set setClient(client: Client){
+    this.client = client;
   }
 
-  dealer:Dealer;
+  dealer: Dealer;
   @Input('dealer')
   set setDealer(dealer: Dealer){
     this.dealer = dealer;
   }
 
-  @Output() onContactsWereModified = new EventEmitter<Contact[]>()
+  @Output() onContactsWereModified = new EventEmitter<Contact[]>();
 
 
   constructor(
@@ -71,7 +71,7 @@ export class ContactComponent implements OnInit {
     private jobtitleService: JobTitleService,
 
   ) {
-    this.sOwnerName="";
+    this.sOwnerName = '';
     this.disableActionButtons = false;
     this.buttonAddIsVisible = false;
 
@@ -90,11 +90,11 @@ export class ContactComponent implements OnInit {
 
   activateButtonAdd() {
     try{
-      this.btnAddContact = document.querySelector("#btnAddContact");
+      this.btnAddContact = document.querySelector('#btnAddContact');
       this.btnAddContact.disabled = false;
-      this.btnAddContact.classList.remove("error");
-    }catch(error){
-      console.warn(error.message)
+      this.btnAddContact.classList.remove('error');
+    }catch (error){
+      console.warn(error.message);
     }
   }
 
@@ -117,13 +117,13 @@ export class ContactComponent implements OnInit {
     this.showPopUp();
   }
 
-  getDetailsOfContant(contactId:number){
+  getDetailsOfContant(contactId: number){
     this.oPersonToUpdate  = this.lsContacts.find(contact => contact.id === contactId);
     this.isFormBlocked = true;
     this.showPopUp();
   }
 
-  updateContact(contactId:number) {
+  updateContact(contactId: number) {
     this.isToInsert = false;
     this.oPersonToUpdate  = this.lsContacts.find(contact => contact.id === contactId);
     this.isFormBlocked = false;
@@ -131,20 +131,20 @@ export class ContactComponent implements OnInit {
   }
 
   showPopUp() {
-    let containerForm = document.getElementById("container__formContact");
-    containerForm.setAttribute("style", "display:block");
+    const containerForm = document.getElementById('container__formContact');
+    containerForm.setAttribute('style', 'display:block');
   }
 
   hidePopUp() {
-    let containerForm = document.getElementById("container__formContact");
-    containerForm.setAttribute("style", "display:none");
+    const containerForm = document.getElementById('container__formContact');
+    containerForm.setAttribute('style', 'display:none');
   }
 
   saveContact() {
     try {
-      let oPerson = this.personService.getPerson();
-      let oContact = null
-      if(this.isToInsert){
+      const oPerson = this.personService.getPerson();
+      let oContact = null;
+      if (this.isToInsert){
         oContact = this.setDataToContact(oPerson);
         oContact.id = 0;
       }else{
@@ -152,13 +152,13 @@ export class ContactComponent implements OnInit {
         oContact.id = oPerson.id;
       }
 
-      if(oContact != null){
+      if (oContact != null){
         this.saveData(oContact);
       }
 
     } catch (err) {
       console.error(err.error.Message);
-      alert(err.error.Message)
+      alert(err.error.Message);
     }
 
   }
@@ -168,32 +168,32 @@ export class ContactComponent implements OnInit {
     if (this.isToInsert) {
       this.lsContacts.unshift(oContact);
     } else {
-      const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == oContact.id)
+      const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == oContact.id);
       this.lsContacts[contactIndex] = oContact;
     }
     this.hidePopUp();
     this.isAwaiting = false;
-    this.onContactsWereModified.emit(this.lsContacts)
+    this.onContactsWereModified.emit(this.lsContacts);
 
   }
 
   deleteContact(pContact: Contact) {
     try {
-      if (confirm("¿Está seguro que desea eliminar este contacto?")) {
+      if (confirm('¿Está seguro que desea eliminar este contacto?')) {
         this.isAwaiting = true;
-        const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == pContact.id)
-        this.lsContacts.splice(contactIndex,1);
+        const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == pContact.id);
+        this.lsContacts.splice(contactIndex, 1);
         this.isAwaiting = false;
-        this.onContactsWereModified.emit(this.lsContacts)
+        this.onContactsWereModified.emit(this.lsContacts);
       }
     } catch (err) {
       console.error(err.error.Message);
-      alert(err.error.Message)
+      alert(err.error.Message);
     }
   }
 
   setDataToContact(oPerson: Person): CreateContactDTO {
-    let oContact = {} as CreateContactDTO
+    const oContact = {} as CreateContactDTO;
     oContact.name = oPerson.name;
     oContact.lastname = oPerson.lastname;
     oContact.phone = oPerson.phone;
@@ -202,8 +202,8 @@ export class ContactComponent implements OnInit {
     oContact.address = oPerson.address;
     oContact.jobTitle = oPerson.jobTitle;
     oContact.city = oPerson.city;
-    oContact.Dealer_id = (this.dealer != null)?this.dealer.id:null;
-    oContact.Client_id = (this.client != null)?this.client.id:null;
+    oContact.Dealer_id = (this.dealer != null) ? this.dealer.id : null;
+    oContact.Client_id = (this.client != null) ? this.client.id : null;
     return oContact;
   }
 
@@ -211,7 +211,7 @@ export class ContactComponent implements OnInit {
     if (pJobTitle != null) {
       return pJobTitle.description;
     }
-    return "";
+    return '';
   }
 
   comeBackToTable() {
@@ -219,20 +219,20 @@ export class ContactComponent implements OnInit {
   }
 
   validateIfButtonAddMustVisible(action: ActionType){
-    switch(action){
+    switch (action){
       case ActionType.READ:
           this.buttonAddIsVisible = false;
-        break;
+          break;
       case ActionType.UPDATE:
       case ActionType.CREATE:
           this.buttonAddIsVisible = true;
-        break;
+          break;
     }
     this.validateData();
   }
 
   validateData(){
-    if((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
+    if ((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
       this.activateButtonAdd();
     }
   }

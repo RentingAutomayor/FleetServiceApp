@@ -12,11 +12,11 @@ import { Router } from '@angular/router';
 })
 export class TblMovementsComponent implements OnInit {
   lsMovements: Movement[];
-  isAwaiting:boolean;
-  countChanges:number;
+  isAwaiting: boolean;
+  countChanges: number;
   constructor(
-    private movementService : MovementService,
-    private router:Router
+    private movementService: MovementService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -35,7 +35,7 @@ export class TblMovementsComponent implements OnInit {
       this.movementService.getMovements()
         .then(data => this.lsMovements = data);
       this.isAwaiting = false;
-    }catch(error){
+    }catch (error){
       console.warn(error);
     }
   }
@@ -46,9 +46,9 @@ export class TblMovementsComponent implements OnInit {
     this.router.navigate(['/MasterMovements/Movement']);
   }
 
-  async updateMovement(movement_id:number){
+  async updateMovement(movement_id: number){
     try {
-      let oMovement = await this.movementService.getMovementById(movement_id);
+      const oMovement = await this.movementService.getMovementById(movement_id);
 
       this.movementService.setMovementToUpdate(oMovement);
       this.router.navigate(['/MasterMovements/Movement']);
@@ -58,14 +58,14 @@ export class TblMovementsComponent implements OnInit {
 
   }
 
-  async deleteMovement(pMovement:Movement){
+  async deleteMovement(pMovement: Movement){
     try {
 
-      if(confirm("¿Está seguro que desea eliminar este movimiento?")){
+      if (confirm('¿Está seguro que desea eliminar este movimiento?')){
         this.isAwaiting = true;
-        let rta = await this.movementService.delete(pMovement);
+        const rta = await this.movementService.delete(pMovement);
         this.isAwaiting = false;
-        if(rta.response){
+        if (rta.response){
           alert(rta.message);
           this.getMovementList();
         }

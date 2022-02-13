@@ -1,4 +1,4 @@
-import { CompanyType } from "./CompanyType";
+import { CompanyType } from './CompanyType';
 import { Company } from './Company';
 
 export class SecurityValidators {
@@ -11,8 +11,8 @@ export class SecurityValidators {
 
     public static validateUserAndCompany(): Company {
         try {
-            let companyStorage = new Company;
-            let userSession = JSON.parse(sessionStorage.getItem('sessionUser'));
+            const companyStorage = new Company;
+            const userSession = JSON.parse(sessionStorage.getItem('sessionUser'));
 
             companyStorage.type = userSession.company.type;
 
@@ -31,7 +31,7 @@ export class SecurityValidators {
 
     public static validateUserLogged(): number {
         try {
-            let userSession = JSON.parse(sessionStorage.getItem('sessionUser'));
+            const userSession = JSON.parse(sessionStorage.getItem('sessionUser'));
             return userSession.id_user;
         }
         catch (error) {

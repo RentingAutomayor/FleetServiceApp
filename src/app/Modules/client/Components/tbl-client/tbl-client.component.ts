@@ -18,16 +18,16 @@ import { saveInStorage } from 'src/app/Utils/storage';
 })
 export class TblClientComponent implements OnInit {
   lsClient: Client[];
-  isAwaiting:boolean;
+  isAwaiting: boolean;
   company: Company;
   enableButtonsEditAndDelete: boolean;
-   //pagination
-   p:number = 1;
+   // pagination
+   p = 1;
 
-   action: ActionType
+   action: ActionType;
 
   constructor(
-    private clientService : ClientService,
+    private clientService: ClientService,
     private router: Router,
     private navigationService: NavigationService
   ) {
@@ -47,7 +47,7 @@ export class TblClientComponent implements OnInit {
     this.clientService.setClientToUpdate(null);
     try{
       this.lsClient = await this.clientService.getClients();
-    }catch(err){
+    }catch (err){
       console.error(err.error.Message);
       alert(err.error.Message);
     }
@@ -61,63 +61,63 @@ export class TblClientComponent implements OnInit {
         case CompanyType.DEALER:
         case CompanyType.CLIENT:
             this.enableButtonsEditAndDelete = false;
-          break;
+            break;
         default:
             this.enableButtonsEditAndDelete = true;
-          break;
+            break;
       }
     } catch (error) {
       console.warn(error);
     }
   }
 
-  validateCityName(pCity:City):string{
-    if(pCity!= null){
+  validateCityName(pCity: City): string{
+    if (pCity != null){
       return pCity.name;
     }else{
-      return "";
+      return '';
     }
   }
 
 
-  getDetailsClient(pId:number){
+  getDetailsClient(pId: number){
     try{
       this.action = ActionType.READ;
       this.clientService.setAction(this.action);
-      saveInStorage('actionToPerform', this.action)
-      this.router.navigate(["/MasterClients/Client",pId]);
-    }catch(err){
+      saveInStorage('actionToPerform', this.action);
+      this.router.navigate(['/MasterClients/Client', pId]);
+    }catch (err){
       console.error(err.error.Message);
       alert(err.error.Message);
     }
   }
 
-  updateClient(pId:number){
+  updateClient(pId: number){
     try{
       this.action = ActionType.UPDATE;
       this.clientService.setAction(this.action);
-      saveInStorage('actionToPerform', this.action)
-      this.router.navigate(["/MasterClients/Client",pId]);
-    }catch(err){
+      saveInStorage('actionToPerform', this.action);
+      this.router.navigate(['/MasterClients/Client', pId]);
+    }catch (err){
       console.error(err.error.Message);
       alert(err.error.Message);
     }
   }
 
-  deleteClient(pClient:Client){
+  deleteClient(pClient: Client){
     try{
-      if(confirm("¿Está seguro que desea eliminar este cliente?")){
+      if (confirm('¿Está seguro que desea eliminar este cliente?')){
         this.isAwaiting = true;
-        this.clientService.deleteClient(pClient).then(response =>{
-          let rta = response
+        this.clientService.deleteClient(pClient).then(response => {
+          const rta = response;
           this.isAwaiting = false;
-          if(rta.response){
+          if (rta.response){
             alert(rta.message);
             this.initComponents();
           }
-        })
+        });
       }
-    }catch(err){
+    }catch (err){
       console.error(err.error.Message);
       alert(err.error.Message);
     }
@@ -127,16 +127,16 @@ export class TblClientComponent implements OnInit {
   insertClient(){
     this.action = ActionType.CREATE;
     this.clientService.setAction(this.action);
-    saveInStorage('actionToPerform', this.action)
-    this.router.navigate(["/MasterClients/Client"]);
+    saveInStorage('actionToPerform', this.action);
+    this.router.navigate(['/MasterClients/Client']);
   }
 
-  moveContent(event:any){
-    let containerContent:HTMLDivElement  = document.querySelector("#container__content");
-    if(event){
-      containerContent.style.marginLeft = "250px";
+  moveContent(event: any){
+    const containerContent: HTMLDivElement  = document.querySelector('#container__content');
+    if (event){
+      containerContent.style.marginLeft = '250px';
     }else{
-      containerContent.style.marginLeft = "0px";
+      containerContent.style.marginLeft = '0px';
     }
 
   }

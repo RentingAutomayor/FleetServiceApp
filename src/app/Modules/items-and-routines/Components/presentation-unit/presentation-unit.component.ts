@@ -25,8 +25,8 @@ export class PresentationUnitComponent implements OnInit {
   @Input('presentationUnit')
   set setPresentationUnit(presentation: PresentationUnit){
     this.presentationUnitSelected = presentation;
-    if(this.presentationUnitSelected !== null && this.presentationUnitSelected !== undefined){
-      this.setDataInForm(this.presentationUnitSelected)
+    if (this.presentationUnitSelected !== null && this.presentationUnitSelected !== undefined){
+      this.setDataInForm(this.presentationUnitSelected);
       this.changePresentation.emit(this.presentationUnitSelected);
     }else{
       this.clearForm();
@@ -35,23 +35,23 @@ export class PresentationUnitComponent implements OnInit {
 
   }
 
-  idTypeOfItem: number
+  idTypeOfItem: number;
   @Input('idTypeOfItem')
-  set setIdTypeOfItem (idType: number){
-    this.idTypeOfItem = idType
+  set setIdTypeOfItem(idType: number){
+    this.idTypeOfItem = idType;
     if (this.idTypeOfItem !== 0) {
-        this.filterPresentationsByType(this.idTypeOfItem)
+        this.filterPresentationsByType(this.idTypeOfItem);
     }
   }
 
-  disableControls:boolean
+  disableControls: boolean;
   @Input('disableControls')
-  set setDisableControls(value:boolean){
+  set setDisableControls(value: boolean){
     this.disableControls = value;
-    if(this.disableControls){
-      this.frmPresentationUnit.disable()
+    if (this.disableControls){
+      this.frmPresentationUnit.disable();
     }else{
-      this.frmPresentationUnit.enable()
+      this.frmPresentationUnit.enable();
     }
   }
 
@@ -82,12 +82,12 @@ export class PresentationUnitComponent implements OnInit {
       if (this.idTypeOfItem !== 0) {
         this.maintenanceItemService.getPresentationUnits()
           .then(presentations => {
-            this.lsPresentationUnit = presentations
-            this.filterPresentationsByType(this.idTypeOfItem)
+            this.lsPresentationUnit = presentations;
+            this.filterPresentationsByType(this.idTypeOfItem);
             if (this.presentationUnitSelected  !== null) {
-              this.setDataInForm(this.presentationUnitSelected )
+              this.setDataInForm(this.presentationUnitSelected );
             }
-          })
+          });
       }
     } catch (error) {
 
@@ -96,9 +96,9 @@ export class PresentationUnitComponent implements OnInit {
 
   filterPresentationsByType(idType: number) {
     if (this.idTypeOfItem == TypeOfMaintenanceItems.MANO_DE_OBRA) {
-      this.lsPresentationUnitFiltered = this.lsPresentationUnit.filter(pres => pres.id === PresentationUnits.HORAS)
+      this.lsPresentationUnitFiltered = this.lsPresentationUnit.filter(pres => pres.id === PresentationUnits.HORAS);
     } else {
-      this.lsPresentationUnitFiltered = this.lsPresentationUnit.filter(pres => pres.id !== PresentationUnits.HORAS)
+      this.lsPresentationUnitFiltered = this.lsPresentationUnit.filter(pres => pres.id !== PresentationUnits.HORAS);
     }
   }
 
@@ -112,8 +112,8 @@ export class PresentationUnitComponent implements OnInit {
   }
 
   setDataInForm(pPresentation: PresentationUnit) {
-    let idPresentation = (pPresentation !== null) ? pPresentation.id : 0;
-    this.frmPresentationUnit.controls.cmbPresentationUnit.setValue(idPresentation)
+    const idPresentation = (pPresentation !== null) ? pPresentation.id : 0;
+    this.frmPresentationUnit.controls.cmbPresentationUnit.setValue(idPresentation);
   }
 
   presentationUnitFocusOut() {

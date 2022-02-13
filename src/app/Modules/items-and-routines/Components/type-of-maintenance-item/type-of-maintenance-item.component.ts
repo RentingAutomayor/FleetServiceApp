@@ -20,28 +20,28 @@ export class TypeOfMaintenanceItemComponent implements OnInit {
   @Input('typeOfItem')
   set setTypeOfItem(type: TypeOfMaintenanceItem){
     this.typeOfItemSelected = type;
-    if(this.typeOfItemSelected !== null && this.typeOfItemSelected !== undefined){
-      this.setDataInForm(this.typeOfItemSelected)
+    if (this.typeOfItemSelected !== null && this.typeOfItemSelected !== undefined){
+      this.setDataInForm(this.typeOfItemSelected);
       this.chageType.emit(this.typeOfItemSelected);
     }else{
-      this.clearForm()
+      this.clearForm();
       this.chageType.emit(null);
     }
   }
 
-  disableControls:boolean
+  disableControls: boolean;
   @Input('disableControls')
-  set setDisableControls(value:boolean){
+  set setDisableControls(value: boolean){
     this.disableControls = value;
-    if(this.disableControls){
-      this.frmType.disable()
+    if (this.disableControls){
+      this.frmType.disable();
     }else{
-      this.frmType.enable()
+      this.frmType.enable();
     }
   }
 
   constructor(
-    private maintenanceItemService:MaintenanceItemService
+    private maintenanceItemService: MaintenanceItemService
   ) {
     this.frmType = new FormGroup({
       cmbType: new FormControl('Seleccione ...')
@@ -58,11 +58,11 @@ export class TypeOfMaintenanceItemComponent implements OnInit {
       this.maintenanceItemService.getTypeOfMaintenanceItem()
       .then(lsTypes => {
         this.lsType = lsTypes;
-        if(this.typeOfItemSelected !== null){
-          this.setDataInForm(this.typeOfItemSelected)
-          this.setType(this.typeOfItemSelected)
+        if (this.typeOfItemSelected !== null){
+          this.setDataInForm(this.typeOfItemSelected);
+          this.setType(this.typeOfItemSelected);
         }else{
-          this.clearForm()
+          this.clearForm();
         }
       });
     } catch (err) {
@@ -71,13 +71,13 @@ export class TypeOfMaintenanceItemComponent implements OnInit {
     }
   }
 
-  setType(event:any){
+  setType(event: any){
     this.typeOfItemSelected = this.lsType.find(tp => tp.id == event.value);
     this.chageType.emit(this.typeOfItemSelected);
   }
 
-  setDataInForm(pType:TypeOfMaintenanceItem){
-    const indexType = (pType!==null)?pType.id:1;
+  setDataInForm(pType: TypeOfMaintenanceItem){
+    const indexType = (pType !== null) ? pType.id : 1;
     this.frmType.controls.cmbType.setValue(indexType);
   }
 

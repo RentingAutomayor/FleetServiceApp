@@ -8,15 +8,15 @@ import { DealerService } from '../../Modules/dealer/Services/Dealer/dealer.servi
 @Component({
   selector: 'app-input-search-dealer',
   templateUrl: './input-search-dealer.component.html',
-  styleUrls: ['./input-search-dealer.component.scss','../../../assets/styles/searchList.scss']
+  styleUrls: ['./input-search-dealer.component.scss', '../../../assets/styles/searchList.scss']
 })
-export class InputSearchDealerComponent implements OnInit,OnChanges {
+export class InputSearchDealerComponent implements OnInit, OnChanges {
   lsDealerSuggestion$: Observable<Dealer[]>;
   private description = new Subject<string>();
   frmSearchDealer: FormGroup;
   listIsvisible: boolean;
   dealerSelected: Dealer;
-  @Input() countChanges:number;
+  @Input() countChanges: number;
   @Input() disableField: boolean;
   @Output() dealerWasSetted = new EventEmitter<boolean>();
 
@@ -31,17 +31,17 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
+    for (const change in changes) {
 
-      if(change == "countChanges"){
+      if (change == 'countChanges'){
         this.dealerSelected = this.dealerService.getDealerSelected();
-        if(this.dealerSelected != null && this.dealerSelected != undefined){
+        if (this.dealerSelected != null && this.dealerSelected != undefined){
           this.setDataInForm(this.dealerSelected);
           this.dealerWasSetted.emit(true);
         }else{
           this.frmSearchDealer.reset();
         }
-      }else if(change == "disableField"){
+      }else if (change == 'disableField'){
         this.toggleFieldDealer();
       }
     }
@@ -52,7 +52,7 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
   }
 
   async initComponents(){
-    if(this.disableField){
+    if (this.disableField){
       this.frmSearchDealer.controls.txtDealer.disable();
     }
     this.countChanges = 0;
@@ -60,20 +60,20 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
     this.lsDealerSuggestion$ = this.description.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((desc:string) => this.dealerService.getDealersByDescription(desc))
-    )
+      switchMap((desc: string) => this.dealerService.getDealersByDescription(desc))
+    );
   }
 
-  searchBydescription(sDescription:string){
+  searchBydescription(sDescription: string){
     this.listIsvisible = true;
-    if(sDescription == ""){
+    if (sDescription == ''){
       this.dealerService.setDealerSelected(null);
     }
     this.description.next(sDescription);
   }
 
   getDealerDescription(pDealer: Dealer){
-    return `${pDealer.document} | ${pDealer.name.toUpperCase()} `
+    return `${pDealer.document} | ${pDealer.name.toUpperCase()} `;
   }
 
   setDealer(pDealer: Dealer){
@@ -84,7 +84,7 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
   }
 
   setDataInForm(pDealer: Dealer){
-    let {txtDealer} = this.frmSearchDealer.controls;
+    const {txtDealer} = this.frmSearchDealer.controls;
     txtDealer.setValue(this.getDealerDescription(pDealer));
   }
 
@@ -93,9 +93,9 @@ export class InputSearchDealerComponent implements OnInit,OnChanges {
   }
 
   toggleFieldDealer(){
-    let {txtDealer} = this.frmSearchDealer.controls;
+    const {txtDealer} = this.frmSearchDealer.controls;
 
-    if(this.disableField){
+    if (this.disableField){
       txtDealer.disable();
     }else{
       txtDealer.enable();

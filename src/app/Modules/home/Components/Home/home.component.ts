@@ -11,26 +11,26 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
   styleUrls: ['./home.component.scss', '../../../../../assets/styles/app.scss']
 })
 export class HomeComponent implements OnInit {
-  company:Company;
+  company: Company;
   frmFilter: FormGroup;
   dtStartingDate: Date;
   dtEndingDate: Date;
   btnSearchIsDisabled: boolean;
   datesAreInvalid: boolean;
-  filterInitDate:Date;
-  filterEndDate:Date;
+  filterInitDate: Date;
+  filterEndDate: Date;
 
 
   isAwaiting: boolean;
   constructor(
     private formBuilder: FormBuilder
   ) {
-    let now = new Date();
+    const now = new Date();
     this.dtStartingDate = null;
     this.dtEndingDate = null;
     this.buildFormFilter();
-    this.btnSearchIsDisabled = true
-    this.datesAreInvalid = false
+    this.btnSearchIsDisabled = true;
+    this.datesAreInvalid = false;
 
   }
 
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.company = this.validateCompany()
+    this.company = this.validateCompany();
 
   }
 
@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
     this.frmFilter = this.formBuilder.group({
       startingDate: [, [Validators.required]],
       endingDate: [, [Validators.required]]
-    })
+    });
   }
 
   validateCompany(): Company {
@@ -63,11 +63,11 @@ export class HomeComponent implements OnInit {
     return null;
   }
 
-  validateInitDate(initDate:any): void {
-    this.dtStartingDate = initDate.toISOString()
-    this.validateDates( this.dtStartingDate,this.dtEndingDate)
-    const initDateIsValid = this.validateDates(this.dtStartingDate,this.dtEndingDate)
-    if(!initDateIsValid){
+  validateInitDate(initDate: any): void {
+    this.dtStartingDate = initDate.toISOString();
+    this.validateDates( this.dtStartingDate, this.dtEndingDate);
+    const initDateIsValid = this.validateDates(this.dtStartingDate, this.dtEndingDate);
+    if (!initDateIsValid){
       this.datesAreInvalid = true;
       this.btnSearchIsDisabled = true;
     }else{
@@ -76,10 +76,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  validateEndDate(endDate:any): void {
-    this.dtEndingDate = endDate.toISOString()
-    const endDateIsValid = this.validateDates(this.dtStartingDate, this.dtEndingDate)
-    if(!endDateIsValid){
+  validateEndDate(endDate: any): void {
+    this.dtEndingDate = endDate.toISOString();
+    const endDateIsValid = this.validateDates(this.dtStartingDate, this.dtEndingDate);
+    if (!endDateIsValid){
       this.datesAreInvalid = true;
       this.btnSearchIsDisabled = true;
     }else{
@@ -89,8 +89,8 @@ export class HomeComponent implements OnInit {
   }
 
   validateDates(initDate, endDate): boolean{
-    console.log(`${initDate} - ${endDate}`)
-    if((initDate > endDate) || initDate == null || endDate == null){
+    console.log(`${initDate} - ${endDate}`);
+    if ((initDate > endDate) || initDate == null || endDate == null){
       return false;
     }else{
       return true;
@@ -103,7 +103,7 @@ export class HomeComponent implements OnInit {
   }
 
   dataWasLoadReportAmmountWorkOrdersByClientOrDealer(dataWasLoad: boolean){
-    if(!dataWasLoad){
+    if (!dataWasLoad){
       this.isAwaiting = true;
     }else{
       this.isAwaiting = false;
@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit {
   }
 
   dataWasLoadReportTrxByState(dataWasLoad: boolean){
-    if(!dataWasLoad){
+    if (!dataWasLoad){
       this.isAwaiting = true;
     }else{
       this.isAwaiting = false;
@@ -119,7 +119,7 @@ export class HomeComponent implements OnInit {
   }
 
   dataWasLoadReportTrxByVehicle(dataWasLoad: boolean){
-    if(!dataWasLoad){
+    if (!dataWasLoad){
       this.isAwaiting = true;
     }else{
       this.isAwaiting = false;
@@ -127,7 +127,7 @@ export class HomeComponent implements OnInit {
   }
 
   dataWasLoadReportValuesByMonth(dataWasLoad: boolean){
-    if(!dataWasLoad){
+    if (!dataWasLoad){
       this.isAwaiting = true;
     }else{
       this.isAwaiting = false;

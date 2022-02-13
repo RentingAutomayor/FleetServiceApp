@@ -6,11 +6,11 @@ import { TransactionService } from '../../../../SharedComponents/Services/Transa
 import { SessionUser } from 'src/app/Models/SessionUser';
 import { SecurityValidators } from 'src/app/Models/SecurityValidators';
 import { Company } from 'src/app/Models/Company';
-import { CompanyType } from "src/app/Models/CompanyType";
-import { DatePipe } from '@angular/common'
+import { CompanyType } from 'src/app/Models/CompanyType';
+import { DatePipe } from '@angular/common';
 import { DealerService } from 'src/app/Modules/dealer/Services/Dealer/dealer.service';
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service';
-import { Movement,Movements } from 'src/app/Models/Movement';
+import { Movement, Movements } from 'src/app/Models/Movement';
 import { MovementService } from '../../../movement/Services/Movement/movement.service';
 import { TransactionDetail } from 'src/app/Models/TransactionDetail';
 import { TransactionObservation } from 'src/app/Models/TransactionObservation';
@@ -24,9 +24,9 @@ export class WorkOrderManagerComponent implements OnInit {
   isAwaiting: boolean;
   lsWorkOrderByDealer: Transaction[];
   transactionSelected: Transaction;
-  trx_id:number;
+  trx_id: number;
   frm_filter: FormGroup;
-  countChanges:number;
+  countChanges: number;
 
   public typeOfReport: string;
   company: Company;
@@ -35,28 +35,28 @@ export class WorkOrderManagerComponent implements OnInit {
   client_to_filter: number;
   init_date: string;
   end_date: string;
-  code_to_filter:string;
-  license_plate_toFilter:string;
-  state_to_filter:number;
+  code_to_filter: string;
+  license_plate_toFilter: string;
+  state_to_filter: number;
 
 
   isDealer: Boolean;
   isMainCompany: Boolean;
 
-  isFiltered:boolean;
+  isFiltered: boolean;
 
   lsTransactionStates: TransactionState[];
   lsMovements: Movement[];
 
   frmApprovedTrx: FormGroup;
-  frmCancelTrx:FormGroup;
+  frmCancelTrx: FormGroup;
 
   constructor(
     private transactionService: TransactionService,
-    private datePipe:DatePipe,
-    private dealerService:DealerService,
-    private clientService:ClientService,
-    private movementService:MovementService
+    private datePipe: DatePipe,
+    private dealerService: DealerService,
+    private clientService: ClientService,
+    private movementService: MovementService
 
   ) {
     this.transactionSelected = new Transaction();
@@ -80,7 +80,7 @@ export class WorkOrderManagerComponent implements OnInit {
 
     this.frmCancelTrx = new FormGroup({
       txtObservationCancelation: new FormControl('')
-    })
+    });
   }
 
   ngOnInit(): void {
@@ -101,9 +101,9 @@ export class WorkOrderManagerComponent implements OnInit {
 
   async getMovementList(){
     try {
-      this.movementService.getMovements().then(lsMov =>{
+      this.movementService.getMovements().then(lsMov => {
         this.lsMovements = lsMov;
-      })
+      });
     } catch (error) {
       console.warn(error);
     }
@@ -114,24 +114,24 @@ export class WorkOrderManagerComponent implements OnInit {
   }
 
   async initDataToGetReport() {
-    console.warn("[initDataToGetReport]",this.company);
-    switch(this.company.type){
+    console.warn('[initDataToGetReport]', this.company);
+    switch (this.company.type){
       case CompanyType.CLIENT:
-         this.typeOfReport = "dealer";
+         this.typeOfReport = 'dealer';
          this.isMainCompanyLogged = false;
          this.client_to_filter = this.company.id;
          this.dealer_to_filter = null;
          this.isDealer = false;
-        break;
+         break;
        case CompanyType.DEALER:
-         this.typeOfReport = "client";
+         this.typeOfReport = 'client';
          this.isMainCompanyLogged = false;
          this.dealer_to_filter = this.company.id;
          this.client_to_filter = null;
          this.isDealer = true;
          break;
        case CompanyType.MAIN_COMPANY:
-         this.typeOfReport = "client";
+         this.typeOfReport = 'client';
          this.isMainCompanyLogged = true;
          this.client_to_filter = null;
          this.dealer_to_filter = null;
@@ -145,8 +145,8 @@ export class WorkOrderManagerComponent implements OnInit {
   async getDataTransactions() {
     try {
       this.isAwaiting = true;
-      await this.transactionService.getTransactionsByDealerOrClient(this.dealer_to_filter,this.client_to_filter,
-          this.init_date, this.end_date, this.code_to_filter,this.license_plate_toFilter, this.state_to_filter)
+      await this.transactionService.getTransactionsByDealerOrClient(this.dealer_to_filter, this.client_to_filter,
+          this.init_date, this.end_date, this.code_to_filter, this.license_plate_toFilter, this.state_to_filter)
       .then(dataTrx => {
         this.lsWorkOrderByDealer = dataTrx;
 
@@ -158,32 +158,32 @@ export class WorkOrderManagerComponent implements OnInit {
   }
 
   validateState(transactionState: TransactionState, transaction_id: number) {
-    let idElement = `#${this.getSpanStateId(transaction_id)}`;
-    let spanState: HTMLSpanElement = document.querySelector(idElement);
+    const idElement = `#${this.getSpanStateId(transaction_id)}`;
+    const spanState: HTMLSpanElement = document.querySelector(idElement);
 
     if (transactionState != null) {
       switch (transactionState.name.toUpperCase()) {
-        case "APROBADA":
-          spanState.classList.add("tag-active");
+        case 'APROBADA':
+          spanState.classList.add('tag-active');
           break;
-        case "FINALIZADA":
-          spanState.classList.add("tag-ending");
+        case 'FINALIZADA':
+          spanState.classList.add('tag-ending');
           break;
-        case "RECHAZADA":
-          spanState.classList.add("tag-error");
+        case 'RECHAZADA':
+          spanState.classList.add('tag-error');
           break;
-        case "ANULADA":
-          spanState.classList.add("tag-canceled");
+        case 'ANULADA':
+          spanState.classList.add('tag-canceled');
           break;
         default:
-          spanState.classList.add("tag-pending");
+          spanState.classList.add('tag-pending');
           break;
       }
     } else {
-      spanState.classList.add("tag-pending");
+      spanState.classList.add('tag-pending');
     }
 
-    return (transactionState != null) ? transactionState.name : "PENDIENTE";
+    return (transactionState != null) ? transactionState.name : 'PENDIENTE';
   }
 
   getSpanStateId(transaction_id: number) {
@@ -191,42 +191,42 @@ export class WorkOrderManagerComponent implements OnInit {
   }
 
   openWorkOrder() {
-    let idContainerTable = '#container__table_workOrder';
-    let containerTable: HTMLDivElement = document.querySelector(idContainerTable);
+    const idContainerTable = '#container__table_workOrder';
+    const containerTable: HTMLDivElement = document.querySelector(idContainerTable);
 
-    let idContainerWorkOrder = '#container__workOrder';
-    let containerWorkOrder: HTMLDivElement = document.querySelector(idContainerWorkOrder);
+    const idContainerWorkOrder = '#container__workOrder';
+    const containerWorkOrder: HTMLDivElement = document.querySelector(idContainerWorkOrder);
 
-    containerTable.setAttribute("style", "display:none");
-    containerWorkOrder.setAttribute("style", "display:block");
+    containerTable.setAttribute('style', 'display:none');
+    containerWorkOrder.setAttribute('style', 'display:block');
   }
 
   closeWorkOrder() {
 
-    let idContainerTable = '#container__table_workOrder';
-    let containerTable: HTMLDivElement = document.querySelector(idContainerTable);
+    const idContainerTable = '#container__table_workOrder';
+    const containerTable: HTMLDivElement = document.querySelector(idContainerTable);
 
-    let idContainerWorkOrder = '#container__workOrder';
-    let containerWorkOrder: HTMLDivElement = document.querySelector(idContainerWorkOrder);
+    const idContainerWorkOrder = '#container__workOrder';
+    const containerWorkOrder: HTMLDivElement = document.querySelector(idContainerWorkOrder);
 
-    containerTable.setAttribute("style", "display:block");
-    containerWorkOrder.setAttribute("style", "display:none");
+    containerTable.setAttribute('style', 'display:block');
+    containerWorkOrder.setAttribute('style', 'display:none');
 
   }
 
   getListWorkOrders(){
-    //TODO: change this for the user logged configuration;
+    // TODO: change this for the user logged configuration;
     this.getDataTransactions();
     this.closeWorkOrder();
   }
 
   closePopUp(idPopUp) {
-    let popUp = document.getElementById(idPopUp);
+    const popUp = document.getElementById(idPopUp);
     popUp.style.display = 'none';
   }
 
   openPopUp(idPopUp) {
-    let popUp = document.getElementById(idPopUp);
+    const popUp = document.getElementById(idPopUp);
     popUp.style.display = 'block';
   }
 
@@ -237,7 +237,7 @@ export class WorkOrderManagerComponent implements OnInit {
 
   async toggleBtnFilter(){
     this.isAwaiting = true;
-    if(this.isFiltered){
+    if (this.isFiltered){
       this.frm_filter.reset();
       this.dealerService.setDealerSelected(null);
       this.clientService.setClientSelected(null);
@@ -250,7 +250,7 @@ export class WorkOrderManagerComponent implements OnInit {
   }
 
   async setDataToFilters(){
-    let {txtCode, txtLicense_plate, txtInit_date, txtEnd_date, cmbState} = this.frm_filter.controls;
+    const {txtCode, txtLicense_plate, txtInit_date, txtEnd_date, cmbState} = this.frm_filter.controls;
     this.code_to_filter = txtCode.value;
     this.license_plate_toFilter = txtLicense_plate.value;
     this.init_date = this.datePipe.transform(txtInit_date.value, 'yyyy/MM/dd');
@@ -261,8 +261,8 @@ export class WorkOrderManagerComponent implements OnInit {
   }
 
   setDealerToFilter(){
-    let dealerSelected = this.dealerService.getDealerSelected();
-    if(dealerSelected != null){
+    const dealerSelected = this.dealerService.getDealerSelected();
+    if (dealerSelected != null){
       this.dealer_to_filter = dealerSelected.id;
     }else{
       this.dealer_to_filter = null;
@@ -271,8 +271,8 @@ export class WorkOrderManagerComponent implements OnInit {
 
 
   setClientToFilter(){
-    let clientSelected = this.clientService.getClientSelected();
-    if(clientSelected != null){
+    const clientSelected = this.clientService.getClientSelected();
+    if (clientSelected != null){
       this.client_to_filter = clientSelected.id;
     }else{
       this.client_to_filter = null;
@@ -282,13 +282,13 @@ export class WorkOrderManagerComponent implements OnInit {
   async finalizeWorkOrder(){
     try {
       this.isAwaiting = true;
-      let movement = this.lsMovements.find(mv => mv.id == Movements.FINALIZACION_ORDEN_DE_TRABAJO);
-      let {txtObservationApprobation} = this.frmApprovedTrx.controls;
-      let trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected,movement,txtObservationApprobation.value);
+      const movement = this.lsMovements.find(mv => mv.id == Movements.FINALIZACION_ORDEN_DE_TRABAJO);
+      const {txtObservationApprobation} = this.frmApprovedTrx.controls;
+      const trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected, movement, txtObservationApprobation.value);
 
       this.transactionService.processTransaction(trxApproveWorkOrder)
-      .then(rta =>{
-        if(rta.response){
+      .then(rta => {
+        if (rta.response){
           alert(rta.message);
           this.getDataTransactions();
           this.closePopUp('container__FinalizeWorkOrder');
@@ -303,13 +303,13 @@ export class WorkOrderManagerComponent implements OnInit {
   async cancelWorkOrder(){
     try {
       this.isAwaiting = true;
-      let movement = this.lsMovements.find(mv => mv.id == Movements.ANULACION_ORDEN_DE_TRABAJO);
-      let {txtObservationCancelation} = this.frmCancelTrx.controls;
-      let trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected,movement,txtObservationCancelation.value);
+      const movement = this.lsMovements.find(mv => mv.id == Movements.ANULACION_ORDEN_DE_TRABAJO);
+      const {txtObservationCancelation} = this.frmCancelTrx.controls;
+      const trxApproveWorkOrder = this.setDataTransaction(this.transactionSelected, movement, txtObservationCancelation.value);
 
       this.transactionService.processTransaction(trxApproveWorkOrder)
-      .then(rta =>{
-        if(rta.response){
+      .then(rta => {
+        if (rta.response){
           alert(rta.message);
           this.getDataTransactions();
           this.closePopUp('container__Cancelation');
@@ -322,23 +322,23 @@ export class WorkOrderManagerComponent implements OnInit {
   }
 
 
-  setDataTransaction(trxRelated: Transaction, movement:Movement, observation: string){
-    let trx= new Transaction();
+  setDataTransaction(trxRelated: Transaction, movement: Movement, observation: string){
+    const trx = new Transaction();
     trx.movement = movement;
     trx.value = trxRelated.value;
-    trx.usu_id = SecurityValidators.validateUserLogged();;
+    trx.usu_id = SecurityValidators.validateUserLogged();
     trx.client = trxRelated.client;
 
     trx.headerDetails = new TransactionDetail();
     trx.headerDetails.relatedTransaction = trxRelated;
 
-    let trxObservation = new TransactionObservation();
+    const trxObservation = new TransactionObservation();
     trxObservation.usu_id = SecurityValidators.validateUserLogged();
     trxObservation.description = observation;
 
-    let lsObservation = [];
+    const lsObservation = [];
 
-    if(observation != ''){
+    if (observation != ''){
       lsObservation.push(trxObservation);
     }
 
@@ -357,7 +357,7 @@ export class WorkOrderManagerComponent implements OnInit {
   validateContainerControls(workOrder: Transaction): boolean{
     let response = false;
 
-    if(workOrder.transactionState.name.toUpperCase() == "APROBADA"){
+    if (workOrder.transactionState.name.toUpperCase() == 'APROBADA'){
       response = true;
     }
 

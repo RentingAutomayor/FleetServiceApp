@@ -14,7 +14,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class VehicleService {
-  private URL_API = "/API_FleetService/api/Vehicle";
+  private URL_API = '/API_FleetService/api/Vehicle';
   private brandSelected: Brand;
   private vehicleTypeSelected: VehicleType;
   private lsVehicleTypeSelected: VehicleType[];
@@ -35,64 +35,64 @@ export class VehicleService {
 
 
   async getBrands(): Promise<Brand[]> {
-    let urlGetBrands = `${this.URL_API}/GetBrands`;
+    const urlGetBrands = `${this.URL_API}/GetBrands`;
     return this.http.get<Brand[]>(urlGetBrands).toPromise();
   }
 
   async getVehicleTypes(): Promise<VehicleType[]> {
-    let urlGetVehicleTypes = `${this.URL_API}/GetVehicleType`;
+    const urlGetVehicleTypes = `${this.URL_API}/GetVehicleType`;
     return this.http.get<VehicleType[]>(urlGetVehicleTypes).toPromise();
   }
 
   async getVehicleStates(): Promise<VehicleState[]> {
-    let urlGetVehicleStates = `${this.URL_API}/GetVehicleStates`;
+    const urlGetVehicleStates = `${this.URL_API}/GetVehicleStates`;
     return this.http.get<VehicleState[]>(urlGetVehicleStates).toPromise();
   }
 
   async getVehicleModelByBrandAndType(pId_brand: number, pId_VehicleType: number): Promise<VehicleModel[]> {
-    let urlGetVehicleModelByBrandAndType = `${this.URL_API}/GetVehicleModelByBrandAndType?pId_brand=${pId_brand}&pId_VehicleType=${pId_VehicleType}`;
+    const urlGetVehicleModelByBrandAndType = `${this.URL_API}/GetVehicleModelByBrandAndType?pId_brand=${pId_brand}&pId_VehicleType=${pId_VehicleType}`;
     return this.http.get<VehicleModel[]>(urlGetVehicleModelByBrandAndType).toPromise();
   }
 
   async getVehicleModelByTypes(pLstypes: VehicleType[]): Promise<VehicleModel[]> {
     let sTypes = '';
-    pLstypes.forEach(tp => sTypes+=`${tp.id},`);
-    sTypes = sTypes.substr(0,sTypes.length - 1);
-    let urlGetVehicleModelByTypes = `${this.URL_API}/GetVehicleModelsByTypes?sLsTypes=${sTypes}`;    
+    pLstypes.forEach(tp => sTypes += `${tp.id},`);
+    sTypes = sTypes.substr(0, sTypes.length - 1);
+    const urlGetVehicleModelByTypes = `${this.URL_API}/GetVehicleModelsByTypes?sLsTypes=${sTypes}`;
     return this.http.get<VehicleModel[]>(urlGetVehicleModelByTypes).toPromise();
   }
 
   async getVehiclesByClient(pClient_id: number): Promise<Vehicle[]> {
-    let urlGetVehiclesByClient = `${this.URL_API}/GetVehiclesByClient?pClient_id=${pClient_id}`;
+    const urlGetVehiclesByClient = `${this.URL_API}/GetVehiclesByClient?pClient_id=${pClient_id}`;
     return this.http.get<Vehicle[]>(urlGetVehiclesByClient).toPromise();
   }
 
-  async getVehiclesByClientAndModel(pClient_id: number,sModels:string,contract_id: number = 0): Promise<Vehicle[]>{  
-    let urlVehiclesByClientAndModel = `${this.URL_API}/GetVehiclesByClientAndModel?pClient_id=${pClient_id}&sModels=${sModels}&contract_id=${contract_id}`;
-    return this.http.get<Vehicle[]>(urlVehiclesByClientAndModel).toPromise();     
+  async getVehiclesByClientAndModel(pClient_id: number, sModels: string, contract_id: number = 0): Promise<Vehicle[]>{
+    const urlVehiclesByClientAndModel = `${this.URL_API}/GetVehiclesByClientAndModel?pClient_id=${pClient_id}&sModels=${sModels}&contract_id=${contract_id}`;
+    return this.http.get<Vehicle[]>(urlVehiclesByClientAndModel).toPromise();
   }
 
   async Insert(pVehicle: Vehicle): Promise<ResponseApi> {
-    let urlInsertVehicle = `${this.URL_API}/Insert`;
+    const urlInsertVehicle = `${this.URL_API}/Insert`;
     return this.http.post<ResponseApi>(urlInsertVehicle, pVehicle, this.HttpOptions).toPromise();
   }
 
   async Update(pVehicle: Vehicle): Promise<ResponseApi> {
-    let urlUpdateVehicle = `${this.URL_API}/Update`;
+    const urlUpdateVehicle = `${this.URL_API}/Update`;
     return this.http.post<ResponseApi>(urlUpdateVehicle, pVehicle, this.HttpOptions).toPromise();
   }
 
   async Delete(pVehicle: Vehicle): Promise<ResponseApi> {
-    let urlDeleteVehicle = `${this.URL_API}/Delete`;
+    const urlDeleteVehicle = `${this.URL_API}/Delete`;
     return this.http.post<ResponseApi>(urlDeleteVehicle, pVehicle, this.HttpOptions).toPromise();
   }
 
 
-  getVehiclesByLicensePlate(licensePlate:string): Observable<Vehicle[]>{
+  getVehiclesByLicensePlate(licensePlate: string): Observable<Vehicle[]>{
     if (!licensePlate.trim()) {
       return of([]);
     }
-    let urlGetVehiclesByLicensePlate = `${this.URL_API}/GetVehiclesByLicensePlate?pLicensePlate=${licensePlate}`;
+    const urlGetVehiclesByLicensePlate = `${this.URL_API}/GetVehiclesByLicensePlate?pLicensePlate=${licensePlate}`;
 
     return this.http.get<Vehicle[]>(urlGetVehiclesByLicensePlate)
       .pipe(
@@ -104,7 +104,7 @@ export class VehicleService {
     this.lsVehicleTypeSelected = pLsTypes;
   }
 
-  getListVehicleTypeSelected():VehicleType[]{
+  getListVehicleTypeSelected(): VehicleType[]{
     return this.lsVehicleTypeSelected;
   }
 
@@ -158,7 +158,7 @@ export class VehicleService {
   }
 
 
-  getListVehicleModelsSelected():VehicleModel[]{
+  getListVehicleModelsSelected(): VehicleModel[]{
     return this.lsVehicleModelsSelected;
   }
 
@@ -166,7 +166,7 @@ export class VehicleService {
     this.lsVehicleModelsSelected = pLsVehiclesModel;
   }
 
-  getListVehiclesSelected():Vehicle[]{
+  getListVehiclesSelected(): Vehicle[]{
     return this.lsVehiclesSelected;
   }
 
@@ -178,7 +178,7 @@ export class VehicleService {
     return (error: any): Observable<T> => {
       console.error(error);
       return of(result as T);
-    }
+    };
   }
 
 

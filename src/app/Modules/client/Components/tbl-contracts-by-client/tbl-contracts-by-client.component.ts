@@ -9,7 +9,7 @@ import { ContractService } from 'src/app/Modules/contract/Services/Contract/cont
 })
 export class TblContractsByClientComponent implements OnInit, OnChanges {
   lsContracts: Contract[];
-  isAwaiting:boolean;
+  isAwaiting: boolean;
   @Input() client_id: number;
 
   constructor(
@@ -17,7 +17,7 @@ export class TblContractsByClientComponent implements OnInit, OnChanges {
   ) {
     this.client_id = 0;
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     this.getContractList(this.client_id);
   }

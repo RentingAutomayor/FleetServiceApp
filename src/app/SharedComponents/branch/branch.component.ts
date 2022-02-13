@@ -17,8 +17,8 @@ export class BranchComponent implements OnInit {
   oConfigPersonComp: ConfigPersonComponent;
   oContainerFormBranch: HTMLElement;
   btnAddContact: HTMLButtonElement;
-  //pagination
-  p: number = 1;
+  // pagination
+  p = 1;
   isAwaiting: boolean;
   isToInsert: boolean;
   btnAddBranch: HTMLButtonElement;
@@ -26,15 +26,15 @@ export class BranchComponent implements OnInit {
   oPersonToUpdate: Person;
   @Input()disableActionButtons: boolean;
 
-  buttonAddIsVisible:boolean;
+  buttonAddIsVisible: boolean;
 
   client: Client;
   @Input('client')
-  set setClient(client:Client){
-    this.client = client
+  set setClient(client: Client){
+    this.client = client;
   }
 
-  dealer:Dealer;
+  dealer: Dealer;
   @Input('dealer')
   set setDealer(dealer: Dealer){
     this.dealer = dealer;
@@ -52,11 +52,11 @@ export class BranchComponent implements OnInit {
   @Input('action')
   set setAction(action: ActionType){
     this.action = action;
-    this.validateIfButtonAddMustVisible(this.action)
+    this.validateIfButtonAddMustVisible(this.action);
   }
 
-  buttonsAreVisibles: boolean = true;
-  isFormBlocked: boolean = false;
+  buttonsAreVisibles = true;
+  isFormBlocked = false;
 
   @Output() onBranchsWereModified = new EventEmitter<Branch[]>();
 
@@ -64,7 +64,7 @@ export class BranchComponent implements OnInit {
   constructor(
     private personService: PersonService
   ) {
-    this.lsBranchs = []
+    this.lsBranchs = [];
     this.disableActionButtons = false;
     this.buttonAddIsVisible = false;
   }
@@ -89,13 +89,13 @@ export class BranchComponent implements OnInit {
   }
 
   showPopUp() {
-    let containerForm = document.getElementById("container__formBranch");
-    containerForm.setAttribute("style", "display:block");
+    const containerForm = document.getElementById('container__formBranch');
+    containerForm.setAttribute('style', 'display:block');
   }
 
   hidePopUp() {
-    let containerForm = document.getElementById("container__formBranch");
-    containerForm.setAttribute("style", "display:none");
+    const containerForm = document.getElementById('container__formBranch');
+    containerForm.setAttribute('style', 'display:none');
   }
 
   insertBranch() {
@@ -125,21 +125,21 @@ export class BranchComponent implements OnInit {
 
   saveBranch() {
     try {
-      let oPerson :Person
+      let oPerson: Person;
       oPerson = this.personService.getPerson();
-      let oBranch = this.setDataBranch(oPerson);
-      if(this.isToInsert){
+      const oBranch = this.setDataBranch(oPerson);
+      if (this.isToInsert){
         oBranch.id = 0;
       }else{
-        oBranch.id = oPerson.id
+        oBranch.id = oPerson.id;
       }
 
-      if(oBranch != null){
+      if (oBranch != null){
         this.saveData(oBranch);
       }
     } catch (err) {
       console.warn(err.error.Message);
-      alert(err.error.Message)
+      alert(err.error.Message);
     }
   }
 
@@ -158,29 +158,29 @@ export class BranchComponent implements OnInit {
 
   deleteBranch(branchId: number) {
     try {
-      if (confirm("¿Está seguro que desea eliminar esta sucursal?")) {
+      if (confirm('¿Está seguro que desea eliminar esta sucursal?')) {
         this.isAwaiting = true;
-        const branchIndex = this.lsBranchs.findIndex(branch=> branch.id == branchId);
-        this.lsBranchs.splice(branchIndex,1);
+        const branchIndex = this.lsBranchs.findIndex(branch => branch.id == branchId);
+        this.lsBranchs.splice(branchIndex, 1);
         this.isAwaiting = false;
         this.onBranchsWereModified.emit(this.lsBranchs);
       }
     } catch (err) {
       console.warn(err.error.Message);
-      alert(err.error.Message)
+      alert(err.error.Message);
     }
   }
 
   setDataBranch(pPerson: Person): Branch {
-    let oBranch = new Branch();
+    const oBranch = new Branch();
     oBranch.id = pPerson.id;
     oBranch.name = pPerson.name;
     oBranch.address = pPerson.address;
     oBranch.phone = pPerson.phone;
     oBranch.cellphone = pPerson.cellphone;
     oBranch.city = pPerson.city;
-    oBranch.Dealer_id = (this.dealer != null)?this.dealer.id:null;
-    oBranch.Client_id = (this.client != null)?this.client.id:null;
+    oBranch.Dealer_id = (this.dealer != null) ? this.dealer.id : null;
+    oBranch.Client_id = (this.client != null) ? this.client.id : null;
     return oBranch;
   }
 
@@ -192,32 +192,32 @@ export class BranchComponent implements OnInit {
   }
 
   validateIfButtonAddMustVisible(action: ActionType){
-    switch(action){
+    switch (action){
       case ActionType.READ:
           this.buttonAddIsVisible = false;
-        break;
+          break;
       case ActionType.UPDATE:
       case ActionType.CREATE:
           this.buttonAddIsVisible = true;
-        break;
+          break;
     }
 
     this.validateData();
   }
 
   validateData(){
-    if((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
+    if ((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
       this.activateButtonAdd();
     }
   }
 
   activateButtonAdd() {
     try{
-      this.btnAddContact = document.querySelector("#btnAddContact");
+      this.btnAddContact = document.querySelector('#btnAddContact');
       this.btnAddContact.disabled = false;
-      this.btnAddContact.classList.remove("error");
-    }catch(error){
-      console.warn(error.message)
+      this.btnAddContact.classList.remove('error');
+    }catch (error){
+      console.warn(error.message);
     }
   }
 }

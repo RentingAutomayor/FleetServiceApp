@@ -8,21 +8,21 @@ import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.se
   templateUrl: './vehicle-type.component.html',
   styleUrls: ['./vehicle-type.component.scss']
 })
-export class VehicleTypeComponent implements OnInit,OnChanges {
+export class VehicleTypeComponent implements OnInit, OnChanges {
   lsVehicleType: VehicleType[];
   frmVehicleType: FormGroup;
   oType: VehicleType;
-  @Input() countChanges:number;
+  @Input() countChanges: number;
   @Output() vehicleTypeWasSetted = new EventEmitter<boolean>();
 
-  disableControls:boolean
+  disableControls: boolean;
   @Input('disableControls')
-  set setDisableControls(value:boolean){
+  set setDisableControls(value: boolean){
     this.disableControls = value;
-    if(this.disableControls){
-      this.frmVehicleType.disable()
+    if (this.disableControls){
+      this.frmVehicleType.disable();
     }else{
-      this.frmVehicleType.enable()
+      this.frmVehicleType.enable();
     }
   }
 
@@ -35,11 +35,11 @@ export class VehicleTypeComponent implements OnInit,OnChanges {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    for (let change in changes) {
+    for (const change in changes) {
 
-      if (change == "countChanges") {
+      if (change == 'countChanges') {
        this.oType = this.vehicleService.getVehicleTypeSelected();
-        if (this.oType != null) {
+       if (this.oType != null) {
           this.setDataInForm(this.oType);
         } else {
           this.clearDataForm();
@@ -63,13 +63,13 @@ export class VehicleTypeComponent implements OnInit,OnChanges {
 
   }
 
-  setType(event:any){
-    let oType = this.lsVehicleType.find(tp => tp.id == event.value);
+  setType(event: any){
+    const oType = this.lsVehicleType.find(tp => tp.id == event.value);
     this.vehicleService.setVehicleTypeSelected(oType);
     this.vehicleTypeWasSetted.emit(true);
   }
 
-  setDataInForm(pType:VehicleType){
+  setDataInForm(pType: VehicleType){
     this.frmVehicleType.controls.cmbType.setValue(pType.id);
   }
 

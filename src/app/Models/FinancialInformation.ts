@@ -1,7 +1,7 @@
-import { Client } from "./Client";
+import { Client } from './Client';
 
 export class FinancialInformation{
-    public id : Number;
+    public id: Number;
     public client: Client;
     public approvedQuota: Number;
     public consumedQuota: Number;

@@ -10,28 +10,28 @@ import { MaintenanceRoutineService } from '../../../items-and-routines/Services/
   templateUrl: './routines-by-vehicle-model.component.html',
   styleUrls: ['./routines-by-vehicle-model.component.scss']
 })
-export class RoutinesByVehicleModelComponent implements OnInit,OnChanges {
+export class RoutinesByVehicleModelComponent implements OnInit, OnChanges {
   frmRoutineByVehicleModel: FormGroup;
-  lsRoutine:MaintenanceRoutine[];
+  lsRoutine: MaintenanceRoutine[];
   maintenanceRoutineSelected: MaintenanceRoutine;
   @Input() vehicleModel: VehicleModel;
-  @Input() countChanges:Number;
+  @Input() countChanges: Number;
   @Output() routineWasSetted = new EventEmitter<boolean>();
 
   constructor(
-    private maintenanceRoutineService:MaintenanceRoutineService
+    private maintenanceRoutineService: MaintenanceRoutineService
   ) {
     this.frmRoutineByVehicleModel = new FormGroup({
       cmbRoutineByVehicleModel: new FormControl('Seleccione')
-    })
+    });
    }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for(let change in changes){
+    for (const change in changes){
 
 
-      if(change == "vehicleModel"){
-        if(this.vehicleModel == null){
+      if (change == 'vehicleModel'){
+        if (this.vehicleModel == null){
           this.frmRoutineByVehicleModel.controls.cmbRoutineByVehicleModel.setValue(0);
         }else{
           this.getListMaintenanceRoutines(this.vehicleModel.id);
@@ -48,19 +48,19 @@ export class RoutinesByVehicleModelComponent implements OnInit,OnChanges {
     this.getListMaintenanceRoutines(this.vehicleModel.id);
   }
 
-  async getListMaintenanceRoutines(model_id:number){
+  async getListMaintenanceRoutines(model_id: number){
     try{
-      this.maintenanceRoutineService.getMaintenanceRoutineByModel(model_id).then(data =>{
+      this.maintenanceRoutineService.getMaintenanceRoutineByModel(model_id).then(data => {
         this.lsRoutine = data;
 
       });
-    }catch(error){
+    }catch (error){
       console.warn(error);
     }
   }
 
-  setRoutine(event:any){
-    let oRoutine = this.lsRoutine.find(rt => rt.id == event.value);
+  setRoutine(event: any){
+    const oRoutine = this.lsRoutine.find(rt => rt.id == event.value);
     this.maintenanceRoutineService.setRoutine(oRoutine);
     this.routineWasSetted.emit(true);
   }

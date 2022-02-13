@@ -8,15 +8,15 @@ import { ClientService } from 'src/app/Modules/client/Services/Client/client.ser
 @Component({
   selector: 'app-input-search-client',
   templateUrl: './input-search-client.component.html',
-  styleUrls: ['./input-search-client.component.scss','../../../assets/styles/searchList.scss']
+  styleUrls: ['./input-search-client.component.scss', '../../../assets/styles/searchList.scss']
 })
 export class InputSearchClientComponent implements OnInit, OnChanges {
   frmSearchClient: FormGroup;
   lsClientSuggestion$: Observable<Client[]>;
-  listIsvisible:boolean;
-  clientSelected:Client;
+  listIsvisible: boolean;
+  clientSelected: Client;
   private description = new  Subject<string>();
-  @Input() countChanges:number;
+  @Input() countChanges: number;
   @Input() disableField: boolean;
   @Output() clientWasSetted = new EventEmitter<boolean>();
 
@@ -31,15 +31,15 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges){
-    for(let change in changes){
-      if(change == "countChanges"){
+    for (const change in changes){
+      if (change == 'countChanges'){
         this.clientSelected = this.clientService.getClientSelected();
-        if(this.clientSelected != null && this.clientSelected != undefined){
+        if (this.clientSelected != null && this.clientSelected != undefined){
           this.setDataInForm(this.clientSelected);
         }else{
           this.frmSearchClient.reset();
         }
-      }else if(change == "disableField"){
+      }else if (change == 'disableField'){
           this.toggleClientField();
       }
 
@@ -58,23 +58,23 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((desc: string) => this.clientService.getClientsByDescriptions(desc)),
-    )
+    );
   }
 
-  searchBydescription(sDescription:string){
+  searchBydescription(sDescription: string){
 
-    if(sDescription == ""){
+    if (sDescription == ''){
       this.clientService.setClientSelected(null);
     }
     this.listIsvisible = true;
     this.description.next(sDescription);
   }
 
-  getClientDescription(pClient:Client): string{
+  getClientDescription(pClient: Client): string{
     return `${pClient.document} | ${pClient.name.toUpperCase()}`;
   }
 
-  setClient(pClient:Client){
+  setClient(pClient: Client){
 
     this.clientSelected = pClient;
     this.setDataInForm(pClient);
@@ -83,8 +83,8 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
     this.clientWasSetted.emit(true);
   }
 
-  setDataInForm(pClient:Client){
-    let {txtClient} = this.frmSearchClient.controls;
+  setDataInForm(pClient: Client){
+    const {txtClient} = this.frmSearchClient.controls;
     txtClient.setValue(this.getClientDescription(pClient));
   }
 
@@ -93,8 +93,8 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
   }
 
   toggleClientField(){
-    let { txtClient } = this.frmSearchClient.controls;
-    if(this.disableField){
+    const { txtClient } = this.frmSearchClient.controls;
+    if (this.disableField){
       txtClient.disable();
     }else{
       txtClient.enable();

@@ -10,5 +10,5 @@ export interface Client extends Person, ClientComplement{
 export interface ClientComplement {
   contacts: Contact[];
   branchs: Branch[];
-  contractualInformation?: ContractualInformation
+  contractualInformation?: ContractualInformation;
 }

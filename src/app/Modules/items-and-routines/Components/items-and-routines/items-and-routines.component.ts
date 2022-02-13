@@ -15,9 +15,9 @@ export class ItemsAndRoutinesComponent implements OnInit {
   p: Number = 1;
   oCountChanges: number;
   lsMaintenanceItems: MaintenanceItem[];
-  isToUpdate:boolean;
+  isToUpdate: boolean;
   constructor(
-    private vehicleService : VehicleService,
+    private vehicleService: VehicleService,
     private maintenanceItemService: MaintenanceItemService
   ) { }
 
@@ -32,43 +32,43 @@ export class ItemsAndRoutinesComponent implements OnInit {
 
 
   openTab(oButton: any, container: string) {
-    let tabLinks = document.getElementsByClassName("tab_link");
+    const tabLinks = document.getElementsByClassName('tab_link');
 
     for (let i = 0; i < tabLinks.length; i++) {
-      tabLinks[i].classList.remove("active");
+      tabLinks[i].classList.remove('active');
     }
-    oButton.target.className += " active";
-    let containerTabs = document.getElementsByClassName("tab_content");
+    oButton.target.className += ' active';
+    const containerTabs = document.getElementsByClassName('tab_content');
 
     for (let i = 0; i < containerTabs.length; i++) {
-      containerTabs[i].setAttribute("style", "display:none");
+      containerTabs[i].setAttribute('style', 'display:none');
     }
 
-    let containerToShow_id = `container__${container}`;
-    let containerToShow = document.getElementById(containerToShow_id);
+    const containerToShow_id = `container__${container}`;
+    const containerToShow = document.getElementById(containerToShow_id);
 
 
 
-    containerToShow.setAttribute("style", "display:block");
+    containerToShow.setAttribute('style', 'display:block');
     this.vehicleService.setBrandSelected(null);
     this.vehicleService.setVehicleTypeSelected(null);
   }
 
   hideContainerTabs() {
-    let containers = document.getElementsByClassName("tab_inactive");
+    const containers = document.getElementsByClassName('tab_inactive');
     for (let i = 0; i < containers.length; i++) {
-      containers[i].setAttribute("style", "display:none");
+      containers[i].setAttribute('style', 'display:none');
     }
   }
 
 
   moveContent(event: any) {
 
-    let containerContent: HTMLDivElement = document.querySelector("#container__content");
+    const containerContent: HTMLDivElement = document.querySelector('#container__content');
     if (event) {
-      containerContent.style.marginLeft = "250px";
+      containerContent.style.marginLeft = '250px';
     } else {
-      containerContent.style.marginLeft = "60px";
+      containerContent.style.marginLeft = '60px';
     }
   }
 

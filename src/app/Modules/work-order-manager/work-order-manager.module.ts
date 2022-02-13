@@ -24,10 +24,10 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
   ],
   imports: [
     CommonModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     SharedModule,
-    WorkOrderManagerRoutingModule, 
+    WorkOrderManagerRoutingModule,
     BsDatepickerModule.forRoot(),
   ]
 })

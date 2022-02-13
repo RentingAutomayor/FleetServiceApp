@@ -3,5 +3,5 @@ export interface SecurityModule{
     id_moduleF: number;
     moduleDescription: string;
     moduleName: string;
-    path:string;
+    path: string;
 }

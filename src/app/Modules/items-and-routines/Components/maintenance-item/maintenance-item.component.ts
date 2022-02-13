@@ -262,6 +262,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   calculateTaxesByItem(itemAndTaxes: ItemHandleTaxes) {
+    let totalTaxes = 0;
     if (itemAndTaxes.handleTaxes){
       const txtTaxesValue: HTMLInputElement = document.querySelector('#taxesValue');
       const txtTotalValue: HTMLInputElement = document.querySelector('#totalValue');
@@ -269,7 +270,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
       const {referencePrice} = this.frmMaintenanceItem.controls;
       this.taxesAreInvalid = (this.lsTaxesSelected.length > 0) ? false : true;
       const value = (referencePrice.value != null) ? referencePrice.value : 0;
-      let totalTaxes = 0;
+
       totalTaxes = this.maintenanceItemService.calculateTaxes(value, this.lsTaxesSelected);
 
       txtTaxesValue.value = totalTaxes.toString();

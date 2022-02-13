@@ -7,7 +7,7 @@
               formControlName="cmbDepartment"
               (change)="searchCitiesByDepartmentId($event.target.value)"
               >
-                <option disabled ="0">Seleccione ... </option>
+                <option disabled [value]="0">Seleccione ... </option>
                 <option
                   *ngFor="let department of lsDepartment"
                   [value]="department.id"

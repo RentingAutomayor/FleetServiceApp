@@ -61,29 +61,31 @@
     <mat-step>
       <ng-template matStepLabel>Sucursales</ng-template>
       <app-branch
-            [action]="action"
-            [isToClient]="oIsToClient"
-            [clientWasSaved]="oClientWasSaved"
-            [disableActionButtons]="blockFormClient">
-        </app-branch>
-        <div class="container-step-buttons">
-          <button
-            matStepperPrevious
-            type="button"
-            mat-raised-button
-            color="primary"
-            class="btn-step">
-            Atás
-          </button>
-          <button
-            matStepperNext
-            type="button"
-            mat-raised-button
-            color="primary"
-            class="btn-step">
-            Siguiente
-          </button>
-        </div>
+        [branchs]="lsBranchs"
+        [action]="action"
+        [isToClient]="oIsToClient"
+        [clientWasSaved]="oClientWasSaved"
+        [disableActionButtons]="blockFormClient"
+        (onBranchsWereModified)="updateBranchsToClient($event)">
+      </app-branch>
+      <div class="container-step-buttons">
+        <button
+          matStepperPrevious
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Atás
+        </button>
+        <button
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Siguiente
+        </button>
+      </div>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>Vehículos</ng-template>

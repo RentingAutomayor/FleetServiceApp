@@ -10,6 +10,7 @@ import { CityService } from '../../../../SharedComponents/Services/City/city.ser
 import { ActionType } from 'src/app/Models/ActionType';
 import { Contact } from 'src/app/Models/Contact';
 import { getFromStorage } from 'src/app/Utils/storage';
+import { Branch } from 'src/app/Models/Branch';
 
 
 
@@ -50,9 +51,11 @@ export class ClientComponent implements OnInit {
     registrationDate: null,
     updateDate: null,
     deleteDate: null,
-    contacts: []
+    contacts: [],
+    branchs:[]
   };
   lsContacts:Contact[] = [];
+  lsBranchs: Branch[] = [];
   oDataIsToUpdate: boolean;
   sReturnPath:string;
   ROUTE_MASTER_CLIENT:string = "/MasterClients";
@@ -100,6 +103,7 @@ export class ClientComponent implements OnInit {
           if(client != null){
             this.client = client;
             this.lsContacts = this.client.contacts;
+            this.lsBranchs = this.client.branchs;
             this.oDataIsToUpdate = true;
           }
         })
@@ -204,10 +208,11 @@ export class ClientComponent implements OnInit {
   }
 
   updateContactsToClient(contacts:Contact[]){
-    console.log('updateContactsToClient')
-    console.log(this.client)
-    console.log(contacts);
-    //this.client.contacts = contacts;
+    this.client.contacts = contacts;
+  }
+
+  updateBranchsToClient(branchs: Branch[]){
+    this.client.branchs = branchs;
   }
 
   getPersonInformation(){

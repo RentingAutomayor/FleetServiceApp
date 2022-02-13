@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient,HttpHeaders} from '@angular/common/http'
 import { Branch } from '../../../Models/Branch';
 import { ResponseApi } from '../../../Models/ResponseApi';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,28 +18,28 @@ export class BranchService {
 
   constructor(
     private http:HttpClient
-  ) { 
+  ) {
 
   }
 
-  async getBranchs(pOwner_id:number,pKinOfOwner:string):Promise<Branch[]>{
+  getBranchs(pOwner_id:number,pKinOfOwner:string):Observable<Branch[]>{
     let urlGetBranchs = `${this.URL_API}/Get?pOwner_id=${pOwner_id}&pKindOfOwner=${pKinOfOwner}`;
-    return this.http.get<Branch[]>(urlGetBranchs).toPromise();
+    return this.http.get<Branch[]>(urlGetBranchs)
   }
 
-  async insert(pBranch:Branch):Promise<ResponseApi>{
+  insert(pBranch:Branch):Observable<ResponseApi>{
     let urlInsertBranch = `${this.URL_API}/Insert`;
-    return this.http.post<ResponseApi>(urlInsertBranch,pBranch,this.HttpOptions).toPromise();
+    return this.http.post<ResponseApi>(urlInsertBranch,pBranch,this.HttpOptions)
   }
 
-  async update(pBranch:Branch):Promise<ResponseApi>{
+  update(pBranch:Branch):Observable<ResponseApi>{
     let urlUpdateBranch = `${this.URL_API}/Update`;
-    return this.http.post<ResponseApi>(urlUpdateBranch,pBranch,this.HttpOptions).toPromise();
+    return this.http.post<ResponseApi>(urlUpdateBranch,pBranch,this.HttpOptions)
   }
 
-  async delete(pBranch:Branch):Promise<ResponseApi>{
+  delete(pBranch:Branch):Observable<ResponseApi>{
     let urlDeleteBranch = `${this.URL_API}/Delete`;
-    return this.http.post<ResponseApi>(urlDeleteBranch,pBranch,this.HttpOptions).toPromise();
+    return this.http.post<ResponseApi>(urlDeleteBranch,pBranch,this.HttpOptions)
   }
 
   setBranchSelected(pBranch:Branch){

@@ -12,19 +12,17 @@ import { CityService } from '../Services/City/city.service';
 })
 export class CityComponent implements OnInit {
 
-  @Input() countChanges: number;
-  blockFieldCity: boolean;
-
   city: City;
   @Input('city')
   set setCity(city: City) {
-    if(city){
-      this.city = city
+    this.city = city
+    if(this.city){
       this.searchCitiesByDepartmentId(this.city.departmentId)
     }
     this.setDataInForm(this.city);
   }
 
+  blockFieldCity: boolean;
   @Input('blockFieldCity')
   set setBlockFieldCity(value: boolean) {
     this.blockFieldCity = value;
@@ -49,33 +47,11 @@ export class CityComponent implements OnInit {
     this.blockFieldCity = false;
   }
 
-
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   for (let change in changes) {
-  //     try {
-
-  //       //this.city = this.cityService.getSelectedCity();
-
-  //       // if (this.city != null) {
-  //       //   this.searchCities(this.city.departmentId);
-  //       //   this.cityService.setSelectedCity(this.city);
-  //       // } else {
-
-  //       // }
-
-  //     } catch (err) {
-  //       console.error(err);
-  //       continue;
-  //     }
-  //   }
-  // }
-
   ngOnInit(): void {
     this.initComponents();
   }
 
   initComponents() {
-    this.countChanges = 0;
     this.getDepartmentsList();
   }
 

@@ -27,7 +27,7 @@ export class PersonComponent implements OnInit, OnChanges {
   @Output() personWasSetted = new EventEmitter<boolean>();
   @Output() personWasCanceled = new EventEmitter<boolean>();
   formPerson: FormGroup;
-  oCity: City;
+
   oJobTitleSelected: JobTitle;
   oInputvalidator: InputValidator;
 
@@ -59,17 +59,20 @@ export class PersonComponent implements OnInit, OnChanges {
   };
 
   jobTitleSelected: JobTitle = null
+  oCity: City = null;
 
   @Input('personToUpdate')
   set setPersonToUpdate(person: Person){
     if(person){
-      this.personToUpdate = person
-      this.jobTitleSelected = this.personToUpdate.jobTitle
-      this.setDataInForm(this.personToUpdate)
-      this.enableDisableForm(this.frmPersonMustBeBlocked)
+      this.personToUpdate = person;
+      this.jobTitleSelected = this.personToUpdate.jobTitle;
+      this.oCity = this.personToUpdate.city;
+      this.setDataInForm(this.personToUpdate);
+      this.enableDisableForm(this.frmPersonMustBeBlocked);
     }else{
-      this.jobTitleSelected = null
-      this.cleanFormData()
+      this.jobTitleSelected = null;
+      this.oCity = null;
+      this.cleanFormData();
 
     }
   }
@@ -239,10 +242,10 @@ export class PersonComponent implements OnInit, OnChanges {
 
   cleanFormData() {
     this.formPerson.reset();
-    this.cityService.setSelectedCity(null);
     this.oJobTitleSelected = new JobTitle();
     this.oJobTitleSelected.id = 0;
     this.oJobTitleSelected.description = '';
+    this.oCity = null;
   }
 
   setDataPerson(event:any) {

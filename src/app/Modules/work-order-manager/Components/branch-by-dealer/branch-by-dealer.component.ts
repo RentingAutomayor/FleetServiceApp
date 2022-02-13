@@ -38,10 +38,10 @@ export class BranchByDealerComponent implements OnInit , OnChanges{
 
   initComponents(){
     this.getListBranchByDealer(this.dealer.id);
-  } 
+  }
 
   async getListBranchByDealer(dealer_id:number){
-    this.branchService.getBranchs(dealer_id, "DEALER").then(
+    this.branchService.getBranchs(dealer_id, "DEALER").subscribe(
       data => {
         this.lsBranch = data;
       }

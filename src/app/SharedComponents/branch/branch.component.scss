@@ -3,25 +3,36 @@ $arrow-size:10px;
 $arrow-color:#ebd4d4;
 
 .btn-add{
-    border-radius: 50%;
-     width: 50px;
-     height: 50px;     
-    cursor: pointer;
-    position: relative;
-    left: 90%;
-    margin-bottom: 20px;
-    top: 40px;
-    outline: none;
-    text-align: center;
-    font-size: 24px;
-    border: none;
-    z-index: 1700;
+  border-radius: 50%;
+   width: 50px;
+   height: 50px;
+  cursor: pointer;
+  position: relative;
+  left: 95%;
+  margin-bottom: 20px;
+  top: 20px;
+  outline: none;
+  text-align: center;
+  font-size: 24px;
+  border: none;
+  z-index: 1700;
 }
+
 
 i{
     margin: 0 3px;
     cursor: pointer;
 }
+
+
+.table-with-button {
+  margin-top: 10px;
+}
+
+.container-table{
+  margin-top: 10px;
+}
+
 
 %arrow {
     &:before {
@@ -44,7 +55,7 @@ i{
     cursor: pointer;
     position: absolute;
     padding: 10px 15px;
-    z-index: 50;    
+    z-index: 50;
     width: 200px;
     height: auto;
     border-radius: 20px;
@@ -64,12 +75,12 @@ i{
     display: grid;
     grid-template-columns: repeat(3fr);
     grid-template-rows: repeat(3fr);
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
-    background-color: rgba(6, 129, 230, 0.1);    
+    background-color: rgba(6, 129, 230, 0.1);
     border-radius: 15px;
     align-items: center;
     justify-items: center;

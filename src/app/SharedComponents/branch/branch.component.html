@@ -1,5 +1,3 @@
-<h2 id="titleComponentBranch"></h2>
-
 <div *ngIf="buttonAddIsVisible">
     <button
         id="btnAddBranch"
@@ -7,60 +5,71 @@
         (click)="insertBranch()">
         <i class="fas fa-plus"></i>
     </button>
-
-    <!-- <div class="container__infoError"  id="cont_error_add_branch">
-        <span>{{ getErrorDescription() }}</span>
-    </div> -->
 </div>
-
-<table class="table table-striped">
-    <thead>
-        <th class="col-number col-mobile-hide">#</th>
-        <th>Nombre</th>
-        <th class="col-mobile-hide">Teléfono</th>
-        <th class="col-mobile-hide">Celular</th>
-        <th class="col-mobile-hide">Dirección</th>
-        <th class="col-mobile-hide">Ciudad</th>
-        <th>Acciones</th>
-    </thead>
-    <tbody>
-        <tr
-          *ngFor="let i = index ;let branch of lsBranchs | paginate: { itemsPerPage: 10, currentPage: p }">
-            <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
-            <td>{{ branch.name | titlecase }}</td>
-            <td class="col-mobile-hide">{{ branch.phone }}</td>
-            <td class="col-mobile-hide">{{ branch.cellphone }}</td>
-            <td class="col-mobile-hide">{{ branch.address }}</td>
-            <td class="col-mobile-hide">{{ validateCityName(branch.city) | titlecase }}</td>
-            <td>
-                <i class="fas fa-info-circle text-info" title="Más información" *ngIf="!disableActionButtons"></i>
-                <i class="fas fa-edit text-warning" (click)="updateContact(branch)" title="Modificar" *ngIf="!disableActionButtons"></i>
-                <i class="fas fa-trash-alt text-danger" (click)="deleteBranch(branch)" title="Eliminar" *ngIf="!disableActionButtons"></i>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<div class="paginationContainer">
-    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+<div
+  class="container-table"
+  [class.table-with-button]="buttonAddIsVisible">
+  <table class="table table-striped">
+      <thead>
+          <th class="col-number col-mobile-hide">#</th>
+          <th>Nombre</th>
+          <th class="col-mobile-hide">Teléfono</th>
+          <th class="col-mobile-hide">Celular</th>
+          <th class="col-mobile-hide">Dirección</th>
+          <th class="col-mobile-hide">Ciudad</th>
+          <th *ngIf="!disableActionButtons">Acciones</th>
+      </thead>
+      <tbody>
+          <tr
+            *ngFor="let i = index ;let branch of lsBranchs | paginate: { itemsPerPage: 10, currentPage: p }">
+              <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
+              <td>{{ branch.name | titlecase }}</td>
+              <td class="col-mobile-hide">{{ branch.phone }}</td>
+              <td class="col-mobile-hide">{{ branch.cellphone }}</td>
+              <td class="col-mobile-hide">{{ branch.address }}</td>
+              <td class="col-mobile-hide">{{ validateCityName(branch.city) | titlecase }}</td>
+              <td *ngIf="!disableActionButtons">
+                <i
+                  class="fas fa-info-circle text-info"
+                  (click)="getDetailsOfBranch(branch.id)"
+                  title="Más información"
+                  ></i>
+                <i
+                  class="fas fa-edit text-warning"
+                  (click)="updateBranch(branch.id)"
+                  title="Modificar"
+                  ></i>
+                <i
+                  class="fas fa-trash-alt text-danger"
+                  (click)="deleteBranch(branch.id)"
+                  title="Eliminar"
+                  ></i>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+  <div class="paginationContainer">
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
 </div>
-
 <div id="container__formBranch">
     <div class="overlay">
-        <div class="card">
-            <div class="card-header" id="container__header">
-                <h3 class="card-title">Sucursal</h3>
-                <a (click)="comeBackToTable()" class="buttonClose"><i class="fas fa-times"></i></a>
-            </div>
-            <div class="card-body">
-                <app-person
-                [configComponent]="oConfigPersonComp"
-                [countContact] = "oCountBranch"
-                [oCountChanges] = "oCountChangesCity"
-                [personToUpdate] = "oPersonToUpdate"
-                (personWasSetted)="saveBranch()"
-                (personWasCanceled)="comeBackToTable()"></app-person>
-            </div>
+      <div class="card">
+        <div class="card-header" id="container__header">
+            <h3 class="card-title">Sucursal</h3>
+            <a (click)="comeBackToTable()" class="buttonClose"><i class="fas fa-times"></i></a>
         </div>
+        <div class="card-body">
+          <app-person
+            [areVisibleButtonActions]="buttonsAreVisibles"
+            [frmPersonMustBeBlocked]="isFormBlocked"
+            [configComponent]="oConfigPersonComp"
+            [personToUpdate]="oPersonToUpdate"
+            (personWasSetted)="saveBranch()"
+            (personWasCanceled)="comeBackToTable()">
+          </app-person>
+        </div>
+      </div>
     </div>
 </div>
 

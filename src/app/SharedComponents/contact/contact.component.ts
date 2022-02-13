@@ -55,18 +55,12 @@ export class ContactComponent implements OnInit {
   @Input('client')
   set setClient(client:Client){
     this.client = client
-    if(this.client){
-      this.updateTitleComponent();
-    }
   }
 
   dealer:Dealer;
   @Input('dealer')
   set setDealer(dealer: Dealer){
     this.dealer = dealer;
-    if(this.dealer){
-      this.updateTitleComponent();
-    }
   }
 
   @Output() onContactsWereModified = new EventEmitter<Contact[]>()
@@ -87,20 +81,6 @@ export class ContactComponent implements OnInit {
     this.initComponents();
   }
 
-  validateNameOfOwner():string{
-    if(this.client != null){
-      return this.client.name.toLowerCase();
-    }
-
-    if(this.dealer != null){
-      return this.dealer.name.toLowerCase();
-    }
-    return '';
-  }
-
-  updateTitleComponent(){
-    this.titleComponent = `Contactos de: ${this.validateNameOfOwner()}`
-  }
 
   initComponents() {
     this.isAwaiting = false;
@@ -187,14 +167,12 @@ export class ContactComponent implements OnInit {
     this.isAwaiting = true;
     if (this.isToInsert) {
       this.lsContacts.unshift(oContact);
-      this.hidePopUp();
-      this.isAwaiting = false;
     } else {
       const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == oContact.id)
       this.lsContacts[contactIndex] = oContact;
-      this.hidePopUp();
-      this.isAwaiting =false;
     }
+    this.hidePopUp();
+    this.isAwaiting = false;
     this.onContactsWereModified.emit(this.lsContacts)
 
   }

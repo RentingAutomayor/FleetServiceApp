@@ -8,6 +8,7 @@ import { Company } from 'src/app/Models/Company';
 import { CompanyType } from 'src/app/Models/CompanyType';
 import { SecurityValidators } from 'src/app/Models/SecurityValidators';
 import { ActionType } from 'src/app/Models/ActionType';
+import { saveInStorage } from 'src/app/Utils/storage';
 
 
 @Component({
@@ -56,7 +57,6 @@ export class TblClientComponent implements OnInit {
   async validateCompanyLogged() {
     try {
       this.company = SecurityValidators.validateUserAndCompany();
-      //console.log("[validateCompanyLogged]",this.company);
       switch (this.company.type) {
         case CompanyType.DEALER:
         case CompanyType.CLIENT:
@@ -82,9 +82,9 @@ export class TblClientComponent implements OnInit {
 
   getDetailsClient(pId:number){
     try{
-
       this.action = ActionType.READ;
       this.clientService.setAction(this.action);
+      saveInStorage('actionToPerform', this.action)
       this.router.navigate(["/MasterClients/Client",pId]);
     }catch(err){
       console.error(err.error.Message);
@@ -96,6 +96,7 @@ export class TblClientComponent implements OnInit {
     try{
       this.action = ActionType.UPDATE;
       this.clientService.setAction(this.action);
+      saveInStorage('actionToPerform', this.action)
       this.router.navigate(["/MasterClients/Client",pId]);
     }catch(err){
       console.error(err.error.Message);
@@ -103,16 +104,18 @@ export class TblClientComponent implements OnInit {
     }
   }
 
-  async deleteClient(pClient:Client){
+  deleteClient(pClient:Client){
     try{
       if(confirm("¿Está seguro que desea eliminar este cliente?")){
         this.isAwaiting = true;
-        let rta = await this.clientService.deleteClient(pClient);
-        this.isAwaiting = false;
-        if(rta.response){
-          alert(rta.message);
-          this.initComponents();
-        }
+        this.clientService.deleteClient(pClient).then(response =>{
+          let rta = response
+          this.isAwaiting = false;
+          if(rta.response){
+            alert(rta.message);
+            this.initComponents();
+          }
+        })
       }
     }catch(err){
       console.error(err.error.Message);
@@ -124,13 +127,12 @@ export class TblClientComponent implements OnInit {
   insertClient(){
     this.action = ActionType.CREATE;
     this.clientService.setAction(this.action);
+    saveInStorage('actionToPerform', this.action)
     this.router.navigate(["/MasterClients/Client"]);
   }
 
   moveContent(event:any){
-    //console.log(event);
     let containerContent:HTMLDivElement  = document.querySelector("#container__content");
-
     if(event){
       containerContent.style.marginLeft = "250px";
     }else{

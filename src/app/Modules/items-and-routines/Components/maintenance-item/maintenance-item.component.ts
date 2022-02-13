@@ -160,7 +160,6 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
   setDealerToItem(oItem: MaintenanceItem) {
     let session = JSON.parse(sessionStorage.getItem('sessionUser'));
     if (session.company.type == CompanyType.DEALER) {
-      oItem.dealer = new Dealer();
       oItem.dealer.id = session.company.id;
     }
     return oItem;

@@ -5,10 +5,12 @@ import { PersonService } from '../../../../SharedComponents/Services/Person/pers
 import { ClientService } from '../../Services/Client/client.service';
 import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { Person } from 'src/app/Models/Person';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CityService } from '../../../../SharedComponents/Services/City/city.service';
-import { City } from 'src/app/Models/City';
 import { ActionType } from 'src/app/Models/ActionType';
+import { Contact } from 'src/app/Models/Contact';
+import { getFromStorage } from 'src/app/Utils/storage';
+
 
 
 @Component({
@@ -22,7 +24,35 @@ export class ClientComponent implements OnInit {
   errorMessage:string;
   isAwaiting:boolean;
   oPersonToUpdate: Person;
-  client: Client;
+  areVisibleButtonsForBasicData:boolean =false;
+  client: Client= {
+    id : 0,
+    document: '',
+    name: '',
+    lastname: '',
+    phone:'',
+    cellphone:'',
+    address:'',
+    email:'',
+    website:'',
+    city: {
+      id: 0,
+      name :'',
+      departmentId:0,
+      state: false
+    },
+    jobTitle: {
+      id:0,
+      description:'',
+      state: false
+    },
+    state: false,
+    registrationDate: null,
+    updateDate: null,
+    deleteDate: null,
+    contacts: []
+  };
+  lsContacts:Contact[] = [];
   oDataIsToUpdate: boolean;
   sReturnPath:string;
   ROUTE_MASTER_CLIENT:string = "/MasterClients";
@@ -32,7 +62,7 @@ export class ClientComponent implements OnInit {
   action:ActionType;
   //Refactor component
   clientID: string;
-
+  getPersonInfo:boolean = false;
 
   constructor(
     private personService:PersonService,
@@ -41,6 +71,7 @@ export class ClientComponent implements OnInit {
     private router: ActivatedRoute,
 
   ) {
+    this.client
     this.bFormHasError = false;
     this.errorMessage = "";
     this.isAwaiting = false;
@@ -59,22 +90,31 @@ export class ClientComponent implements OnInit {
   }
 
   extractDataFromParams(){
+    this.isAwaiting = true;
     this.router.paramMap
     .subscribe(params => {
       this.clientID = params.get('id');
-      this.ClientService.getClientById(parseInt(this.clientID))
-      .then(client => {
-        if(client != null){
-          this.client = client;
-          this.oDataIsToUpdate = true;
-        }
-      })
-    })
+      if(this.clientID){
+        this.ClientService.getClientById(parseInt(this.clientID))
+        .then(client => {
+          if(client != null){
+            this.client = client;
+            this.lsContacts = this.client.contacts;
+            this.oDataIsToUpdate = true;
+          }
+        })
+      }else{
+        this.client = null;
+        this.oDataIsToUpdate = false;
+      }
+    });
+    this.isAwaiting = false;
   }
 
   initComponents(){
     //this.hideContainerTabs();
-    this.action = this.ClientService.getAction();
+    let actionToPerform = getFromStorage('actionToPerform');
+    this.action = parseInt(actionToPerform)
     this.validateActionToDo(this.action)
   }
 
@@ -100,15 +140,14 @@ export class ClientComponent implements OnInit {
   async SetDataToSaveClient(){
     this.isAwaiting = true;
     try{
-      let oClient = new Client();
-      oClient = this.personService.getPerson();
+      let oClient =  this.personService.getPerson();
       let rta = new ResponseApi();
 
       if(this.oDataIsToUpdate){
-        rta = await this.ClientService.updateClient(oClient);
+       //rta = await this.ClientService.updateClient(oClient);
         this.cityService.setSelectedCity(null);
       }else{
-        rta = await this.ClientService.insertClient(oClient);
+       // rta = await this.ClientService.insertClient(oClient);
       }
 
       if(rta.response){
@@ -162,6 +201,22 @@ export class ClientComponent implements OnInit {
       containerContent.style.marginLeft = "60px";
     }
 
+  }
+
+  updateContactsToClient(contacts:Contact[]){
+    console.log('updateContactsToClient')
+    console.log(this.client)
+    console.log(contacts);
+    //this.client.contacts = contacts;
+  }
+
+  getPersonInformation(){
+    this.getPersonInfo = true;
+  }
+
+  nextStepBasicData(){
+    const btnNextStep = document.getElementById("btn-next-step-basic-data");
+    btnNextStep.click();
   }
 
 }

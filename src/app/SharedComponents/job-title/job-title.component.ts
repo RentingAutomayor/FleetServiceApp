@@ -16,7 +16,22 @@ export class JobTitleComponent implements OnInit ,OnChanges{
   lsJobTitle$: Observable<JobTitle[]>;
   description = new Subject<string>();
   txtJobTitle = new FormControl('');
-  @Input() jobTitleSelected: JobTitle;
+
+  jobTitleSelected: JobTitle = null;
+  @Input('jobTitleSelected')
+  set setJobTitleSelected(jobTitle:JobTitle){
+    this.jobTitleSelected = jobTitle;
+    if(!this.jobTitleSelected){
+      this.txtJobTitle.reset()
+    }
+  }
+
+  isFormDisable: boolean = false;
+  @Input('isFormDisable')
+  set setIsFormDisable(value:boolean){
+    this.isFormDisable = value;
+    this.enableOrDisbaleField(this.isFormDisable)
+  }
 
   constructor(
     private jobTitleService:JobTitleService
@@ -25,6 +40,7 @@ export class JobTitleComponent implements OnInit ,OnChanges{
   ngOnInit(): void {
     this.initComponents();
   }
+
   ngOnChanges(changes: SimpleChanges) {
     for(let change in changes){
       if(change == "jobTitleSelected")
@@ -40,6 +56,15 @@ export class JobTitleComponent implements OnInit ,OnChanges{
 
       }
     }
+  }
+
+  enableOrDisbaleField(isFormBlocked:boolean){
+    if(isFormBlocked){
+      this.txtJobTitle.disable()
+    }else{
+      this.txtJobTitle.enable()
+    }
+
   }
 
   async initComponents(){

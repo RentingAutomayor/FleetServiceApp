@@ -24,9 +24,6 @@ export class PersonComponent implements OnInit, OnChanges {
   @Input() error: string;
   @Input() oCountChanges:number;
   @Input() returnPath: string;
-  @Input() countContact: number;
-
-
   @Output() personWasSetted = new EventEmitter<boolean>();
   @Output() personWasCanceled = new EventEmitter<boolean>();
   formPerson: FormGroup;
@@ -56,15 +53,24 @@ export class PersonComponent implements OnInit, OnChanges {
     city: null,
     jobTitle:null,
     state:false,
-    registrationDate: new Date()
+    registrationDate: new Date(),
+    updateDate: new Date(),
+    deleteDate: new Date()
   };
+
+  jobTitleSelected: JobTitle = null
 
   @Input('personToUpdate')
   set setPersonToUpdate(person: Person){
     if(person){
       this.personToUpdate = person
+      this.jobTitleSelected = this.personToUpdate.jobTitle
       this.setDataInForm(this.personToUpdate)
       this.enableDisableForm(this.frmPersonMustBeBlocked)
+    }else{
+      this.jobTitleSelected = null
+      this.cleanFormData()
+
     }
   }
 
@@ -74,6 +80,24 @@ export class PersonComponent implements OnInit, OnChanges {
     this.configRenderComponent = config;
     this.renderComponent();
   }
+
+  areVisibleButtonActions:boolean = false;
+  @Input('areVisibleButtonActions')
+  set setAreVisibleButtonActions(value:boolean){
+    console.log(`buttons are visibles ${value}`)
+    this.areVisibleButtonActions = value;
+  }
+
+  // getInfoComponent:boolean = false;
+  // @Input('getInfoComponent')
+  // set setGetInfoComponent(value:boolean){
+  //   this.getInfoComponent = value;
+  //   if(this.getInfoComponent){
+  //     this.getInformationComponent()
+  //   }
+  // }
+
+  @Output() onNextStepClicked = new EventEmitter<boolean>()
 
   constructor(
     private personService: PersonService,
@@ -170,33 +194,33 @@ export class PersonComponent implements OnInit, OnChanges {
 
 
     if (!this.configComponent.kindOfDocumentIsVisible || !this.configComponent.documentIsVisible) {
-      containerDocument.classList.remove("row__container");
-      containerDocument.classList.add("row__container_single");
+      // containerDocument.classList.remove("row__container");
+      // containerDocument.classList.add("row__container_single");
     }
 
     if (!this.configComponent.nameIsVisible || !this.configComponent.lastNameIsVisible) {
-      containerName.classList.remove("row__container");
-      containerName.classList.add("row__container_single");
+      // containerName.classList.remove("row__container");
+      // containerName.classList.add("row__container_single");
     }
 
     if (!this.configComponent.phoneIsVisible || !this.configComponent.cellphoneIsVisible) {
-      containerPhone.classList.remove("row__container");
-      containerPhone.classList.add("row__container_single");
+      // containerPhone.classList.remove("row__container");
+      // containerPhone.classList.add("row__container_single");
     }
 
 
     if (this.configComponent.websiteIsVisible && this.configComponent.emailIsVisible) {
        console.warn("Validación de visibilidad de container Email");
        console.warn(` email: ${this.configComponent.emailIsVisible}  website: ${this.configComponent.websiteIsVisible }`)
-       containerEmail.classList.remove("row__container_single" );
-       containerEmail.classList.add("row__container");
+      //  containerEmail.classList.remove("row__container_single" );
+      //  containerEmail.classList.add("row__container");
 
 
     }
 
     if (!this.configComponent.addressIsVisible || !this.configComponent.jobTitleIsVisible) {
-      containerAddress.classList.remove("row__container");
-      containerAddress.classList.add("row__container_single");
+      // containerAddress.classList.remove("row__container");
+      // containerAddress.classList.add("row__container_single");
     }
   }
 
@@ -223,7 +247,13 @@ export class PersonComponent implements OnInit, OnChanges {
 
   setDataPerson(event:any) {
     event.preventDefault();
+    const objPerson = this.getDataPersonForm();
+    this.personService.setPerson(objPerson);
+    this.personWasSetted.emit(true);
+    this.formPerson.reset();
+  }
 
+  getDataPersonForm():Person{
     let objPerson: Person;
 
     objPerson = this.formPerson.value;
@@ -245,10 +275,14 @@ export class PersonComponent implements OnInit, OnChanges {
       }
     }
 
+    return objPerson;
+  }
 
-
+  getInformationComponent(){
+    const objPerson = this.getDataPersonForm();
     this.personService.setPerson(objPerson);
     this.personWasSetted.emit(true);
+    this.onNextStepClicked.emit(true);
   }
 
   comeBack() {

@@ -243,7 +243,6 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
   setClientSelected() {
-    this.contract.client = new Client();
     this.contract.client = this.clientService.getClientSelected();
     this.vehicleService.setListVehicleTypeSelected(null);
     this.vehicleService.setListVehicleModelsSelected(null);
@@ -257,7 +256,6 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
   setDealerSelected() {
-    this.contract.dealer = new Dealer();
     this.contract.dealer = this.dealerService.getDealerSelected();
 
     if (this.contract.dealer == null || this.contract.dealer == undefined) {
@@ -351,7 +349,7 @@ export class ContractComponent implements OnInit, OnChanges {
             this.contract.consecutive = this.contractToUpdate.consecutive;
           }
 
-          this.contract.client = new Client();
+
           this.contract.client = this.clientService.getClientSelected();
 
           if (this.contract.client == null || this.contract.client == undefined) {
@@ -359,7 +357,6 @@ export class ContractComponent implements OnInit, OnChanges {
             throw ("Error guardando el contrato. Se debe seleccionar un cliente");
           }
 
-          this.contract.dealer = new Dealer();
           this.contract.dealer = this.dealerService.getDealerSelected();
 
           if (this.contract.dealer == null || this.contract.dealer == undefined) {

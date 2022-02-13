@@ -1,16 +1,161 @@
 <div id="container__content">
-    <div class="container__tabPanel">
+
+  <mat-vertical-stepper>
+    <mat-step>
+      <ng-template matStepLabel>Datos básicos del cliente</ng-template>
+      <div class="card">
+        <app-person
+          [configComponent]="oConfigPersonComp"
+          [formHasError]="bFormHasError"
+          [error]="errorMessage"
+          [returnPath]="sReturnPath"
+          [personToUpdate]="client"
+          [frmPersonMustBeBlocked]="blockFormClient"
+          (personWasSetted)="SetDataToSaveClient()"
+          (onNextStepClicked)="nextStepBasicData()"
+          [areVisibleButtonActions]="areVisibleButtonsForBasicData">
+        </app-person>
+      </div>
+      <div class="container-buttons">
+        <button
+          id="btn-next-step-basic-data"
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step"
+          (click)="nextStepBasicData()">
+          Siguiente
+        </button>
+      </div>
+
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Contactos</ng-template>
+      <app-contact
+        [client]="client"
+        [contacts]="lsContacts"
+        [action]="action"
+        [disableActionButtons]="blockFormClient"
+        (onContactsWereModified)="updateContactsToClient($event)">
+      </app-contact>
+      <div class="container-step-buttons">
+        <button
+          matStepperPrevious
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Atás
+        </button>
+        <button
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Sucursales</ng-template>
+      <app-branch
+            [action]="action"
+            [isToClient]="oIsToClient"
+            [clientWasSaved]="oClientWasSaved"
+            [disableActionButtons]="blockFormClient">
+        </app-branch>
+        <div class="container-step-buttons">
+          <button
+            matStepperPrevious
+            type="button"
+            mat-raised-button
+            color="primary"
+            class="btn-step">
+            Atás
+          </button>
+          <button
+            matStepperNext
+            type="button"
+            mat-raised-button
+            color="primary"
+            class="btn-step">
+            Siguiente
+          </button>
+        </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Vehículos</ng-template>
+      <div class="container-step-buttons">
+        <button
+          matStepperPrevious
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Atás
+        </button>
+        <button
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Información contractual</ng-template>
+      <div class="container-step-buttons">
+        <button
+          matStepperPrevious
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Atás
+        </button>
+        <button
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Información financiera</ng-template>
+      <div class="container-step-buttons">
+        <button
+          matStepperPrevious
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Atás
+        </button>
+      </div>
+    </mat-step>
+
+  </mat-vertical-stepper>
+
+
+    <!-- <div class="container__tabPanel">
         <div class="container__titles">
             <button class="tab_link active" (click)="openTab($event,'basicData')">Datos básicos</button>
             <button class="tab_link" (click)="openTab($event,'contact')">Contactos</button>
             <button class="tab_link" (click)="openTab($event,'branch')">Sucursales</button>
             <button class="tab_link" (click)="openTab($event,'vehicles')">Vehículos</button>
-            <!-- <button class="tab_link" (click)="openTab($event,'contracts')">Contratos asociados</button>             -->
+            <button class="tab_link" (click)="openTab($event,'contracts')">Contratos asociados</button>
             <button class="tab_link" (click)="openTab($event,'financialInformation')">Información financiera</button>
         </div>
-    </div>
+    </div> -->
 
-    <div class="tab_content tab_active" id="container__basicData">
+    <!-- <div class="tab_content tab_active" id="container__basicData">
         <div class="card">
             <div class="card-header">
                 <h3>Datos del cliente</h3>
@@ -32,10 +177,11 @@
 
         <div class="container__table__contact">
             <app-contact
-                [action]="action"
-                [isToClient]="oIsToClient"
-                [clientWasSaved]="oClientWasSaved"
-                [disableActionButtons]="blockFormClient">
+              [client]="client"
+              [contacts]="client.contacts"
+              [action]="action"
+              [disableActionButtons]="blockFormClient"
+              (onContactsWereModified)="updateContactsToClient($event)">
             </app-contact>
         </div>
 
@@ -61,7 +207,7 @@
     <div class="tab_content tab_inactive" id="container__financialInformation">
         <app-financial-information-by-client>
         </app-financial-information-by-client>
-    </div>
+    </div> -->
 
 
 </div>

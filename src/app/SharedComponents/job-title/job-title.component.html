@@ -1,7 +1,13 @@
 
 <label for="#">Cargo:</label>
-<input type="text" class="form-control" #jobtitle [formControl]="txtJobTitle"
-    (input)="getJobtitleByDescription(jobtitle.value)" [value]="jobTitleSelected.description | titlecase" />
+<input
+  type="text"
+  class="form-control"
+  placeholder="Cargo ..."
+  #jobtitle
+  [formControl]="txtJobTitle"
+  (input)="getJobtitleByDescription(jobtitle.value)"
+  [value]="(jobTitleSelected!=null)?jobTitleSelected.description: '' | titlecase" />
 <ul *ngIf="lsJobTitlesIsVivible">
     <!-- El signo $ indica que el array de objetos que requiere el ngFor es un observable -->
     <li *ngFor="let jobTitle of lsJobTitle$ | async" (click)="setJobTitleInInput(jobTitle)">

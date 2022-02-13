@@ -13,13 +13,14 @@ import { TblContractsByClientComponent } from './Components/tbl-contracts-by-cli
 
 import { ClientRoutingModule } from './client-routing.module';
 import { SharedModule } from 'src/app/SharedComponents/shared.module';
-
+import { MatStepperModule } from '@angular/material/stepper';
+import {MatButtonModule} from '@angular/material/button';
 
 
 @NgModule({
     declarations: [
         ClientComponent,
-        TblClientComponent,      
+        TblClientComponent,
         FinancialInformationByClientComponent,
         VehicleComponent,
         VehiclesByCLientComponent,
@@ -28,9 +29,11 @@ import { SharedModule } from 'src/app/SharedComponents/shared.module';
     ],
     imports: [
         CommonModule,
-        SharedModule,        
+        SharedModule,
         ReactiveFormsModule,
         ClientRoutingModule,
+        MatStepperModule,
+        MatButtonModule
     ], schemas: [
         CUSTOM_ELEMENTS_SCHEMA
     ],

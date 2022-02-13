@@ -1,17 +1,18 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Client } from 'src/app/Models/Client';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { PersonService } from '../Services/Person/person.service';
 import { ContactService } from '../Services/Contact/contact.service';
-import { ClientService } from 'src/app/Modules/client/Services/Client/client.service';
+
 import { Person } from 'src/app/Models/Person';
-import { Contact } from 'src/app/Models/Contact';
-import { ResponseApi } from 'src/app/Models/ResponseApi';
+import { Contact, CreateContactDTO, UpdateContactDTO } from 'src/app/Models/Contact';
+
 import { JobTitle } from 'src/app/Models/JobTitle';
 import { JobTitleService } from '../Services/JobTitle/job-title.service';
 import { Dealer } from 'src/app/Models/Dealer';
-import { DealerService } from '../../Modules/dealer/Services/Dealer/dealer.service';
+
 import { ActionType } from 'src/app/Models/ActionType';
+
 
 
 @Component({
@@ -19,39 +20,62 @@ import { ActionType } from 'src/app/Models/ActionType';
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent implements OnInit, OnChanges {
+export class ContactComponent implements OnInit {
   isAwaiting: boolean;
-  lsContacts: Contact[];
   oConfigPersonComp: ConfigPersonComponent;
-  client: Client;
-  dealer:Dealer;
-  oCountContact: number;
   oPersonToUpdate: Person;
   isToInsert: boolean;
   btnAddContact: HTMLButtonElement;
-  containerErrorAdd: HTMLElement;
   sOwnerName:string;
-
-
+  titleComponent: string = 'Contactos';
+  actionsAreVisible: boolean = true;
+  isFormBlocked: boolean = false;
+  buttonsAreVisibles: boolean = true;
   //pagination
   p: number = 1;
-  @Input() isToClient: boolean;
-  @Input() isToDealer: boolean;
-  @Input() clientWasSaved: boolean;
-  @Input() dealerWasSaved: boolean;
+
   @Input() disableActionButtons:boolean;
 
   buttonAddIsVisible:boolean;
-  @Input() action: ActionType;
+  action: ActionType = ActionType.READ;
 
+  @Input('action')
+  set setAction(action: ActionType){
+    this.action = action;
+    this.validateIfButtonAddMustVisible(this.action)
+  }
+
+  lsContacts: Contact[] = [];
+  @Input('contacts')
+  set setLsContacts(contacts: Contact[]){
+    this.lsContacts = contacts
+  }
+
+  client: Client;
+  @Input('client')
+  set setClient(client:Client){
+    this.client = client
+    if(this.client){
+      this.updateTitleComponent();
+    }
+  }
+
+  dealer:Dealer;
+  @Input('dealer')
+  set setDealer(dealer: Dealer){
+    this.dealer = dealer;
+    if(this.dealer){
+      this.updateTitleComponent();
+    }
+  }
+
+  @Output() onContactsWereModified = new EventEmitter<Contact[]>()
 
 
   constructor(
     private personService: PersonService,
-    private contactService: ContactService,
-    private clientService: ClientService,
     private jobtitleService: JobTitleService,
-    private dealerService: DealerService
+
   ) {
     this.sOwnerName="";
     this.disableActionButtons = false;
@@ -61,42 +85,6 @@ export class ContactComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.initComponents();
-    setTimeout(()=>{
-      //await this time because the btn it's no ready yet
-      this.validateIfButtonAddMustVisible();
-    },1500);
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-
-    for (let change in changes) {
-      if (change == "clientWasSaved") {
-
-        if (changes["clientWasSaved"].currentValue == true) {
-
-          this.activateButtonAdd();
-          this.client = this.clientService.getClientToUpdate();
-          this.updateTitleComponent();
-        }
-      }
-
-      if (change == "dealerWasSaved") {
-
-        if (changes["dealerWasSaved"].currentValue == true) {
-
-          this.activateButtonAdd();
-          this.dealer = this.dealerService.getDealerToUpdate();
-          this.updateTitleComponent();
-        }
-      }
-    }
-
-
-
-    setTimeout(()=>{
-      //await this time because the btn it's no ready yet
-      this.validateIfButtonAddMustVisible();
-    },1000);
   }
 
   validateNameOfOwner():string{
@@ -111,53 +99,13 @@ export class ContactComponent implements OnInit, OnChanges {
   }
 
   updateTitleComponent(){
-    let titleComp:HTMLElement = document.querySelector("#titleComponent");
-    titleComp.innerHTML = `Contactos de: ${this.validateNameOfOwner()}`
+    this.titleComponent = `Contactos de: ${this.validateNameOfOwner()}`
   }
 
   initComponents() {
     this.isAwaiting = false;
     this.isToInsert = false;
-    this.oCountContact = 0;
-    this.showTableContacts();
     this.configurePersonComponent();
-  }
-
-  async showTableContacts() {
-    if (this.isToClient) {
-      this.getListOfContactsByClient();
-    }
-    if(this.isToDealer){
-      this.getListOfContactsByDealer();
-    }
-  }
-
-  async getListOfContactsByClient(){
-
-    this.client = this.clientService.getClientToUpdate();
-    if (this.client != null) {
-      this.updateTitleComponent();
-
-      this.lsContacts = await this.contactService.getContacts(this.client.id, "client");
-
-      this.activateButtonAdd();
-    } else {
-      this.disableButtonAdd();
-    }
-  }
-
-  async getListOfContactsByDealer(){
-
-    this.dealer = this.dealerService.getDealerToUpdate();
-    if(this.dealer != null){
-      this.updateTitleComponent();
-
-      this.lsContacts = await this.contactService.getContacts(this.dealer.id, "dealer");
-
-      this.activateButtonAdd();
-    } else {
-      this.disableButtonAdd();
-    }
   }
 
   activateButtonAdd() {
@@ -166,34 +114,6 @@ export class ContactComponent implements OnInit, OnChanges {
       this.btnAddContact.disabled = false;
       this.btnAddContact.classList.remove("error");
     }catch(error){
-      console.warn(error.message)
-    }
-  }
-
-  removeContainerError(){
-    try {
-      this.containerErrorAdd = document.querySelector("#cont_error_add_contact")
-      this.containerErrorAdd.style.display = 'none';
-    } catch (error) {
-      console.warn(error.message)
-    }
-  }
-
-  disableButtonAdd() {
-    try {
-      this.btnAddContact = document.querySelector("#btnAddContact");
-      this.btnAddContact.disabled = true;
-      this.btnAddContact.className += `${this.btnAddContact.className} error`;
-    } catch (error) {
-      console.warn(error.message)
-    }
-  }
-
-  addContainerError(){
-    try {
-      this.containerErrorAdd = document.querySelector("#cont_error_add_contact")
-      this.containerErrorAdd.style.display = 'block';
-    } catch (error) {
       console.warn(error.message)
     }
   }
@@ -208,25 +128,28 @@ export class ContactComponent implements OnInit, OnChanges {
     this.oConfigPersonComp.websiteIsVisible = false;
     this.oConfigPersonComp.addressIsVisible = true;
     this.oConfigPersonComp.jobTitleIsVisible = true;
-
   }
 
   insertContact() {
     this.isToInsert = true;
-    this.oCountContact += 1;
-    this.personService.setPersonToUpdate(null);
-    this.jobtitleService.setJobTitleSelected(null);
+    this.oPersonToUpdate = null;
+    this.isFormBlocked = false;
     this.showPopUp();
   }
 
-  updateContact(pContact: Contact) {
+  getDetailsOfContant(contactId:number){
+    this.oPersonToUpdate  = this.lsContacts.find(contact => contact.id === contactId);
+    this.isFormBlocked = true;
+    this.showPopUp();
+  }
+
+  updateContact(contactId:number) {
     this.isToInsert = false;
-    this.oCountContact += 1;
-
-
-    this.setDataToUpdatContact(pContact);
+    this.oPersonToUpdate  = this.lsContacts.find(contact => contact.id === contactId);
+    this.isFormBlocked = false;
     this.showPopUp();
   }
+
   showPopUp() {
     let containerForm = document.getElementById("container__formContact");
     containerForm.setAttribute("style", "display:block");
@@ -237,23 +160,20 @@ export class ContactComponent implements OnInit, OnChanges {
     containerForm.setAttribute("style", "display:none");
   }
 
-  async saveContact() {
+  saveContact() {
     try {
-      let oPerson :Person
-      oPerson = this.personService.getPerson();
-      let oContact = new Contact();
-      oContact = this.setDataContact(oPerson);
-
-      if (this.isToClient) {
-        oContact = this.setDataClient_id(oContact);
-      }
-
-      if (this.isToDealer) {
-        oContact = this.setDataDealer_id(oContact);
+      let oPerson = this.personService.getPerson();
+      let oContact = null
+      if(this.isToInsert){
+        oContact = this.setDataToContact(oPerson);
+        oContact.id = 0;
+      }else{
+        oContact = this.setDataToContact(oPerson);
+        oContact.id = oPerson.id;
       }
 
       if(oContact != null){
-        let rta = await this.saveData(oContact);
+        this.saveData(oContact);
       }
 
     } catch (err) {
@@ -263,52 +183,39 @@ export class ContactComponent implements OnInit, OnChanges {
 
   }
 
-  setDataClient_id(oContact:Contact):Contact{
-    if (this.client != null) {
-      oContact.Client_id = this.client.id;
-    } else {
-      alert("No se puede guardar contacto hasta que no se haya guardado los datos básicos del cliente.");
-      return null;
-    }
-    return oContact;
-  }
-
-  setDataDealer_id(oContact:Contact): Contact{
-    if (this.dealer != null) {
-      oContact.Dealer_id = this.dealer.id;
-    } else {
-      alert("No se puede guardar contacto hasta que no se haya guardado los datos básicos del concesionario.");
-      return null;
-    }
-    return oContact;
-  }
-
-  async saveData(oContact: Contact):Promise<ResponseApi>{
-    let rta = new ResponseApi();
+  saveData(oContact: Contact){
     this.isAwaiting = true;
     if (this.isToInsert) {
-      console.warn("[Contacto para insertar] : ", oContact);
-      rta = await this.contactService.insert(oContact);
-    } else {
-      console.warn("[Contacto para update] : ", oContact);
-      rta = await this.contactService.update(oContact);
-    }
-    this.isAwaiting = false;
-    if (rta.response) {
-      alert("Contacto guardado exitosamente en la base de datos");
+      this.lsContacts.unshift(oContact);
       this.hidePopUp();
-      this.showTableContacts();
+      this.isAwaiting = false;
     } else {
-      alert("Pasó algo");
+      const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == oContact.id)
+      this.lsContacts[contactIndex] = oContact;
+      this.hidePopUp();
+      this.isAwaiting =false;
     }
-
-    return rta;
+    this.onContactsWereModified.emit(this.lsContacts)
 
   }
 
-  setDataContact(oPerson: Person): Contact {
-    let oContact = new Contact();
-    oContact.id = oPerson.id;
+  deleteContact(pContact: Contact) {
+    try {
+      if (confirm("¿Está seguro que desea eliminar este contacto?")) {
+        this.isAwaiting = true;
+        const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == pContact.id)
+        this.lsContacts.splice(contactIndex,1);
+        this.isAwaiting = false;
+        this.onContactsWereModified.emit(this.lsContacts)
+      }
+    } catch (err) {
+      console.error(err.error.Message);
+      alert(err.error.Message)
+    }
+  }
+
+  setDataToContact(oPerson: Person): CreateContactDTO {
+    let oContact = {} as CreateContactDTO
     oContact.name = oPerson.name;
     oContact.lastname = oPerson.lastname;
     oContact.phone = oPerson.phone;
@@ -317,6 +224,8 @@ export class ContactComponent implements OnInit, OnChanges {
     oContact.address = oPerson.address;
     oContact.jobTitle = oPerson.jobTitle;
     oContact.city = oPerson.city;
+    oContact.Dealer_id = (this.dealer != null)?this.dealer.id:null;
+    oContact.Client_id = (this.client != null)?this.client.id:null;
     return oContact;
   }
 
@@ -331,53 +240,8 @@ export class ContactComponent implements OnInit, OnChanges {
     this.hidePopUp();
   }
 
-  async deleteContact(pContact: Contact) {
-    try {
-      if (confirm("¿Está seguro que desea eliminar este contacto?")) {
-        this.isAwaiting = true;
-        let rta = await this.contactService.delete(pContact);
-        this.isAwaiting = false;
-        if (rta.response) {
-          alert(rta.message);
-          this.showTableContacts();
-        }
-      }
-    } catch (err) {
-      console.error(err.error.Message);
-      alert(err.error.Message)
-    }
-  }
-
-
-  setDataToUpdatContact(pContact: Contact) {
-    this.oPersonToUpdate.id = pContact.id;
-    this.oPersonToUpdate.document = "0";
-    this.oPersonToUpdate.name = pContact.name;
-    this.oPersonToUpdate.lastname = pContact.lastname;
-    this.oPersonToUpdate.phone = pContact.phone;
-    this.oPersonToUpdate.cellphone = pContact.cellphone;
-    this.oPersonToUpdate.email = pContact.email;
-    this.oPersonToUpdate.address = (pContact.address != null) ? pContact.address.toLowerCase() : "";
-    this.oPersonToUpdate.website = (pContact.website != null) ? pContact.website.toLowerCase() : "";
-    this.oPersonToUpdate.city = pContact.city;
-    this.oPersonToUpdate.jobTitle = pContact.jobTitle;
-    this.personService.setPersonToUpdate(this.oPersonToUpdate);
-    this.jobtitleService.setJobTitleSelected(pContact.jobTitle);
-  }
-
-  getErrorDescription():string{
-    if(this.isToClient){
-      return 'No se pueden agregar contactos hasta que se guarde la información básica del cliente';
-    }
-
-    if(this.isToDealer){
-      return 'No se pueden agregar contactos hasta que se guarde la información básica del concesionario';
-    }
-  }
-
-
-  validateIfButtonAddMustVisible(){
-    switch(this.action){
+  validateIfButtonAddMustVisible(action: ActionType){
+    switch(action){
       case ActionType.READ:
           this.buttonAddIsVisible = false;
         break;
@@ -386,20 +250,12 @@ export class ContactComponent implements OnInit, OnChanges {
           this.buttonAddIsVisible = true;
         break;
     }
-
     this.validateData();
   }
 
   validateData(){
-
     if((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
-
       this.activateButtonAdd();
-      this.removeContainerError();
-    }else{
-
-      this.disableButtonAdd();
-      this.addContainerError();
     }
   }
 }

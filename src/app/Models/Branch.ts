@@ -16,6 +16,8 @@ export class Branch implements Person{
     jobTitle: JobTitle;
     state: boolean;
     registrationDate: Date;
+    updateDate: Date;
+    deleteDate: Date;
     public isMain:boolean;
     public Client_id:number;
     public Dealer_id:number;

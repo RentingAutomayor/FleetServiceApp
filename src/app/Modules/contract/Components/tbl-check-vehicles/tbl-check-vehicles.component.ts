@@ -30,7 +30,7 @@ export class TblCheckVehiclesComponent implements OnInit, OnChanges {
     private vehicleService: VehicleService,
     private clientService: ClientService
   ) {
-    this.clientToFilter = new Client();
+    this.clientToFilter = null;
     this.sModels = "";
     this.disableChecks = false;
   }

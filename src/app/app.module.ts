@@ -13,21 +13,16 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { LoginComponent } from './Modules/Login/Components/login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 import { NavigationComponent } from './Modules/navigation/Components/navigation/navigation.component';
-
 import { SharedModule } from './SharedComponents/shared.module';
-
-
-
-
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationComponent,       
-    LoginComponent,    
+    NavigationComponent,
     LoginComponent,
-    LayoutComponent,    
+    LoginComponent,
+    LayoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,9 +31,9 @@ import { SharedModule } from './SharedComponents/shared.module';
     FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule,
-    SharedModule,    
+    SharedModule,
     BrowserAnimationsModule,
-    BsDatepickerModule.forRoot(),
+    BsDatepickerModule.forRoot()
   ],
   providers: [
     DatePipe

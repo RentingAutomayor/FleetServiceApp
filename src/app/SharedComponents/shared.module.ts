@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 import { BranchComponent } from './branch/branch.component';
-import { CheckListVehicleModelComponent } from './check-list-vehicle-model/check-list-vehicle-model.component'; 
+import { CheckListVehicleModelComponent } from './check-list-vehicle-model/check-list-vehicle-model.component';
 import { CheckListVehicleTypeComponent } from './check-list-vehicle-type/check-list-vehicle-type.component';
 import { CityComponent } from './city/city.component'
 import { ContactComponent } from './contact/contact.component';
@@ -18,6 +18,7 @@ import { VehicleBrandComponent } from './vehicle-brand/vehicle-brand.component';
 import { VehicleModelComponent } from './vehicle-model/vehicle-model.component';
 import { VehicleTypeComponent } from './vehicle-type/vehicle-type.component';
 import { TransactionReviewComponent } from './transaction-review/transaction-review.component';
+import {MatButtonModule} from '@angular/material/button';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { TransactionReviewComponent } from './transaction-review/transaction-rev
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    MatButtonModule
   ],
   exports:[
     BranchComponent,
@@ -61,7 +63,7 @@ import { TransactionReviewComponent } from './transaction-review/transaction-rev
     NgxPaginationModule,
     TransactionReviewComponent
   ],
-  
+
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],

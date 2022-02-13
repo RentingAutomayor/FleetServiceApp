@@ -15,5 +15,6 @@ export interface Person{
      jobTitle:JobTitle;
      state:boolean;
      registrationDate:Date;
-
+     updateDate:Date;
+     deleteDate:Date;
 }

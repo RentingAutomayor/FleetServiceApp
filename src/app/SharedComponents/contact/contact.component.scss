@@ -1,7 +1,7 @@
 .btn-add{
     border-radius: 50%;
      width: 50px;
-     height: 50px;     
+     height: 50px;
     cursor: pointer;
     position: relative;
     left: 95%;
@@ -12,6 +12,14 @@
     font-size: 24px;
     border: none;
     z-index: 1700;
+}
+
+.container-table{
+  margin-top: 50px;
+}
+
+.table-with-button{
+  margin-top: 10px;
 }
 
 #container__header{
@@ -36,12 +44,12 @@ i{
     display: grid;
     grid-template-columns: repeat(3fr);
     grid-template-rows: repeat(3fr);
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
-    background-color: rgba(6, 129, 230, 0.1);    
+    background-color: rgba(6, 129, 230, 0.1);
     border-radius: 15px;
     align-items: center;
     justify-items: center;
@@ -66,8 +74,8 @@ $arrow-color:#ebd4d4;
       margin-top:-($arrow-size*2)-10px;
       border: $arrow-size solid transparent;
       border-bottom: $arrow-size solid $arrow-color;
-     
-      
+
+
     }
   }
 
@@ -76,7 +84,7 @@ $arrow-color:#ebd4d4;
     cursor: pointer;
     position: absolute;
     padding: 10px 15px;
-    z-index: 50;    
+    z-index: 50;
     width: 200px;
     height: auto;
     border-radius: 20px;
@@ -97,3 +105,4 @@ $arrow-color:#ebd4d4;
         display: none;
     }
 }
+

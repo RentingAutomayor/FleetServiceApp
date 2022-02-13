@@ -307,10 +307,10 @@ export class BranchComponent implements OnInit, OnChanges {
     this.isAwaiting = true;
     if (this.isToInsert) {
 
-      rta = await this.branchService.insert(pBranch);
+      //rta = await this.branchService.insert(pBranch);
     } else {
 
-      rta = await this.branchService.update(pBranch);
+      //rta = await this.branchService.update(pBranch);
     }
 
     this.isAwaiting = false;

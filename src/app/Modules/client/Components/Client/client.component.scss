@@ -48,3 +48,21 @@
 .container__table__contact{
     padding: 50px;
 }
+
+.btn-step{
+  width: 100px;
+  margin-left: 5px;
+}
+
+.container-step-buttons{
+  direction: ltr;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.container-buttons{
+  direction: ltr;
+  display: flex;
+  justify-content: flex-end;
+  display: none;
+}

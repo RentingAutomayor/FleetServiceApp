@@ -55,7 +55,6 @@ export class DashboardClientComponent implements OnInit {
     this.isAwaiting = false;
 
     //TODO CHANGE THIS FOR THE CLIENT LOGGED
-    this.client = new Client();
     this.client.id = this.getClientId();
 
     this.sharedFunctions = new SharedFunction();

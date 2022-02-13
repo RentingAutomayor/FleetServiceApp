@@ -1,6 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Contact } from '../../../Models/Contact';
+import { Observable } from 'rxjs';
+import { Contact, CreateContactDTO } from '../../../Models/Contact';
 import { ResponseApi } from '../../../Models/ResponseApi';
 
 @Injectable({
@@ -13,7 +14,7 @@ export class ContactService {
   };
   constructor(
     private http:HttpClient
-  ) { 
+  ) {
 
   }
 
@@ -22,19 +23,19 @@ export class ContactService {
     return this.http.get<Contact[]>(urlGetContacts).toPromise();
   }
 
-  async insert(pContact:Contact):Promise<ResponseApi>{
+  insert(contact:CreateContactDTO):Observable<Contact>{
     let urlInsertContacts = `${this.URL_API}/Insert`;
-    return this.http.post<ResponseApi>(urlInsertContacts,pContact,this.HttpOptions).toPromise();
+    return this.http.post<Contact>(urlInsertContacts,contact,this.HttpOptions);
   }
 
-  async update(pContact:Contact):Promise<ResponseApi>{
+  update(pContact:Contact): Observable<Contact>{
     let urlUpdateContacts = `${this.URL_API}/Update`;
-    return this.http.post<ResponseApi>(urlUpdateContacts,pContact,this.HttpOptions).toPromise();
+    return this.http.put<Contact>(urlUpdateContacts,pContact,this.HttpOptions);
   }
 
-  async delete(pContact:Contact):Promise<ResponseApi>{
-    let urlDeletetContacts = `${this.URL_API}/Delete`;
-    return this.http.post<ResponseApi>(urlDeletetContacts,pContact,this.HttpOptions).toPromise();
+  delete(contactId:number):Observable<ResponseApi>{
+    let urlDeletetContacts = `${this.URL_API}/Delete?contactId=${contactId}`;
+    return this.http.delete<ResponseApi>(urlDeletetContacts);
   }
- 
+
 }

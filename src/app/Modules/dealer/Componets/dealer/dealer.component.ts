@@ -78,8 +78,7 @@ export class DealerComponent implements OnInit, OnChanges {
   }
 
   SetDataToSaveDealer() {
-    let oDealer = new Dealer();
-    oDealer = this.personService.getPerson();
+    let oDealer = this.personService.getPerson();
     this.saveDealer(oDealer);
   }
 

@@ -1,6 +1,9 @@
 <div id="container__content">
     <h1>Clientes</h1>
-    <button class="btn-add btn-info" (click)="insertClient()" *ngIf="enableButtonsEditAndDelete"><i class="fas fa-plus"></i></button>
+    <button
+      class="btn-add btn-info"
+      (click)="insertClient()"
+      *ngIf="enableButtonsEditAndDelete"><i class="fas fa-plus"></i></button>
     <table class="table table-striped">
         <thead>
             <th class="col-number col-mobile-hide">#</th>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { VehicleService } from '../../Services/Vehicle/vehicle.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { VehicleState } from 'src/app/Models/VehicleState';
@@ -9,13 +9,26 @@ import { Vehicle } from 'src/app/Models/Vehicle';
   templateUrl: './vehicle-state.component.html',
   styleUrls: ['./vehicle-state.component.scss']
 })
-export class VehicleStateComponent implements OnInit , OnChanges{
+export class VehicleStateComponent implements OnInit{
   lsStates: VehicleState[];
   frmVehicleState: FormGroup;
-  vehicleToUpdate: Vehicle;
-  stateSelected: VehicleState;
 
-  @Input() countChanges: number;
+  stateSelected: VehicleState = null;
+  @Input('state')
+  set setSelectedState(state: VehicleState){
+    this.stateSelected  = state;
+    this.setDataInForm(this.stateSelected);
+  }
+
+  isFormDisable = false;
+  @Input('isFormDisable')
+  set setIsFormDisable(value: boolean){
+    this.isFormDisable = value;
+    this.enableOrDisbaleField(this.isFormDisable);
+  }
+
+  @Output() onSetState = new EventEmitter<VehicleState>();
+
   constructor(
     private vehicleService: VehicleService
   ) {
@@ -24,44 +37,37 @@ export class VehicleStateComponent implements OnInit , OnChanges{
     });
    }
 
-   ngOnChanges(changes: SimpleChanges): void {
-    for (const change in changes) {
-      if (change == 'countChanges') {
-        this.stateSelected = this.vehicleService.getVehicleStateSelected();
-        if (this.stateSelected != null) {
-          this.setDataInFields(this.stateSelected);
-        } else {
-          this.clearDataFields();
-        }
-      }
-    }
-  }
-
   ngOnInit(): void {
     this.initComponent();
   }
 
-  async initComponent(){
-    this.lsStates = await this.vehicleService.getVehicleStates();
-  }
-
-  setState(event: any){
-    const vehicleState = this.lsStates.find(st => st.id == event.value);
-    this.vehicleService.setVehicleStateSelected(vehicleState);
-  }
-
-  async setDataInFields(vehicleState: VehicleState){
+  initComponent(): void{
     this.vehicleService.getVehicleStates()
-    .then( data => {
-      this.lsStates = data;
-      setTimeout(() => {
-        this.frmVehicleState.controls.cmbState.setValue(vehicleState.id);
-      }, 500);
+    .subscribe(states => {
+      this.lsStates = states;
     });
   }
 
-  clearDataFields(){
-    this.frmVehicleState.controls.cmbState.setValue(0);
+  setState(event: any): void{
+    // tslint:disable-next-line: triple-equals
+    const vehicleState = this.lsStates.find(st => st.id == event.value);
+    this.onSetState.emit(vehicleState);
+  }
+
+  setDataInForm(state: VehicleState): void{
+    if(state){
+      this.frmVehicleState.controls.cmbState.setValue(state.id);
+    }else{
+      this.frmVehicleState.controls.cmbState.setValue(0);
+    }
+  }
+
+  enableOrDisbaleField(isBlocked: boolean): void{
+    if(isBlocked){
+      this.frmVehicleState.disable();
+    }else{
+      this.frmVehicleState.enable();
+    }
   }
 
 }

@@ -1,58 +1,65 @@
 <h2 id="titleComponent"></h2>
 
 <div *ngIf="buttonAddIsVisible">
-    <button 
-        class="btn-add btn-info" 
-        id="btnAddVehicle" 
+    <button
+        class="btn-add btn-info"
+        id="btnAddVehicle"
         (click)="insertVehicle()">
         <i class="fas fa-plus"></i>
-    </button>   
-
-    <div   
-        class="container__infoError" 
-        id="cont_error_add_vehicle">    
-        <span>{{ getErrorDescription() }}</span>
-    </div>
+    </button>
 </div>
-
-<table class="table table-striped">
-    <thead>
-        <th class="col-number col-mobile-hide">#</th>
-        <th>Placa</th>
-        <th>Serial</th>
-        <th class="col-mobile-hide">Marca</th>
-        <th class="col-mobile-hide">Tipo</th>
-        <th class="col-mobile-hide">Linea</th>
-        <th class="col-mobile-hide">Modelo</th>
-        <th class="col-mobile-hide">Kilometraje</th>
-        <th class="col-mobile-hide">Estado</th>
-        <th>Acciones</th>
-    </thead>
-    <tbody>
-        <tr *ngFor="let i = index ;let vehicle of lsVehicles| paginate: { itemsPerPage: 10, currentPage: p }" >
-            <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
-            <td>{{ vehicle.licensePlate | uppercase }}</td>
-            <td>{{ vehicle.chasisCode | uppercase }}</td>
-            <td class="col-mobile-hide">{{ vehicle.vehicleModel.brand.name | titlecase }}</td>
-            <td class="col-mobile-hide">{{ vehicle.vehicleModel.type.name | titlecase  }}</td>
-            <td class="col-mobile-hide">{{ vehicle.vehicleModel.shortName | titlecase }}</td>
-            <td class="col-mobile-hide">{{ vehicle.year }}</td>
-            <td class="col-mobile-hide">{{ vehicle.mileage  }}</td>
-            <td class="col-mobile-hide"><span [id]="getStateID(vehicle.id)">{{ validateTag(vehicle.vehicleState.name,vehicle.id) | titlecase }}</span></td>
-            <td>
-                <i class="fas fa-info-circle text-info" title="Más información" *ngIf="!disableActionButtons" ></i>
-                <i class="fas fa-edit text-warning" (click)="updateVehicle(vehicle)" title="Modificar" *ngIf="!disableActionButtons"></i>
-                <i class="fas fa-trash-alt text-danger" (click)="deleteVehicle(vehicle)" title="Eliminar" *ngIf="!disableActionButtons"></i>
-            </td>
-        </tr>
-    </tbody>    
-</table>
-<div class="paginationContainer">
-    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+<div class="container-table"
+[class.table-with-button]="buttonAddIsVisible">
+  <table class="table table-striped">
+      <thead>
+          <th class="col-number col-mobile-hide">#</th>
+          <th>Placa</th>
+          <th>Serial</th>
+          <th class="col-mobile-hide">Marca</th>
+          <th class="col-mobile-hide">Tipo</th>
+          <th class="col-mobile-hide">Linea</th>
+          <th class="col-mobile-hide">Modelo</th>
+          <th class="col-mobile-hide">Kilometraje</th>
+          <th class="col-mobile-hide">Estado</th>
+          <th *ngIf="!disableActionButtons">Acciones</th>
+      </thead>
+      <tbody>
+          <tr *ngFor="let i = index ;let vehicle of lsVehicles| paginate: { itemsPerPage: 10, currentPage: p }" >
+              <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
+              <td>{{ vehicle.licensePlate | uppercase }}</td>
+              <td>{{ vehicle.chasisCode | uppercase }}</td>
+              <td class="col-mobile-hide">{{ vehicle.vehicleModel.brand.name | titlecase }}</td>
+              <td class="col-mobile-hide">{{ vehicle.vehicleModel.type.name | titlecase  }}</td>
+              <td class="col-mobile-hide">{{ vehicle.vehicleModel.shortName | titlecase }}</td>
+              <td class="col-mobile-hide">{{ vehicle.year }}</td>
+              <td class="col-mobile-hide">{{ vehicle.mileage  }}</td>
+              <td class="col-mobile-hide"><span [id]="getStateID(vehicle.id)">{{ validateTag((vehicle.vehicleState!=null)?vehicle.vehicleState.name:'',vehicle.id) | titlecase }}</span></td>
+              <td *ngIf="!disableActionButtons">
+                  <i
+                    class="fas fa-info-circle text-info"
+                    title="Más información"
+                    (click)="getDetailsByVehicle(vehicle.id)">
+                  </i>
+                  <i
+                    class="fas fa-edit text-warning"
+                    (click)="updateVehicle(vehicle.id)"
+                    title="Modificar">
+                  </i>
+                  <i
+                    class="fas fa-trash-alt text-danger"
+                    (click)="deleteVehicle(vehicle)"
+                    title="Eliminar">
+                  </i>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+  <div class="paginationContainer">
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
 </div>
- 
 <div id="container__formVehicle">
-    <div class="overlay">       
+    <div class="overlay">
         <div class="card">
             <div class="card-header" id="container__header">
                 <h3 class="card-title">Datos del vehículo</h3>
@@ -60,13 +67,16 @@
             </div>
             <div class="card-body">
                <app-vehicle
-                (vehicleWasSaved)="saveVehicle()"
+                [isToInsert]="isToInsert"
+                [isFormBlocked]="isFormBlocked"
+                [vehicleSelected]="vehicleSelected"
+                (vehicleWasSaved)="saveVehicle($event)"
                 (vehicleWasCancel)="comeBackToTable()"
-                [countVehicle]="oCountVehicle"></app-vehicle>
+              ></app-vehicle>
             </div>
         </div>
     </div>
-</div>  
+</div>
 
 
 

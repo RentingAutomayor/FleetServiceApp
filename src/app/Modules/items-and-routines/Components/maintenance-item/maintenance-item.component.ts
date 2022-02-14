@@ -69,6 +69,8 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  brandSelected:Brand = null;
+
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -185,6 +187,8 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
       oBrandTmp.name = 'CHEVROLET';
     }
 
+    this.brandSelected = oBrandTmp;
+
     if (pItem.handleTax){
       this.itemHandleTax = true;
       this.lsTaxesSelected = pItem.lsTaxes;
@@ -204,7 +208,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
       this.calculateTaxesByItem(this.itemAndTaxes);
     }
 
-    this.vehicleService.setBrandSelected(oBrandTmp);
+
     this.vehicleService.setListVehicleTypeSelected(pItem.lsVehicleType);
     this.vehicleService.setListVehicleModelsSelected(pItem.lsVehicleModel);
 
@@ -236,8 +240,9 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
     this.clearDataForm();
     this.maintenanceItemWasCanceled.emit(true);
   }
-  setBrand() {
-    this.countChanges += 1;
+
+  setBrand(brand:Brand) {
+    this.brandSelected = brand;
   }
 
   setVehiclType() {

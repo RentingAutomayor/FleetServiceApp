@@ -1,6 +1,5 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { from } from 'rxjs';
 import { Brand } from 'src/app/Models/Brand';
 import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.service';
 
@@ -9,13 +8,21 @@ import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.se
   templateUrl: './vehicle-brand.component.html',
   styleUrls: ['./vehicle-brand.component.scss']
 })
-export class VehicleBrandComponent implements OnInit, OnChanges {
+export class VehicleBrandComponent implements OnInit {
   frmBrand: FormGroup;
   lsBrand: Brand[];
   oBrand: Brand;
-  @Input() countChanges: number;
+
+  // @Input() countChanges: number;
   @Output() vehicleBrandWasSetted = new EventEmitter<boolean>();
   @Input() defaultBrandId = 0;
+
+  brandSelected: Brand = null;
+  @Input('brand')
+  set setBrandSelected(brand: Brand){
+    this.brandSelected = brand;
+    this.setDataInForm(this.brandSelected);
+  }
 
   disableControls: boolean;
   @Input('disableControls')
@@ -28,6 +35,10 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
     }
   }
 
+  @Output() onBrandWasSelected = new EventEmitter<Brand>();
+
+
+
   constructor(
     private vehicleService: VehicleService
   ) {
@@ -36,19 +47,7 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
     });
    }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    for (const change in changes) {
 
-      if (change == 'countChanges') {
-        this.oBrand = this.vehicleService.getBrandSelected();
-        if (this.oBrand != null) {
-          this.setDataInForm(this.oBrand);
-        } else {
-          this.clearDataForm();
-        }
-      }
-    }
-  }
 
   ngOnInit(): void {
     this.initComponents();
@@ -56,14 +55,15 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
 
   async initComponents(){
     try{
-      this.countChanges = 0;
-      if (this.defaultBrandId !== 0){
-        this.frmBrand.controls.cmbBrand.setValue(this.defaultBrandId);
-      }else{
-        this.frmBrand.controls.cmbBrand.setValue(0);
-      }
+      this.vehicleService.getBrands().subscribe(brands => {
+        this.lsBrand = brands;
 
-      this.lsBrand = await this.vehicleService.getBrands();
+        if (this.defaultBrandId !== 0){
+          this.frmBrand.controls.cmbBrand.setValue(this.defaultBrandId);
+        }else{
+          this.frmBrand.controls.cmbBrand.setValue(0);
+        }
+      });
     }catch (error){
       console.error(error.Message);
     }
@@ -73,10 +73,16 @@ export class VehicleBrandComponent implements OnInit, OnChanges {
     const oBrand = this.lsBrand.find(br => br.id == event.value);
     this.vehicleService.setBrandSelected(oBrand);
     this.vehicleBrandWasSetted.emit(true);
+    this.onBrandWasSelected.emit(oBrand);
   }
 
   setDataInForm(pBrand: Brand){
-    this.frmBrand.controls.cmbBrand.setValue(pBrand.id);
+    if(pBrand){
+      this.frmBrand.controls.cmbBrand.setValue(pBrand.id);
+    }else{
+      this.frmBrand.controls.cmbBrand.setValue(0);
+    }
+
   }
 
   clearDataForm(){

@@ -13,7 +13,7 @@
                     placeholder="Documento ..."
                     formControlName="document"
                     (keypress)="validateTyping($event,'numbers')">
-                <div class="error" *ngIf= "(documentField.dirty || documentField.touched) && documentField.errors">
+                <div class="error" *ngIf= "(this.formPerson.dirty || documentField.touched) && documentField.errors">
                     <p *ngIf= "documentField.hasError('required')">* El campo de documento es requerido </p>
                     <p *ngIf= "documentField.hasError('minlength')">* El documento no cumple con el número de caracteres requerido </p>
                     <p *ngIf= "documentField.hasError('maxlength')">* El documento contiene muchos caracteres por favor rectifiquelo </p>

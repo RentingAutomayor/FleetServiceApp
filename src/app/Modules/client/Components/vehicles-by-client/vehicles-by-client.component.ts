@@ -1,30 +1,53 @@
-import { Component, Input, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ResponseApi } from 'src/app/Models/ResponseApi';
 import { Vehicle } from 'src/app/Models/Vehicle';
 import { VehicleService } from '../../Services/Vehicle/vehicle.service';
 import { ClientService } from '../../Services//Client/client.service';
 import { Client } from 'src/app/Models/Client';
 import { ActionType } from 'src/app/Models/ActionType';
-import { Action } from 'rxjs/internal/scheduler/Action';
 
 @Component({
   selector: 'app-vehicles-by-client',
   templateUrl: './vehicles-by-client.component.html',
   styleUrls: ['./vehicles-by-client.component.scss']
 })
-export class VehiclesByCLientComponent implements OnInit, OnChanges {
-  lsVehicles: Vehicle[];
+export class VehiclesByCLientComponent implements OnInit {
+
   isAwaiting: boolean;
-  isToUpdate: boolean;
+  isToInsert: boolean;
   btnAddVehicle: HTMLButtonElement;
   containerErrorAdd: HTMLElement;
-  oClient: Client;
   p = 1;
   @Input() clientWasSaved: boolean;
-  oCountVehicle: number;
   @Input() disableActionButtons: boolean;
-  @Input() action: ActionType;
+
   buttonAddIsVisible: boolean;
+
+  action: ActionType;
+  @Input('action')
+  set setAction(action: ActionType){
+    this.action = action;
+    this.validateIfButtonAddMustVisible(this.action);
+  }
+
+  client: Client;
+  @Input('client')
+  set setClient(client: Client){
+    this.client = client;
+  }
+
+  lsVehicles: Vehicle[];
+  @Input('vehicles')
+  set setLsVehicles(vehicles: Vehicle[]){
+    this.lsVehicles = vehicles;
+  }
+
+  vehicleSelected: Vehicle = null;
+  isFormBlocked: Boolean = null;
+  idTemp: number = 0;
+
+  // tslint:disable-next-line: no-output-on-prefix
+  @Output() onVehiclesWereModified = new EventEmitter<Vehicle[]>();
 
   constructor(
     private vehicleService: VehicleService,
@@ -38,80 +61,66 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
     this.initComponents();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    for (const change in changes) {
-      if (change == 'clientWasSaved') {
-        setTimeout(() => {
-          // await this time because the btn it's no ready jet
-          this.validateIfButtonAddMustVisible();
-        }, 1500);
-      }
-    }
-  }
 
-  initComponents() {
+
+  initComponents(): void {
     this.isAwaiting = false;
-    this.isToUpdate = false;
-    this.oClient = this.clientService.getClientToUpdate();
-    this.showTableVehicles();
-    this.oCountVehicle = 0;
-  }
+    this.isToInsert = false;
+    //this.showTableVehicles();
 
-  async showTableVehicles() {
-    if (this.oClient != null  && this.oClient != undefined) {
-      this.lsVehicles = await this.vehicleService.getVehiclesByClient(this.oClient.id);
-    }
-
-    setTimeout(() => {
-      // await this time because the btn it's no ready jet
-      this.validateIfButtonAddMustVisible();
-    }, 1500);
   }
 
   insertVehicle() {
-    this.vehicleService.setVehicleToUpdate(null);
-    this.oCountVehicle += 1;
-    this.isToUpdate = false;
+    this.vehicleSelected = null;
+    this.isToInsert = true;
+    this.isFormBlocked = false;
     this.showPopUp();
   }
 
-  getErrorDescription(): string {
-    return 'No se pueden agregar vehículos hasta que se guarde la información básica del cliente';
+  getDetailsByVehicle(vehicleId: number): void{
+    this.vehicleSelected = this.lsVehicles.find(vh => vh.id === vehicleId);
+    this.isToInsert = false;
+    this.isFormBlocked = true;
+    this.showPopUp();
   }
 
+  updateVehicle(vehicleId: number): void {
+    this.vehicleSelected = this.lsVehicles.find(veh => veh.id === vehicleId);
+    this.isToInsert = false;
+    this.isFormBlocked = false;
+    this.showPopUp();
+  }
 
-
-  async saveVehicle() {
-    try {
-      let rta = new ResponseApi();
-      const oVehicle = this.vehicleService.getVehicle();
-      oVehicle.Client_id = this.oClient.id;
+  deleteVehicle(vehicle: Vehicle): void {
+    if (confirm('¿Está seguro que desea eliminar este vehículo?')) {
       this.isAwaiting = true;
-      if (this.isToUpdate) {
-        rta = await this.vehicleService.Update(oVehicle);
-      } else {
-        rta = await this.vehicleService.Insert(oVehicle);
-      }
+      const vehicleIndex = this.lsVehicles.findIndex(veh => veh.id === vehicle.id);
+      this.lsVehicles.splice(vehicleIndex, 1);
       this.isAwaiting = false;
+      this.onVehiclesWereModified.emit(this.lsVehicles);
+    }
+  }
 
-      if (rta.response) {
-        alert(rta.message);
-        this.showTableVehicles();
-        this.hidePopUp();
-        this.vehicleService.setVehicle(null);
-        this.vehicleService.setVehicleToUpdate(null);
+  saveVehicle(vehicle: Vehicle): void {
+    try {
+      if(this.isToInsert){
+        vehicle.id = this.idTemp;
+        this.lsVehicles.unshift(vehicle);
+        this.idTemp--;
+      }else{
+        vehicle.id = this.vehicleSelected.id;
+        const vehicleIndex = this.lsVehicles.findIndex(veh => veh.id === vehicle.id);
+        this.lsVehicles[vehicleIndex] = vehicle;
       }
-
+      this.hidePopUp();
+      this.onVehiclesWereModified.emit(this.lsVehicles);
     } catch (err) {
       alert(err.error.Message);
       this.isAwaiting = false;
-
     }
-
-
   }
 
-  comeBackToTable() {
+  comeBackToTable(): void {
     this.vehicleService.setVehicleToUpdate(null);
     this.vehicleService.setVehicleStateSelected(null);
     this.vehicleService.setVehicleModelSelected(null);
@@ -141,14 +150,7 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
 
   }
 
-  removeContainerError(){
-    try{
-      this.containerErrorAdd = document.querySelector('#cont_error_add_vehicle');
-      this.containerErrorAdd.style.display = 'none';
-    }catch (error){
-      console.warn(error.message);
-    }
-  }
+
 
   disableButtonAdd() {
     try{
@@ -160,36 +162,6 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
     }
   }
 
-  addContainerError(){
-    try{
-      this.containerErrorAdd = document.querySelector('#cont_error_add_vehicle');
-      this.containerErrorAdd.style.display = 'block';
-    }catch (error){
-      console.warn(error.message);
-    }
-
-  }
-
-
-
-  updateVehicle(pVehicle: Vehicle) {
-    this.isToUpdate = true;
-    this.vehicleService.setVehicleToUpdate(pVehicle);
-    this.oCountVehicle += 1;
-    this.showPopUp();
-  }
-
-  async deleteVehicle(pVehicle: Vehicle) {
-    if (confirm('¿Está seguro que desea eliminar este vehículo?')) {
-      this.isAwaiting = true;
-      const rta = await this.vehicleService.Delete(pVehicle);
-      if (rta.response) {
-        alert(rta.message);
-        this.showTableVehicles();
-      }
-      this.isAwaiting = false;
-    }
-  }
 
   getStateID(vehicle_id: number): string{
     return `state_${vehicle_id}`;
@@ -211,8 +183,8 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
 
   }
 
-  validateIfButtonAddMustVisible(){
-    switch (this.action){
+  validateIfButtonAddMustVisible(action: ActionType){
+    switch (action){
       case ActionType.READ:
           this.buttonAddIsVisible = false;
           break;
@@ -225,13 +197,13 @@ export class VehiclesByCLientComponent implements OnInit, OnChanges {
   }
 
   validateDataClient(){
-    if (this.oClient != null && this.oClient != undefined){
-      this.activateButtonAdd();
-      this.removeContainerError();
-    }else{
-      this.disableButtonAdd();
-      this.addContainerError();
-    }
+    // if (this.client != null && this.client != undefined){
+    //   this.activateButtonAdd();
+    //   this.removeContainerError();
+    // }else{
+    //   this.disableButtonAdd();
+    //   this.addContainerError();
+    // }
   }
 
 }

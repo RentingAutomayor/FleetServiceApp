@@ -8,6 +8,7 @@ import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/mai
 import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service';
 import { SharedFunction } from 'src/app/Models/SharedFunctions';
 import { Frequency } from 'src/app/Models/Frequency';
+import { Brand } from 'src/app/Models/Brand';
 
 @Component({
   selector: 'app-maintenance-routine',
@@ -40,6 +41,8 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
       this.frmMaintenanceRoutine.controls.name.enable();
     }
   }
+
+  brandSelected: Brand  = null;
 
 
   constructor(
@@ -286,11 +289,13 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     this.routinewasCanceled.emit(true);
   }
 
-  async setDataInForm(pRoutine: MaintenanceRoutine) {
+  setDataInForm(pRoutine: MaintenanceRoutine) {
 
     this.frmMaintenanceRoutine.patchValue(pRoutine);
     this.maintenanceRoutineService.setFrecuencySelected(pRoutine.frequency);
-    this.vehicleService.setBrandSelected(pRoutine.vehicleModel.brand);
+
+
+    this.brandSelected = pRoutine.vehicleModel.brand;
     this.vehicleService.setVehicleTypeSelected(pRoutine.vehicleModel.type);
     this.vehicleService.setVehicleModelSelected(pRoutine.vehicleModel);
 
@@ -342,10 +347,10 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
 
   clearDataForm() {
     this.frmMaintenanceRoutine.reset();
+    this.brandSelected = null;
+
     this.maintenanceRoutineService.setFrecuencySelected(null);
     this.vehicleService.setVehicleModelSelected(null);
-
-    this.vehicleService.setBrandSelected(null);
     this.vehicleService.setVehicleTypeSelected(null);
 
     this.lsMaintenanceItems = [];
@@ -376,8 +381,8 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     }
   }
 
-  setBrand() {
-    this.countChanges += 1;
+  setBrand(brand: Brand) {
+    this.brandSelected = brand;
   }
 
   setVehiclType() {

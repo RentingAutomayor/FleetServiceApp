@@ -46,11 +46,11 @@
                 </div>
                 <div class="container__row">
                     <div class="col">
-                        <app-vehicle-brand
-                          [disableControls]="disableControls"
-                          [countChanges]="countChanges"
-                          (vehicleBrandWasSetted)="setBrand()">
-                        </app-vehicle-brand>
+                      <app-vehicle-brand
+                        [brand]="brandSelected"
+                        [disableControls]="disableControls"
+                        (onBrandWasSelected)="setBrand($event)">
+                      </app-vehicle-brand>
                     </div>
 
                     <div class="col">

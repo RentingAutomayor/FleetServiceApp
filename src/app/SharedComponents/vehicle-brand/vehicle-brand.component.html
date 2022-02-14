@@ -1,7 +1,11 @@
 <form [formGroup]="frmBrand">
     <label>Marca</label>
-    <select formControlName="cmbBrand" (change)="setBrand($event.target)" class="browser-default custom-select">
+    <select
+      formControlName="cmbBrand"
+      (change)="setBrand($event.target)"
+      class="browser-default custom-select">
         <option [value]="0">Seleccione ...</option>
-        <option *ngFor="let brand of lsBrand" [value]="brand.id">{{ brand.name | titlecase }}</option>
+        <option *ngFor="let brand of lsBrand"
+        [value]="brand.id">{{ brand.name | titlecase }}</option>
     </select>
 </form>

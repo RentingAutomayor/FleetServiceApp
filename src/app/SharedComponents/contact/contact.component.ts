@@ -65,6 +65,8 @@ export class ContactComponent implements OnInit {
 
   @Output() onContactsWereModified = new EventEmitter<Contact[]>();
 
+  idTemp: number = -1;
+
 
   constructor(
     private personService: PersonService,
@@ -146,7 +148,8 @@ export class ContactComponent implements OnInit {
       let oContact = null;
       if (this.isToInsert){
         oContact = this.setDataToContact(oPerson);
-        oContact.id = 0;
+        oContact.id = this.idTemp;
+        this.idTemp--;
       }else{
         oContact = this.setDataToContact(oPerson);
         oContact.id = oPerson.id;
@@ -215,8 +218,11 @@ export class ContactComponent implements OnInit {
   }
 
   comeBackToTable() {
+    this.oPersonToUpdate = null;
     this.hidePopUp();
   }
+
+
 
   validateIfButtonAddMustVisible(action: ActionType){
     switch (action){

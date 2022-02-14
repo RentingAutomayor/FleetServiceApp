@@ -11,6 +11,7 @@ import { ActionType } from 'src/app/Models/ActionType';
 import { Contact } from 'src/app/Models/Contact';
 import { getFromStorage } from 'src/app/Utils/storage';
 import { Branch } from 'src/app/Models/Branch';
+import { Vehicle } from 'src/app/Models/Vehicle';
 
 
 
@@ -52,10 +53,12 @@ export class ClientComponent implements OnInit {
     updateDate: null,
     deleteDate: null,
     contacts: [],
-    branchs: []
+    branchs: [],
+    vehicles: []
   };
   lsContacts: Contact[] = [];
   lsBranchs: Branch[] = [];
+  lsVehicles: Vehicle[] = [];
   oDataIsToUpdate: boolean;
   sReturnPath: string;
   ROUTE_MASTER_CLIENT = '/MasterClients';
@@ -104,6 +107,7 @@ export class ClientComponent implements OnInit {
             this.client = client;
             this.lsContacts = this.client.contacts;
             this.lsBranchs = this.client.branchs;
+            this.lsVehicles = this.client.vehicles;
             this.oDataIsToUpdate = true;
           }
         });
@@ -213,6 +217,11 @@ export class ClientComponent implements OnInit {
 
   updateBranchsToClient(branchs: Branch[]){
     this.client.branchs = branchs;
+  }
+
+  updateVehiclesToClient(vehicles: Vehicle[]){
+    this.client.vehicles = vehicles;
+    console.log(vehicles);
   }
 
   getPersonInformation(){

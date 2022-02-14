@@ -15,7 +15,7 @@
     padding: 8px 8px 8px 32px;
     text-decoration: none;
     color: #818181;
-    font-size: 25px;   
+    font-size: 25px;
     display: block;
     transition: 0.3s;
 }
@@ -55,7 +55,7 @@
 }
 
 
-.container__user-img{  
+.container__user-img{
     display: flex;
     flex-direction: column;
     background-color: #3282b8;
@@ -65,7 +65,7 @@
     margin-left: 20px;
  }
 
-.container__user-info{  
+.container__user-info{
     display: flex;
     flex-direction: column;
     color: #f1f1f1;
@@ -88,4 +88,6 @@
 
 .item-navigation{
     cursor: pointer;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }

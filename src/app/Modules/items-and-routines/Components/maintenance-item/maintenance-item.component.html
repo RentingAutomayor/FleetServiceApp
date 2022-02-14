@@ -118,12 +118,12 @@
                 <hr>
                 <div class="row__container">
                     <div class="col">
-                        <app-vehicle-brand
-                            [disableControls]="disableControls"
-                            [countChanges]="countChanges"
-                            [defaultBrandId]="brandChevrolet"
-                            (vehicleBrandWasSetted)="setBrand()">
-                        </app-vehicle-brand>
+                      <app-vehicle-brand
+                        [defaultBrandId]="brandChevrolet"
+                        [brand]="brandSelected"
+                        [disableControls]="disableControls"
+                        (onBrandWasSelected)="setBrand($event)">
+                      </app-vehicle-brand>
                     </div>
 
                     <div class="col">

@@ -64,7 +64,6 @@
         [branchs]="lsBranchs"
         [action]="action"
         [isToClient]="oIsToClient"
-        [clientWasSaved]="oClientWasSaved"
         [disableActionButtons]="blockFormClient"
         (onBranchsWereModified)="updateBranchsToClient($event)">
       </app-branch>
@@ -89,6 +88,13 @@
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>Vehículos</ng-template>
+      <app-vehicles-by-client
+        [action]="action"
+        [vehicles]="lsVehicles"
+        [clientWasSaved]="oClientWasSaved"
+        [disableActionButtons]="blockFormClient"
+        (onVehiclesWereModified)="updateVehiclesToClient($event)">
+      </app-vehicles-by-client>
       <div class="container-step-buttons">
         <button
           matStepperPrevious
@@ -146,57 +152,7 @@
   </mat-vertical-stepper>
 
 
-    <!-- <div class="container__tabPanel">
-        <div class="container__titles">
-            <button class="tab_link active" (click)="openTab($event,'basicData')">Datos básicos</button>
-            <button class="tab_link" (click)="openTab($event,'contact')">Contactos</button>
-            <button class="tab_link" (click)="openTab($event,'branch')">Sucursales</button>
-            <button class="tab_link" (click)="openTab($event,'vehicles')">Vehículos</button>
-            <button class="tab_link" (click)="openTab($event,'contracts')">Contratos asociados</button>
-            <button class="tab_link" (click)="openTab($event,'financialInformation')">Información financiera</button>
-        </div>
-    </div> -->
-
-    <!-- <div class="tab_content tab_active" id="container__basicData">
-        <div class="card">
-            <div class="card-header">
-                <h3>Datos del cliente</h3>
-            </div>
-            <div class="car-body">
-                <app-person
-                  [configComponent]="oConfigPersonComp"
-                  [formHasError]="bFormHasError"
-                  [error]="errorMessage"
-                  [returnPath]="sReturnPath"
-                  [personToUpdate]="client"
-                  [frmPersonMustBeBlocked]="blockFormClient"
-                  (personWasSetted)="SetDataToSaveClient()"></app-person>
-            </div>
-        </div>
-    </div>
-
-    <div class="tab_content tab_inactive" id="container__contact">
-
-        <div class="container__table__contact">
-            <app-contact
-              [client]="client"
-              [contacts]="client.contacts"
-              [action]="action"
-              [disableActionButtons]="blockFormClient"
-              (onContactsWereModified)="updateContactsToClient($event)">
-            </app-contact>
-        </div>
-
-    </div>
-
-    <div class="tab_content tab_inactive" id="container__branch">
-        <app-branch
-            [action]="action"
-            [isToClient]="oIsToClient"
-            [clientWasSaved]="oClientWasSaved"
-            [disableActionButtons]="blockFormClient">
-        </app-branch>
-    </div>
+    <!--
 
     <div class="tab_content tab_inactive" id="container__vehicles">
         <app-vehicles-by-client

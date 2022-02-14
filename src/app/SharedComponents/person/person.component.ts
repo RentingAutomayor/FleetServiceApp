@@ -9,7 +9,7 @@ import { City } from 'src/app/Models/City';
 import { Router } from '@angular/router';
 import { JobTitle } from 'src/app/Models/JobTitle';
 import { InputValidator } from 'src/app/Utils/InputValidator';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+
 
 
 @Component({
@@ -17,7 +17,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
   templateUrl: './person.component.html',
   styleUrls: ['./person.component.scss']
 })
-export class PersonComponent implements OnInit, OnChanges {
+export class PersonComponent implements OnInit {
   @Input() configComponent: ConfigPersonComponent;
   @Input() isRequiredDataComponent: boolean;
   @Input() formHasError: boolean;
@@ -39,6 +39,7 @@ export class PersonComponent implements OnInit, OnChanges {
     this.frmPersonMustBeBlocked = value;
     this.enableDisableForm(this.frmPersonMustBeBlocked);
   }
+
 
   personToUpdate: Person = {
     id: 0,
@@ -70,8 +71,7 @@ export class PersonComponent implements OnInit, OnChanges {
       this.setDataInForm(this.personToUpdate);
       this.enableDisableForm(this.frmPersonMustBeBlocked);
     }else{
-      this.jobTitleSelected = null;
-      this.oCity = null;
+
       this.cleanFormData();
 
     }
@@ -81,7 +81,6 @@ export class PersonComponent implements OnInit, OnChanges {
   @Input('configRenderComponent')
   set setConfigRenderComponent(config: ConfigPersonComponent){
     this.configRenderComponent = config;
-    this.renderComponent();
   }
 
   areVisibleButtonActions = false;
@@ -136,6 +135,7 @@ export class PersonComponent implements OnInit, OnChanges {
         });
       }else{
         this.formPerson = this.formBuilder.group({
+          document : [''],
           name: ['', [Validators.required]],
           lastname: [''],
           phone: [''],
@@ -151,21 +151,6 @@ export class PersonComponent implements OnInit, OnChanges {
 
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-
-    for (const change in changes) {
-      try {
-        if (change == 'configComponent') {
-          this.buildPersonForm(this.configComponent);
-        }
-
-      } catch (err) {
-        console.error(err);
-        continue;
-      }
-    }
-  }
-
   enableDisableForm(formIsBlocked: boolean){
     if (formIsBlocked){
       this.formPerson.disable();
@@ -179,52 +164,34 @@ export class PersonComponent implements OnInit, OnChanges {
     this.initComponents();
   }
 
-  initComponents() {
-    this.oCountChanges = 0;
-    this.cleanFormData();
-    this.renderComponent();
+  get documentField(){
+    return this.formPerson.get('document');
+  }
+
+  get nameField(){
+    return this.formPerson.get('name');
+  }
+
+  get lastnameField(){
+    return this.formPerson.get('lastname');
+  }
+
+  get phoneField(){
+    return this.formPerson.get('phone');
+  }
+
+  get cellphoneField(){
+    return this.formPerson.get('cellphone');
+  }
+
+  get emailField(){
+    return this.formPerson.get('email');
   }
 
 
-
-  renderComponent() {
-    const containerDocument = document.querySelector('#container__document');
-    const containerName = document.querySelector('#container__name');
-    const containerPhone = document.querySelector('#container__phone');
-    const containerEmail = document.querySelector('#container__email');
-    const containerAddress = document.querySelector('#container__address');
-
-
-
-    if (!this.configComponent.kindOfDocumentIsVisible || !this.configComponent.documentIsVisible) {
-      // containerDocument.classList.remove("row__container");
-      // containerDocument.classList.add("row__container_single");
-    }
-
-    if (!this.configComponent.nameIsVisible || !this.configComponent.lastNameIsVisible) {
-      // containerName.classList.remove("row__container");
-      // containerName.classList.add("row__container_single");
-    }
-
-    if (!this.configComponent.phoneIsVisible || !this.configComponent.cellphoneIsVisible) {
-      // containerPhone.classList.remove("row__container");
-      // containerPhone.classList.add("row__container_single");
-    }
-
-
-    if (this.configComponent.websiteIsVisible && this.configComponent.emailIsVisible) {
-       console.warn('Validación de visibilidad de container Email');
-       console.warn(` email: ${this.configComponent.emailIsVisible}  website: ${this.configComponent.websiteIsVisible }`);
-      //  containerEmail.classList.remove("row__container_single" );
-      //  containerEmail.classList.add("row__container");
-
-
-    }
-
-    if (!this.configComponent.addressIsVisible || !this.configComponent.jobTitleIsVisible) {
-      // containerAddress.classList.remove("row__container");
-      // containerAddress.classList.add("row__container_single");
-    }
+  initComponents() {
+    this.oCountChanges = 0;
+    this.cleanFormData();
   }
 
   setDataInForm(pPerson: Person) {
@@ -245,6 +212,8 @@ export class PersonComponent implements OnInit, OnChanges {
     this.oJobTitleSelected = new JobTitle();
     this.oJobTitleSelected.id = 0;
     this.oJobTitleSelected.description = '';
+    this.oCity = null;
+    this.jobTitleSelected = null;
     this.oCity = null;
   }
 
@@ -289,6 +258,7 @@ export class PersonComponent implements OnInit, OnChanges {
   }
 
   comeBack() {
+    this.formPerson.reset();
     if (this.returnPath != null) {
 
       this.router.navigate([this.returnPath]);
@@ -297,29 +267,7 @@ export class PersonComponent implements OnInit, OnChanges {
 
   }
 
-  get documentField(){
-    return this.formPerson.get('document');
-  }
 
-  get nameField(){
-    return this.formPerson.get('name');
-  }
-
-  get lastnameField(){
-    return this.formPerson.get('lastname');
-  }
-
-  get phoneField(){
-    return this.formPerson.get('phone');
-  }
-
-  get cellphoneField(){
-    return this.formPerson.get('cellphone');
-  }
-
-  get emailField(){
-    return this.formPerson.get('email');
-  }
 
   validateTyping(event: any, type: string){
     InputValidator.validateTyping(event, type);

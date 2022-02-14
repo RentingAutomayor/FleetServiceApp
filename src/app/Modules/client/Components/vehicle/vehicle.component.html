@@ -1,10 +1,10 @@
 <form [formGroup]="frmVehicle" (ngSubmit)="saveVehicle()">
     <div class="row__container" id="container__identyfy">
-       
+
         <div class="col">
             <label for="">Placa:</label>
-            <input type="text" 
-                class="form-control" 
+            <input type="text"
+                class="form-control"
                 placeholder="Placa ..."
                 formControlName="licensePlate">
 
@@ -17,7 +17,7 @@
 
         <div class="col">
             <label for="">Serial:</label>
-            <input type="text" class="form-control" 
+            <input type="text" class="form-control"
                 placeholder="Serial ..."
                 formControlName = "chasisCode">
 
@@ -30,50 +30,53 @@
 
         <div class="col">
             <app-vehicle-state
-                [countChanges]="oCountChanges">
+              [state]="vehicleStateSelected"
+              [isFormDisable]="isFormBlocked"
+              (onSetState)="setVehicleState($event)">
             </app-vehicle-state>
         </div>
     </div>
 
-    <div class="row__container">       
+    <div class="row__container">
         <div class="col">
           <app-vehicle-brand
-            [countChanges]="oCountChanges"
-            (vehicleBrandWasSetted)="setBrand()"
-            ></app-vehicle-brand>
+            [brand]="brandSelected"
+            [disableControls]="isFormBlocked"
+            (onBrandWasSelected)="setBrand($event)">
+          </app-vehicle-brand>
         </div>
 
         <div class="col">
-            <app-vehicle-type
+          <app-vehicle-type
             [countChanges]="oCountChanges"
-           (vehicleTypeWasSetted)="setVehiclType()" 
-            ></app-vehicle-type>
+            (vehicleTypeWasSetted)="setVehiclType()">
+          </app-vehicle-type>
         </div>
 
         <div class="col">
-            <app-vehicle-model 
-                [countChanges]="oCountChanges">
-                </app-vehicle-model>
+          <app-vehicle-model
+            [countChanges]="oCountChanges">
+          </app-vehicle-model>
         </div>
     </div>
-  
+
 
     <div class="row__container" id="container__otherInformation">
         <div class="col">
             <label for="">Modelo:</label>
-            <input type="text" class="form-control" 
+            <input type="text" class="form-control"
                 placeholder="Modelo ..."
                 formControlName = "year"
                 (keypress)="valitateTyping($event,'numbers')">
-        </div>  
+        </div>
 
         <div class="col">
             <label for="">Kilometraje:</label>
-            <input type="text" class="form-control" 
+            <input type="text" class="form-control"
                 placeholder="Kilometraje ..."
                 formControlName = "mileage"
                 (keypress)="valitateTyping($event,'numbers')">
-        </div>      
+        </div>
 
     </div>
     <div  class="container__error" *ngIf="formHasError">
@@ -82,5 +85,5 @@
     <div class="buttons__container" id="container__buttons" >
         <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
         <button type="submit" class="btn btn-success"  [disabled]="frmVehicle.invalid">Guardar</button>
-    </div>  
+    </div>
 </form>

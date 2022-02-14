@@ -17,8 +17,8 @@ import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.se
   styleUrls: ['./check-list-vehicle-type.component.scss', '../../../assets/styles/checkbox.scss']
 })
 export class CheckListVehicleTypeComponent implements OnInit {
-  lsVehicleTypeSelected?: VehicleType[];
-  lsVehicleTypes: VehicleType[];
+  lsVehicleTypeSelected?: VehicleType[]=[];
+  lsVehicleTypes: VehicleType[] = [];
 
 
   @Output() onVehicleTypeWasSelected = new EventEmitter<VehicleType[]>();

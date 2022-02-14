@@ -5,6 +5,7 @@ import { MaintenanceRoutine } from 'src/app/Models/MaintenanceRoutine';
 import { MaintenanceRoutineService } from 'src/app/Modules/items-and-routines/Services/MaintenanceRoutine/maintenance-routine.service';
 import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service';
 import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service';
+import { Brand } from 'src/app/Models/Brand';
 
 @Component({
   selector: 'app-tbl-maintenance-matrix',
@@ -18,6 +19,7 @@ export class TblMaintenanceMatrixComponent implements OnInit {
   countChanges: number;
   lsMaintenanceRoutinesByModel: MaintenanceRoutine[];
   TIPO_MANO_DE_OBRA = 2;
+  brandSelected:Brand = null;
 
   constructor(
     private maintenanceRoutineService: MaintenanceRoutineService,
@@ -47,9 +49,9 @@ export class TblMaintenanceMatrixComponent implements OnInit {
     return `chk_item_${idItem}_${idFrequency}`;
   }
 
-  setBrand() {
+  setBrand(brand:Brand) {
     this.clearCheckBoxSelected();
-    this.countChanges += 1;
+    this.brandSelected = brand;
   }
 
   setVehiclType() {

@@ -18,8 +18,11 @@ export class CityComponent implements OnInit {
     this.city = city;
     if (this.city){
       this.searchCitiesByDepartmentId(this.city.departmentId);
+      this.setDataInForm(this.city);
+    }else{
+      this.clearDateForm();
     }
-    this.setDataInForm(this.city);
+
   }
 
   blockFieldCity: boolean;
@@ -82,7 +85,11 @@ export class CityComponent implements OnInit {
       this.frmCity.controls.cmbDepartment.setValue(0);
       this.frmCity.controls.cmbCity.setValue(0);
     }
+  }
 
+  clearDateForm():void{
+    this.frmCity.controls.cmbDepartment.setValue(0);
+    this.frmCity.controls.cmbCity.setValue(0);
   }
 
 

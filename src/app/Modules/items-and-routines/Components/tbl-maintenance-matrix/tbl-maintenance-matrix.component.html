@@ -3,22 +3,26 @@
 <div class="container__filter">
     <div class="container__row">
         <div class="col">
-            <app-vehicle-brand
+            <!-- <app-vehicle-brand
               [countChanges]="countChanges"
-              (vehicleBrandWasSetted)="setBrand()"></app-vehicle-brand>
+              (vehicleBrandWasSetted)="setBrand()"></app-vehicle-brand> -->
+              <app-vehicle-brand
+                [brand]="brandSelected"
+                (onBrandWasSelected)="setBrand($event)">
+              </app-vehicle-brand>
           </div>
-  
+
           <div class="col">
               <app-vehicle-type
               [countChanges]="countChanges"
               (vehicleTypeWasSetted)="setVehiclType()"></app-vehicle-type>
           </div>
-  
+
           <div class="col">
-              <app-vehicle-model 
+              <app-vehicle-model
                   [countChanges]="countChanges"
                   (vehicleModelWasSetted)="setVehicleModel()"></app-vehicle-model>
-                 
+
           </div>
     </div>
    <br>
@@ -31,9 +35,9 @@
         <thead class="row_frequency">
             <th>Actividades</th>
             <th>
-                <img 
-                    class="arrow inactive col_frequency" 
-                    src="assets/arrow_back.png" 
+                <img
+                    class="arrow inactive col_frequency"
+                    src="assets/arrow_back.png"
                     alt="arrow_back"
                     (click)="showOtherRoutines()">
             </th>
@@ -41,9 +45,9 @@
                 {{frequency.shortName}}
             </th>
             <th>
-                <img 
-                    class="arrow active col_frequency" 
-                    src="assets/arrow_next.png" 
+                <img
+                    class="arrow active col_frequency"
+                    src="assets/arrow_next.png"
                     alt="arrow_next"
                     (click)="showOtherRoutines()">
             </th>
@@ -52,12 +56,12 @@
             <tr *ngFor="let item of lsMaintenanceItems" class="row_frequency">
                 <td>{{ item.name | slice:0:50 | titlecase }}</td>
                 <td></td>
-                <td *ngFor="let frequency of lsFrequency" 
+                <td *ngFor="let frequency of lsFrequency"
                     [class]="getClass(frequency.shortName)">
                     <label class="container__checkbox">
                         <input type="checkbox" [id]="getChkId(item.id,frequency.id)" disabled>
-                        <span class="checkmark"></span>                      
-                    </label>                    
+                        <span class="checkmark"></span>
+                    </label>
                 </td>
                 <td></td>
             </tr>

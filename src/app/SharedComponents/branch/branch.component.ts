@@ -44,8 +44,6 @@ export class BranchComponent implements OnInit {
   @Input('branchs')
   set setLsBranchs(branchs: Branch[]){
     this.lsBranchs = branchs;
-    console.log('setLsBranchs');
-    console.log(this.lsBranchs);
   }
 
   action: ActionType;
@@ -57,7 +55,9 @@ export class BranchComponent implements OnInit {
 
   buttonsAreVisibles = true;
   isFormBlocked = false;
+  idTemp: number = 0;
 
+  // tslint:disable-next-line: no-output-on-prefix
   @Output() onBranchsWereModified = new EventEmitter<Branch[]>();
 
 
@@ -129,7 +129,8 @@ export class BranchComponent implements OnInit {
       oPerson = this.personService.getPerson();
       const oBranch = this.setDataBranch(oPerson);
       if (this.isToInsert){
-        oBranch.id = 0;
+        oBranch.id = this.idTemp;
+        this.idTemp--;
       }else{
         oBranch.id = oPerson.id;
       }

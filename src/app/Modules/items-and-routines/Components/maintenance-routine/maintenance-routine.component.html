@@ -52,19 +52,18 @@
                         (onBrandWasSelected)="setBrand($event)">
                       </app-vehicle-brand>
                     </div>
-
                     <div class="col">
                         <app-vehicle-type
+                          [vehicleType]="vehicleTypeSelected"
                           [disableControls]="disableControls"
-                          [countChanges]="countChanges"
-                          (vehicleTypeWasSetted)="setVehiclType()">
+                          (onVehicleTypeWasModified)="setVehiclType($event)">
                         </app-vehicle-type>
                     </div>
-
                     <div class="col">
                         <app-vehicle-model
+                          [brand]="brandSelected"
+                          [vehicleType]="vehicleTypeSelected"
                           [disableControls]="disableControls"
-                          [countChanges]="countChanges"
                           (vehicleModelWasSetted)="vehicleWasChanged()"
                           (VehicleModelWasSelected)="setVehicleModel($event)">
                         </app-vehicle-model>

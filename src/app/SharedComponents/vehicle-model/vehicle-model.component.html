@@ -1,9 +1,14 @@
 <form [formGroup]="frmVehicleModel">
     <label>Línea</label>
-    <select formControlName="cmbVehicleModel" class="browser-default custom-select"
-        (change)="setVehicleModel($event.target)">
+    <select
+      formControlName="cmbVehicleModel"
+      class="browser-default custom-select"
+      (change)="setVehicleModel($event.target)">
         <option [value]="0">Seleccione ...</option>
-        <option *ngFor="let vehicleModel of lsVehicleModel" [value]="vehicleModel.id">
-            {{ vehicleModel.shortName | titlecase }}</option>
+        <option
+          *ngFor="let vehicleModel of lsVehicleModelFiltered"
+          [value]="vehicleModel.id">
+            {{ vehicleModel.shortName | titlecase }}
+        </option>
     </select>
 </form>

@@ -8,12 +8,9 @@ import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.se
   templateUrl: './vehicle-type.component.html',
   styleUrls: ['./vehicle-type.component.scss']
 })
-export class VehicleTypeComponent implements OnInit, OnChanges {
+export class VehicleTypeComponent implements OnInit {
   lsVehicleType: VehicleType[];
   frmVehicleType: FormGroup;
-  oType: VehicleType;
-  @Input() countChanges: number;
-  @Output() vehicleTypeWasSetted = new EventEmitter<boolean>();
 
   disableControls: boolean;
   @Input('disableControls')
@@ -26,6 +23,19 @@ export class VehicleTypeComponent implements OnInit, OnChanges {
     }
   }
 
+  vehicleTypeSelected: VehicleType = null;
+  @Input('vehicleType')
+  set setVehicleTypeSelected(type: VehicleType){
+    this.vehicleTypeSelected = type;
+    if(this.vehicleTypeSelected){
+      this.setDataInForm(this.vehicleTypeSelected);
+    }else{
+      this.clearDataForm();
+    }
+  }
+
+  @Output() onVehicleTypeWasModified = new EventEmitter<VehicleType>();
+
 
   constructor(
     private vehicleService: VehicleService
@@ -34,46 +44,34 @@ export class VehicleTypeComponent implements OnInit, OnChanges {
       cmbType: new FormControl('Seleccione ...')
     });
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    for (const change in changes) {
-
-      if (change == 'countChanges') {
-       this.oType = this.vehicleService.getVehicleTypeSelected();
-       if (this.oType != null) {
-          this.setDataInForm(this.oType);
-        } else {
-          this.clearDataForm();
-        }
-      }
-    }
-  }
 
   ngOnInit(): void {
     this.initComponents();
   }
 
-  async initComponents(){
+  initComponents(): void{
     try {
-      this.countChanges = 0;
-      this.frmVehicleType.controls.cmbType.setValue(0);
-      this.lsVehicleType = await this.vehicleService.getVehicleTypes();
+      this.clearDataForm();
+      this.vehicleService.getVehicleTypes()
+      .subscribe(vehicleTypes => {
+        this.lsVehicleType = vehicleTypes;
+      });
     } catch (error) {
       console.error(error);
     }
 
   }
 
-  setType(event: any){
+  setType(event: any):any{
     const oType = this.lsVehicleType.find(tp => tp.id == event.value);
-    this.vehicleService.setVehicleTypeSelected(oType);
-    this.vehicleTypeWasSetted.emit(true);
+    this.onVehicleTypeWasModified.emit(oType);
   }
 
-  setDataInForm(pType: VehicleType){
+  setDataInForm(pType: VehicleType): void{
     this.frmVehicleType.controls.cmbType.setValue(pType.id);
   }
 
-  clearDataForm(){
+  clearDataForm(): void{
     this.frmVehicleType.controls.cmbType.setValue(0);
   }
 

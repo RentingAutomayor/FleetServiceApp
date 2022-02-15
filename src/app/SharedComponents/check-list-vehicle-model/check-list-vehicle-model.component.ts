@@ -80,7 +80,7 @@ export class CheckListVehicleModelComponent implements OnInit {
   getLsVehicleModels() {
     try {
       this.vehicleService.getVehicleModelByBrandAndType(0, 0)
-      .then(vehicleModels => {
+      .subscribe(vehicleModels => {
         this.lsVehicleModels = vehicleModels;
       });
     } catch (error) {
@@ -90,7 +90,10 @@ export class CheckListVehicleModelComponent implements OnInit {
 
   async getLsVehicleTypes() {
     try {
-      this.lsVehicleType = await this.vehicleService.getVehicleTypes();
+      this.vehicleService.getVehicleTypes()
+      .subscribe(vehicleTypes => {
+        this.lsVehicleType = vehicleTypes;
+      });
     } catch (error) {
       console.error(error);
     }

@@ -65,9 +65,12 @@ export class CheckListVehicleTypeComponent implements OnInit {
     this.getVehicleTypes();
   }
 
-  async getVehicleTypes(){
+  getVehicleTypes(): void{
     try {
-      this.lsVehicleTypes = await this.vehicleService.getVehicleTypes();
+      this.vehicleService.getVehicleTypes()
+      .subscribe(vehicleTypes => {
+        this.lsVehicleTypes = vehicleTypes;
+      });
     } catch (error) {
       console.error(error);
     }

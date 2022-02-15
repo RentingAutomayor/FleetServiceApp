@@ -6,6 +6,8 @@ import { MaintenanceRoutineService } from 'src/app/Modules/items-and-routines/Se
 import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service';
 import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service';
 import { Brand } from 'src/app/Models/Brand';
+import { VehicleType } from 'src/app/Models/VehicleType';
+import { VehicleModel } from 'src/app/Models/VehicleModel';
 
 @Component({
   selector: 'app-tbl-maintenance-matrix',
@@ -20,6 +22,7 @@ export class TblMaintenanceMatrixComponent implements OnInit {
   lsMaintenanceRoutinesByModel: MaintenanceRoutine[];
   TIPO_MANO_DE_OBRA = 2;
   brandSelected:Brand = null;
+  vehicleTypeSelected: VehicleType = null;
 
   constructor(
     private maintenanceRoutineService: MaintenanceRoutineService,
@@ -54,18 +57,16 @@ export class TblMaintenanceMatrixComponent implements OnInit {
     this.brandSelected = brand;
   }
 
-  setVehiclType() {
+  setVehicleType(type: VehicleType) {
+    this.vehicleTypeSelected = type;
     this.vehicleService.setVehicleModelSelected(null);
     this.clearCheckBoxSelected();
     this.countChanges += 1;
   }
 
-  async setVehicleModel() {
-    const oVehicleModel = this.vehicleService.getVehicleModelSelected();
-
+  async setVehicleModel(vehicleModel: VehicleModel) {
     this.isAwaiting = true;
-    this.lsMaintenanceRoutinesByModel = await this.getRoutinesByModel(oVehicleModel.id);
-
+    this.lsMaintenanceRoutinesByModel = await this.getRoutinesByModel(vehicleModel.id);
     this.clearCheckBoxSelected();
     this.checkItemsByRoutines(this.lsMaintenanceRoutinesByModel);
     this.isAwaiting = false;

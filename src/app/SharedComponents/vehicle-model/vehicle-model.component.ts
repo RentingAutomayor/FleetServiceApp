@@ -10,15 +10,10 @@ import { Vehicle } from 'src/app/Models/Vehicle';
   templateUrl: './vehicle-model.component.html',
   styleUrls: ['./vehicle-model.component.scss']
 })
-export class VehicleModelComponent implements OnInit, OnChanges {
-  lsVehicleModel: VehicleModel[];
-  oBrand: Brand;
-  oVehicleType: VehicleType;
+export class VehicleModelComponent implements OnInit {
+  lsVehicleModel: VehicleModel[] = [];
+  lsVehicleModelFiltered: VehicleModel[] = [];
   frmVehicleModel: FormGroup;
-  vehicleModelToUpdate: VehicleModel;
-  vehicleToUpdate: Vehicle;
-  @Input() countChanges: number;
-  @Output() vehicleModelWasSetted = new EventEmitter<boolean>();
   @Output() VehicleModelWasSelected = new EventEmitter<VehicleModel>();
 
   disableControls: boolean;
@@ -32,84 +27,91 @@ export class VehicleModelComponent implements OnInit, OnChanges {
     }
   }
 
+  vehicleModelSelected: VehicleModel = null;
+  @Input('vehicleModel')
+  set setVehicleModelSelected(vehicleModel: VehicleModel){
+    this.vehicleModelSelected = vehicleModel;
+    this.setDataInFields(this.vehicleModelSelected);
+  }
+
+  brandSelected: Brand = null;
+  @Input('brand')
+  set setBrandSelected(brand: Brand){
+    this.brandSelected = brand;
+    if (!this.vehicleModelSelected){
+      this.filterVehicleModels(this.brandSelected, this.vehicleTypeSelected);
+    }
+    this.setDataInFields(this.vehicleModelSelected);
+  }
+
+  vehicleTypeSelected: VehicleType = null;
+  @Input('vehicleType')
+  set setVehicleType(type: VehicleType){
+    this.vehicleTypeSelected = type;
+    if (!this.vehicleModelSelected){
+      this.filterVehicleModels(this.brandSelected, this.vehicleTypeSelected);
+    }
+    this.setDataInFields(this.vehicleModelSelected);
+  }
+
   constructor(
     private vehicleService: VehicleService
   ) {
-
     this.frmVehicleModel = new FormGroup({
       cmbVehicleModel: new FormControl('Seleccione ...'),
     });
 
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    for (const change in changes) {
-
-      if (change == 'countChanges') {
-
-        this.oBrand = this.vehicleService.getBrandSelected();
-
-        this.oVehicleType = this.vehicleService.getVehicleTypeSelected();
-
-        this.filterVehicleModels( this.oBrand, this.oVehicleType);
-        this.vehicleModelToUpdate = this.vehicleService.getVehicleModelSelected();
-        if (this.vehicleModelToUpdate != null) {
-          this.setDataInFields(this.vehicleModelToUpdate);
-        } else {
-          this.clearDataFields();
-        }
-      }
-    }
-  }
-
   ngOnInit(): void {
     this.initComponents();
   }
 
-  initComponents() {
-    this.countChanges = 0;
-    this.clearDataFields();
+  initComponents(): void {
     this.getDataToLists( 0, 0);
   }
 
-  async getDataToLists(brandId: number, typeId: number) {
+  getDataToLists(brandId: number, typeId: number): void {
     try {
-      this.lsVehicleModel = await this.vehicleService.getVehicleModelByBrandAndType(brandId, typeId);
+      this.vehicleService.getVehicleModelByBrandAndType(brandId, typeId)
+      .subscribe(vehicleModels => {
+        this.lsVehicleModel  = vehicleModels;
+        this.lsVehicleModelFiltered = vehicleModels;
+      });
     } catch (error) {
       console.error(error);
     }
-
   }
 
-  filterVehicleModels(pBrand: Brand, pVehicleType: VehicleType){
-    const idBrand = (pBrand !== null && pBrand !== undefined) ? pBrand.id : 0;
-    const idType = (pVehicleType !== null && pVehicleType !== undefined) ? pVehicleType.id : 0;
+  filterVehicleModels(pBrand: Brand, pVehicleType: VehicleType): void{
+    const idBrand = (pBrand) ? pBrand.id : 0;
+    const idType = (pVehicleType) ? pVehicleType.id : 0;
 
-
-    this.getDataToLists(idBrand, idType);
-  }
-
-  setVehicleModel(event: any) {
-    const vehicleModel = this.lsVehicleModel.find(vm => vm.id == event.value);
-
-
-    if (vehicleModel != null){
-      this.vehicleService.setVehicleModelSelected(vehicleModel);
-      this.vehicleModelWasSetted.emit(true);
-      this.VehicleModelWasSelected.emit(vehicleModel);
+    if(idBrand != 0 && idType != 0){
+      this.lsVehicleModelFiltered = this.lsVehicleModel.filter(model => {
+        return (model.brand.id == idBrand && model.type.id == idType)
+      });
     }else{
-      this.vehicleService.setVehicleModelSelected(null);
+      this.lsVehicleModelFiltered = this.lsVehicleModel;
     }
   }
 
-  async setDataInFields(pVehicleModel: VehicleModel) {
-     setTimeout(() => {
-      const { cmbVehicleModel } = this.frmVehicleModel.controls;
+  setVehicleModel(event: any): void {
+    const vehicleModel = this.lsVehicleModel.find(vm => vm.id == event.value);
+    if (vehicleModel != null){
+      this.VehicleModelWasSelected.emit(vehicleModel);
+    }else{
+      this.VehicleModelWasSelected.emit(null);
+    }
+  }
 
+  setDataInFields(pVehicleModel: VehicleModel): void {
+    const { cmbVehicleModel } = this.frmVehicleModel.controls;
+    if(pVehicleModel){
       cmbVehicleModel.setValue(pVehicleModel.id);
-     }, 500);
-
-     this.vehicleModelWasSetted.emit(true);
+    }else{
+      this.clearDataFields();
+    }
   }
 
   clearDataFields() {

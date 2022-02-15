@@ -13,7 +13,6 @@ export class VehicleBrandComponent implements OnInit {
   lsBrand: Brand[];
   oBrand: Brand;
 
-  // @Input() countChanges: number;
   @Output() vehicleBrandWasSetted = new EventEmitter<boolean>();
   @Input() defaultBrandId = 0;
 
@@ -90,7 +89,6 @@ export class VehicleBrandComponent implements OnInit {
     this.frmBrand.controls.cmbBrand.setValue(defaultValue);
     if (defaultValue !== 0){
       const oBrand = this.lsBrand.find(br => br.id == defaultValue);
-      this.vehicleService.setBrandSelected(oBrand);
       this.vehicleBrandWasSetted.emit(true);
     }
   }

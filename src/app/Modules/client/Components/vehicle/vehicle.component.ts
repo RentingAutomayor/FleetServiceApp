@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output , OnChanges, SimpleChange, SimpleChanges} from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { Vehicle } from 'src/app/Models/Vehicle';
 import { VehicleModel } from 'src/app/Models/VehicleModel';
 import { VehicleService } from '../../Services/Vehicle/vehicle.service';
@@ -7,6 +7,7 @@ import { InputValidator } from 'src/app/Utils/InputValidator';
 import { SharedFunction } from 'src/app/Models/SharedFunctions' ;
 import { VehicleState } from 'src/app/Models/VehicleState';
 import { Brand } from 'src/app/Models/Brand';
+import { VehicleType } from 'src/app/Models/VehicleType';
 
 @Component({
   selector: 'app-vehicle',
@@ -17,8 +18,6 @@ export class VehicleComponent implements OnInit {
   frmVehicle: FormGroup;
   error: string;
   formHasError: boolean;
-
-  oCountChanges: number;
   sharedFunction: SharedFunction;
 
   vehicle: Vehicle = null;
@@ -44,36 +43,36 @@ export class VehicleComponent implements OnInit {
 
   vehicleStateSelected: VehicleState = null;
   brandSelected: Brand = null;
+  vehicleTypeSelected: VehicleType = null;
+  vehicleModelSelected: VehicleModel = null;
 
   @Output() vehicleWasSaved = new  EventEmitter<Vehicle>();
   @Output() vehicleWasCancel = new  EventEmitter<boolean>();
 
-  get licensePlateField(){
+  get licensePlateField(): AbstractControl{
     return this.frmVehicle.get('licensePlate');
   }
 
-  get chasisCodeField(){
+  get chasisCodeField(): AbstractControl{
     return this.frmVehicle.get('chasisCode');
   }
 
-  get yearField(){
+  get yearField(): AbstractControl{
     return this.frmVehicle.get('year');
   }
 
-  get mileageField(){
+  get mileageField(): AbstractControl{
     return this.frmVehicle.get('mileage');
   }
 
   constructor(
-    private vehicleService: VehicleService,
     private formBuilder: FormBuilder
-
   ) {
     this.buildFormVehicle();
     this.sharedFunction = new SharedFunction();
   }
 
-  buildFormVehicle(){
+  buildFormVehicle(): void{
     this.frmVehicle = this.formBuilder.group({
       licensePlate : ['', [Validators.required , Validators.minLength(6), Validators.maxLength(6)]],
       chasisCode: ['', [Validators.required , Validators.minLength(10), Validators.maxLength(17)]],
@@ -86,7 +85,7 @@ export class VehicleComponent implements OnInit {
     this.initComponents();
   }
 
-  enableOrDisableForm(isBlocked:boolean){
+  enableOrDisableForm(isBlocked: boolean): void{
     if(isBlocked){
       this.frmVehicle.disable();
     }else{
@@ -94,19 +93,16 @@ export class VehicleComponent implements OnInit {
     }
   }
 
-  initComponents(){
+  initComponents(): void{
     this.formHasError = false;
     this.error = '';
-
-    this.oCountChanges = 0;
-
   }
 
-  setVehicleState(state: VehicleState){
+  setVehicleState(state: VehicleState): void{
     this.vehicleStateSelected = state;
   }
 
-  saveVehicle(){
+  saveVehicle(): void{
     const oVehicle = this.setDataVehicle();
     if(this.isToInsert){
       oVehicle.id = this.idTemp;
@@ -126,55 +122,54 @@ export class VehicleComponent implements OnInit {
     oVehicle.chasisCode = partialVehicle.chasisCode;
     oVehicle.year = partialVehicle.year;
     oVehicle.mileage = partialVehicle.mileage;
-    oVehicle.vehicleState = this.vehicleStateSelected ;
-    oVehicle.vehicleModel = this.vehicleService.getVehicleModelSelected();
+    oVehicle.vehicleState = this.vehicleStateSelected;
+    oVehicle.vehicleModel = this.vehicleModelSelected;
     return oVehicle;
   }
 
-  saveData(pVehicle: Vehicle){
+  saveData(pVehicle: Vehicle): void{
     this.vehicleWasSaved.emit(pVehicle);
   }
 
-  setDataInForm(pVehicle: Vehicle){
+  setDataInForm(pVehicle: Vehicle): void{
     if(pVehicle){
       this.frmVehicle.patchValue(pVehicle);
       this.vehicleStateSelected = pVehicle.vehicleState;
       this.brandSelected = pVehicle.vehicleModel.brand;
-
-      this.vehicleService.setVehicleTypeSelected(pVehicle.vehicleModel.type);
-      this.vehicleService.setVehicleModelSelected(pVehicle.vehicleModel);
-      this.oCountChanges += 1 ;
+      this.vehicleTypeSelected = pVehicle.vehicleModel.type;
+      this.vehicleModelSelected = pVehicle.vehicleModel;
     }else{
       this.cleanFormData();
-
     }
 
   }
 
-  cleanFormData(){
+  cleanFormData(): void{
     this.frmVehicle.reset();
     this.vehicleStateSelected = null;
     this.brandSelected = null;
-
-    this.vehicleService.setVehicleTypeSelected(null);
-    this.vehicleService.setVehicleModelSelected(null);
-
-    this.oCountChanges += 1 ;
+    this.vehicleTypeSelected = null;
+    this.vehicleModelSelected = null;
   }
 
-  setBrand(brand: Brand){
+  setBrand(brand: Brand): void{
     this.brandSelected = brand;
   }
 
-  setVehiclType(){
-    this.oCountChanges += 1;
+  setVehiclType(type: VehicleType): void{
+    this.vehicleTypeSelected = type;
   }
-  comeBack(){
+
+  setVehicleModel(vehicleModel: VehicleModel): void{
+    this.vehicleModelSelected = vehicleModel;
+  }
+
+  comeBack(): void{
     this.cleanFormData();
     this.vehicleWasCancel.emit(true);
   }
 
-  valitateTyping(event: any, type: string){
+  valitateTyping(event: any, type: string): void{
     InputValidator.validateTyping(event, type);
   }
 

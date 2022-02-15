@@ -9,6 +9,7 @@ import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service
 import { SharedFunction } from 'src/app/Models/SharedFunctions';
 import { Frequency } from 'src/app/Models/Frequency';
 import { Brand } from 'src/app/Models/Brand';
+import { VehicleType } from 'src/app/Models/VehicleType';
 
 @Component({
   selector: 'app-maintenance-routine',
@@ -43,7 +44,11 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   }
 
   brandSelected: Brand  = null;
+  vehicleTypeSelected: VehicleType = null;
 
+  get fieldName(){
+    return this.frmMaintenanceRoutine.get('name');
+  }
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -292,11 +297,10 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   setDataInForm(pRoutine: MaintenanceRoutine) {
 
     this.frmMaintenanceRoutine.patchValue(pRoutine);
-    this.maintenanceRoutineService.setFrecuencySelected(pRoutine.frequency);
-
-
     this.brandSelected = pRoutine.vehicleModel.brand;
-    this.vehicleService.setVehicleTypeSelected(pRoutine.vehicleModel.type);
+    this.vehicleTypeSelected = pRoutine.vehicleModel.type;
+
+    this.maintenanceRoutineService.setFrecuencySelected(pRoutine.frequency);
     this.vehicleService.setVehicleModelSelected(pRoutine.vehicleModel);
 
     this.maintenanceItemService.getItemsByVehicleModel(pRoutine.vehicleModel.id)
@@ -348,10 +352,10 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   clearDataForm() {
     this.frmMaintenanceRoutine.reset();
     this.brandSelected = null;
+    this.vehicleTypeSelected = null;
 
     this.maintenanceRoutineService.setFrecuencySelected(null);
     this.vehicleService.setVehicleModelSelected(null);
-    this.vehicleService.setVehicleTypeSelected(null);
 
     this.lsMaintenanceItems = [];
     const lblTotalPrice: HTMLSpanElement = document.querySelector('#lbl-total-routine');
@@ -385,9 +389,8 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     this.brandSelected = brand;
   }
 
-  setVehiclType() {
-    this.countChanges += 1;
-
+  setVehiclType(type: VehicleType) {
+    this.vehicleTypeSelected = type;
   }
 
   setFrequency(frequency: Frequency){
@@ -427,7 +430,5 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     });
   }
 
-  get fieldName(){
-    return this.frmMaintenanceRoutine.get('name');
-  }
+
 }

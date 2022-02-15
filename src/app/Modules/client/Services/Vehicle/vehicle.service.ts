@@ -39,9 +39,9 @@ export class VehicleService {
     return this.http.get<Brand[]>(urlGetBrands);
   }
 
-  async getVehicleTypes(): Promise<VehicleType[]> {
+  getVehicleTypes(): Observable<VehicleType[]> {
     const urlGetVehicleTypes = `${this.URL_API}/GetVehicleType`;
-    return this.http.get<VehicleType[]>(urlGetVehicleTypes).toPromise();
+    return this.http.get<VehicleType[]>(urlGetVehicleTypes);
   }
 
   getVehicleStates(): Observable <VehicleState[]> {
@@ -49,9 +49,9 @@ export class VehicleService {
     return this.http.get<VehicleState[]>(urlGetVehicleStates);
   }
 
-  async getVehicleModelByBrandAndType(pId_brand: number, pId_VehicleType: number): Promise<VehicleModel[]> {
+  getVehicleModelByBrandAndType(pId_brand: number, pId_VehicleType: number): Observable<VehicleModel[]> {
     const urlGetVehicleModelByBrandAndType = `${this.URL_API}/GetVehicleModelByBrandAndType?pId_brand=${pId_brand}&pId_VehicleType=${pId_VehicleType}`;
-    return this.http.get<VehicleModel[]>(urlGetVehicleModelByBrandAndType).toPromise();
+    return this.http.get<VehicleModel[]>(urlGetVehicleModelByBrandAndType);
   }
 
   async getVehicleModelByTypes(pLstypes: VehicleType[]): Promise<VehicleModel[]> {

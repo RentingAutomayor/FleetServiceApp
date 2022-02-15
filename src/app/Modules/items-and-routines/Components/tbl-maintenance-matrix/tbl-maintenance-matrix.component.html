@@ -3,27 +3,26 @@
 <div class="container__filter">
     <div class="container__row">
         <div class="col">
-            <!-- <app-vehicle-brand
-              [countChanges]="countChanges"
-              (vehicleBrandWasSetted)="setBrand()"></app-vehicle-brand> -->
-              <app-vehicle-brand
-                [brand]="brandSelected"
-                (onBrandWasSelected)="setBrand($event)">
-              </app-vehicle-brand>
-          </div>
+          <app-vehicle-brand
+            [brand]="brandSelected"
+            (onBrandWasSelected)="setBrand($event)">
+          </app-vehicle-brand>
+        </div>
 
-          <div class="col">
-              <app-vehicle-type
-              [countChanges]="countChanges"
-              (vehicleTypeWasSetted)="setVehiclType()"></app-vehicle-type>
-          </div>
+        <div class="col">
+          <app-vehicle-type
+            [vehicleType]="vehicleTypeSelected"
+            (onVehicleTypeWasModified)="setVehicleType($event)">
+          </app-vehicle-type>
+        </div>
 
-          <div class="col">
-              <app-vehicle-model
-                  [countChanges]="countChanges"
-                  (vehicleModelWasSetted)="setVehicleModel()"></app-vehicle-model>
-
-          </div>
+        <div class="col">
+          <app-vehicle-model
+            [brand]="brandSelected"
+            [vehicleType]="vehicleTypeSelected"
+            (VehicleModelWasSelected)="setVehicleModel($event)">
+          </app-vehicle-model>
+        </div>
     </div>
    <br>
     <hr>

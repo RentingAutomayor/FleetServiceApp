@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Contact, CreateContactDTO } from '../../../Models/Contact';
+import { Contact, CreateContactDTO, UpdateContactDTO } from '../../../Models/Contact';
 import { ResponseApi } from '../../../Models/ResponseApi';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class ContactService {
     return this.http.post<Contact>(urlInsertContacts, contact, this.HttpOptions);
   }
 
-  update(pContact: Contact): Observable<Contact>{
+  update(pContact: UpdateContactDTO | CreateContactDTO): Observable<Contact>{
     const urlUpdateContacts = `${this.URL_API}/Update`;
     return this.http.put<Contact>(urlUpdateContacts, pContact, this.HttpOptions);
   }

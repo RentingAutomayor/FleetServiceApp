@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Output, SimpleChanges,EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Department } from 'src/app/Models/Department';
 import { City } from '../../Models/City';
@@ -14,7 +14,7 @@ export class CityComponent implements OnInit {
 
   city: City;
   @Input('city')
-  set setCity(city: City) {
+  set  setCity(city: City) {
     this.city = city;
     if (this.city){
       this.searchCitiesByDepartmentId(this.city.departmentId);
@@ -22,7 +22,6 @@ export class CityComponent implements OnInit {
     }else{
       this.clearDateForm();
     }
-
   }
 
   blockFieldCity: boolean;
@@ -38,6 +37,11 @@ export class CityComponent implements OnInit {
   frmCity: FormGroup;
   lsDepartment: Department[];
   lsCities: City[];
+  lsCitiesFiltered: City[] = [];
+
+  // tslint:disable-next-line: no-output-on-prefix
+  @Output()
+  onCityWasSetted = new EventEmitter<City>();
 
   constructor(
     private cityService: CityService
@@ -48,6 +52,7 @@ export class CityComponent implements OnInit {
     });
 
     this.blockFieldCity = false;
+    this.lsCities = [];
   }
 
   ngOnInit(): void {
@@ -56,34 +61,38 @@ export class CityComponent implements OnInit {
 
   initComponents() {
     this.getDepartmentsList();
+    this.getCities();
+
+  }
+
+  getCities(){
+    this.cityService.getCities()
+    .subscribe(cities => {
+      this.lsCities = cities;
+      this.lsCitiesFiltered = this.lsCities;
+    })
   }
 
   getDepartmentsList(){
-    this.cityService.getDepartments().then(departments => {
+    this.cityService.getDepartments()
+    .then(departments => {
       this.lsDepartment = departments;
     });
   }
 
   searchCitiesByDepartmentId(departmentID: number) {
-    const department_id = departmentID;
-    this.cityService.getCitiesByDepartmentId(department_id)
-      .then(cities => {
-        this.lsCities = cities;
-      });
+    this.lsCitiesFiltered = this.lsCities.filter(city => city.departmentId == departmentID);
   }
 
   setSelectedCity(obj: any) {
     const selectedCity = this.lsCities.find(cty => cty.id == obj.value);
-    this.cityService.setSelectedCity(selectedCity);
+    this.onCityWasSetted.emit(selectedCity);
   }
 
-  setDataInForm(pCity: City) {
+  async setDataInForm(pCity: City) {
     if (pCity) {
       this.frmCity.controls.cmbDepartment.setValue(pCity.departmentId);
       this.frmCity.controls.cmbCity.setValue(pCity.id);
-    } else {
-      this.frmCity.controls.cmbDepartment.setValue(0);
-      this.frmCity.controls.cmbCity.setValue(0);
     }
   }
 

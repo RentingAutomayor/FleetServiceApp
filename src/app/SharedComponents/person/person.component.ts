@@ -18,7 +18,7 @@ import { InputValidator } from 'src/app/Utils/InputValidator';
   styleUrls: ['./person.component.scss']
 })
 export class PersonComponent implements OnInit {
-  @Input() configComponent: ConfigPersonComponent;
+
   @Input() isRequiredDataComponent: boolean;
   @Input() formHasError: boolean;
   @Input() error: string;
@@ -32,14 +32,6 @@ export class PersonComponent implements OnInit {
   oInputvalidator: InputValidator;
 
   isContact = true;
-
-  frmPersonMustBeBlocked = false;
-  @Input('frmPersonMustBeBlocked')
-  set setFrmPersonMustBeBlocked(value: boolean){
-    this.frmPersonMustBeBlocked = value;
-    this.enableDisableForm(this.frmPersonMustBeBlocked);
-  }
-
 
   personToUpdate: Person = {
     id: 0,
@@ -60,20 +52,24 @@ export class PersonComponent implements OnInit {
   };
 
   jobTitleSelected: JobTitle = null;
-  oCity: City = null;
+
+  frmPersonMustBeBlocked = false;
+  @Input('frmPersonMustBeBlocked')
+  set setFrmPersonMustBeBlocked(value: boolean){
+    this.frmPersonMustBeBlocked = value;
+    this.enableDisableForm(this.frmPersonMustBeBlocked);
+  }
 
   @Input('personToUpdate')
   set setPersonToUpdate(person: Person){
     if (person){
       this.personToUpdate = person;
       this.jobTitleSelected = this.personToUpdate.jobTitle;
-      this.oCity = this.personToUpdate.city;
+      this.selectedCity = this.personToUpdate.city;
       this.setDataInForm(this.personToUpdate);
       this.enableDisableForm(this.frmPersonMustBeBlocked);
     }else{
-
       this.cleanFormData();
-
     }
   }
 
@@ -90,6 +86,8 @@ export class PersonComponent implements OnInit {
     this.areVisibleButtonActions = value;
   }
 
+  selectedCity:City = null;
+
   // getInfoComponent:boolean = false;
   // @Input('getInfoComponent')
   // set setGetInfoComponent(value:boolean){
@@ -98,6 +96,12 @@ export class PersonComponent implements OnInit {
   //     this.getInformationComponent()
   //   }
   // }
+  configComponent: ConfigPersonComponent = null;
+  @Input('configComponent')
+  set setConfigComponent(config:ConfigPersonComponent){
+    this.configComponent = config;
+    this.buildPersonForm(this.configComponent);
+  }
 
   @Output() onNextStepClicked = new EventEmitter<boolean>();
 
@@ -112,7 +116,7 @@ export class PersonComponent implements OnInit {
     this.configRenderComponent = new ConfigPersonComponent();
     this.isRequiredDataComponent = false;
     this.formHasError = false;
-    this.buildPersonForm(this.configComponent);
+
   }
 
   buildPersonForm(configComponent: ConfigPersonComponent){
@@ -152,16 +156,21 @@ export class PersonComponent implements OnInit {
   }
 
   enableDisableForm(formIsBlocked: boolean){
-    if (formIsBlocked){
-      this.formPerson.disable();
-    }else{
-      this.formPerson.enable();
+    try{
+      if (formIsBlocked){
+        this.formPerson.disable();
+      }else{
+        this.formPerson.enable();
+      }
+    }catch(error){
+      console.log(error)
     }
+
   }
 
 
   ngOnInit(): void {
-    this.initComponents();
+
   }
 
   get documentField(){
@@ -188,20 +197,9 @@ export class PersonComponent implements OnInit {
     return this.formPerson.get('email');
   }
 
-
-  initComponents() {
-    this.oCountChanges = 0;
-    this.cleanFormData();
-  }
-
   setDataInForm(pPerson: Person) {
     if (pPerson){
       this.formPerson.patchValue(pPerson);
-      if (pPerson.city != null){
-        this.oCity = pPerson.city;
-      }else{
-        this.oCity = null;
-      }
     }else{
       this.formPerson.reset();
     }
@@ -212,9 +210,8 @@ export class PersonComponent implements OnInit {
     this.oJobTitleSelected = new JobTitle();
     this.oJobTitleSelected.id = 0;
     this.oJobTitleSelected.description = '';
-    this.oCity = null;
+    this.selectedCity = null;
     this.jobTitleSelected = null;
-    this.oCity = null;
   }
 
   setDataPerson(event: any) {
@@ -222,7 +219,13 @@ export class PersonComponent implements OnInit {
     const objPerson = this.getDataPersonForm();
     this.personService.setPerson(objPerson);
     this.personWasSetted.emit(true);
-    this.formPerson.reset();
+    this.cleanFormData();
+
+  }
+
+  setSelectedCity(city: City)
+  {
+    this.selectedCity = city;
   }
 
   getDataPersonForm(): Person{
@@ -236,7 +239,7 @@ export class PersonComponent implements OnInit {
     }
 
     if (this.configComponent.cityIsVisible) {
-      objPerson.city = this.cityService.getSelectedCity();
+      objPerson.city = this.selectedCity;
     }
 
     if (this.configComponent.jobTitleIsVisible) {

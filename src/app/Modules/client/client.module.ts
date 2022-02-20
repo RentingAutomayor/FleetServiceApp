@@ -14,7 +14,9 @@ import { TblContractsByClientComponent } from './Components/tbl-contracts-by-cli
 import { ClientRoutingModule } from './client-routing.module';
 import { SharedModule } from 'src/app/SharedComponents/shared.module';
 import { MatStepperModule } from '@angular/material/stepper';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { ContractualInformationComponent } from './Components/contractual-information/contractual-information.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 
 @NgModule({
@@ -25,7 +27,8 @@ import {MatButtonModule} from '@angular/material/button';
         VehicleComponent,
         VehiclesByCLientComponent,
         VehicleStateComponent,
-        TblContractsByClientComponent
+        TblContractsByClientComponent,
+        ContractualInformationComponent
     ],
     imports: [
         CommonModule,
@@ -33,7 +36,8 @@ import {MatButtonModule} from '@angular/material/button';
         ReactiveFormsModule,
         ClientRoutingModule,
         MatStepperModule,
-        MatButtonModule
+        MatButtonModule,
+        BsDatepickerModule
     ], schemas: [
         CUSTOM_ELEMENTS_SCHEMA
     ],

@@ -25,7 +25,7 @@
               >
                 <option disabled [value]="0">Seleccione ... </option>
                 <option
-                  *ngFor="let city of lsCities"
+                  *ngFor="let city of lsCitiesFiltered"
                   [value]="city.id">{{city.name}}</option>
             </select>
         </div>

@@ -86,10 +86,13 @@
                 <div class="container__col">
                     <label>Fecha de inicio:</label>
                     <input type="text" class="form-control"
-                        formControlName="startingDate" [bsValue]="dtStartingDate"
+                        formControlName="startingDate"
+                        [bsValue]="dtStartingDate"
                         (keypress)="validateInputDate($event)"
                         [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
-                        placeholder="fecha de inicio ..." (onHidden)="calculateEndingDate()" bsDatepicker>
+                        placeholder="fecha de inicio ..."
+                        (onHidden)="calculateEndingDate()"
+                        bsDatepicker>
 
                     <div class="error" *ngIf="startingDateField.invalid && (startingDateField.touched || startingDateField.dirty) ">
                         <p *ngIf="startingDateField.hasError('required')">* La fecha inicial del contrato es requerida</p>

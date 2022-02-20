@@ -12,6 +12,7 @@
                 <p *ngIf="licensePlateField.hasError('required')">* La placa es un campo requerido</p>
                 <p *ngIf="licensePlateField.hasError('minlength')">* La cantidad de caracteres para la placa no es válida</p>
                 <p *ngIf="licensePlateField.hasError('maxlength')">* La cantidad de caracteres permitida para la placa es máximo de 6</p>
+                <p *ngIf="licensePlateField.hasError('vehicleExists')">* La placa ya se encuentra creada</p>
             </div>
         </div>
 
@@ -89,6 +90,6 @@
     </div>
     <div class="buttons__container" id="container__buttons" >
         <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-        <button type="submit" class="btn btn-success"  [disabled]="frmVehicle.invalid">Guardar</button>
+        <button type="submit" class="btn btn-success"  [disabled]="frmVehicle.invalid || isFormBlocked">Guardar</button>
     </div>
 </form>

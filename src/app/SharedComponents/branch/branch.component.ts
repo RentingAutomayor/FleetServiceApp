@@ -7,6 +7,7 @@ import { Person } from 'src/app/Models/Person';
 import { PersonService } from '../Services/Person/person.service';
 import { Dealer } from 'src/app/Models/Dealer';
 import { ActionType } from 'src/app/Models/ActionType';
+import { BranchService } from '../Services/Branch/branch.service';
 
 @Component({
   selector: 'app-branch',
@@ -23,24 +24,24 @@ export class BranchComponent implements OnInit {
   isToInsert: boolean;
   btnAddBranch: HTMLButtonElement;
   containerErrorBranch: HTMLElement;
-  oPersonToUpdate: Person;
+  branchToUpdate: Person = null;
   @Input()disableActionButtons: boolean;
 
   buttonAddIsVisible: boolean;
 
-  client: Client;
+  client: Client = null;
   @Input('client')
   set setClient(client: Client){
     this.client = client;
   }
 
-  dealer: Dealer;
+  dealer: Dealer = null;
   @Input('dealer')
   set setDealer(dealer: Dealer){
     this.dealer = dealer;
   }
 
-  lsBranchs: Branch[];
+  lsBranchs: Branch[] = [];
   @Input('branchs')
   set setLsBranchs(branchs: Branch[]){
     this.lsBranchs = branchs;
@@ -56,15 +57,17 @@ export class BranchComponent implements OnInit {
   buttonsAreVisibles = true;
   isFormBlocked = false;
   idTemp: number = 0;
-
+  isErrorVisible: boolean = false;
+  errorTitle: string = '';
+  errorMessageApi: string = '';
   // tslint:disable-next-line: no-output-on-prefix
   @Output() onBranchsWereModified = new EventEmitter<Branch[]>();
 
 
   constructor(
-    private personService: PersonService
+    private personService: PersonService,
+    private branchService: BranchService
   ) {
-    this.lsBranchs = [];
     this.disableActionButtons = false;
     this.buttonAddIsVisible = false;
   }
@@ -77,6 +80,9 @@ export class BranchComponent implements OnInit {
     this.configureComponentToShowDataBranch();
     this.isToInsert = false;
     this.isAwaiting = false;
+    this.isErrorVisible = false;
+    this.errorTitle = '';
+    this.errorMessageApi = '';
   }
 
   configureComponentToShowDataBranch() {
@@ -99,7 +105,7 @@ export class BranchComponent implements OnInit {
   }
 
   insertBranch() {
-    this.oPersonToUpdate = null;
+    this.branchToUpdate = null;
     this.isToInsert = true;
     this.isFormBlocked = false;
     this.showPopUp();
@@ -107,19 +113,22 @@ export class BranchComponent implements OnInit {
 
   getDetailsOfBranch(branchId: number){
     this.isToInsert = false;
-    this.oPersonToUpdate = this.lsBranchs.find(branch => branch.id == branchId);
+    this.branchToUpdate = this.lsBranchs.find(branch => branch.id == branchId);
+    console.log('getDetailsOfBranch');
+    console.log(this.branchToUpdate);
     this.isFormBlocked = true;
     this.showPopUp();
   }
 
   updateBranch(branchId: number) {
     this.isToInsert = false;
-    this.oPersonToUpdate = this.lsBranchs.find(branch => branch.id == branchId);
+    this.branchToUpdate = this.lsBranchs.find(branch => branch.id == branchId);
     this.isFormBlocked = false;
     this.showPopUp();
   }
 
   comeBackToTable() {
+    this.branchToUpdate = null;
     this.hidePopUp();
   }
 
@@ -145,14 +154,42 @@ export class BranchComponent implements OnInit {
   }
 
   saveData(branch: Branch){
-    this.isAwaiting = true;
+    const branchDB = this.completeBranchInformationWithOwner(branch);
     if (this.isToInsert) {
-      this.lsBranchs.unshift(branch);
+      if (branchDB.Client_id == 0 || branchDB.Dealer_id == 0){
+        this.lsBranchs.unshift(branchDB);
+      }else{
+        this.isAwaiting = true;
+        this.branchService.insert(branchDB)
+        .subscribe(newBranch => {
+          this.lsBranchs.unshift(newBranch);
+          this.isAwaiting = false;
+        }, err =>{
+          this.isErrorVisible = true;
+          this.isAwaiting = false;
+          this.errorTitle = 'Ocurrió un error intentando Insertar la sucursal';
+          this.errorMessageApi = err.error.Message;
+        });
+      }
     } else {
-      const branchIndex = this.lsBranchs.findIndex(br => br.id == branch.id);
-      this.lsBranchs[branchIndex] = branch;
+      if (branchDB.Client_id == 0|| branchDB.Dealer_id == 0){
+        const branchIndex = this.lsBranchs.findIndex(br => br.id == branch.id);
+        this.lsBranchs[branchIndex] = branch;
+      }else{
+        this.isAwaiting = true;
+        this.branchService.update(branchDB)
+        .subscribe(branchUpdated => {
+          const branchIndex = this.lsBranchs.findIndex(br => br.id == branch.id);
+          this.lsBranchs[branchIndex] = branchUpdated;
+          this.isAwaiting = false;
+        }, err =>{
+          this.isErrorVisible = true;
+          this.isAwaiting = false;
+          this.errorTitle = 'Ocurrió un error intentando Actualizar la sucursal';
+          this.errorMessageApi = err.error.Message;
+        });
+      }
     }
-    this.isAwaiting = false;
     this.hidePopUp();
     this.onBranchsWereModified.emit(this.lsBranchs);
   }
@@ -161,9 +198,24 @@ export class BranchComponent implements OnInit {
     try {
       if (confirm('¿Está seguro que desea eliminar esta sucursal?')) {
         this.isAwaiting = true;
-        const branchIndex = this.lsBranchs.findIndex(branch => branch.id == branchId);
-        this.lsBranchs.splice(branchIndex, 1);
-        this.isAwaiting = false;
+        const branchTmp= this.lsBranchs.find(branch => branch.id == branchId);
+        const branchToDelete = this.completeBranchInformationWithOwner(branchTmp)
+        if (branchToDelete.Client_id == 0 || branchToDelete.Dealer_id == 0){
+          const branchIndex = this.lsBranchs.findIndex(branch => branch.id == branchId);
+          this.lsBranchs.splice(branchIndex, 1);
+        }else{
+          this.branchService.delete(branchToDelete)
+          .subscribe(rta => {
+            const branchIndex = this.lsBranchs.findIndex(branch => branch.id == branchId);
+            this.lsBranchs.splice(branchIndex, 1);
+            this.isAwaiting = false;
+          }, err =>{
+            this.isErrorVisible = true;
+            this.isAwaiting = false;
+            this.errorTitle = 'Ocurrió un error intentando Eliminar la sucursal';
+            this.errorMessageApi = err.error.Message;
+          });
+        }
         this.onBranchsWereModified.emit(this.lsBranchs);
       }
     } catch (err) {
@@ -180,9 +232,20 @@ export class BranchComponent implements OnInit {
     oBranch.phone = pPerson.phone;
     oBranch.cellphone = pPerson.cellphone;
     oBranch.city = pPerson.city;
-    oBranch.Dealer_id = (this.dealer != null) ? this.dealer.id : null;
-    oBranch.Client_id = (this.client != null) ? this.client.id : null;
     return oBranch;
+  }
+
+
+  completeBranchInformationWithOwner(branch: Branch): Branch {
+    if(this.client != null){
+      branch.Client_id = this.client.id;
+    }
+
+    if(this.dealer != null){
+      branch.Dealer_id = this.dealer.id;
+    }
+
+    return branch;
   }
 
   validateCityName(pCity: City): string {
@@ -220,5 +283,9 @@ export class BranchComponent implements OnInit {
     }catch (error){
       console.warn(error.message);
     }
+  }
+
+  closeErrorMessage(){
+    this.isErrorVisible = false;
   }
 }

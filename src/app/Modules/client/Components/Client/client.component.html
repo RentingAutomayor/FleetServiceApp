@@ -1,7 +1,7 @@
 <div id="container__content">
-
-  <mat-vertical-stepper>
-    <mat-step>
+  <mat-vertical-stepper
+  [linear]="true">
+    <mat-step [completed]="isBasicDataCompleted">
       <ng-template matStepLabel>Datos básicos del cliente</ng-template>
       <div class="card">
         <app-person
@@ -11,8 +11,7 @@
           [returnPath]="sReturnPath"
           [personToUpdate]="client"
           [frmPersonMustBeBlocked]="blockFormClient"
-          (personWasSetted)="SetDataToSaveClient()"
-          (onNextStepClicked)="nextStepBasicData()"
+          (personWasSetted)="setPersonInfo()"
           [areVisibleButtonActions]="areVisibleButtonsForBasicData">
         </app-person>
       </div>
@@ -23,14 +22,14 @@
           type="button"
           mat-raised-button
           color="primary"
-          class="btn-step"
-          (click)="nextStepBasicData()">
+          class="btn-step" >
           Siguiente
         </button>
       </div>
 
     </mat-step>
-    <mat-step>
+    <mat-step
+      [completed]="areContactCompleted">
       <ng-template matStepLabel>Contactos</ng-template>
       <app-contact
         [client]="client"
@@ -58,9 +57,11 @@
         </button>
       </div>
     </mat-step>
-    <mat-step>
+    <mat-step
+      [completed]="areBranchCompleted">
       <ng-template matStepLabel>Sucursales</ng-template>
       <app-branch
+        [client]="client"
         [branchs]="lsBranchs"
         [action]="action"
         [isToClient]="oIsToClient"
@@ -86,9 +87,11 @@
         </button>
       </div>
     </mat-step>
-    <mat-step>
+    <mat-step
+      [completed]="areVehiclesCompleted">
       <ng-template matStepLabel>Vehículos</ng-template>
       <app-vehicles-by-client
+        [client]="client"
         [action]="action"
         [vehicles]="lsVehicles"
         [clientWasSaved]="oClientWasSaved"
@@ -114,10 +117,19 @@
         </button>
       </div>
     </mat-step>
-    <mat-step>
+    <mat-step
+      [completed]="isContractualInfoSetted">
       <ng-template matStepLabel>Información contractual</ng-template>
-      <div class="container-step-buttons">
+      <app-contractual-information
+        [isFormBlocked]="blockFormClient"
+        [quotaApproved]="quotaApproved"
+        [contractualInformation]="contractualInformation"
+        (onContractualInformationWasSetted)="updateContractualInformation($event)"
+        (onPrevStep)="prevStepContractualInfo()">
+      </app-contractual-information>
+      <div class="container-buttons">
         <button
+          id="btn-prev-step-contractual-info"
           matStepperPrevious
           type="button"
           mat-raised-button
@@ -126,6 +138,7 @@
           Atás
         </button>
         <button
+          id="btn-next-step-contractual-info"
           matStepperNext
           type="button"
           mat-raised-button
@@ -137,36 +150,43 @@
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>Información financiera</ng-template>
+      <app-financial-information-by-client
+        [client]="client">
+      </app-financial-information-by-client>
       <div class="container-step-buttons">
         <button
           matStepperPrevious
           type="button"
           mat-raised-button
           color="primary"
-          class="btn-step">
+          class="btn-step btn-financial-info">
           Atás
+        </button>
+      </div>
+      <div class="container-action-buttons">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="comeBack()"
+          >Cancelar
+        </button>
+        <button
+          *ngIf="isButtonSaveClientVisible"
+          type="button"
+          class="btn btn-success"
+          (click)="saveClient()">
+          Guardar Cliente
         </button>
       </div>
     </mat-step>
 
   </mat-vertical-stepper>
-
-
-    <!--
-
-    <div class="tab_content tab_inactive" id="container__vehicles">
-        <app-vehicles-by-client
-            [action]="action"
-            [clientWasSaved]="oClientWasSaved"
-            [disableActionButtons]="blockFormClient">
-        </app-vehicles-by-client>
-    </div>
-
-    <div class="tab_content tab_inactive" id="container__financialInformation">
-        <app-financial-information-by-client>
-        </app-financial-information-by-client>
-    </div> -->
-
-
+  <app-alert-error
+    *ngIf="isErrorVisible"
+    [title]="errorTitle"
+    [errorMessage]="errorMessageApi"
+    (onAlertWasClose)="closeErrorMessage()">
+  </app-alert-error>
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>
+

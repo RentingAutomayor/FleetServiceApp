@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Client } from 'src/app/Models/Client';
 import { LogTransaction } from 'src/app/Models/LogTransaction';
@@ -20,9 +20,17 @@ export class FinancialInformationByClientComponent implements OnInit {
   lsTransactionByClient: LogTransaction[];
   sharedFunctions: SharedFunction;
   isAwaiting: boolean;
-  oClient: Client;
   frmQuota: FormGroup;
   financialInformationByClient: FinancialInformation;
+  currentPage = 1;
+  workOrderTransactions: LogTransaction[] = [];
+
+  client: Client;
+  @Input('client')
+  set setClient(client: Client){
+    this.client = client;
+    this.initComponents();
+  }
 
   constructor(
     private clientService: ClientService,
@@ -44,16 +52,13 @@ export class FinancialInformationByClientComponent implements OnInit {
 
   async initComponents(){
     this.isAwaiting = false;
-
-    this.oClient = this.clientService.getClientToUpdate();
-
     this.sharedFunctions = new SharedFunction();
 
 
-    if (this.oClient != null){
+    if (this.client != null){
       this.isAwaiting = true;
-      this.getQuotaByClient(this.oClient.id);
-      this.getTransactionsByClient( this.oClient.id);
+      this.getQuotaByClient(this.client.id);
+      this.getTransactionsByClient( this.client.id);
       this.isAwaiting = false;
     }
 
@@ -64,6 +69,8 @@ export class FinancialInformationByClientComponent implements OnInit {
     try {
         this.transactionService.getTransactionsByClient(client_id).then(logTrx => {
           this.lsTransactionByClient = logTrx;
+          const movementWorkOrder = 4;
+          this.workOrderTransactions = this.lsTransactionByClient.filter(trx => trx.transaction.movement.id == movementWorkOrder);
         });
     } catch (error) {
       console.warn(error);
@@ -72,8 +79,8 @@ export class FinancialInformationByClientComponent implements OnInit {
 
   async getQuotaByClient(client_id: number){
     try {
-      this.quotaService.getFinancialInformationByClient(client_id).then( infoClient => {
-        this.financialInformationByClient = infoClient;
+      this.quotaService.getFinancialInformationByClient(client_id).then( infclient => {
+        this.financialInformationByClient = infclient;
         if (this.financialInformationByClient){
           this.setFinancialInformationByClient(this.financialInformationByClient);
         }

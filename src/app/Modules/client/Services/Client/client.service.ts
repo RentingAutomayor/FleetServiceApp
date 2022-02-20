@@ -49,14 +49,14 @@ export class ClientService {
       );
   }
 
-  async insertClient(pClient: Client): Promise<ResponseApi>{
+  insertClient(pClient: Client): Observable<ResponseApi>{
     const urlInsertClient = `${this.URL_API}/Insert`;
-    return this.http.post<ResponseApi>(urlInsertClient, pClient, this.HttpOptions).toPromise();
+    return this.http.post<ResponseApi>(urlInsertClient, pClient, this.HttpOptions);
   }
 
-  async updateClient(pClient: Client): Promise<ResponseApi>{
+  updateClient(client: Client): Observable<ResponseApi>{
     const urlUpdateClient = `${this.URL_API}/Update`;
-    return this.http.post<ResponseApi>(urlUpdateClient, pClient, this.HttpOptions).toPromise();
+    return this.http.post<ResponseApi>(urlUpdateClient, client, this.HttpOptions);
   }
 
   async deleteClient(pClient: Client): Promise<ResponseApi>{

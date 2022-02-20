@@ -102,8 +102,9 @@
         </div>
         <div *ngIf="configComponent.cityIsVisible">
             <app-city
+              [city]="selectedCity"
               [blockFieldCity]="frmPersonMustBeBlocked"
-              [city]="oCity">
+              (onCityWasSetted)="setSelectedCity($event)">
             </app-city>
         </div>
         <div  class="container__error" *ngIf="formHasError">

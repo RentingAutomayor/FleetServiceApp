@@ -19,6 +19,7 @@ import { VehicleModelComponent } from './vehicle-model/vehicle-model.component';
 import { VehicleTypeComponent } from './vehicle-type/vehicle-type.component';
 import { TransactionReviewComponent } from './transaction-review/transaction-review.component';
 import {MatButtonModule} from '@angular/material/button';
+import { AlertErrorComponent } from './alert-error/alert-error.component';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import {MatButtonModule} from '@angular/material/button';
     VehicleBrandComponent,
     VehicleModelComponent,
     VehicleTypeComponent,
-    TransactionReviewComponent
+    TransactionReviewComponent,
+    AlertErrorComponent
   ],
   imports: [
     CommonModule,
@@ -61,7 +63,8 @@ import {MatButtonModule} from '@angular/material/button';
     VehicleModelComponent,
     VehicleTypeComponent,
     NgxPaginationModule,
-    TransactionReviewComponent
+    TransactionReviewComponent,
+    AlertErrorComponent
   ],
 
   schemas: [

@@ -69,7 +69,7 @@
                <app-vehicle
                 [isToInsert]="isToInsert"
                 [isFormBlocked]="isFormBlocked"
-                [vehicleSelected]="vehicleSelected"
+                [vehicle]="vehicleSelected"
                 (vehicleWasSaved)="saveVehicle($event)"
                 (vehicleWasCancel)="comeBackToTable()"
               ></app-vehicle>
@@ -81,4 +81,11 @@
 
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>
+
+<app-alert-error
+  *ngIf="isErrorVisible"
+  [title]="errorTitle"
+  [errorMessage]="errorMessageApi"
+  (onAlertWasClose)="closeErrorMessage()">
+</app-alert-error>
 

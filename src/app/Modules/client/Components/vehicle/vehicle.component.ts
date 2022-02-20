@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output , OnChanges, SimpleChange, SimpleChanges} from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Vehicle } from 'src/app/Models/Vehicle';
 import { VehicleModel } from 'src/app/Models/VehicleModel';
 import { VehicleService } from '../../Services/Vehicle/vehicle.service';
@@ -19,10 +19,10 @@ export class VehicleComponent implements OnInit {
   error: string;
   formHasError: boolean;
   sharedFunction: SharedFunction;
+  idTemp: number = 0;
 
   vehicle: Vehicle = null;
-  idTemp: number = 0;
-  @Input('vehicleSelected')
+  @Input('vehicle')
   set setVehicle(vehicle: Vehicle){
     this.vehicle = vehicle;
     this.setDataInForm(this.vehicle);
@@ -45,6 +45,9 @@ export class VehicleComponent implements OnInit {
   brandSelected: Brand = null;
   vehicleTypeSelected: VehicleType = null;
   vehicleModelSelected: VehicleModel = null;
+  initLicensePlate:string = null;
+
+
 
   @Output() vehicleWasSaved = new  EventEmitter<Vehicle>();
   @Output() vehicleWasCancel = new  EventEmitter<boolean>();
@@ -65,12 +68,16 @@ export class VehicleComponent implements OnInit {
     return this.frmVehicle.get('mileage');
   }
 
+
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private vehicleService: VehicleService
   ) {
     this.buildFormVehicle();
     this.sharedFunction = new SharedFunction();
+
   }
+
 
   buildFormVehicle(): void{
     this.frmVehicle = this.formBuilder.group({
@@ -79,10 +86,33 @@ export class VehicleComponent implements OnInit {
       year: [''],
       mileage: ['']
     });
+
+    this.configureObservableToLicenseplate();
   }
 
   ngOnInit(): void {
     this.initComponents();
+  }
+
+  getVehicleByLicensePlate(licensePlate: string){
+    console.log(this.initLicensePlate);
+    this.vehicleService.getVehiclesByLicensePlate(licensePlate)
+    .subscribe(vehicles => {
+      console.log(vehicles);
+      if (vehicles.length > 0){
+        if(this.isToInsert){
+          this.frmVehicle.controls.licensePlate.setErrors({ 'vehicleExists' : true});
+        }else{
+          console.log(`${this.initLicensePlate.toUpperCase().trim()} - ${ licensePlate.toUpperCase().trim()}`)
+          if(this.initLicensePlate.toUpperCase().trim() != licensePlate.toUpperCase().trim()){
+            this.frmVehicle.controls.licensePlate.setErrors({ 'vehicleExists' : true});
+          }else{
+            this.frmVehicle.controls.licensePlate.errors.remove('vehicleExists');
+          }
+        }
+      }else{
+        this.frmVehicle.controls.licensePlate.errors.remove('vehicleExists');
+      }});
   }
 
   enableOrDisableForm(isBlocked: boolean): void{
@@ -131,16 +161,15 @@ export class VehicleComponent implements OnInit {
     this.vehicleWasSaved.emit(pVehicle);
   }
 
-  setDataInForm(pVehicle: Vehicle): void{
-    if(pVehicle){
-      this.frmVehicle.patchValue(pVehicle);
-      this.vehicleStateSelected = pVehicle.vehicleState;
-      this.brandSelected = pVehicle.vehicleModel.brand;
-      this.vehicleTypeSelected = pVehicle.vehicleModel.type;
-      this.vehicleModelSelected = pVehicle.vehicleModel;
-    }else{
-      this.cleanFormData();
-    }
+  setDataInForm(vehicle: Vehicle): void{
+    this.frmVehicle.patchValue(vehicle);
+    this.vehicleStateSelected = vehicle.vehicleState;
+    this.brandSelected = vehicle.vehicleModel.brand;
+    this.vehicleTypeSelected = vehicle.vehicleModel.type;
+    this.vehicleModelSelected = vehicle.vehicleModel;
+    //this initLicensePlate is to identify if the license plata has changes to avoid
+    //ser error of vehicle exists with the same license plate
+    this.initLicensePlate = vehicle.licensePlate;
 
   }
 
@@ -172,5 +201,15 @@ export class VehicleComponent implements OnInit {
   valitateTyping(event: any, type: string): void{
     InputValidator.validateTyping(event, type);
   }
+
+  configureObservableToLicenseplate(){
+      this.frmVehicle.controls.licensePlate.valueChanges
+      .subscribe( licensePlate => {
+        if (licensePlate.length == 6){
+            this.getVehicleByLicensePlate(licensePlate);
+        }
+      });
+  }
+
 
 }

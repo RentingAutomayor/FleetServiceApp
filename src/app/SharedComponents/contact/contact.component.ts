@@ -2,16 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Client } from 'src/app/Models/Client';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { PersonService } from '../Services/Person/person.service';
-import { ContactService } from '../Services/Contact/contact.service';
-
 import { Person } from 'src/app/Models/Person';
 import { Contact, CreateContactDTO, UpdateContactDTO } from 'src/app/Models/Contact';
-
 import { JobTitle } from 'src/app/Models/JobTitle';
 import { JobTitleService } from '../Services/JobTitle/job-title.service';
 import { Dealer } from 'src/app/Models/Dealer';
-
 import { ActionType } from 'src/app/Models/ActionType';
+import { ContactService } from '../Services/Contact/contact.service';
 
 
 
@@ -67,10 +64,15 @@ export class ContactComponent implements OnInit {
 
   idTemp: number = -1;
 
+  isErrorVisible: boolean = false;
+  errorTitle: string = '';
+  errorMessageApi: string = '';
+
+
 
   constructor(
     private personService: PersonService,
-    private jobtitleService: JobTitleService,
+    private contactService: ContactService,
 
   ) {
     this.sOwnerName = '';
@@ -88,6 +90,9 @@ export class ContactComponent implements OnInit {
     this.isAwaiting = false;
     this.isToInsert = false;
     this.configurePersonComponent();
+    this.isErrorVisible = false;
+    this.errorTitle = '';
+    this.errorMessageApi = '';
   }
 
   activateButtonAdd() {
@@ -167,27 +172,86 @@ export class ContactComponent implements OnInit {
   }
 
   saveData(oContact: Contact){
+
     this.isAwaiting = true;
+    const contactToDB = this.completeContactInformationWithOwner(oContact);
+    console.log(contactToDB);
+
     if (this.isToInsert) {
-      this.lsContacts.unshift(oContact);
+      if(contactToDB.Client_id == 0 || contactToDB.Dealer_id == 0 ){
+        //this case happens when is a new client or dealer
+        this.lsContacts.unshift(oContact);
+      }else{
+        //This case happens when exist a client or a dealer
+        this.contactService.insert(contactToDB)
+        .subscribe(newContact => {
+          this.lsContacts.unshift(newContact);
+        }, err => {
+          this.isErrorVisible = true;
+          this.isAwaiting = false;
+          this.errorTitle = 'Ocurrió un error intentando Insertar el contacto';
+          this.errorMessageApi = err.error.Message;
+        });
+      }
     } else {
-      const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == oContact.id);
-      this.lsContacts[contactIndex] = oContact;
+      if(contactToDB.Client_id == 0 || contactToDB.Dealer_id == 0 ){
+        //this case happens when is a new client or dealer
+        const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == oContact.id);
+        this.lsContacts[contactIndex] = oContact;
+      }else{
+        this.contactService.update(contactToDB)
+        .subscribe(contactUpdated =>{
+          const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == contactUpdated.id);
+          this.lsContacts[contactIndex] = contactUpdated;
+        }, err => {
+          this.isErrorVisible = true;
+          this.isAwaiting = false;
+          this.errorTitle = 'Ocurrió un error intentando Actualizar el contacto';
+          this.errorMessageApi = err.error.Message;
+        });
+      }
     }
     this.hidePopUp();
     this.isAwaiting = false;
     this.onContactsWereModified.emit(this.lsContacts);
+  }
 
+  completeContactInformationWithOwner(contact: CreateContactDTO): CreateContactDTO {
+    if(this.client != null){
+      contact.Client_id = this.client.id;
+    }
+
+    if(this.dealer != null){
+      contact.Dealer_id = this.dealer.id
+    }
+
+    return contact;
   }
 
   deleteContact(pContact: Contact) {
     try {
       if (confirm('¿Está seguro que desea eliminar este contacto?')) {
         this.isAwaiting = true;
-        const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == pContact.id);
-        this.lsContacts.splice(contactIndex, 1);
+        const contactToDB = this.completeContactInformationWithOwner(pContact);
+        if(contactToDB.Client_id == 0 || contactToDB.Dealer_id == 0 ){
+          const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == pContact.id);
+          this.lsContacts.splice(contactIndex, 1);
+        }else{
+          this.contactService.delete(pContact.id)
+          .subscribe(rta => {
+            const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == pContact.id);
+            this.lsContacts.splice(contactIndex, 1);
+          },err =>{
+            this.isErrorVisible = true;
+            this.isAwaiting = false;
+            this.errorTitle = 'Ocurrió un error intentando Eliminar el contacto';
+            this.errorMessageApi = err.error.Message;
+          });
+        }
+
         this.isAwaiting = false;
         this.onContactsWereModified.emit(this.lsContacts);
+
       }
     } catch (err) {
       console.error(err.error.Message);
@@ -241,5 +305,9 @@ export class ContactComponent implements OnInit {
     if ((this.client != null && this.client != undefined) || ( this.dealer != null && this.dealer != undefined)){
       this.activateButtonAdd();
     }
+  }
+
+  closeErrorMessage(){
+    this.isErrorVisible = false;
   }
 }

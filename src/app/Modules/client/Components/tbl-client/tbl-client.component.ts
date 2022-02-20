@@ -9,6 +9,7 @@ import { CompanyType } from 'src/app/Models/CompanyType';
 import { SecurityValidators } from 'src/app/Models/SecurityValidators';
 import { ActionType } from 'src/app/Models/ActionType';
 import { saveInStorage } from 'src/app/Utils/storage';
+import { FormControl } from '@angular/forms';
 
 
 @Component({
@@ -17,14 +18,15 @@ import { saveInStorage } from 'src/app/Utils/storage';
   styleUrls: ['./tbl-client.component.scss']
 })
 export class TblClientComponent implements OnInit {
-  lsClient: Client[];
+  lsClient: Client[] = [];
+  lsClientFiltered: Client[] = [];
   isAwaiting: boolean;
   company: Company;
   enableButtonsEditAndDelete: boolean;
    // pagination
    p = 1;
-
    action: ActionType;
+   txtFilter: FormControl;
 
   constructor(
     private clientService: ClientService,
@@ -32,6 +34,17 @@ export class TblClientComponent implements OnInit {
     private navigationService: NavigationService
   ) {
       this.isAwaiting = false;
+      this.txtFilter = new FormControl();
+      this.txtFilter.valueChanges
+      .subscribe(description => {
+        this.lsClientFiltered = this.lsClient
+        .filter(client =>{
+          if(description != null){
+            return client.document.includes(description) ||
+            client.name.toUpperCase().includes(description.toUpperCase())
+          }
+        })
+      })
    }
 
 
@@ -47,6 +60,7 @@ export class TblClientComponent implements OnInit {
     this.clientService.setClientToUpdate(null);
     try{
       this.lsClient = await this.clientService.getClients();
+      this.lsClientFiltered = this.lsClient;
     }catch (err){
       console.error(err.error.Message);
       alert(err.error.Message);
@@ -138,7 +152,11 @@ export class TblClientComponent implements OnInit {
     }else{
       containerContent.style.marginLeft = '0px';
     }
+  }
 
+  removeFilter(){
+    this.txtFilter.setValue(null);
+    this.lsClientFiltered = this.lsClient
   }
 
 }

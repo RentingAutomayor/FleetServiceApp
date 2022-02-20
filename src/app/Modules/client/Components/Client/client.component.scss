@@ -66,3 +66,27 @@
   justify-content: flex-end;
   display: none;
 }
+
+.btn-financial-info{
+  margin-top: 15px;
+}
+
+.container-action-buttons{
+  direction: ltr;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+.container-action-buttons button{
+  margin-left: 5px;
+  width: 200px;
+}
+
+.errorApiActive{
+  display: block;
+}
+
+.errorApi{
+  display: none;
+}
+

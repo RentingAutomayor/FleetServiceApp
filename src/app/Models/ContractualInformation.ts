@@ -1,19 +1,20 @@
-import { User } from './User';
 import { QuotaType } from './QuotaType';
+import { bussinesObject } from './BussinesObject';
 
-export interface ContractualInformation {
+export interface ContractualInformation extends bussinesObject {
    id: number;
    contractCode: string;
    serviceInitDate: Date;
    serviceEndDate: Date;
    quotaApprovalDate: Date;
    quotaEndingDate: Date;
-   QuotaTypeViewModel: QuotaType;
+   quotaType: QuotaType;
    paymentAgreement: number;
    adminPercentage: number;
-   user: User;
-   state: boolean;
-   registrationDate: Date;
-   updateDate: Date;
-   deleteDate: Date;
 }
+
+export interface CreateContractualInformationDTO extends Omit<ContractualInformation, 'id'| 'QuotaType'> {
+  quotaTypeId: number;
+}
+
+export interface ContractualInformationDTO extends Partial<CreateContractualInformationDTO>{}

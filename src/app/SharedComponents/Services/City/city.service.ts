@@ -3,6 +3,7 @@ import { City } from '../../../Models/City';
 import { Department } from '../../../Models/Department';
 // Imports necesarios para consumos de API
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -25,6 +26,11 @@ export class CityService {
   async getCitiesByDepartmentId(department_id: number): Promise<City[]>{
     const urlCities = `${this.URL_API}/GetCitiesByDepartmentId?pDepartment_id=${department_id}`;
     return this.http.get<City[]>(urlCities).toPromise();
+  }
+
+  getCities(): Observable<City[]>{
+    const urlCities = `${this.URL_API}/Get`;
+    return this.http.get<City[]>(urlCities);
   }
 
   setSelectedCity(pCity: City){

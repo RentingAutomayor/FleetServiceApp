@@ -1,5 +1,16 @@
 <div id="container__content">
     <h1>Clientes</h1>
+    <div class="container-filter">
+      <input
+        [formControl]="txtFilter"
+        type="text"
+        class="form-control"
+        placeholder="Nit , Documento o Nombre...">
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="removeFilter()">Borrar filtro</button>
+    </div>
     <button
       class="btn-add btn-info"
       (click)="insertClient()"
@@ -16,7 +27,7 @@
             <th class="col-mobile-hide">Acciones</th>
         </thead>
         <tbody>
-            <tr *ngFor="let i = index ;let client of lsClient | paginate: { itemsPerPage: 10, currentPage: p }">
+            <tr *ngFor="let i = index ;let client of lsClientFiltered | paginate: { itemsPerPage: 10, currentPage: p }">
                 <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
                 <td>{{ client.document }}</td>
                 <td>{{ client.name | titlecase }}</td>

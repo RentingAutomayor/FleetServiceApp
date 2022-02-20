@@ -1,0 +1,154 @@
+<form
+  [formGroup]="frmContractualInformation"
+  (ngSubmit)="setDataContractualInformation($event)">
+  <div class="card">
+    <div class="container-row">
+      <div class="container-col">
+        <label>Código de contrato de mandato</label>
+        <input
+          formControlName="contractCode"
+          type="text"
+          class="form-control"
+          placeholder="Código de contrato de mandato ...">
+      </div>
+      <div class="container-col">
+        <label>Porcentaje de administración</label>
+        <input
+          formControlName="adminPercentage"
+          type="number"
+          class="form-control"
+          placeholder="Porcentaje de administración ...">
+
+        <div class="error" *ngIf="adminPercentageField.dirty && adminPercentageField.errors">
+          <p *ngIf= "adminPercentageField.hasError('min')">* El porcentaje de administración no puede ser menor a 0 </p>
+          <p *ngIf= "adminPercentageField.hasError('max')">* El porcentaje de administración no puede ser mayor a 100 </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-row">
+      <div class="container-col">
+        <label>Fecha inicio del servicio:</label>
+        <input
+            formControlName="serviceInitDate"
+            type="text"
+            class="form-control"
+            [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
+            placeholder="fecha inicio del servicio ..."
+            bsDatepicker
+            [bsValue]="dtServiceInitDate"
+            (keypress)="validateInputDate($event)"
+            (bsValueChange)="setServiceInitDate($event)"
+            (onHidden)="validateServicesDates()">
+            <div class="error" *ngIf="serviceInitDateField.dirty && serviceInitDateField.errors">
+              <p *ngIf= "serviceInitDateField.hasError('minDateIsGrather')">* La fecha de inicio del servicio no puede ser mayor que su fecha de finalización. </p>
+            </div>
+      </div>
+      <div class="container-col">
+        <label>Fecha finalización del servicio:</label>
+        <input
+            formControlName="serviceEndDate"
+            type="text"
+            class="form-control"
+            [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
+            placeholder="fecha finalización del servicio ..."
+            bsDatepicker
+            (keypress)="validateInputDate($event)"
+            (bsValueChange)="setServiceEndDate($event)"
+            (onHidden)="validateServicesDates()">
+            <div class="error" *ngIf="serviceEndDateField.dirty && serviceEndDateField.errors">
+              <p *ngIf= "serviceEndDateField.hasError('minDate')">* La fecha finalización del servicio no puede ser menor a la fecha de inicio del servicio. </p>
+            </div>
+      </div>
+    </div>
+
+    <div class="container-row">
+      <div class="container-col">
+        <label>Fecha de aprobación del cupo:</label>
+        <input
+            formControlName="quotaApprovalDate"
+            type="text"
+            class="form-control"
+            [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
+            placeholder="Fecha de aprobación del cupo ..."
+            bsDatepicker
+            (keypress)="validateInputDate($event)"
+            (bsValueChange)="setQuotaApprovedDate($event)"
+            (onHidden)="validateQuotaDates()">
+            <div class="error" *ngIf="quotaApprovalDateField.dirty && quotaApprovalDateField.errors">
+              <p *ngIf= "quotaApprovalDateField.hasError('minDateIsGrather')">* La fecha de aprobación del cupo no puede ser mayor que su fecha de finalización. </p>
+            </div>
+      </div>
+      <div class="container-col">
+        <label>Fecha finalización del cupo:</label>
+        <input
+            formControlName="quotaEndingDate"
+            type="text"
+            class="form-control"
+            [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
+            placeholder="Fecha finalización del cupo ..."
+            bsDatepicker
+            (bsValueChange)="setQuotaEndingDate($event)"
+            (keypress)="validateInputDate($event)"
+            (onHidden)="validateQuotaDates()">
+            <div class="error" *ngIf="quotaEndingDateField.dirty && quotaEndingDateField.errors">
+              <p *ngIf= "quotaEndingDateField.hasError('minDate')">* La fecha finalización del cupo no puede ser menor a la fecha de inicio del cupo. </p>
+            </div>
+      </div>
+    </div>
+
+    <div class="container-row">
+      <div class="container-col">
+        <label>Tipo de cupo</label>
+        <select
+          formControlName="quotaTypeId"
+          class="form-control">
+          <option disabled [value]="0">Seleccione ...</option>
+          <option
+            *ngFor="let type of quotaTypes"
+            [value]="type.id">
+            {{type.description | lowercase}}
+          </option>
+        </select>
+      </div>
+      <div class="container-col">
+        <label>Acuerdo de pago (Días)</label>
+        <input
+          formControlName="paymentAgreement"
+          type="number"
+          class="form-control"
+          placeholder="Acuerdo de pago ...">
+      </div>
+    </div>
+
+    <div>
+      <div class="container-col">
+        <label>Valor del cupo aprobado</label>
+        <input
+          formControlName="quotaApproved"
+          disabled
+          type="number"
+          class="form-control"
+          placeholder="Valor del cupo aprobado ...">
+      </div>
+    </div>
+  </div>
+    <div class="container-buttons">
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        class="btn-step"
+        (click)="prevStep()">
+        Atás
+      </button>
+      <button
+        [disabled]="frmContractualInformation.invalid"
+        type="submit"
+        mat-raised-button
+        color="primary"
+        class="btn-step">
+        Siguiente
+      </button>
+    </div>
+</form>

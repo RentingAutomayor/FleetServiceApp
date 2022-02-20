@@ -27,14 +27,14 @@ export class BranchService {
     return this.http.get<Branch[]>(urlGetBranchs);
   }
 
-  insert(pBranch: Branch): Observable<ResponseApi>{
+  insert(pBranch: Branch): Observable<Branch>{
     const urlInsertBranch = `${this.URL_API}/Insert`;
-    return this.http.post<ResponseApi>(urlInsertBranch, pBranch, this.HttpOptions);
+    return this.http.post<Branch>(urlInsertBranch, pBranch, this.HttpOptions);
   }
 
-  update(pBranch: Branch): Observable<ResponseApi>{
+  update(pBranch: Branch): Observable<Branch>{
     const urlUpdateBranch = `${this.URL_API}/Update`;
-    return this.http.post<ResponseApi>(urlUpdateBranch, pBranch, this.HttpOptions);
+    return this.http.post<Branch>(urlUpdateBranch, pBranch, this.HttpOptions);
   }
 
   delete(pBranch: Branch): Observable<ResponseApi>{

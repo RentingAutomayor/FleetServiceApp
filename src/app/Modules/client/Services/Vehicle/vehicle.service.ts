@@ -72,19 +72,19 @@ export class VehicleService {
     return this.http.get<Vehicle[]>(urlVehiclesByClientAndModel).toPromise();
   }
 
-  async Insert(pVehicle: Vehicle): Promise<ResponseApi> {
+  Insert(pVehicle: Vehicle): Observable<Vehicle> {
     const urlInsertVehicle = `${this.URL_API}/Insert`;
-    return this.http.post<ResponseApi>(urlInsertVehicle, pVehicle, this.HttpOptions).toPromise();
+    return this.http.post<Vehicle>(urlInsertVehicle, pVehicle, this.HttpOptions);
   }
 
-  async Update(pVehicle: Vehicle): Promise<ResponseApi> {
+  Update(pVehicle: Vehicle): Observable<Vehicle> {
     const urlUpdateVehicle = `${this.URL_API}/Update`;
-    return this.http.post<ResponseApi>(urlUpdateVehicle, pVehicle, this.HttpOptions).toPromise();
+    return this.http.put<Vehicle>(urlUpdateVehicle, pVehicle, this.HttpOptions);
   }
 
-  async Delete(pVehicle: Vehicle): Promise<ResponseApi> {
-    const urlDeleteVehicle = `${this.URL_API}/Delete`;
-    return this.http.post<ResponseApi>(urlDeleteVehicle, pVehicle, this.HttpOptions).toPromise();
+  Delete(pVehicle: Vehicle): Observable<ResponseApi> {
+    const urlDeleteVehicle = `${this.URL_API}/Delete?vehicleId=${pVehicle.id}`;
+    return this.http.delete<ResponseApi>(urlDeleteVehicle, this.HttpOptions);
   }
 
 

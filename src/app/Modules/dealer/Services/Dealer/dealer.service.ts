@@ -20,9 +20,9 @@ export class DealerService {
     private http: HttpClient
   ) { }
 
-  async getDealers(): Promise<Dealer[]>{
+  getDealers(): Observable<Dealer[]>{
     const urlGetDelaers = `${this.URL_API}/Get`;
-    return this.http.get<Dealer[]>(urlGetDelaers).toPromise();
+    return this.http.get<Dealer[]>(urlGetDelaers);
   }
 
   async getDealerById(pId: number): Promise<Dealer>{

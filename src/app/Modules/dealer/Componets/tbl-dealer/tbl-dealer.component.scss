@@ -15,7 +15,7 @@ table{
 .btn-add{
     border-radius: 50%;
      width: 50px;
-     height: 50px;     
+     height: 50px;
     cursor: pointer;
     position: relative;
     left: 93%;
@@ -42,4 +42,15 @@ table{
     .btn-add{
         left: 80vw;
     }
+}
+
+.container-filter{
+  display: flex;
+  flex-direction: row;
+}
+
+.container-filter button{
+  width: 150px;
+  cursor: pointer;
+  margin-left: 10px;
 }

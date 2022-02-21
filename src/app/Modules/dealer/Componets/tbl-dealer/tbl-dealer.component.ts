@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DealerService } from '../../Services/Dealer/dealer.service';
 import { ActionType } from 'src/app/Models/ActionType';
 import { NavigationService } from 'src/app/SharedComponents/Services/navigation.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-tbl-dealer',
@@ -12,18 +13,32 @@ import { NavigationService } from 'src/app/SharedComponents/Services/navigation.
   styleUrls: ['./tbl-dealer.component.scss']
 })
 export class TblDealerComponent implements OnInit {
-  lsDealer: Dealer[];
+  lsDealer: Dealer[] = [];
+  lsDealerFiltered: Dealer[] = [];
   isAwaiting: boolean;
   // pagination
   p = 1;
   action: ActionType;
   private oDealerToUpdate: Dealer;
 
+  txtFilter: FormControl;
+
   constructor(
     private router: Router,
     private dealerService: DealerService,
     private navigationService: NavigationService
-  ) { }
+  ) {
+    this.txtFilter = new FormControl();
+    this.txtFilter.valueChanges
+    .subscribe(description => {
+      this.lsDealerFiltered = this.lsDealer.filter(dealer =>{
+        if(description != null){
+          return dealer.document.includes(description) ||
+          dealer.name.toUpperCase().includes(description.toUpperCase());
+        }
+      });
+    })
+  }
 
   ngOnInit(): void {
     this.initComponents();
@@ -37,7 +52,11 @@ export class TblDealerComponent implements OnInit {
   async showTableDealers(){
     try {
       this.isAwaiting = true;
-      this.lsDealer = await this.dealerService.getDealers();
+      this.dealerService.getDealers()
+      .subscribe(dealers => {
+        this.lsDealer = dealers;
+        this.lsDealerFiltered = dealers;
+      });
       this.isAwaiting = false;
     } catch (err) {
       console.error(err.error.Message);
@@ -95,6 +114,11 @@ export class TblDealerComponent implements OnInit {
 
   validateCityName(pCity: City): string{
     return '';
+  }
+
+  removeFilter(): void{
+    this.txtFilter.setValue(null);
+    this.lsDealerFiltered = this.lsDealer;
   }
 
 }

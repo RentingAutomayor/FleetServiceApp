@@ -20,6 +20,8 @@ import { VehicleTypeComponent } from './vehicle-type/vehicle-type.component';
 import { TransactionReviewComponent } from './transaction-review/transaction-review.component';
 import {MatButtonModule} from '@angular/material/button';
 import { AlertErrorComponent } from './alert-error/alert-error.component';
+import { CalculateTaxesPipe } from './Pipes/calculate-taxes.pipe';
+import { CalculateTotalPricePipe } from './Pipes/calculate-total-price.pipe';
 
 
 @NgModule({
@@ -39,7 +41,9 @@ import { AlertErrorComponent } from './alert-error/alert-error.component';
     VehicleModelComponent,
     VehicleTypeComponent,
     TransactionReviewComponent,
-    AlertErrorComponent
+    AlertErrorComponent,
+    CalculateTaxesPipe,
+    CalculateTotalPricePipe
   ],
   imports: [
     CommonModule,
@@ -64,7 +68,9 @@ import { AlertErrorComponent } from './alert-error/alert-error.component';
     VehicleTypeComponent,
     NgxPaginationModule,
     TransactionReviewComponent,
-    AlertErrorComponent
+    AlertErrorComponent,
+    CalculateTaxesPipe,
+    CalculateTotalPricePipe
   ],
 
   schemas: [

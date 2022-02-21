@@ -19,34 +19,27 @@
             <th>Nombre</th>
             <th class="col-mobile-hide">Tipo</th>
             <th class="col-mobile-hide">Presentación</th>
-            <th class="col-mobile-hide">Valor de referencia sin impuesto</th>
-            <th class="col-mobile-hide">Valor del concesionario sin impuesto</th>
+            <th class="col-mobile-hide">Valor sin impuesto</th>
             <th class="col-mobile-hide">Valor impuestos</th>
             <th class="col-mobile-hide">Valor total x item</th>
         </thead>
         <tbody>
-            <tr *ngFor="let i = index ;let item of lsMaintenanceItemsFiltered | paginate: { itemsPerPage: 10, currentPage: pag }">
+            <tr *ngFor="let i = index ;let item of lsMaintenanceItems$ | async | paginate: { itemsPerPage: 10, currentPage: pag }">
                 <td>{{i+1}}</td>
                 <td>{{item.code}}</td>
                 <td>{{item.name | titlecase | slice:0:40 }}</td>
                 <td>{{item.type.name | titlecase}}</td>
                 <td>{{item.presentationUnit.longName | titlecase}}</td>
-                <td>{{item.referencePrice | currency:'USD':'symbol':'1.0-0'}}</td>
                 <td>
-                    <input
-                        class="form-control txt-price"
-                        type="text"
-                        step="0.01"
-                        [id]="getInputId(item.id)"
-                        (keypress)="validateTyping($event)"
-                        (input)="formatNumber($event); showTaxesAndTotal($event.target.value,item)">
+                  <input
+                    class="form-control txt-price"
+                    type="text"
+                    (keypress)="validateTyping($event)"
+                    (input)="formatNumber($event);setReferencePriceByItem($event, item)"
+                    [value]="sharedFunction.formatNumberToString(item.referencePrice)">
                 </td>
-                <td>
-                    <span [id]="getLabelTaxesId(item.id)"></span>
-                </td>
-                <td>
-                    <span [id]="getLabelTotalId(item.id)"></span>
-                </td>
+                <td>{{item | calculateTaxes : item.referencePrice | currency:'USD':'symbol':'1.0-0'}}</td>
+                <td>{{item | calculateTotalPrice : item.referencePrice | currency:'USD':'symbol':'1.0-0' }}</td>
             </tr>
         </tbody>
     </table>

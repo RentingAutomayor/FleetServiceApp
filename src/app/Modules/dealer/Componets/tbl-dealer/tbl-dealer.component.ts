@@ -76,16 +76,16 @@ export class TblDealerComponent implements OnInit {
     this.router.navigate(['/MasterDealers/Dealer', id]);
   }
 
-  async deleteDealer(pDealer: Dealer){
+  deleteDealer(pDealer: Dealer){
     try{
       if (confirm('¿Está seguro que desea eliminar este concesionario?')){
-        this.isAwaiting = true;
-        const rta = await this.dealerService.deleteDealer(pDealer);
-        this.isAwaiting = false;
-        if (rta.response){
-          alert(rta.message);
-          this.initComponents();
-        }
+        // this.isAwaiting = true;
+        // const rta = await this.dealerService.deleteDealer(pDealer);
+        // this.isAwaiting = false;
+        // if (rta.response){
+        //   alert(rta.message);
+        //   this.initComponents();
+        // }
       }
     }catch (err){
       console.error(err.error.Message);

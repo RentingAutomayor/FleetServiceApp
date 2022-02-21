@@ -1,12 +1,12 @@
 import { Client } from './Client';
 
 export class FinancialInformation{
-    public id: Number;
+    public id: number;
     public client: Client;
-    public approvedQuota: Number;
-    public consumedQuota: Number;
-    public currentQuota: Number;
-    public inTransitQuota: Number;
+    public approvedQuota: number;
+    public consumedQuota: number;
+    public currentQuota: number;
+    public inTransitQuota: number;
     public state: boolean;
     public registrationDate: Date;
     public updateDate: Date;

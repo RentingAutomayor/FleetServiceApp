@@ -105,9 +105,9 @@ export class MaintenanceItemService {
     return this.http.get<TypeOfMaintenanceItem[]>(urlTypeOfItem).toPromise();
   }
 
-  async getPricesByDealer(pDealer_id: number): Promise<PricesByDealer>{
+  getPricesByDealer(pDealer_id: number): Observable<PricesByDealer>{
     const urlGetPrices = `${this.URL_API}/GetPricesByDealer?pDealer_id=${pDealer_id}`;
-    return this.http.get<PricesByDealer>(urlGetPrices).toPromise();
+    return this.http.get<PricesByDealer>(urlGetPrices);
   }
 
   async setPricesByDealer(pricesByDealer: PricesByDealer): Promise<ResponseApi>{

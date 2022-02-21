@@ -326,7 +326,7 @@ export class QuotaManagementComponent implements OnInit {
     event.target.value = this.formatNumberToString(numberToTransform);
   }
 
-  formatNumberToString(oNumber: Number): string {
+  formatNumberToString(oNumber: number): string {
     return this.sharedFunction.formatNumberToString(oNumber);
   }
 

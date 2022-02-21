@@ -85,68 +85,8 @@
           class="btn-step">
           Atás
         </button>
-        <button
-          matStepperNext
-          type="button"
-          mat-raised-button
-          color="primary"
-          class="btn-step">
-          Siguiente
-        </button>
       </div>
     </mat-step>
-
-
-
   </mat-vertical-stepper>
-    <!-- <div class="container__tabPanel">
-        <div class="container__titles">
-            <button class="tab_link active" (click)="openTab($event,'basicData')">Datos básicos</button>
-            <button class="tab_link" (click)="openTab($event,'contact')">Contactos</button>
-            <button class="tab_link" (click)="openTab($event,'branch')">Sucursales</button>
-            <button class="tab_link" (click)="openTab($event,'priceByArticle')">Precios X Insumo</button>
-        </div>
-    </div>
-
-    <div class="tab_content tab_active" id="container__basicData">
-        <div class="card">
-            <div class="card-header">
-                <h3>Datos del concesionario</h3>
-            </div>
-            <div class="car-body">
-                <app-person
-                    [configComponent]="oConfigPersonComp"
-                    [personToUpdate]="oPersonToUpdate"
-                    [returnPath]="sReturnPath"
-                    [formHasError]="bFormHasError"
-                    [error]="errorMessage"
-                    (personWasSetted)="SetDataToSaveDealer()"></app-person>
-            </div>
-        </div>
-    </div>
-
-
-     <div class="tab_content tab_inactive" id="container__contact">
-        <app-contact
-          [action]="action"
-          [isToDealer]="oIsToDealer"
-          [dealerWasSaved]="oDealerWasSaved">
-        </app-contact>
-    </div>
-
-
-    <div class="tab_content tab_inactive" id="container__branch">
-        <app-branch
-          [action]="action"
-          [isToDealer]="oIsToDealer"
-          [dealerWasSaved]="oDealerWasSaved">
-        </app-branch>
-    </div>
-
-    <div class="tab_content tab_inactive" id="container__priceByArticle">
-        <app-tbl-prices-by-dealer
-        (pricesWasCanceled)="returnToTable()"
-        ></app-tbl-prices-by-dealer>
-    </div> -->
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

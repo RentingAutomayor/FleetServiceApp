@@ -2,11 +2,11 @@ import { formatNumber } from '@angular/common';
 
 export class SharedFunction {
 
-    formatNumberToString(oData: Number){
+    formatNumberToString(oData: number){
 
 
 
-        const sData = oData.toString();
+        const sData = Math.round(oData).toString();
 
         let intPart = '';
         let decimalPart = '';

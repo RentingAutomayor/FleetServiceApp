@@ -46,19 +46,19 @@ export class DealerService {
       );
   }
 
-  async insertDealer(pDealer: Dealer): Promise<ResponseApi>{
+  insertDealer(pDealer: Dealer): Observable<Dealer>{
     const urlInsertDealer = `${this.URL_API}/Insert`;
-    return this.http.post<ResponseApi>(urlInsertDealer, pDealer, this.HttpOptions).toPromise();
+    return this.http.post<Dealer>(urlInsertDealer, pDealer, this.HttpOptions);
   }
 
-  async updateDealer(pDealer: Dealer): Promise<ResponseApi>{
+  updateDealer(pDealer: Dealer): Observable<Dealer>{
     const urlUpdateDealer = `${this.URL_API}/Update`;
-    return this.http.post<ResponseApi>(urlUpdateDealer, pDealer, this.HttpOptions).toPromise();
+    return this.http.put<Dealer>(urlUpdateDealer, pDealer, this.HttpOptions);
   }
 
-  async deleteDealer(pDealer: Dealer): Promise<ResponseApi>{
-    const urlDeleteDealer = `${this.URL_API}/Delete`;
-    return this.http.post<ResponseApi>(urlDeleteDealer, pDealer, this.HttpOptions).toPromise();
+  deleteDealer(pDealer: Dealer): Observable<ResponseApi>{
+    const urlDeleteDealer = `${this.URL_API}/Delete?dealerId=${pDealer.id}`;
+    return this.http.delete<ResponseApi>(urlDeleteDealer, this.HttpOptions);
   }
 
   setDealerToUpdate(pDealer: Dealer){

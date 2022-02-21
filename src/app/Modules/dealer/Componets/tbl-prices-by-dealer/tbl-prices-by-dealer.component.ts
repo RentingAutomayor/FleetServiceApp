@@ -9,9 +9,10 @@ import { SecurityValidators } from 'src/app/Models/SecurityValidators';
 import { Company } from 'src/app/Models/Company';
 import { CompanyType } from 'src/app/Models/CompanyType';
 import { InputValidator } from 'src/app/Utils/InputValidator';
-import { Tax } from 'src/app/Models/Tax';
+
 import { SharedFunction }  from 'src/app/Models/SharedFunctions';
 import { FormControl } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -20,8 +21,13 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./tbl-prices-by-dealer.component.scss']
 })
 export class TblPricesByDealerComponent implements OnInit {
+
   lsMaintenanceItems: MaintenanceItem[] = [];
   lsMaintenanceItemsFiltered: MaintenanceItem[] = [];
+
+
+  maintenanceItemsChange: BehaviorSubject<MaintenanceItem[]> = new  BehaviorSubject<MaintenanceItem[]> ([]);
+  lsMaintenanceItems$ = this.maintenanceItemsChange.asObservable();
 
   lsPricesByItem: MaintenanceItemService[];
   isAwaiting: boolean;
@@ -42,6 +48,8 @@ export class TblPricesByDealerComponent implements OnInit {
   }
 
   txtFilter: FormControl;
+  isDataFilted: boolean ;
+  descriptionToFilter :string|null = null;
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -49,15 +57,30 @@ export class TblPricesByDealerComponent implements OnInit {
   ) {
     this.sharedFunction = new SharedFunction();
     this.txtFilter = new FormControl();
+    this.isDataFilted = false;
+
+    this.lsMaintenanceItems$.subscribe(maintenanceItems => {
+      this.lsMaintenanceItemsFiltered = maintenanceItems;
+    });
+
     this.txtFilter.valueChanges
     .subscribe(description => {
-      this.lsMaintenanceItemsFiltered = this.lsMaintenanceItems.filter(item =>{
-        if (description != null){
-          return item.code.toUpperCase().includes(description.toUpperCase()) ||
-          item.name.toUpperCase().includes(description.toUpperCase());
-        }
+      this.descriptionToFilter = description;
+      this.lsMaintenanceItemsFiltered = this.filterItemsByDescription(this.descriptionToFilter);
+      this.maintenanceItemsChange.next(this.lsMaintenanceItemsFiltered);
+    });
+  }
+
+  filterItemsByDescription( description: string): MaintenanceItem[]{
+    return this.lsMaintenanceItems.filter(item =>{
+      if (description != null){
+        this.isDataFilted = true;
+        return item.code.toUpperCase().includes(description.toUpperCase()) ||
+        item.name.toUpperCase().includes(description.toUpperCase());
+      }else{
+        this.isDataFilted = false;
         return null;
-      });
+      }
     });
   }
 
@@ -68,19 +91,11 @@ export class TblPricesByDealerComponent implements OnInit {
   initComponents(): void{
     this.validateCompany();
     if (this.dealerSelected != null || this.dealerSelected != undefined) {
-      this.getListMaintenanceItems(this.companyStorage.id);
       this.getPricesByDealer(this.dealerSelected.id);
     }
 
   }
 
-  getLabelTaxesId(idItem: number) {
-    return `lbl_taxes_${idItem}`;
-  }
-
-  getLabelTotalId(idItem: number){
-    return `lbl_total_${idItem}`;
-  }
 
   validateCompany() {
     try {
@@ -90,15 +105,13 @@ export class TblPricesByDealerComponent implements OnInit {
     }
   }
 
-
-
   getListMaintenanceItems(dealer_id: number) {
     try {
       this.isAwaiting = true;
       this.maintenanceItemService.getMaintenanceItems(dealer_id)
       .subscribe(maintenanceItems => {
         this.lsMaintenanceItems = maintenanceItems;
-        this.lsMaintenanceItemsFiltered = maintenanceItems;
+        this.maintenanceItemsChange.next(this.lsMaintenanceItems);
       });
       this.isAwaiting = false;
     } catch (error) {
@@ -106,10 +119,13 @@ export class TblPricesByDealerComponent implements OnInit {
     }
   }
 
-  async getPricesByDealer(pDealer_id: number) {
+  getPricesByDealer(pDealer_id: number) {
     try {
       this.isAwaiting = true;
-      this.priceByDealer = await this.maintenanceItemService.getPricesByDealer(pDealer_id);
+      this.maintenanceItemService.getPricesByDealer(pDealer_id)
+      .subscribe(itemsByDealer => {
+        this.priceByDealer = itemsByDealer;
+      });
       this.isAwaiting = false;
 
       if (this.priceByDealer.lsMaintenanceItems != null
@@ -131,84 +147,9 @@ export class TblPricesByDealerComponent implements OnInit {
     }
   }
 
-  diableScrollBehaviorOnInputs() {
-    const aElements = document.querySelectorAll('input[type=number]');
-
-    for (let i = 0; i < aElements.length; i++) {
-      aElements[i].addEventListener('wheel', function(event) {
-        event.preventDefault();
-      });
-    }
-  }
-
-  getInputId(idItem: number): string {
-    return `txtPrice_${idItem}`;
-  }
-
   setPriceByItemIntoTable(lsItemReference: MaintenanceItem[], lsItemPrice: MaintenanceItem[]) {
-    try {
-      if (lsItemPrice == null || lsItemPrice == undefined) {
-        lsItemReference.forEach(item => {
-          const idTxt = `#${this.getInputId(item.id)}`;
-          const inputItem: HTMLInputElement = document.querySelector(idTxt);
-
-
-          const valueFormated = this.sharedFunction.formatNumberToString(parseFloat(item.referencePrice.toFixed(2)));
-          inputItem.value = valueFormated;
-          this.showTaxesAndTotal(valueFormated, item);
-        });
-      } else {
-        lsItemReference.forEach(item => {
-          const priceByDealer = lsItemPrice.find(it => it.id == item.id);
-          const idTxt = `#${this.getInputId(item.id)}`;
-          const inputItem: HTMLInputElement = document.querySelector(idTxt);
-          const valueToShow =   (priceByDealer != null) ? priceByDealer.referencePrice.toString() : item.referencePrice;
-
-          const valueFormatedToShow = parseFloat(valueToShow.toString());
-          const numToShow = this.sharedFunction.formatNumberToString(parseFloat(valueFormatedToShow.toString()));
-          const valueFormated = numToShow;
-
-          inputItem.value = valueFormated;
-          this.showTaxesAndTotal(valueFormated, item);
-        });
-      }
-    } catch (error) {
-      console.warn(error);
-    }
 
   }
-
-  async savePrices() {
-    // Clone the ls items
-    const pricesByDealer = new PricesByDealer();
-    pricesByDealer.dealer = this.dealerSelected;
-
-    const lsNewPrices = cloneDeep(this.lsMaintenanceItems);
-
-    lsNewPrices.forEach(item => {
-      const idTxt = `#${this.getInputId(item.id)}`;
-      const txtPrice: HTMLInputElement = document.querySelector(idTxt);
-
-      const valueFormmated = txtPrice.value.replace(/,/g, '');
-      item.referencePrice = parseFloat(valueFormmated);
-    });
-
-    pricesByDealer.lsMaintenanceItems = lsNewPrices;
-
-    try {
-      this.isAwaiting = true;
-      const rta = await this.maintenanceItemService.setPricesByDealer(pricesByDealer);
-      this.isAwaiting = false;
-      if (rta.response) {
-        alert(rta.message);
-      }
-
-    } catch (error) {
-      console.warn(error);
-    }
-
-  }
-
 
   cancelPrices() {
     if (confirm('¿Está seguro que desea cancelar?, si lo hace puede que pierda la información consignada acá')) {
@@ -221,60 +162,35 @@ export class TblPricesByDealerComponent implements OnInit {
   }
 
   formatNumber(event: any){
-    const numberToTransform = event.target.value.toString().replace(/\,/g, '');
+    let numberToTransform = event.target.value.toString().replace(/\,/g, '');
+    numberToTransform = (numberToTransform != '') ? numberToTransform : 0;
     event.target.value = this.sharedFunction.formatNumberToString(numberToTransform);
-  }
-
-  showTaxesAndTotal(price: string, item: MaintenanceItem) {
-    try {
-      const newPrice = parseFloat(price.replace(/\,/g, ''));
-      let taxesValue = 0;
-      let total = 0;
-
-      if (item.handleTax) {
-        if (item.lsTaxes.length > 0){
-          taxesValue = this.calculateTaxes(newPrice, item.lsTaxes);
-        }
-      }
-      total = parseFloat(newPrice.toString()) + parseFloat(taxesValue.toString());
-
-      this.printTaxesAndTotal(item.id, taxesValue, total);
-
-    } catch (error) {
-      console.warn(error);
-    }
-  }
-
-  printTaxesAndTotal(idItem: number , taxes: number, total: number){
-    try {
-      const idSpanTax = `#${this.getLabelTaxesId(idItem)}`;
-      const spanElementTax: HTMLSpanElement = document.querySelector(idSpanTax);
-      const taxesFormmated = taxes.toFixed(2);
-      spanElementTax.innerText = this.sharedFunction.formatNumberToString(parseFloat(taxesFormmated));
-
-      const idSpantotal = `#${this.getLabelTotalId(idItem)}`;
-      const spanElementTotal: HTMLSpanElement = document.querySelector(idSpantotal);
-      const totalFormmaed = total.toFixed(2);
-      spanElementTotal.innerText = this.sharedFunction.formatNumberToString(parseFloat(totalFormmaed));
-
-    } catch (error) {
-      console.warn(error);
-    }
-
-  }
-
-  calculateTaxes(referencePrice: number, lsTaxes: Tax[]): number {
-    let taxValue = 0;
-    for (const tax of lsTaxes) {
-      const taxTmp = referencePrice * (tax.percentValue / 100);
-      taxValue += taxTmp;
-    }
-    return taxValue;
   }
 
   removeFilter(){
     this.txtFilter.setValue(null);
     this.lsMaintenanceItemsFiltered = this.lsMaintenanceItems;
+    this.maintenanceItemsChange.next(this.lsMaintenanceItemsFiltered);
+  }
+
+  setReferencePriceByItem(event: any, item: MaintenanceItem){
+    const itemToUpdate = this.lsMaintenanceItems.find(itm => itm.id == item.id);
+    itemToUpdate.referencePrice = this.formatStringToNumber(event.target.value);
+
+    const indexItemToUpdate = this.lsMaintenanceItems.findIndex(itm => itm.id == itemToUpdate.id);
+    this.lsMaintenanceItems[indexItemToUpdate] = itemToUpdate;
+
+    if(this.isDataFilted){
+      this.lsMaintenanceItemsFiltered = this.filterItemsByDescription(this.descriptionToFilter);
+    }else{
+      this.lsMaintenanceItemsFiltered =  this.lsMaintenanceItems;
+    }
+
+    this.maintenanceItemsChange.next( this.lsMaintenanceItemsFiltered );
+  }
+
+  formatStringToNumber(numberFormated: string): number{
+    return Math.round( parseInt( numberFormated.replace(/\,/g, '') ) );
   }
 
 }

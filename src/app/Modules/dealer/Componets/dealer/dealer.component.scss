@@ -41,3 +41,14 @@
     margin-left: 250px;
 }
 
+.container-step-buttons{
+  direction: ltr;
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+.container-step-buttons button{
+  margin-left: 5px;
+  width: 100px;
+}

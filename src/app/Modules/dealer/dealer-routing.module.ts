@@ -15,6 +15,7 @@ const routes: Routes = [
         children: [
             { path: '', component: TblDealerComponent },
             { path: 'Dealer', component: DealerComponent },
+            { path: 'Dealer/:id', component: DealerComponent },
           ]
     }
 ];

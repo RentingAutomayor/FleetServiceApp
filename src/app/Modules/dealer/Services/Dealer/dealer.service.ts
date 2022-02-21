@@ -25,9 +25,9 @@ export class DealerService {
     return this.http.get<Dealer[]>(urlGetDelaers);
   }
 
-  async getDealerById(pId: number): Promise<Dealer>{
-    const urlGetDealerById = `${this.URL_API}/GetById?pId=${pId}`;
-    return this.http.get<Dealer>(urlGetDealerById).toPromise();
+  getDealerById(pId: number): Observable<Dealer>{
+    const urlGetDealerById = `${this.URL_API}/GetById?dealerId=${pId}`;
+    return this.http.get<Dealer>(urlGetDealerById);
   }
 
   async getDealersByDocument(pDocument: string): Promise<Dealer>{

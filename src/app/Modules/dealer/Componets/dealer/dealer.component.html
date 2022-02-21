@@ -1,5 +1,105 @@
 <div id="container__content">
-    <div class="container__tabPanel">
+  <mat-vertical-stepper [linear]="true">
+    <mat-step>
+      <ng-template matStepLabel>Datos básicos del concesionario</ng-template>
+      <div class="card">
+        <app-person
+          [frmPersonMustBeBlocked]="blockFormDealer"
+          [configComponent]="oConfigPersonComp"
+          [personToUpdate]="oDealerToUpdate"
+          [returnPath]="sReturnPath"
+          [formHasError]="bFormHasError"
+          [error]="errorMessage"
+          (personWasSetted)="setPersonInfo()">
+        </app-person>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Contactos</ng-template>
+      <app-contact
+        [dealer]="oDealerToUpdate"
+        [contacts]="lsContacts"
+        [action]="action"
+        [disableActionButtons]="blockFormDealer"
+        (onContactsWereModified)="updateContactsToDealer($event)">
+      </app-contact>
+      <div class="container-step-buttons">
+        <button
+          matStepperPrevious
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Atás
+        </button>
+        <button
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Siguiente
+        </button>
+      </div>
+
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Sucursales</ng-template>
+      <app-branch
+        [dealer]="oDealerToUpdate"
+        [branchs]="lsBranches"
+        [action]="action"
+        [disableActionButtons]="blockFormDealer"
+        (onBranchsWereModified)="updateBranchesToDealer($event)">
+      </app-branch>
+      <div class="container-step-buttons">
+        <button
+          matStepperPrevious
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Atás
+        </button>
+        <button
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Precios por insumo</ng-template>
+      <app-tbl-prices-by-dealer
+        [dealer]="oDealerToUpdate">
+      </app-tbl-prices-by-dealer>
+      <div class="container-step-buttons">
+        <button
+          matStepperPrevious
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Atás
+        </button>
+        <button
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+
+
+
+  </mat-vertical-stepper>
+    <!-- <div class="container__tabPanel">
         <div class="container__titles">
             <button class="tab_link active" (click)="openTab($event,'basicData')">Datos básicos</button>
             <button class="tab_link" (click)="openTab($event,'contact')">Contactos</button>
@@ -47,6 +147,6 @@
         <app-tbl-prices-by-dealer
         (pricesWasCanceled)="returnToTable()"
         ></app-tbl-prices-by-dealer>
-    </div>
+    </div> -->
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

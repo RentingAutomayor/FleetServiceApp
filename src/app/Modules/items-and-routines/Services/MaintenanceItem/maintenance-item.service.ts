@@ -8,6 +8,7 @@ import { Category } from '../../../../Models/Category';
 import { PricesByDealer } from '../../../../Models/PricesByDealer';
 import { PricesByContract } from '../../../../Models/PricesByContract';
 import { Tax } from 'src/app/Models/Tax';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -69,9 +70,9 @@ export class MaintenanceItemService {
 
 
 
-  async getMaintenanceItems(dealer_id: number): Promise<MaintenanceItem[]>{
+  getMaintenanceItems(dealer_id: number): Observable<MaintenanceItem[]>{
     const urlGetMaintenanceItems = `${this.URL_API}/Get?dealer_id=${dealer_id}`;
-    return this.http.get<MaintenanceItem[]>(urlGetMaintenanceItems).toPromise();
+    return this.http.get<MaintenanceItem[]>(urlGetMaintenanceItems);
   }
 
   async getMaintenanceItemById(pId: number): Promise<MaintenanceItem>{

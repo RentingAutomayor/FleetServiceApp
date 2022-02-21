@@ -157,7 +157,7 @@ export class ContractComponent implements OnInit, OnChanges {
         case CompanyType.DEALER:
           this.disableDealerField = true;
           this.dealerService.getDealerById(this.company.id)
-            .then(dataDealer => {
+            .subscribe(dataDealer => {
               this.dealerService.setDealerSelected(dataDealer);
               this.countChanges += 1;
             });

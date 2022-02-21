@@ -113,7 +113,10 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     try {
       this.isAwaiting = true;
       const dealer_id = (this.dealerSelected != null) ? this.dealerSelected.id : 0;
-      this.lsMaintenanceItems = await this.maintenanceItemService.getMaintenanceItems(dealer_id);
+      this.maintenanceItemService.getMaintenanceItems(dealer_id)
+      .subscribe(maintenaceItems => {
+        this.lsMaintenanceItems = maintenaceItems;
+      })
       this.isAwaiting = false;
     } catch (error) {
       console.warn(error);

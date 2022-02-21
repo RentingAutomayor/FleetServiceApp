@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
 import { MaintenanceItemService } from '../../../items-and-routines/Services/MaintenanceItem/maintenance-item.service';
 import { DealerService } from '../../Services/Dealer/dealer.service';
@@ -11,16 +11,21 @@ import { CompanyType } from 'src/app/Models/CompanyType';
 import { InputValidator } from 'src/app/Utils/InputValidator';
 import { Tax } from 'src/app/Models/Tax';
 import { SharedFunction }  from 'src/app/Models/SharedFunctions';
+import { FormControl } from '@angular/forms';
+
+
 @Component({
   selector: 'app-tbl-prices-by-dealer',
   templateUrl: './tbl-prices-by-dealer.component.html',
   styleUrls: ['./tbl-prices-by-dealer.component.scss']
 })
-export class TblPricesByDealerComponent implements OnInit, OnChanges {
-  lsMaintenanceItems: MaintenanceItem[];
+export class TblPricesByDealerComponent implements OnInit {
+  lsMaintenanceItems: MaintenanceItem[] = [];
+  lsMaintenanceItemsFiltered: MaintenanceItem[] = [];
+
   lsPricesByItem: MaintenanceItemService[];
   isAwaiting: boolean;
-  dealerSelected: Dealer;
+
   priceByDealer: PricesByDealer;
   @Input() countChanges: number;
   @Output() pricesWasCanceled = new EventEmitter<boolean>();
@@ -28,29 +33,40 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
   companyStorage: Company;
   sharedFunction: SharedFunction;
 
+  //ft-0202
+  dealerSelected: Dealer;
+  @Input('dealer')
+  set setDealerSelected(dealer: Dealer){
+    this.dealerSelected = dealer;
+    this.getListMaintenanceItems(this.dealerSelected.id);
+  }
+
+  txtFilter: FormControl;
+
   constructor(
     private maintenanceItemService: MaintenanceItemService,
     private dealerService: DealerService
   ) {
     this.sharedFunction = new SharedFunction();
-   }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    for (const change in changes) {
-      if (change == 'countChanges') {
-        this.dealerSelected = this.dealerService.getDealerToUpdate();
-      }
-    }
+    this.txtFilter = new FormControl();
+    this.txtFilter.valueChanges
+    .subscribe(description => {
+      this.lsMaintenanceItemsFiltered = this.lsMaintenanceItems.filter(item =>{
+        if (description != null){
+          return item.code.toUpperCase().includes(description.toUpperCase()) ||
+          item.name.toUpperCase().includes(description.toUpperCase());
+        }
+        return null;
+      });
+    });
   }
 
   ngOnInit(): void {
     this.initComponents();
   }
 
-  initComponents() {
+  initComponents(): void{
     this.validateCompany();
-    this.dealerSelected = this.dealerService.getDealerToUpdate();
-
     if (this.dealerSelected != null || this.dealerSelected != undefined) {
       this.getListMaintenanceItems(this.companyStorage.id);
       this.getPricesByDealer(this.dealerSelected.id);
@@ -76,10 +92,14 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
 
 
 
-  async getListMaintenanceItems(dealer_id: number) {
+  getListMaintenanceItems(dealer_id: number) {
     try {
       this.isAwaiting = true;
-      this.lsMaintenanceItems = await this.maintenanceItemService.getMaintenanceItems(dealer_id);
+      this.maintenanceItemService.getMaintenanceItems(dealer_id)
+      .subscribe(maintenanceItems => {
+        this.lsMaintenanceItems = maintenanceItems;
+        this.lsMaintenanceItemsFiltered = maintenanceItems;
+      });
       this.isAwaiting = false;
     } catch (error) {
       console.warn(error);
@@ -250,6 +270,11 @@ export class TblPricesByDealerComponent implements OnInit, OnChanges {
       taxValue += taxTmp;
     }
     return taxValue;
+  }
+
+  removeFilter(){
+    this.txtFilter.setValue(null);
+    this.lsMaintenanceItemsFiltered = this.lsMaintenanceItems;
   }
 
 }

@@ -1,157 +1,194 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, } from '@angular/core';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
-import { Dealer } from 'src/app/Models/Dealer';
+import { Dealer, DealerDTO } from 'src/app/Models/Dealer';
 import { Person } from 'src/app/Models/Person';
 import { ResponseApi } from '../../../../Models/ResponseApi';
 import { DealerService } from '../../Services/Dealer/dealer.service';
 import { PersonService } from '../../../../SharedComponents/Services/Person/person.service';
-import { Router } from '@angular/router';
+import { Router , ActivatedRoute} from '@angular/router';
 import { ActionType } from 'src/app/Models/ActionType';
 import { NavigationService } from 'src/app/SharedComponents/Services/navigation.service';
-
+import { MatVerticalStepper, MatStep } from '@angular/material/stepper'
+import { Contact } from 'src/app/Models/Contact';
+import { Branch } from 'src/app/Models/Branch';
+import { getFromStorage } from 'src/app/Utils/storage';
 
 @Component({
   selector: 'app-dealer',
   templateUrl: './dealer.component.html',
   styleUrls: ['./dealer.component.scss']
 })
-export class DealerComponent implements OnInit, OnChanges {
+export class DealerComponent implements OnInit {
   oConfigPersonComp: ConfigPersonComponent;
   isAwaiting: boolean;
-  oDataIsToUpdate: boolean;
+
   sReturnPath: string;
-  oPersonToUpdate: Person;
+
   oDealerToUpdate: Dealer;
+
   errorMessage: string;
   bFormHasError: boolean;
   oIsToDealer: boolean;
   oDealerWasSaved: boolean;
   action: ActionType;
 
+  //ft-0202
+  lsContacts: Contact[] = [];
+  lsBranches: Branch[] = [];
+  dealerID: string = '';
+  blockFormDealer: boolean = false;
+
+  @ViewChild(MatVerticalStepper)
+  stepper: MatVerticalStepper;
+
   constructor(
     private dealerService: DealerService,
     private personService: PersonService,
     private navigationService: NavigationService,
-    private router: Router
+    private router: Router,
+    private activeRoute: ActivatedRoute
   ) {
     this.sReturnPath = '/MasterDealers';
     this.oIsToDealer = true;
    }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.validateActionToDo();
-  }
+
 
   ngOnInit(): void {
-    this.validateActionToDo();
+    this.action = parseInt(getFromStorage('actionToPerform'));
+    this.validateActionToDo(this.action);
     this.initComponents();
+    this.extractDataFromParams();
 
   }
 
   initComponents() {
     this.configurePersonComponent();
-    this.hideContainerTabs();
     this.isAwaiting = false;
-    this.oDataIsToUpdate = false;
+
     this.errorMessage = '';
     this.bFormHasError = false;
     this.oDealerWasSaved = false;
-    this.validateDealerToUpdate();
   }
 
-  validateActionToDo(): void {
-    this.action = this.navigationService.getAction();
-  }
+  extractDataFromParams(): void{
+    this.isAwaiting = true;
+    this.activeRoute.paramMap
+    .subscribe(params => {
+      this.dealerID = params.get('id');
+      if (this.dealerID){
+        this.dealerService.getDealerById(parseInt(this.dealerID))
+        .subscribe(dealer =>{
+          this.oDealerToUpdate = dealer;
+          this.lsContacts = dealer.contacts;
+          this.lsBranches = dealer.branches;
+        });
+      }else{
+        this.oDealerToUpdate = {
+          id: 0,
+          document: '',
+          name: '',
+          phone: '',
+          cellphone: '',
+          address: '',
+          email: '',
+          website: '',
+          city: {
+            id: 0,
+            name : '',
+            departmentId: 0,
+            state: false
+          },
+          contacts: [],
+          branches: [],
+          state: false,
+          registrationDate: null,
+          updateDate: null,
+          deleteDate: null,
+        }
+      }
 
-  validateDealerToUpdate(){
-    this.oDealerToUpdate = this.dealerService.getDealerToUpdate();
-    if (this.oDealerToUpdate != null){
-      this.setDataToUpdateDealer(this.oDealerToUpdate);
-      this.oDataIsToUpdate = true;
+      this.isAwaiting = false;
+    });
+  }
+  validateActionToDo(action: ActionType): void {
+    if (action == ActionType.READ){
+      this.blockFormDealer = true;
+      //this.isButtonSaveClientVisible = false;
+    }else{
+      this.blockFormDealer = false;
+      //this.isButtonSaveClientVisible = true;
     }
   }
 
-  configurePersonComponent() {
+
+
+  configurePersonComponent(): void {
     this.oConfigPersonComp = new ConfigPersonComponent();
     this.oConfigPersonComp.documentIsVisible = true;
     this.oConfigPersonComp.nameIsVisible = true;
   }
 
-  SetDataToSaveDealer() {
-    const oDealer = this.personService.getPerson();
-    this.saveDealer(oDealer);
-  }
 
-  async saveDealer(pDealer: Dealer) {
-    try {
-      pDealer = this.personService.getPerson();
-      let rta = new ResponseApi();
-      this.isAwaiting = true;
-      if (this.oDataIsToUpdate) {
-        rta = await this.dealerService.updateDealer(pDealer);
-      } else {
-        rta = await this.dealerService.insertDealer(pDealer);
-      }
-      this.isAwaiting = false;
 
-      if (rta.response){
-        alert(rta.message);
-        const dealerTmp = await this.dealerService.getDealersByDocument(pDealer.document);
-        this.dealerService.setDealerToUpdate(dealerTmp);
-        this.oDealerWasSaved = true;
-      }
-    } catch (err) {
-      console.warn(err.error.Message);
-      this.bFormHasError = true;
-      this.errorMessage = err.error.Message;
-      this.isAwaiting = false;
-    }
-  }
+  async saveDealer(pDealer: DealerDTO) {
+    //try {
+      // pDealer = this.personService.getPerson();
+      // let rta = new ResponseApi();
+      // this.isAwaiting = true;
+      // if (this.oDataIsToUpdate) {
+      //   rta = await this.dealerService.updateDealer(pDealer);
+      // } else {
+      //   rta = await this.dealerService.insertDealer(pDealer);
+      // }
+      // this.isAwaiting = false;
 
-  openTab(oButton: any, container: string) {
-    const tabLinks = document.getElementsByClassName('tab_link');
-
-    for (let i = 0; i < tabLinks.length; i++) {
-      tabLinks[i].classList.remove('active');
-    }
-    oButton.target.className += ' active';
-    const containerTabs = document.getElementsByClassName('tab_content');
-
-    for (let i = 0; i < containerTabs.length; i++) {
-      containerTabs[i].setAttribute('style', 'display:none');
-    }
-
-    const containerToShow_id = `container__${container}`;
-    const containerToShow = document.getElementById(containerToShow_id);
-    containerToShow.setAttribute('style', 'display:blick');
-  }
-
-  hideContainerTabs() {
-    const containers = document.getElementsByClassName('tab_inactive');
-    for (let i = 0; i < containers.length; i++) {
-      containers[i].setAttribute('style', 'display:none');
-    }
+      // if (rta.response){
+      //   alert(rta.message);
+      //   const dealerTmp = await this.dealerService.getDealersByDocument(pDealer.document);
+      //   this.dealerService.setDealerToUpdate(dealerTmp);
+      //   this.oDealerWasSaved = true;
+      // }
+    // } catch (err) {
+    //   console.warn(err.error.Message);
+    //   this.bFormHasError = true;
+    //   this.errorMessage = err.error.Message;
+    //   this.isAwaiting = false;
+    // }
   }
 
 
-  moveContent(event: any) {
-    const containerContent: HTMLDivElement = document.querySelector('#container__content');
-
-    if (event) {
-      containerContent.style.marginLeft = '250px';
-    } else {
-      containerContent.style.marginLeft = '60px';
-    }
-  }
 
   setDataToUpdateDealer(pDealer: Dealer){
-    this.oPersonToUpdate.id = pDealer.id;
-    this.oPersonToUpdate.document = pDealer.document;
-    this.oPersonToUpdate.name = pDealer.name.toLocaleLowerCase();
+    // this.oPersonToUpdate.id = pDealer.id;
+    // this.oPersonToUpdate.document = pDealer.document;
+    // this.oPersonToUpdate.name = pDealer.name.toLocaleLowerCase();
+  }
+
+  setDataInForm(dealer: Dealer){
+   //this.oPersonToUpdate = dealer;
   }
 
   returnToTable(){
     this.router.navigate([this.sReturnPath]);
+  }
+
+  updateContactsToDealer(contacts: Contact[]){
+    this.lsContacts = contacts;
+  }
+
+  updateBranchesToDealer(branches: Branch[]){
+    this.lsBranches = branches;
+  }
+
+  SetDataToSaveDealer(){}
+
+  async setPersonInfo() {
+    this.oDealerToUpdate =  this.personService.getPerson();
+    //this.isBasicDataCompleted = true;
+    await setTimeout(() => {
+      this.stepper.next();
+    }, 100);
   }
 
 

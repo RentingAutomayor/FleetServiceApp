@@ -27,9 +27,21 @@
                 <td>{{ dealer.document }}</td>
                 <td>{{ dealer.name | titlecase }}</td>
                 <td>
-                    <i class="fas fa-info-circle text-info" title="Más información"></i>
-                    <i class="fas fa-edit text-warning" (click)="updateDealer(dealer.id)" title="Modificar"></i>
-                    <i class="fas fa-trash-alt text-danger" (click)="deleteDealer(dealer)" title="Eliminar"></i>
+                    <i
+                      class="fas fa-info-circle text-info"
+                      (click)="getDetailsByDealer(dealer.id)"
+                      title="Más información">
+                    </i>
+                    <i
+                      class="fas fa-edit text-warning"
+                      (click)="updateDealer(dealer.id)"
+                      title="Modificar">
+                    </i>
+                    <i
+                      class="fas fa-trash-alt text-danger"
+                      (click)="deleteDealer(dealer)"
+                      title="Eliminar">
+                    </i>
                 </td>
             </tr>
         </tbody>

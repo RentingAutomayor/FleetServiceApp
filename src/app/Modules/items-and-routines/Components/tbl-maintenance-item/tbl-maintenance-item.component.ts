@@ -63,7 +63,10 @@ export class TblMaintenanceItemComponent implements OnInit {
   async showTableItems() {
     try {
       this.isAwaiting = true;
-      this.lsMaintenanceItems = await this.maintenanceItemService.getMaintenanceItems(this.dealer_id);
+      this.maintenanceItemService.getMaintenanceItems(this.dealer_id)
+      .subscribe(maintenanceItems => {
+        this.lsMaintenanceItems = maintenanceItems;
+      });
       this.lsMaintenanceItemsTmp = this.lsMaintenanceItems;
       this.isAwaiting = false;
     } catch (err) {

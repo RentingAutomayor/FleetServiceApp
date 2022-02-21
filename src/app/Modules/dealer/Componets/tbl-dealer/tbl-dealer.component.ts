@@ -6,6 +6,7 @@ import { DealerService } from '../../Services/Dealer/dealer.service';
 import { ActionType } from 'src/app/Models/ActionType';
 import { NavigationService } from 'src/app/SharedComponents/Services/navigation.service';
 import { FormControl } from '@angular/forms';
+import { saveInStorage } from 'src/app/Utils/storage';
 
 @Component({
   selector: 'app-tbl-dealer',
@@ -63,18 +64,16 @@ export class TblDealerComponent implements OnInit {
     }
   }
 
-  async updateDealer(pId: number){
-    try{
-      this.isAwaiting = true;
-      this.navigationService.setAction(ActionType.UPDATE);
-      const oDealerDB = await this.dealerService.getDealerById(pId);
-      this.dealerService.setDealerToUpdate(oDealerDB);
-      this.isAwaiting = false;
-      this.router.navigate(['/MasterDealers/Dealer']);
-    }catch (err){
-      console.error(err.error.Message);
-      alert(err.error.Message);
-    }
+  updateDealer(id: number): void{
+    this.action = ActionType.UPDATE;
+    saveInStorage('actionToPerform', this.action);
+    this.router.navigate(['/MasterDealers/Dealer', id]);
+  }
+
+  getDetailsByDealer(id: number): void{
+    this.action = ActionType.READ;
+    saveInStorage('actionToPerform', this.action);
+    this.router.navigate(['/MasterDealers/Dealer', id]);
   }
 
   async deleteDealer(pDealer: Dealer){

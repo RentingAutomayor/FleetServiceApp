@@ -156,7 +156,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   getDealer() {
     const userSession: SessionUser = JSON.parse(sessionStorage.getItem('sessionUser'));
     this.dealerService.getDealerById(userSession.company.id)
-      .then(dealer => {
+      .subscribe(dealer => {
         this.dealer = dealer;
         this.frmWorkOrder.controls.txtDealer.setValue(this.dealer.name.toUpperCase());
       });

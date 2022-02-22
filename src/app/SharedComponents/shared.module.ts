@@ -22,6 +22,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { AlertErrorComponent } from './alert-error/alert-error.component';
 import { CalculateTaxesPipe } from './Pipes/calculate-taxes.pipe';
 import { CalculateTotalPricePipe } from './Pipes/calculate-total-price.pipe';
+import { TblPricesMaintenanceItemsComponent } from './tbl-prices-maintenance-items/tbl-prices-maintenance-items.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { CalculateTotalPricePipe } from './Pipes/calculate-total-price.pipe';
     TransactionReviewComponent,
     AlertErrorComponent,
     CalculateTaxesPipe,
-    CalculateTotalPricePipe
+    CalculateTotalPricePipe,
+    TblPricesMaintenanceItemsComponent
   ],
   imports: [
     CommonModule,
@@ -70,7 +72,8 @@ import { CalculateTotalPricePipe } from './Pipes/calculate-total-price.pipe';
     TransactionReviewComponent,
     AlertErrorComponent,
     CalculateTaxesPipe,
-    CalculateTotalPricePipe
+    CalculateTotalPricePipe,
+    TblPricesMaintenanceItemsComponent
   ],
 
   schemas: [

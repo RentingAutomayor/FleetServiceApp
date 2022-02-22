@@ -78,6 +78,7 @@ export class ContactComponent implements OnInit {
     this.sOwnerName = '';
     this.disableActionButtons = false;
     this.buttonAddIsVisible = false;
+    this.lsContacts = [];
 
   }
 
@@ -172,20 +173,20 @@ export class ContactComponent implements OnInit {
   }
 
   saveData(oContact: Contact){
-
-    this.isAwaiting = true;
     const contactToDB = this.completeContactInformationWithOwner(oContact);
     console.log(contactToDB);
 
     if (this.isToInsert) {
+      //this case happens when is a new client or dealer
       if(contactToDB.Client_id == 0 || contactToDB.Dealer_id == 0 ){
-        //this case happens when is a new client or dealer
         this.lsContacts.unshift(oContact);
       }else{
+        this.isAwaiting = true;
         //This case happens when exist a client or a dealer
         this.contactService.insert(contactToDB)
         .subscribe(newContact => {
           this.lsContacts.unshift(newContact);
+          this.isAwaiting = false;
         }, err => {
           this.isErrorVisible = true;
           this.isAwaiting = false;
@@ -203,6 +204,7 @@ export class ContactComponent implements OnInit {
         .subscribe(contactUpdated =>{
           const contactIndex = this.lsContacts.findIndex(cnt => cnt.id == contactUpdated.id);
           this.lsContacts[contactIndex] = contactUpdated;
+          this.isAwaiting = false;
         }, err => {
           this.isErrorVisible = true;
           this.isAwaiting = false;
@@ -212,7 +214,7 @@ export class ContactComponent implements OnInit {
       }
     }
     this.hidePopUp();
-    this.isAwaiting = false;
+
     this.onContactsWereModified.emit(this.lsContacts);
   }
 
@@ -267,10 +269,11 @@ export class ContactComponent implements OnInit {
     oContact.cellphone = oPerson.cellphone;
     oContact.email = oPerson.email;
     oContact.address = oPerson.address;
-    oContact.jobTitle = oPerson.jobTitle;
-    oContact.city = oPerson.city;
+    oContact.jobTitle = (oPerson.jobTitle != null) ? oPerson.jobTitle : null;
+    oContact.city = (oPerson.city != null) ? oPerson.city : null;
     oContact.Dealer_id = (this.dealer != null) ? this.dealer.id : null;
     oContact.Client_id = (this.client != null) ? this.client.id : null;
+
     return oContact;
   }
 

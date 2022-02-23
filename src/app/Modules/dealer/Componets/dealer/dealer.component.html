@@ -74,7 +74,9 @@
     <mat-step>
       <ng-template matStepLabel>Precios por insumo</ng-template>
       <app-tbl-prices-by-dealer
-        [dealer]="oDealerToUpdate">
+        [dealer]="oDealerToUpdate"
+        [setIsFormBlocked]="blockFormDealer"
+        (onItemsWereModified)="setMaintenanceItemsByDealer($event)">
       </app-tbl-prices-by-dealer>
       <div class="container-step-buttons">
         <button
@@ -86,7 +88,29 @@
           Atás
         </button>
       </div>
+      <div class="buttons__container">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="comeBack()">
+          Cancelar
+        </button>
+        <button
+          *ngIf="!blockFormDealer"
+          type="button"
+          class="btn btn-success"
+          (click)="saveDealer()">
+          Guardar Concesionario
+        </button>
+      </div>
     </mat-step>
+
   </mat-vertical-stepper>
+  <app-alert-error
+    *ngIf="isErrorVisible"
+    [title]="errorTitle"
+    [errorMessage]="errorMessageApi"
+    (onAlertWasClose)="closeErrorMessage()">
+  </app-alert-error>
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

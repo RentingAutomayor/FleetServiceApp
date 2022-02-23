@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild, } from '@angular/core';
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent';
 import { Dealer, DealerDTO } from 'src/app/Models/Dealer';
-import { Person } from 'src/app/Models/Person';
 import { ResponseApi } from '../../../../Models/ResponseApi';
 import { DealerService } from '../../Services/Dealer/dealer.service';
 import { PersonService } from '../../../../SharedComponents/Services/Person/person.service';
@@ -12,6 +11,8 @@ import { MatVerticalStepper, MatStep } from '@angular/material/stepper'
 import { Contact } from 'src/app/Models/Contact';
 import { Branch } from 'src/app/Models/Branch';
 import { getFromStorage } from 'src/app/Utils/storage';
+import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
+
 
 @Component({
   selector: 'app-dealer',
@@ -20,10 +21,8 @@ import { getFromStorage } from 'src/app/Utils/storage';
 })
 export class DealerComponent implements OnInit {
   oConfigPersonComp: ConfigPersonComponent;
-  isAwaiting: boolean;
-
+  isAwaiting: boolean = true;
   sReturnPath: string;
-
   oDealerToUpdate: Dealer;
 
   errorMessage: string;
@@ -35,11 +34,16 @@ export class DealerComponent implements OnInit {
   //ft-0202
   lsContacts: Contact[] = [];
   lsBranches: Branch[] = [];
+  lsMaintenanceItems: MaintenanceItem[] = [];
   dealerID: string = '';
   blockFormDealer: boolean = false;
 
   @ViewChild(MatVerticalStepper)
   stepper: MatVerticalStepper;
+
+  isErrorVisible: boolean = false;
+  errorTitle: string = '';
+  errorMessageApi: string = '';
 
   constructor(
     private dealerService: DealerService,
@@ -64,8 +68,6 @@ export class DealerComponent implements OnInit {
 
   initComponents() {
     this.configurePersonComponent();
-    this.isAwaiting = false;
-
     this.errorMessage = '';
     this.bFormHasError = false;
     this.oDealerWasSaved = false;
@@ -82,6 +84,8 @@ export class DealerComponent implements OnInit {
           this.oDealerToUpdate = dealer;
           this.lsContacts = dealer.contacts;
           this.lsBranches = dealer.branches;
+          this.lsMaintenanceItems = dealer.maintenanceItems;
+          this.isAwaiting = false;
         });
       }else{
         this.oDealerToUpdate = {
@@ -106,9 +110,14 @@ export class DealerComponent implements OnInit {
           updateDate: null,
           deleteDate: null,
         }
+
+        this.lsContacts = [];
+        this.lsBranches = [];
+        this.lsMaintenanceItems = [];
+        this.isAwaiting = false;
       }
 
-      this.isAwaiting = false;
+
     });
   }
   validateActionToDo(action: ActionType): void {
@@ -121,56 +130,10 @@ export class DealerComponent implements OnInit {
     }
   }
 
-
-
   configurePersonComponent(): void {
     this.oConfigPersonComp = new ConfigPersonComponent();
     this.oConfigPersonComp.documentIsVisible = true;
     this.oConfigPersonComp.nameIsVisible = true;
-  }
-
-
-
-  async saveDealer(pDealer: DealerDTO) {
-    //try {
-      // pDealer = this.personService.getPerson();
-      // let rta = new ResponseApi();
-      // this.isAwaiting = true;
-      // if (this.oDataIsToUpdate) {
-      //   rta = await this.dealerService.updateDealer(pDealer);
-      // } else {
-      //   rta = await this.dealerService.insertDealer(pDealer);
-      // }
-      // this.isAwaiting = false;
-
-      // if (rta.response){
-      //   alert(rta.message);
-      //   const dealerTmp = await this.dealerService.getDealersByDocument(pDealer.document);
-      //   this.dealerService.setDealerToUpdate(dealerTmp);
-      //   this.oDealerWasSaved = true;
-      // }
-    // } catch (err) {
-    //   console.warn(err.error.Message);
-    //   this.bFormHasError = true;
-    //   this.errorMessage = err.error.Message;
-    //   this.isAwaiting = false;
-    // }
-  }
-
-
-
-  setDataToUpdateDealer(pDealer: Dealer){
-    // this.oPersonToUpdate.id = pDealer.id;
-    // this.oPersonToUpdate.document = pDealer.document;
-    // this.oPersonToUpdate.name = pDealer.name.toLocaleLowerCase();
-  }
-
-  setDataInForm(dealer: Dealer){
-   //this.oPersonToUpdate = dealer;
-  }
-
-  returnToTable(){
-    this.router.navigate([this.sReturnPath]);
   }
 
   updateContactsToDealer(contacts: Contact[]){
@@ -181,7 +144,9 @@ export class DealerComponent implements OnInit {
     this.lsBranches = branches;
   }
 
-  SetDataToSaveDealer(){}
+  setMaintenanceItemsByDealer(maintenanceItems: MaintenanceItem[]){
+    this.lsMaintenanceItems = maintenanceItems;
+  }
 
   async setPersonInfo() {
     this.oDealerToUpdate =  this.personService.getPerson();
@@ -191,5 +156,52 @@ export class DealerComponent implements OnInit {
     }, 100);
   }
 
+
+  comeBack(): void{
+    if(this.action == ActionType.READ){
+      this.router.navigate([this.sReturnPath]);
+    }else{
+      if ( confirm('¿Está seguro que desea regresar? , al hacerlo perderá los cambios consignados acá.') ){
+        this.router.navigate([this.sReturnPath]);
+      }
+    }
+  }
+
+  saveDealer(){
+    this.isAwaiting = true;
+    const dealer = this.oDealerToUpdate;
+    dealer.contacts = this.lsContacts;
+    dealer.branches = this.lsBranches;
+    dealer.maintenanceItems = this.lsMaintenanceItems;
+    if(this.action == ActionType.CREATE){
+      this.dealerService.insertDealer(dealer)
+      .subscribe(newDealer => {
+        alert(`El concesionario ha sido insertado de manera correcta en la base de datos`);
+        this.isAwaiting = false;
+        this.router.navigate([this.sReturnPath]);
+      }, err => {
+        this.isErrorVisible = true;
+        this.isAwaiting = false;
+        this.errorTitle = 'Ocurrió un error intentando Insertar el concesionario';
+        this.errorMessageApi = err.error.Message;
+      });
+    }else if (this.action == ActionType.UPDATE){
+      this.dealerService.updateDealer(dealer)
+      .subscribe(dealerUpdated => {
+        alert(`El concesionario ha sido actualizado de manera correcta`);
+        this.isAwaiting = false;
+        this.router.navigate([this.sReturnPath]);
+      }, err => {
+        this.isErrorVisible = true;
+        this.isAwaiting = false;
+        this.errorTitle = 'Ocurrió un error intentando Actualizar el concesionario';
+        this.errorMessageApi = err.error.Message;
+      });
+    }
+  }
+
+  closeErrorMessage(){
+    this.isErrorVisible = false;
+  }
 
 }

@@ -20,9 +20,11 @@ export class TblDealerComponent implements OnInit {
   // pagination
   p = 1;
   action: ActionType;
-  private oDealerToUpdate: Dealer;
 
   txtFilter: FormControl;
+  isErrorVisible: boolean = false;
+  errorTitle: string = '';
+  errorMessageApi: string = '';
 
   constructor(
     private router: Router,
@@ -46,11 +48,10 @@ export class TblDealerComponent implements OnInit {
   }
 
   initComponents(){
-    this.dealerService.setDealerToUpdate(null);
     this.showTableDealers();
   }
 
-  async showTableDealers(){
+  showTableDealers(){
     try {
       this.isAwaiting = true;
       this.dealerService.getDealers()
@@ -76,38 +77,30 @@ export class TblDealerComponent implements OnInit {
     this.router.navigate(['/MasterDealers/Dealer', id]);
   }
 
-  deleteDealer(pDealer: Dealer){
-    try{
-      if (confirm('¿Está seguro que desea eliminar este concesionario?')){
-        // this.isAwaiting = true;
-        // const rta = await this.dealerService.deleteDealer(pDealer);
-        // this.isAwaiting = false;
-        // if (rta.response){
-        //   alert(rta.message);
-        //   this.initComponents();
-        // }
-      }
-    }catch (err){
-      console.error(err.error.Message);
-      alert(err.error.Message);
+  deleteDealer(dealer: Dealer){
+    if (confirm('¿Está seguro que desea eliminar este concesionario?')){
+      this.isAwaiting = true;
+      this.dealerService.deleteDealer(dealer)
+      .subscribe(rta => {
+        const indexDealerDeleted = this.lsDealer.findIndex(dl => dl.id == dealer.id);
+        this.lsDealer.splice(indexDealerDeleted, 1);
+        this.lsDealerFiltered = this.lsDealer;
+        this.isAwaiting = false;
+        alert(rta.message);
+      }, err => {
+        this.isErrorVisible = true;
+        this.isAwaiting = false;
+        this.errorTitle = 'Ocurrió un error intentando Actualizar el concesionario';
+        this.errorMessageApi = err.error.Message;
+      });
     }
-
   }
 
-  moveContent(event: any){
-    const containerContent: HTMLDivElement  = document.querySelector('#container__content');
 
-    if (event){
-      containerContent.style.marginLeft = '250px';
-    }else{
-      containerContent.style.marginLeft = '0px';
-    }
-
-  }
 
   insertDealer(){
-    this.dealerService.setDealerToUpdate(null);
-    this.navigationService.setAction(ActionType.CREATE);
+    this.action = ActionType.CREATE;
+    saveInStorage('actionToPerform', this.action);
     this.router.navigate(['/MasterDealers/Dealer']);
   }
 
@@ -118,6 +111,10 @@ export class TblDealerComponent implements OnInit {
   removeFilter(): void{
     this.txtFilter.setValue(null);
     this.lsDealerFiltered = this.lsDealer;
+  }
+
+  closeErrorMessage(){
+    this.isErrorVisible = false;
   }
 
 }

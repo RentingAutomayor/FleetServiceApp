@@ -3,7 +3,7 @@ import { Branch } from './Branch';
 import { Person } from './Person';
 
 export interface Contact extends Person{
-    branch: Branch;
+    branch?: Branch;
 }
 
 export interface CreateContactDTO extends Omit<Contact, 'id'>{

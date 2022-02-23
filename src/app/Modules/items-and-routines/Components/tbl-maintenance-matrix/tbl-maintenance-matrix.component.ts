@@ -40,6 +40,7 @@ export class TblMaintenanceMatrixComponent implements OnInit {
       this.isAwaiting = false;
       const MANO_DE_OBRA = 2;
       this.countChanges = 0;
+      //TODO: Change that filter to don't call the API
       this.lsFrequency = await this.maintenanceRoutineService.getFrequency();
       this.lsMaintenanceItems = await this.maintenanceItemService.getMaintenanceItemByType(MANO_DE_OBRA);
     } catch (error) {

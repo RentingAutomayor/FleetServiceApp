@@ -30,16 +30,16 @@ export class DealerService {
     return this.http.get<Dealer>(urlGetDealerById);
   }
 
-  async getDealersByDocument(pDocument: string): Promise<Dealer>{
-    const urlGetDealerByDocument = `${this.URL_API}/GetByDocument?pDocument=${pDocument}`;
-    return this.http.get<Dealer>(urlGetDealerByDocument).toPromise();
+  getDealersByDocument(pDocument: string): Observable<Dealer>{
+    const urlGetDealerByDocument = `${this.URL_API}/GetByDocument?document=${pDocument}`;
+    return this.http.get<Dealer>(urlGetDealerByDocument);
   }
 
   getDealersByDescription(sDescription: string): Observable<Dealer[]>{
     if (!sDescription.trim()) {
       return of([]);
     }
-    const urlDealerByDesc = `${this.URL_API}/GetByDescription?sDescription=${sDescription}`;
+    const urlDealerByDesc = `${this.URL_API}/GetByDescription?description=${sDescription}`;
     return this.http.get<Dealer[]>(urlDealerByDesc)
       .pipe(
         catchError(this.handleError<Dealer[]>('getClientsByDescriptions', []))
@@ -59,14 +59,6 @@ export class DealerService {
   deleteDealer(pDealer: Dealer): Observable<ResponseApi>{
     const urlDeleteDealer = `${this.URL_API}/Delete?dealerId=${pDealer.id}`;
     return this.http.delete<ResponseApi>(urlDeleteDealer, this.HttpOptions);
-  }
-
-  setDealerToUpdate(pDealer: Dealer){
-    this.dealerToUpdate = pDealer;
-  }
-
-  getDealerToUpdate(): Dealer{
-    return this.dealerToUpdate;
   }
 
   setDealerSelected(pDealer: Dealer){

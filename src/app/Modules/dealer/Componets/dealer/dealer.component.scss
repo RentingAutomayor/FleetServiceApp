@@ -52,3 +52,14 @@
   margin-left: 5px;
   width: 100px;
 }
+
+.buttons__container{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.buttons__container button{
+  width: 200px;
+  margin-left: 10px;
+  margin-top: 20px;
+}

@@ -1,7 +1,7 @@
-export class Tax{
-    id: number;
-    name: string;
-    description: string;
-    percentValue: number;
-    registrationDate: Date;
+export class Tax {
+  id: number
+  name: string
+  description: string
+  percentValue: number
+  registrationDate: Date
 }

@@ -1,6 +1,6 @@
-import { Tax } from './Tax';
+import { Tax } from './Tax'
 
 export interface ItemHandleTaxes {
-    handleTaxes: boolean;
-    lsTaxes: Tax[];
+  handleTaxes: boolean
+  lsTaxes: Tax[]
 }

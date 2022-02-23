@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing'
 
-import { WorkorderGuard } from './workorder.guard';
+import { WorkorderGuard } from './workorder.guard'
 
 describe('WorkorderGuard', () => {
-  let guard: WorkorderGuard;
+  let guard: WorkorderGuard
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    guard = TestBed.inject(WorkorderGuard);
-  });
+    TestBed.configureTestingModule({})
+    guard = TestBed.inject(WorkorderGuard)
+  })
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
-  });
-});
+    expect(guard).toBeTruthy()
+  })
+})

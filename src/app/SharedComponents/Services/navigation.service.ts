@@ -1,19 +1,19 @@
-import { Injectable } from '@angular/core';
-import { ActionType } from 'src/app/Models/ActionType';
+import { Injectable } from '@angular/core'
+import { ActionType } from 'src/app/Models/ActionType'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NavigationService {
-  actionToDo: ActionType;
+  actionToDo: ActionType
 
-  constructor() { }
+  constructor() {}
 
-  setAction(action: ActionType){
-    this.actionToDo = action;
+  setAction(action: ActionType) {
+    this.actionToDo = action
   }
 
-  getAction(): ActionType{
-    return this.actionToDo;
+  getAction(): ActionType {
+    return this.actionToDo
   }
 }

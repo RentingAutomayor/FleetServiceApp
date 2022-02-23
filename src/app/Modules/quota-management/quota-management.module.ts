@@ -1,21 +1,19 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgModule } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
-import { QuotaManagementComponent } from './Components/quota-management/quota-management.component';
-import { SharedModule } from 'src/app/SharedComponents/shared.module';
-import { QuotaManagementRoutingModule } from './quotaManagement-routing.module';
+import { QuotaManagementComponent } from './Components/quota-management/quota-management.component'
+import { SharedModule } from 'src/app/SharedComponents/shared.module'
+import { QuotaManagementRoutingModule } from './quotaManagement-routing.module'
 
 @NgModule({
-  declarations: [
-    QuotaManagementComponent
-  ],
+  declarations: [QuotaManagementComponent],
   imports: [
     CommonModule,
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    QuotaManagementRoutingModule
-  ]
+    QuotaManagementRoutingModule,
+  ],
 })
-export class QuotaManagementModule { }
+export class QuotaManagementModule {}

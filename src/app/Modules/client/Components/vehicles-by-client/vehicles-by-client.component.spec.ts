@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { VehiclesByCLientComponent } from './vehicles-by-client.component';
+import { VehiclesByCLientComponent } from './vehicles-by-client.component'
 
 describe('VehiclesByCLientComponent', () => {
-  let component: VehiclesByCLientComponent;
-  let fixture: ComponentFixture<VehiclesByCLientComponent>;
+  let component: VehiclesByCLientComponent
+  let fixture: ComponentFixture<VehiclesByCLientComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VehiclesByCLientComponent ]
-    })
-    .compileComponents();
-  });
+      declarations: [VehiclesByCLientComponent],
+    }).compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VehiclesByCLientComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(VehiclesByCLientComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing'
 
-import { QuotaGuard } from './quota.guard';
+import { QuotaGuard } from './quota.guard'
 
 describe('QuotaGuard', () => {
-  let guard: QuotaGuard;
+  let guard: QuotaGuard
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    guard = TestBed.inject(QuotaGuard);
-  });
+    TestBed.configureTestingModule({})
+    guard = TestBed.inject(QuotaGuard)
+  })
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
-  });
-});
+    expect(guard).toBeTruthy()
+  })
+})

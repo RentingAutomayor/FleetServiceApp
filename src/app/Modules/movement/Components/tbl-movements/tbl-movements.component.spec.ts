@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { TblMovementsComponent } from './tbl-movements.component';
+import { TblMovementsComponent } from './tbl-movements.component'
 
 describe('TblMovementsComponent', () => {
-  let component: TblMovementsComponent;
-  let fixture: ComponentFixture<TblMovementsComponent>;
+  let component: TblMovementsComponent
+  let fixture: ComponentFixture<TblMovementsComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TblMovementsComponent ]
-    })
-    .compileComponents();
-  });
+      declarations: [TblMovementsComponent],
+    }).compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TblMovementsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(TblMovementsComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

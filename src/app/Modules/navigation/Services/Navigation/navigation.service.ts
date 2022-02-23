@@ -1,19 +1,18 @@
-import { Injectable } from '@angular/core';
-
+import { Injectable } from '@angular/core'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NavigationService {
-  private itemActive: string;
+  private itemActive: string
 
-  constructor() { }
+  constructor() {}
 
-  getItemActive(): string{
-    return this.itemActive;
+  getItemActive(): string {
+    return this.itemActive
   }
 
-  setItemActive(pItem: string){
-    this.itemActive = pItem;
+  setItemActive(pItem: string) {
+    this.itemActive = pItem
   }
 }

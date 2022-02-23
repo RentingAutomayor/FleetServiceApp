@@ -1,4 +1,4 @@
-export class ResponseApi{
-    public response: boolean;
-    public message: string;
+export class ResponseApi {
+  public response: boolean
+  public message: string
 }

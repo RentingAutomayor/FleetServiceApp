@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { TblPricesByDealerComponent } from './tbl-prices-by-dealer.component';
+import { TblPricesByDealerComponent } from './tbl-prices-by-dealer.component'
 
 describe('TblPricesByDealerComponent', () => {
-  let component: TblPricesByDealerComponent;
-  let fixture: ComponentFixture<TblPricesByDealerComponent>;
+  let component: TblPricesByDealerComponent
+  let fixture: ComponentFixture<TblPricesByDealerComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TblPricesByDealerComponent ]
-    })
-    .compileComponents();
-  });
+      declarations: [TblPricesByDealerComponent],
+    }).compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TblPricesByDealerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(TblPricesByDealerComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

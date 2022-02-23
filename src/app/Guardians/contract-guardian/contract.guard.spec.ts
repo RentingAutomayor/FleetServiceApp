@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing'
 
-import { ContractGuard } from './contract.guard';
+import { ContractGuard } from './contract.guard'
 
 describe('ContractGuard', () => {
-  let guard: ContractGuard;
+  let guard: ContractGuard
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    guard = TestBed.inject(ContractGuard);
-  });
+    TestBed.configureTestingModule({})
+    guard = TestBed.inject(ContractGuard)
+  })
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
-  });
-});
+    expect(guard).toBeTruthy()
+  })
+})

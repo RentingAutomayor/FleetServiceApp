@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing'
 
-import { MaintenanceItemManagerService } from './maintenance-item-manager.service';
+import { MaintenanceItemManagerService } from './maintenance-item-manager.service'
 
 describe('MaintenanceItemManagerService', () => {
-  let service: MaintenanceItemManagerService;
+  let service: MaintenanceItemManagerService
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(MaintenanceItemManagerService);
-  });
+    TestBed.configureTestingModule({})
+    service = TestBed.inject(MaintenanceItemManagerService)
+  })
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+    expect(service).toBeTruthy()
+  })
+})

@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { TblDealerComponent } from './tbl-dealer.component';
+import { TblDealerComponent } from './tbl-dealer.component'
 
 describe('TblDealerComponent', () => {
-  let component: TblDealerComponent;
-  let fixture: ComponentFixture<TblDealerComponent>;
+  let component: TblDealerComponent
+  let fixture: ComponentFixture<TblDealerComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TblDealerComponent ]
-    })
-    .compileComponents();
-  });
+      declarations: [TblDealerComponent],
+    }).compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TblDealerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(TblDealerComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

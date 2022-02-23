@@ -1,7 +1,7 @@
 {
-    "/API_FleetService/api/*":{
-        "target":"http://localhost",
-        "secure":true,
-        "changeOrigin":true
-    }
+  "/API_FleetService/api/*": {
+    "target": "http://localhost",
+    "secure": true,
+    "changeOrigin": true
+  }
 }

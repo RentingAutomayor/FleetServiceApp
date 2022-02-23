@@ -1,65 +1,71 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Client } from 'src/app/Models/Client';
-import { Contract } from 'src/app/Models/Contract';
-import { ContractState, ConstractStates } from 'src/app/Models/ContractState';
-import { VehicleModel } from 'src/app/Models/VehicleModel';
-import { ClientService } from 'src/app/Modules/client/Services/Client/client.service';
-import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service';
-import { Dealer } from 'src/app/Models/Dealer';
-import { DealerService } from '../../../dealer/Services/Dealer/dealer.service';
-import { ContractService } from '../../Services/Contract/contract.service';
-import { ResponseApi } from 'src/app/Models/ResponseApi';
-import { Router } from '@angular/router';
-import { VehicleType } from 'src/app/Models/VehicleType';
-import { SecurityValidators } from 'src/app/Models/SecurityValidators';
-import { Company } from 'src/app/Models/Company';
-import { CompanyType } from 'src/app/Models/CompanyType';
-import { InputValidator } from 'src/app/Utils/InputValidator';
-import { DiscountType } from 'src/app/Models/DiscountType';
-import { MaintenanceItem } from 'src/app/Models/MaintenanceItem';
-import { ActionType } from 'src/app/Models/ActionType';
-import { Action } from 'rxjs/internal/scheduler/Action';
-
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core'
+import { DatePipe } from '@angular/common'
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
+import { Client } from 'src/app/Models/Client'
+import { Contract } from 'src/app/Models/Contract'
+import { ContractState, ConstractStates } from 'src/app/Models/ContractState'
+import { VehicleModel } from 'src/app/Models/VehicleModel'
+import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
+import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service'
+import { Dealer } from 'src/app/Models/Dealer'
+import { DealerService } from '../../../dealer/Services/Dealer/dealer.service'
+import { ContractService } from '../../Services/Contract/contract.service'
+import { ResponseApi } from 'src/app/Models/ResponseApi'
+import { Router } from '@angular/router'
+import { VehicleType } from 'src/app/Models/VehicleType'
+import { SecurityValidators } from 'src/app/Models/SecurityValidators'
+import { Company } from 'src/app/Models/Company'
+import { CompanyType } from 'src/app/Models/CompanyType'
+import { InputValidator } from 'src/app/Utils/InputValidator'
+import { DiscountType } from 'src/app/Models/DiscountType'
+import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
+import { ActionType } from 'src/app/Models/ActionType'
+import { Action } from 'rxjs/internal/scheduler/Action'
 
 @Component({
   selector: 'app-contract',
   templateUrl: './contract.component.html',
-  styleUrls: ['./contract.component.scss']
+  styleUrls: ['./contract.component.scss'],
 })
 export class ContractComponent implements OnInit, OnChanges {
+  frmContract: FormGroup
+  @Input() countChanges: number
+  @Input() contractIsToUpdate: boolean
+  @Output() contractWasSetted = new EventEmitter<boolean>()
 
-  frmContract: FormGroup;
-  @Input() countChanges: number;
-  @Input() contractIsToUpdate: boolean;
-  @Output() contractWasSetted = new EventEmitter<boolean>();
+  oChangeDealer: number
 
-  oChangeDealer: number;
-
-  contract: Contract;
-  contractToUpdate: Contract;
-  lsVehicleModelsTemp: VehicleModel[] = [];
-  dtStartingDate: Date;
-  dtEndingDate: Date;
-  isToUpdate: boolean;
-  oGetPricesOfContract: number;
-  disableDealerField: boolean;
-  company: Company;
-  clientFieldIsInvalid: boolean;
-  dealerFieldIsInvalid: boolean;
-  contracStateFieldIsInvalid: boolean;
-  discountFieldIsInvalid: boolean;
-  discountType: DiscountType;
-  lsMaintenanceItemsTemp: MaintenanceItem[];
-  disableClientField: boolean;
-  disableTypeOfDiscoutnField: boolean;
-  disableVehicleTypesAndVehicleModels: boolean;
-  disableVehicles: boolean;
-  buttonSaveIsDisable: boolean;
-  disableCmbState: boolean;
-  isAwaiting: boolean;
-  action: ActionType;
+  contract: Contract
+  contractToUpdate: Contract
+  lsVehicleModelsTemp: VehicleModel[] = []
+  dtStartingDate: Date
+  dtEndingDate: Date
+  isToUpdate: boolean
+  oGetPricesOfContract: number
+  disableDealerField: boolean
+  company: Company
+  clientFieldIsInvalid: boolean
+  dealerFieldIsInvalid: boolean
+  contracStateFieldIsInvalid: boolean
+  discountFieldIsInvalid: boolean
+  discountType: DiscountType
+  lsMaintenanceItemsTemp: MaintenanceItem[]
+  disableClientField: boolean
+  disableTypeOfDiscoutnField: boolean
+  disableVehicleTypesAndVehicleModels: boolean
+  disableVehicles: boolean
+  buttonSaveIsDisable: boolean
+  disableCmbState: boolean
+  isAwaiting: boolean
+  action: ActionType
 
   constructor(
     private clientService: ClientService,
@@ -70,29 +76,33 @@ export class ContractComponent implements OnInit, OnChanges {
     private router: Router,
     private formBuilder: FormBuilder
   ) {
-    const now = new Date();
-    const monthfuture = new Date(now.getFullYear(), now.getMonth() + 1, now.getDay());
-    this.dtStartingDate = now;
-    this.dtEndingDate = now;
-    this.buildContractForm();
-    this.clientFieldIsInvalid = false;
-    this.dealerFieldIsInvalid = false;
-    this.contracStateFieldIsInvalid = false;
-    this.discountFieldIsInvalid = false;
-    this.lsMaintenanceItemsTemp = [];
-    this.disableClientField = false;
-    this.disableTypeOfDiscoutnField = false;
-    this.disableVehicles = false;
-    this.buttonSaveIsDisable = false;
-    this.disableCmbState = false;
+    const now = new Date()
+    const monthfuture = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      now.getDay()
+    )
+    this.dtStartingDate = now
+    this.dtEndingDate = now
+    this.buildContractForm()
+    this.clientFieldIsInvalid = false
+    this.dealerFieldIsInvalid = false
+    this.contracStateFieldIsInvalid = false
+    this.discountFieldIsInvalid = false
+    this.lsMaintenanceItemsTemp = []
+    this.disableClientField = false
+    this.disableTypeOfDiscoutnField = false
+    this.disableVehicles = false
+    this.buttonSaveIsDisable = false
+    this.disableCmbState = false
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.validateCompanyLogged();
+    this.validateCompanyLogged()
   }
 
   ngOnInit(): void {
-    this.initComponents();
+    this.initComponents()
   }
 
   buildContractForm() {
@@ -103,413 +113,457 @@ export class ContractComponent implements OnInit, OnChanges {
       endingDate: ['', [Validators.required]],
       discountValue: ['', [Validators.required]],
       observation: [''],
-      amountVehicles: ['', [Validators.required]]
-    });
+      amountVehicles: ['', [Validators.required]],
+    })
   }
 
   get contractNameField() {
-    return this.frmContract.get('name');
+    return this.frmContract.get('name')
   }
 
   get durationField() {
-    return this.frmContract.get('duration');
+    return this.frmContract.get('duration')
   }
 
   get startingDateField() {
-    return this.frmContract.get('startingDate');
+    return this.frmContract.get('startingDate')
   }
 
   get endingDateField() {
-    return this.frmContract.get('endingDate');
+    return this.frmContract.get('endingDate')
   }
 
   get discountValueField() {
-    return this.frmContract.get('discountValue');
+    return this.frmContract.get('discountValue')
   }
 
   get observationField() {
-    return this.frmContract.get('observation');
+    return this.frmContract.get('observation')
   }
 
   get amountVehiclesField() {
-    return this.frmContract.get('amountVehicles');
+    return this.frmContract.get('amountVehicles')
   }
 
   async initComponents() {
-    this.action = this.contractService.getAction();
-    this.validateCompanyLogged();
-    this.oChangeDealer = 0;
-    this.oGetPricesOfContract = 0;
-    this.isToUpdate = false;
-    this.isAwaiting = false;
-    this.contract = new Contract();
-    this.countChanges = 0;
-    this.hideContainerTabs();
-    this.validateContractToUpdate();
-    this.enableOrDisableForm();
-
+    this.action = this.contractService.getAction()
+    this.validateCompanyLogged()
+    this.oChangeDealer = 0
+    this.oGetPricesOfContract = 0
+    this.isToUpdate = false
+    this.isAwaiting = false
+    this.contract = new Contract()
+    this.countChanges = 0
+    this.hideContainerTabs()
+    this.validateContractToUpdate()
+    this.enableOrDisableForm()
   }
 
   async validateCompanyLogged() {
     try {
-      this.company = SecurityValidators.validateUserAndCompany();
+      this.company = SecurityValidators.validateUserAndCompany()
       switch (this.company.type) {
         case CompanyType.DEALER:
-          this.disableDealerField = true;
-          this.dealerService.getDealerById(this.company.id)
-            .subscribe(dataDealer => {
-              this.dealerService.setDealerSelected(dataDealer);
-              this.countChanges += 1;
-            });
+          this.disableDealerField = true
+          this.dealerService
+            .getDealerById(this.company.id)
+            .subscribe((dataDealer) => {
+              this.dealerService.setDealerSelected(dataDealer)
+              this.countChanges += 1
+            })
 
-          break;
+          break
         case CompanyType.CLIENT:
-
-          break;
+          break
         default:
-          this.disableDealerField = false;
+          this.disableDealerField = false
 
-          break;
+          break
       }
     } catch (error) {
-      console.warn(error);
+      console.warn(error)
     }
   }
 
   validateContractToUpdate() {
-    this.contractToUpdate = this.contractService.getContract();
+    this.contractToUpdate = this.contractService.getContract()
     if (this.contractToUpdate != null && this.contractToUpdate != undefined) {
-      this.isToUpdate = true;
-      this.setDataInForm(this.contractToUpdate);
+      this.isToUpdate = true
+      this.setDataInForm(this.contractToUpdate)
     } else {
-      this.isToUpdate = false;
-      this.clientService.setClientSelected(null);
-      this.dealerService.setDealerSelected(null);
-      this.contractService.setContractStateSelected(null);
-      this.contractService.setDiscountTypeSelected(null);
-      this.vehicleService.setListVehicleTypeSelected(null);
-      this.vehicleService.setListVehicleModelsSelected(null);
-      this.vehicleService.setListVehiclesSelected(null);
+      this.isToUpdate = false
+      this.clientService.setClientSelected(null)
+      this.dealerService.setDealerSelected(null)
+      this.contractService.setContractStateSelected(null)
+      this.contractService.setDiscountTypeSelected(null)
+      this.vehicleService.setListVehicleTypeSelected(null)
+      this.vehicleService.setListVehicleModelsSelected(null)
+      this.vehicleService.setListVehiclesSelected(null)
     }
   }
 
   openTab(oButton: any, container: string) {
-    const tabLinks = document.getElementsByClassName('tab_link');
+    const tabLinks = document.getElementsByClassName('tab_link')
 
     for (let i = 0; i < tabLinks.length; i++) {
-      tabLinks[i].classList.remove('active');
+      tabLinks[i].classList.remove('active')
     }
-    oButton.target.className += ' active';
-    const containerTabs = document.getElementsByClassName('tab_content');
+    oButton.target.className += ' active'
+    const containerTabs = document.getElementsByClassName('tab_content')
 
     for (let i = 0; i < containerTabs.length; i++) {
-      containerTabs[i].setAttribute('style', 'display:none');
+      containerTabs[i].setAttribute('style', 'display:none')
     }
 
-    const containerToShow_id = `container__${container}`;
-    const containerToShow = document.getElementById(containerToShow_id);
-    containerToShow.setAttribute('style', 'display:blick');
+    const containerToShow_id = `container__${container}`
+    const containerToShow = document.getElementById(containerToShow_id)
+    containerToShow.setAttribute('style', 'display:blick')
   }
 
   hideContainerTabs() {
-    const containers = document.getElementsByClassName('tab_inactive');
+    const containers = document.getElementsByClassName('tab_inactive')
     for (let i = 0; i < containers.length; i++) {
-      containers[i].setAttribute('style', 'display:none');
+      containers[i].setAttribute('style', 'display:none')
     }
   }
 
   moveContent(event: any) {
-    const containerContent: HTMLDivElement = document.querySelector('#container__content');
+    const containerContent: HTMLDivElement = document.querySelector(
+      '#container__content'
+    )
 
     if (event) {
-      containerContent.style.marginLeft = '250px';
+      containerContent.style.marginLeft = '250px'
     } else {
-      containerContent.style.marginLeft = '60px';
+      containerContent.style.marginLeft = '60px'
     }
-
   }
 
   setVehiclType() {
-    this.countChanges += 1;
+    this.countChanges += 1
   }
 
   setListVehicleTypes() {
-    this.countChanges += 1;
+    this.countChanges += 1
   }
 
   setLisVehicleModels(lsVehicleModels: VehicleModel[]) {
-    this.countChanges += 1;
-    this.contract.lsVehicleModels = lsVehicleModels;
+    this.countChanges += 1
+    this.contract.lsVehicleModels = lsVehicleModels
   }
 
   setClientSelected() {
-    this.contract.client = this.clientService.getClientSelected();
-    this.vehicleService.setListVehicleTypeSelected(null);
-    this.vehicleService.setListVehicleModelsSelected(null);
+    this.contract.client = this.clientService.getClientSelected()
+    this.vehicleService.setListVehicleTypeSelected(null)
+    this.vehicleService.setListVehicleModelsSelected(null)
     if (this.contract.client == null || this.contract.client == undefined) {
-      this.clientFieldIsInvalid = true;
+      this.clientFieldIsInvalid = true
     } else {
-      this.clientFieldIsInvalid = false;
+      this.clientFieldIsInvalid = false
     }
-    this.countChanges += 1;
-
+    this.countChanges += 1
   }
 
   setDealerSelected() {
-    this.contract.dealer = this.dealerService.getDealerSelected();
+    this.contract.dealer = this.dealerService.getDealerSelected()
 
     if (this.contract.dealer == null || this.contract.dealer == undefined) {
-      this.dealerFieldIsInvalid = true;
+      this.dealerFieldIsInvalid = true
     } else {
-      this.dealerFieldIsInvalid = false;
+      this.dealerFieldIsInvalid = false
     }
 
-    this.oChangeDealer += 1;
+    this.oChangeDealer += 1
   }
 
   calculateEndingDate() {
-    const { duration, startingDate, endingDate } = this.frmContract.controls;
-    let dTmp = startingDate.value;
-    let pStartingDate = null;
+    const { duration, startingDate, endingDate } = this.frmContract.controls
+    let dTmp = startingDate.value
+    let pStartingDate = null
 
     try {
-      pStartingDate = this.formatDate(dTmp.toISOString().substring(0, 10));
+      pStartingDate = this.formatDate(dTmp.toISOString().substring(0, 10))
     } catch (error) {
+      dTmp = `${startingDate.value}`
 
-      dTmp = `${startingDate.value}`;
-
-      pStartingDate = this.formatDate(dTmp.substr(0, 10));
+      pStartingDate = this.formatDate(dTmp.substr(0, 10))
     }
 
-    const durationTmp = duration.value;
+    const durationTmp = duration.value
 
-    const endingDateTmp = new Date(pStartingDate.getFullYear(), (pStartingDate.getMonth() - 1), (pStartingDate.getDate()));
-    endingDateTmp.setMonth(endingDateTmp.getMonth() + durationTmp);
+    const endingDateTmp = new Date(
+      pStartingDate.getFullYear(),
+      pStartingDate.getMonth() - 1,
+      pStartingDate.getDate()
+    )
+    endingDateTmp.setMonth(endingDateTmp.getMonth() + durationTmp)
 
-    const strEndDate = endingDateTmp.toISOString().substring(0, 10);
-    this.dtEndingDate = endingDateTmp;
-
+    const strEndDate = endingDateTmp.toISOString().substring(0, 10)
+    this.dtEndingDate = endingDateTmp
   }
 
   setDataInForm(pContract: Contract) {
+    this.frmContract.patchValue(pContract)
+    this.dtStartingDate = this.formatDate(
+      pContract.startingDate.toString().substr(0, 10)
+    )
+    this.dtEndingDate = this.formatDate(
+      pContract.endingDate.toString().substr(0, 10)
+    )
+    const lsVehicleType = this.getVehicletypesByContract(
+      pContract.lsVehicleModels
+    )
+    this.clientService.setClientSelected(pContract.client)
+    this.dealerService.setDealerSelected(pContract.dealer)
+    this.contractService.setContractStateSelected(pContract.contractState)
+    this.contractService.setDiscountTypeSelected(pContract.discountType)
+    this.vehicleService.setListVehicleTypeSelected(lsVehicleType)
+    this.vehicleService.setListVehicleModelsSelected(pContract.lsVehicleModels)
+    this.vehicleService.setListVehiclesSelected(pContract.lsVehicles)
 
-    this.frmContract.patchValue(pContract);
-    this.dtStartingDate = this.formatDate(pContract.startingDate.toString().substr(0, 10));
-    this.dtEndingDate = this.formatDate(pContract.endingDate.toString().substr(0, 10));
-    const lsVehicleType = this.getVehicletypesByContract(pContract.lsVehicleModels);
-    this.clientService.setClientSelected(pContract.client);
-    this.dealerService.setDealerSelected(pContract.dealer);
-    this.contractService.setContractStateSelected(pContract.contractState);
-    this.contractService.setDiscountTypeSelected(pContract.discountType);
-    this.vehicleService.setListVehicleTypeSelected(lsVehicleType);
-    this.vehicleService.setListVehicleModelsSelected(pContract.lsVehicleModels);
-    this.vehicleService.setListVehiclesSelected(pContract.lsVehicles);
-
-    this.countChanges += 1;
+    this.countChanges += 1
   }
 
   getVehicletypesByContract(lsVehicleModel: VehicleModel[]): VehicleType[] {
-    const lsVehicletype: VehicleType[] = [];
+    const lsVehicletype: VehicleType[] = []
 
-    lsVehicleModel.forEach(vm => {
-      const vehicleType = vm.type;
-      const existsType = lsVehicletype.find(vt => vt.id == vehicleType.id);
+    lsVehicleModel.forEach((vm) => {
+      const vehicleType = vm.type
+      const existsType = lsVehicletype.find((vt) => vt.id == vehicleType.id)
 
       if (!existsType) {
-        lsVehicletype.push(vehicleType);
+        lsVehicletype.push(vehicleType)
       }
-    });
-    return lsVehicletype;
+    })
+    return lsVehicletype
   }
 
-
   async saveContract() {
-    const { name, startingDate, endingDate, amountVehicles, duration, discountValue, observation } = this.frmContract.controls;
+    const {
+      name,
+      startingDate,
+      endingDate,
+      amountVehicles,
+      duration,
+      discountValue,
+      observation,
+    } = this.frmContract.controls
     try {
-
-      this.isAwaiting = true;
+      this.isAwaiting = true
       if (this.frmContract.valid) {
-        this.contract = new Contract();
-        this.contract.name = name.value;
-        this.contract.startingDate = startingDate.value;
-        this.contract.endingDate = endingDate.value;
-        this.contract.amountVehicles = amountVehicles.value;
-        this.contract.duration = duration.value;
-        this.contract.discountValue = discountValue.value;
-        this.contract.observation = observation.value;
+        this.contract = new Contract()
+        this.contract.name = name.value
+        this.contract.startingDate = startingDate.value
+        this.contract.endingDate = endingDate.value
+        this.contract.amountVehicles = amountVehicles.value
+        this.contract.duration = duration.value
+        this.contract.discountValue = discountValue.value
+        this.contract.observation = observation.value
 
-        this.oGetPricesOfContract += 1;
+        this.oGetPricesOfContract += 1
 
-        if (confirm('¿Está seguro que desea guardar los datos asociados a este contrato?')) {
-
-
-          if (this.contractToUpdate != null && this.contractToUpdate != undefined) {
-            this.contract.id = this.contractToUpdate.id;
-            this.contract.code = this.contractToUpdate.code;
-            this.contract.consecutive = this.contractToUpdate.consecutive;
+        if (
+          confirm(
+            '¿Está seguro que desea guardar los datos asociados a este contrato?'
+          )
+        ) {
+          if (
+            this.contractToUpdate != null &&
+            this.contractToUpdate != undefined
+          ) {
+            this.contract.id = this.contractToUpdate.id
+            this.contract.code = this.contractToUpdate.code
+            this.contract.consecutive = this.contractToUpdate.consecutive
           }
 
+          this.contract.client = this.clientService.getClientSelected()
 
-          this.contract.client = this.clientService.getClientSelected();
-
-          if (this.contract.client == null || this.contract.client == undefined) {
-            this.clientFieldIsInvalid = true;
-            throw new Error(('Error guardando el contrato. Se debe seleccionar un cliente'));
+          if (
+            this.contract.client == null ||
+            this.contract.client == undefined
+          ) {
+            this.clientFieldIsInvalid = true
+            throw new Error(
+              'Error guardando el contrato. Se debe seleccionar un cliente'
+            )
           }
 
-          this.contract.dealer = this.dealerService.getDealerSelected();
+          this.contract.dealer = this.dealerService.getDealerSelected()
 
-          if (this.contract.dealer == null || this.contract.dealer == undefined) {
-            this.dealerFieldIsInvalid = true;
-            throw new Error(('Error guardando el contrato. Se debe seleccionar un concesionario'));
+          if (
+            this.contract.dealer == null ||
+            this.contract.dealer == undefined
+          ) {
+            this.dealerFieldIsInvalid = true
+            throw new Error(
+              'Error guardando el contrato. Se debe seleccionar un concesionario'
+            )
           }
 
-          this.contract.contractState = this.contractService.getContractStateSelected();
-          this.contract.discountType = this.contractService.getDiscountTypeSelected();
+          this.contract.contractState =
+            this.contractService.getContractStateSelected()
+          this.contract.discountType =
+            this.contractService.getDiscountTypeSelected()
 
-
-          this.contract.lsVehicleModels = (this.vehicleService.getListVehicleModelsSelected() != null) ? this.vehicleService.getListVehicleModelsSelected() : [];
-          this.contract.lsVehicles = (this.vehicleService.getListVehiclesSelected() != null) ? this.vehicleService.getListVehiclesSelected() : [];
+          this.contract.lsVehicleModels =
+            this.vehicleService.getListVehicleModelsSelected() != null
+              ? this.vehicleService.getListVehicleModelsSelected()
+              : []
+          this.contract.lsVehicles =
+            this.vehicleService.getListVehiclesSelected() != null
+              ? this.vehicleService.getListVehiclesSelected()
+              : []
 
           if (this.contract.lsVehicles.length > this.contract.amountVehicles) {
-            throw new Error(('No se puede guardar el contrato. verifique la cantidad de vehículos seleccionados dentro del mismo'));
+            throw new Error(
+              'No se puede guardar el contrato. verifique la cantidad de vehículos seleccionados dentro del mismo'
+            )
           }
 
-          this.contract.lsMaintenanceItems = this.contractService.getItemsWithPrice();
-          this.saveData(this.contract);
-
+          this.contract.lsMaintenanceItems =
+            this.contractService.getItemsWithPrice()
+          this.saveData(this.contract)
         }
-        this.isAwaiting = false;
+        this.isAwaiting = false
       }
     } catch (error) {
-      console.warn(error);
-      alert(error);
+      console.warn(error)
+      alert(error)
     }
-
-
-
   }
 
   async saveData(pContract: Contract) {
     try {
-      console.warn('[saveData - Contract]', pContract);
-      this.isAwaiting = true;
-      let rta = new ResponseApi();
+      console.warn('[saveData - Contract]', pContract)
+      this.isAwaiting = true
+      let rta = new ResponseApi()
       if (this.isToUpdate) {
-        rta = await this.contractService.update(pContract);
+        rta = await this.contractService.update(pContract)
       } else {
-        rta = await this.contractService.insert(pContract);
-        const lastContract = await this.contractService.getLastContractByClientAndDealer(pContract.client.id, pContract.dealer.id);
-        this.contractService.setContract(lastContract);
+        rta = await this.contractService.insert(pContract)
+        const lastContract =
+          await this.contractService.getLastContractByClientAndDealer(
+            pContract.client.id,
+            pContract.dealer.id
+          )
+        this.contractService.setContract(lastContract)
       }
 
       if (rta.response) {
-        alert(rta.message);
+        alert(rta.message)
 
-        this.router.navigate(['/MasterContracts']);
-        this.isAwaiting = false;
+        this.router.navigate(['/MasterContracts'])
+        this.isAwaiting = false
       }
     } catch (error) {
-      this.isAwaiting = false;
-      console.error(error);
-      alert(`Se ha producido un error guardando el contrato: ${error}`);
+      this.isAwaiting = false
+      console.error(error)
+      alert(`Se ha producido un error guardando el contrato: ${error}`)
     }
   }
 
   comeBackTable() {
-    this.router.navigate(['/MasterContracts']);
+    this.router.navigate(['/MasterContracts'])
   }
 
   formatDate(sDate: string): Date {
-    const year = parseInt(sDate.substring(0, 4));
-    const month = parseInt(sDate.substring(5, 7));
-    const day = parseInt(sDate.substring(8, 10));
-    const dateToReturn = new Date(year, month, day);
-    return dateToReturn;
+    const year = parseInt(sDate.substring(0, 4))
+    const month = parseInt(sDate.substring(5, 7))
+    const day = parseInt(sDate.substring(8, 10))
+    const dateToReturn = new Date(year, month, day)
+    return dateToReturn
   }
 
   validateNumbers(event: any) {
-    return InputValidator.validateTyping(event, 'numbers');
+    return InputValidator.validateTyping(event, 'numbers')
   }
 
   setContractState(contractState: ContractState) {
     if (contractState == null || contractState == undefined) {
-      this.contracStateFieldIsInvalid = true;
+      this.contracStateFieldIsInvalid = true
     } else {
-      this.disableContract(contractState);
-      this.contracStateFieldIsInvalid = false;
+      this.disableContract(contractState)
+      this.contracStateFieldIsInvalid = false
     }
   }
 
   validateInputDate(event: any) {
-    event.preventDefault();
-    return null;
+    event.preventDefault()
+    return null
   }
 
   setDiscountType(discountType: DiscountType) {
     if (discountType == null || discountType == undefined) {
-      this.discountFieldIsInvalid = true;
+      this.discountFieldIsInvalid = true
     } else {
-      this.discountType = discountType;
-      this.discountFieldIsInvalid = false;
+      this.discountType = discountType
+      this.discountFieldIsInvalid = false
     }
   }
 
   setItemsByContract(lsMaintenanceItems: MaintenanceItem[]) {
     try {
-      this.contract.lsMaintenanceItems = (lsMaintenanceItems != null && lsMaintenanceItems != undefined) ? lsMaintenanceItems : [];
+      this.contract.lsMaintenanceItems =
+        lsMaintenanceItems != null && lsMaintenanceItems != undefined
+          ? lsMaintenanceItems
+          : []
     } catch (error) {
-      console.warn(error);
+      console.warn(error)
     }
   }
 
   disableContract(contractState: ContractState) {
-    const { name, duration, startingDate, endingDate, discountValue, observation, amountVehicles } = this.frmContract.controls;
+    const {
+      name,
+      duration,
+      startingDate,
+      endingDate,
+      discountValue,
+      observation,
+      amountVehicles,
+    } = this.frmContract.controls
 
     if (contractState.id != ConstractStates.EN_NEGOCIACION) {
-      name.disable();
-      duration.disable();
-      startingDate.disable();
-      discountValue.disable();
-      observation.disable();
-      amountVehicles.disable();
-      this.disableClientField = true;
-      this.disableDealerField = true;
-      this.disableTypeOfDiscoutnField = true;
-      this.disableVehicleTypesAndVehicleModels = true;
-      this.disableVehicles = true;
+      name.disable()
+      duration.disable()
+      startingDate.disable()
+      discountValue.disable()
+      observation.disable()
+      amountVehicles.disable()
+      this.disableClientField = true
+      this.disableDealerField = true
+      this.disableTypeOfDiscoutnField = true
+      this.disableVehicleTypesAndVehicleModels = true
+      this.disableVehicles = true
     } else {
-      name.enable();
-      duration.enable();
-      startingDate.enable();
-      discountValue.enable();
-      observation.enable();
-      amountVehicles.enable();
-      this.disableClientField = false;
-      this.disableDealerField = false;
-      this.disableTypeOfDiscoutnField = false;
-      this.disableVehicleTypesAndVehicleModels = false;
-      this.disableVehicles = false;
+      name.enable()
+      duration.enable()
+      startingDate.enable()
+      discountValue.enable()
+      observation.enable()
+      amountVehicles.enable()
+      this.disableClientField = false
+      this.disableDealerField = false
+      this.disableTypeOfDiscoutnField = false
+      this.disableVehicleTypesAndVehicleModels = false
+      this.disableVehicles = false
     }
-
   }
 
-
-  enableOrDisableForm(){
-    try{
-      const isFormToEdit = this.contractService.getContractIsToEdit();
-      if (isFormToEdit  || this.action == ActionType.UPDATE){
-        this.disableCmbState = false;
-      }else{
+  enableOrDisableForm() {
+    try {
+      const isFormToEdit = this.contractService.getContractIsToEdit()
+      if (isFormToEdit || this.action == ActionType.UPDATE) {
+        this.disableCmbState = false
+      } else {
       }
 
-      if (this.action == ActionType.READ){
-        this.buttonSaveIsDisable = true;
-        this.disableCmbState = true;
+      if (this.action == ActionType.READ) {
+        this.buttonSaveIsDisable = true
+        this.disableCmbState = true
       }
-
-    }catch (error){
-      console.warn('[Enable or diable form]', error);
+    } catch (error) {
+      console.warn('[Enable or diable form]', error)
     }
   }
 }

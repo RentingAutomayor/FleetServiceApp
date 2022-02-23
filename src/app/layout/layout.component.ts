@@ -1,24 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
+  styleUrls: ['./layout.component.scss'],
 })
 export class LayoutComponent implements OnInit {
+  constructor(private router: Router) {}
 
-  constructor(
-    private router: Router
-  ) { }
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
-  }
-
-  logout(){
-    if (confirm('¿Está seguro que desea cerrar sesión?')){
-      sessionStorage.removeItem('sessionUser');
-      this.router.navigate(['/Login']);
+  logout() {
+    if (confirm('¿Está seguro que desea cerrar sesión?')) {
+      sessionStorage.removeItem('sessionUser')
+      this.router.navigate(['/Login'])
     }
   }
 }

@@ -11,6 +11,14 @@
             <input type="text" placeholder="Nombre" class="form-control"
             (input)="filterItemsByDescription($event)">
         </div>
+        <div>
+
+          <button
+            type="button"
+            class="btn btn-danger btn-filter">
+            Borrar filtro
+          </button>
+        </div>
     </div>
     <button
       class="btn-add btn-info"
@@ -30,7 +38,7 @@
             <th class="col-mobile-hide">Acciones</th>
         </thead>
         <tbody>
-            <tr *ngFor="let i = index ;let item of lsMaintenanceItems | paginate: { itemsPerPage: 100, currentPage: pag }">
+            <tr *ngFor="let i = index ;let item of lsMaintenanceItemsFiltered | paginate: { itemsPerPage: 100, currentPage: pag }">
                 <td>{{i+1}}</td>
                 <td>{{item.code}}</td>
                 <td>{{item.name | titlecase | slice:0:50 }}</td>

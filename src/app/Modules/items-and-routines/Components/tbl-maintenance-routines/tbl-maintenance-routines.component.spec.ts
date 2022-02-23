@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { TblMaintenanceRoutinesComponent } from './tbl-maintenance-routines.component';
+import { TblMaintenanceRoutinesComponent } from './tbl-maintenance-routines.component'
 
 describe('TblMaintenanceRoutinesComponent', () => {
-  let component: TblMaintenanceRoutinesComponent;
-  let fixture: ComponentFixture<TblMaintenanceRoutinesComponent>;
+  let component: TblMaintenanceRoutinesComponent
+  let fixture: ComponentFixture<TblMaintenanceRoutinesComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TblMaintenanceRoutinesComponent ]
-    })
-    .compileComponents();
-  });
+      declarations: [TblMaintenanceRoutinesComponent],
+    }).compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TblMaintenanceRoutinesComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(TblMaintenanceRoutinesComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

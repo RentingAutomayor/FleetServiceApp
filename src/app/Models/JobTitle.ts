@@ -1,5 +1,5 @@
-export class JobTitle{
-    id: number;
-    description: string;
-    state: boolean;
+export class JobTitle {
+  id: number
+  description: string
+  state: boolean
 }

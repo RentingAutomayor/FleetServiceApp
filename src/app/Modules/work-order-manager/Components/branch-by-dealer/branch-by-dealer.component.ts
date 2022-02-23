@@ -1,57 +1,60 @@
-import { Component, Input, OnInit , OnChanges, SimpleChanges, Output, EventEmitter} from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Branch } from 'src/app/Models/Branch';
-import { Dealer } from 'src/app/Models/Dealer';
-import { BranchService } from 'src/app/SharedComponents/Services/Branch/branch.service';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  Output,
+  EventEmitter,
+} from '@angular/core'
+import { FormControl, FormGroup } from '@angular/forms'
+import { Branch } from 'src/app/Models/Branch'
+import { Dealer } from 'src/app/Models/Dealer'
+import { BranchService } from 'src/app/SharedComponents/Services/Branch/branch.service'
 
 @Component({
   selector: 'app-branch-by-dealer',
   templateUrl: './branch-by-dealer.component.html',
-  styleUrls: ['./branch-by-dealer.component.scss']
+  styleUrls: ['./branch-by-dealer.component.scss'],
 })
-export class BranchByDealerComponent implements OnInit , OnChanges{
-  lsBranch: Branch[];
-  frmBranch: FormGroup;
-  @Input() branchSelected: Branch;
-  @Input() dealer: Dealer;
-  @Output() branchWasSetted = new EventEmitter<boolean>();
+export class BranchByDealerComponent implements OnInit, OnChanges {
+  lsBranch: Branch[]
+  frmBranch: FormGroup
+  @Input() branchSelected: Branch
+  @Input() dealer: Dealer
+  @Output() branchWasSetted = new EventEmitter<boolean>()
 
-  constructor(
-    private branchService: BranchService
-  ) {
+  constructor(private branchService: BranchService) {
     this.frmBranch = new FormGroup({
-      cmbBranch: new FormControl('')
-    });
-   }
+      cmbBranch: new FormControl(''),
+    })
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (const  change in changes) {
-      if (change == 'dealer'){
-        this.getListBranchByDealer(this.dealer.id);
+    for (const change in changes) {
+      if (change == 'dealer') {
+        this.getListBranchByDealer(this.dealer.id)
       }
     }
   }
 
   ngOnInit(): void {
-    this.initComponents();
+    this.initComponents()
   }
 
-  initComponents(){
-    this.getListBranchByDealer(this.dealer.id);
+  initComponents() {
+    this.getListBranchByDealer(this.dealer.id)
   }
 
-  async getListBranchByDealer(dealer_id: number){
-    this.branchService.getBranchs(dealer_id, 'DEALER').subscribe(
-      data => {
-        this.lsBranch = data;
-      }
-    );
+  async getListBranchByDealer(dealer_id: number) {
+    this.branchService.getBranchs(dealer_id, 'DEALER').subscribe((data) => {
+      this.lsBranch = data
+    })
   }
 
-  setBranch(event: any){
-    const oBranch = this.lsBranch.find(br => br.id == event.value);
-    this.branchService.setBranchSelected(oBranch);
-    this.branchWasSetted.emit(true);
+  setBranch(event: any) {
+    const oBranch = this.lsBranch.find((br) => br.id == event.value)
+    this.branchService.setBranchSelected(oBranch)
+    this.branchWasSetted.emit(true)
   }
-
 }

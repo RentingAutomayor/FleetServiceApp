@@ -1,9 +1,9 @@
-import { User } from "./User";
+import { User } from './User'
 
 export interface bussinesObject {
-  user: User;
-  state: boolean;
-  registrationDate: Date;
-  updateDate: Date;
-  deleteDate: Date;
+  user: User
+  state: boolean
+  registrationDate: Date
+  updateDate: Date
+  deleteDate: Date
 }

@@ -1,15 +1,14 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HomeComponent } from './Components/home/home.component';
-import { HomeRoutingModule } from './home-routing.module';
-import { SharedModule } from 'src/app/SharedComponents/shared.module';
-import { ChartsModule } from 'ng2-charts';
-import { ReportTrxByStateComponent } from './Components/report-trx-by-state/report-trx-by-state.component';
-import { ReportTrxByVehicleComponent } from './Components/report-trx-by-vehicle/report-trx-by-vehicle.component';
-import { ReportWorkordersValueByMonthComponent } from './Components/report-workorders-value-by-month/report-workorders-value-by-month.component';
-import { ReportAmountWorkordersByClientOrByDealerComponent } from './Components/report-amount-workorders-by-client-or-by-dealer/report-amount-workorders-by-client-or-by-dealer.component';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-
+import { NgModule } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { HomeComponent } from './Components/home/home.component'
+import { HomeRoutingModule } from './home-routing.module'
+import { SharedModule } from 'src/app/SharedComponents/shared.module'
+import { ChartsModule } from 'ng2-charts'
+import { ReportTrxByStateComponent } from './Components/report-trx-by-state/report-trx-by-state.component'
+import { ReportTrxByVehicleComponent } from './Components/report-trx-by-vehicle/report-trx-by-vehicle.component'
+import { ReportWorkordersValueByMonthComponent } from './Components/report-workorders-value-by-month/report-workorders-value-by-month.component'
+import { ReportAmountWorkordersByClientOrByDealerComponent } from './Components/report-amount-workorders-by-client-or-by-dealer/report-amount-workorders-by-client-or-by-dealer.component'
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker'
 
 @NgModule({
   declarations: [
@@ -17,14 +16,14 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     ReportTrxByStateComponent,
     ReportTrxByVehicleComponent,
     ReportWorkordersValueByMonthComponent,
-    ReportAmountWorkordersByClientOrByDealerComponent
+    ReportAmountWorkordersByClientOrByDealerComponent,
   ],
   imports: [
     CommonModule,
-    ChartsModule ,
+    ChartsModule,
     HomeRoutingModule,
     SharedModule,
     BsDatepickerModule.forRoot(),
-  ]
+  ],
 })
-export class HomeModule { }
+export class HomeModule {}

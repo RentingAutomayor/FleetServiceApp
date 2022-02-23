@@ -1,7 +1,7 @@
-export interface SecurityModule{
-    id_module: number;
-    id_moduleF: number;
-    moduleDescription: string;
-    moduleName: string;
-    path: string;
+export interface SecurityModule {
+  id_module: number
+  id_moduleF: number
+  moduleDescription: string
+  moduleName: string
+  path: string
 }

@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { ReportWorkordersValueByMonthComponent } from './report-workorders-value-by-month.component';
+import { ReportWorkordersValueByMonthComponent } from './report-workorders-value-by-month.component'
 
 describe('ReportWorkordersValueByMonthComponent', () => {
-  let component: ReportWorkordersValueByMonthComponent;
-  let fixture: ComponentFixture<ReportWorkordersValueByMonthComponent>;
+  let component: ReportWorkordersValueByMonthComponent
+  let fixture: ComponentFixture<ReportWorkordersValueByMonthComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReportWorkordersValueByMonthComponent ]
-    })
-    .compileComponents();
-  });
+      declarations: [ReportWorkordersValueByMonthComponent],
+    }).compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReportWorkordersValueByMonthComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(ReportWorkordersValueByMonthComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

@@ -1,43 +1,52 @@
-import { Component, Input, Output, OnChanges, OnInit, SimpleChanges , EventEmitter} from '@angular/core';
-import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js';
-import { Label } from 'ng2-charts';
-import * as pluginDataLabels from 'chart.js';
-import { ReportService } from '../../Services/report.service';
-import { Color } from 'angular-bootstrap-md';
-import { Company } from 'src/app/Models/Company';
-import { CompanyType } from 'src/app/Models/CompanyType';
+import {
+  Component,
+  Input,
+  Output,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  EventEmitter,
+} from '@angular/core'
+import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js'
+import { Label } from 'ng2-charts'
+import * as pluginDataLabels from 'chart.js'
+import { ReportService } from '../../Services/report.service'
+import { Color } from 'angular-bootstrap-md'
+import { Company } from 'src/app/Models/Company'
+import { CompanyType } from 'src/app/Models/CompanyType'
 
 @Component({
   selector: 'app-report-trx-by-vehicle',
   templateUrl: './report-trx-by-vehicle.component.html',
-  styleUrls: ['./report-trx-by-vehicle.component.scss']
+  styleUrls: ['./report-trx-by-vehicle.component.scss'],
 })
 export class ReportTrxByVehicleComponent implements OnInit, OnChanges {
-
   public chartOptions: ChartOptions = {
     responsive: true,
     // We use these empty structures as placeholders for dynamic theming.
     scales: {
-      xAxes: [{
-        ticks: {
-          min: 0,
-          max : 5 ,
-          stepSize: 1
-        }
-      }]
+      xAxes: [
+        {
+          ticks: {
+            min: 0,
+            max: 5,
+            stepSize: 1,
+          },
+        },
+      ],
     },
     plugins: {
       datalabels: {
         anchor: 'end',
         align: 'end',
-      }
-    }
-  };
+      },
+    },
+  }
 
-  public chartLabels: Label[] = [];
-  public chartType: ChartType = 'horizontalBar';
-  public chartLegend = true;
-  public chartPlugin = [pluginDataLabels];
+  public chartLabels: Label[] = []
+  public chartType: ChartType = 'horizontalBar'
+  public chartLegend = true
+  public chartPlugin = [pluginDataLabels]
   public chartData: ChartDataSets[] = [
     {
       data: [],
@@ -58,10 +67,8 @@ export class ReportTrxByVehicleComponent implements OnInit, OnChanges {
     {
       data: [],
       label: 'Anuladas',
-    }
-
-
-  ];
+    },
+  ]
 
   // public chartColors: Array<any> = [
   //   { backgroundColor: ['#ade498','#ea2c62'] }
@@ -70,37 +77,34 @@ export class ReportTrxByVehicleComponent implements OnInit, OnChanges {
   public chartColors: Color[] = [
     { backgroundColor: '#ade498' },
     { backgroundColor: '#ea2c62' },
-    { backgroundColor: '#f0e050'},
-    { backgroundColor: '#469627'},
-    { backgroundColor: '#7e0c2c'}
-  ];
+    { backgroundColor: '#f0e050' },
+    { backgroundColor: '#469627' },
+    { backgroundColor: '#7e0c2c' },
+  ]
 
   // { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' }, -> Example
 
-  @Input() company: Company;
-  public typeOfReport: string;
-  isMainCompanyLogged: boolean;
-  dealer_to_filter: number;
-  client_to_filter: number;
-  license_plate_to_filter: string;
-  @Input() init_date: Date;
-  @Input() end_date: Date;
-  @Output() dataWasLoad = new EventEmitter<boolean>();
+  @Input() company: Company
+  public typeOfReport: string
+  isMainCompanyLogged: boolean
+  dealer_to_filter: number
+  client_to_filter: number
+  license_plate_to_filter: string
+  @Input() init_date: Date
+  @Input() end_date: Date
+  @Output() dataWasLoad = new EventEmitter<boolean>()
 
-
-  constructor(
-    private reportService: ReportService
-  ) {
-    this.dealer_to_filter = null;
-    this.client_to_filter = null;
-    this.license_plate_to_filter = null;
-    this.init_date = null;
-    this.end_date = null;
+  constructor(private reportService: ReportService) {
+    this.dealer_to_filter = null
+    this.client_to_filter = null
+    this.license_plate_to_filter = null
+    this.init_date = null
+    this.end_date = null
   }
   ngOnChanges(changes: SimpleChanges): void {
-    this.dataWasLoad.emit(false);
-    this.chartLabels = [];
-    this.chartData  = [
+    this.dataWasLoad.emit(false)
+    this.chartLabels = []
+    this.chartData = [
       {
         data: [],
         label: 'Aprobadas',
@@ -120,159 +124,167 @@ export class ReportTrxByVehicleComponent implements OnInit, OnChanges {
       {
         data: [],
         label: 'Anuladas',
-      }
+      },
+    ]
 
-
-    ];
-
-    this.initRepot();
+    this.initRepot()
   }
 
   ngOnInit(): void {
-    this.initDataToGetReport();
-    this.initRepot();
-
+    this.initDataToGetReport()
+    this.initRepot()
   }
 
-  async initRepot(){
-    await this.getWorkOrdersApproved();
-    await this.getWorkOrdersCanceled();
-    await this.getWorkOrdersPending();
-    await this.getWorkOrdersFinished();
-    await this.getWorkOrdersAnnul();
-    this.dataWasLoad.emit(true);
+  async initRepot() {
+    await this.getWorkOrdersApproved()
+    await this.getWorkOrdersCanceled()
+    await this.getWorkOrdersPending()
+    await this.getWorkOrdersFinished()
+    await this.getWorkOrdersAnnul()
+    this.dataWasLoad.emit(true)
   }
 
   initDataToGetReport() {
-    switch (this.company.type){
+    switch (this.company.type) {
       case CompanyType.CLIENT:
-         this.typeOfReport = 'dealer';
-         this.isMainCompanyLogged = false;
-         this.client_to_filter = this.company.id;
-         this.dealer_to_filter = null;
-         break;
-       case CompanyType.DEALER:
-         this.typeOfReport = 'client';
-         this.isMainCompanyLogged = false;
-         this.dealer_to_filter = this.company.id;
-         this.client_to_filter = null;
-         break;
-       case CompanyType.MAIN_COMPANY:
-         this.typeOfReport = 'client';
-         this.isMainCompanyLogged = true;
-         this.client_to_filter = null;
-         this.dealer_to_filter = null;
-         break;
+        this.typeOfReport = 'dealer'
+        this.isMainCompanyLogged = false
+        this.client_to_filter = this.company.id
+        this.dealer_to_filter = null
+        break
+      case CompanyType.DEALER:
+        this.typeOfReport = 'client'
+        this.isMainCompanyLogged = false
+        this.dealer_to_filter = this.company.id
+        this.client_to_filter = null
+        break
+      case CompanyType.MAIN_COMPANY:
+        this.typeOfReport = 'client'
+        this.isMainCompanyLogged = true
+        this.client_to_filter = null
+        this.dealer_to_filter = null
+        break
     }
-   }
+  }
 
   async getWorkOrdersApproved() {
-
-    await this.reportService.GetWorkOrderApprovedByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
-      .then(data => {
-
-        data.forEach(item => {
-          this.chartLabels.push(item.Placa);
-          this.chartData[0].data.push(item.Cantidad);
-        });
-
-
-
-      });
+    await this.reportService
+      .GetWorkOrderApprovedByVehicle(
+        this.client_to_filter,
+        this.dealer_to_filter,
+        this.license_plate_to_filter,
+        this.init_date,
+        this.end_date
+      )
+      .then((data) => {
+        data.forEach((item) => {
+          this.chartLabels.push(item.Placa)
+          this.chartData[0].data.push(item.Cantidad)
+        })
+      })
   }
 
   async getWorkOrdersCanceled() {
-
-    await this.reportService.GetWorkOrderCanceledByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
-      .then(data => {
-
-        data.forEach(item => {
+    await this.reportService
+      .GetWorkOrderCanceledByVehicle(
+        this.client_to_filter,
+        this.dealer_to_filter,
+        this.license_plate_to_filter,
+        this.init_date,
+        this.end_date
+      )
+      .then((data) => {
+        data.forEach((item) => {
           // TODO: find index of vehicle to asign the correct value
           // IF No exist approbation by vehicle add new data
-          let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
+          let indexLicensePlate = this.chartLabels.indexOf(item.Placa)
 
-          if (indexLicensePlate >= 0){
-            this.chartData[1].data.splice(indexLicensePlate, 1, item.Cantidad);
-          }else{
-            this.chartLabels.push(item.Placa);
-            indexLicensePlate = this.chartLabels.indexOf(item.Placa);
-            this.chartData[1].data.splice(indexLicensePlate, 1, item.Cantidad);
+          if (indexLicensePlate >= 0) {
+            this.chartData[1].data.splice(indexLicensePlate, 1, item.Cantidad)
+          } else {
+            this.chartLabels.push(item.Placa)
+            indexLicensePlate = this.chartLabels.indexOf(item.Placa)
+            this.chartData[1].data.splice(indexLicensePlate, 1, item.Cantidad)
           }
-
-
-
-
-        });
-      });
+        })
+      })
   }
 
   async getWorkOrdersPending() {
-
-    await this.reportService.GetWorkOrderPendingByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
-      .then(data => {
-
-        data.forEach(item => {
+    await this.reportService
+      .GetWorkOrderPendingByVehicle(
+        this.client_to_filter,
+        this.dealer_to_filter,
+        this.license_plate_to_filter,
+        this.init_date,
+        this.end_date
+      )
+      .then((data) => {
+        data.forEach((item) => {
           // TODO: find index of vehicle to asign the correct value
           // IF No exist approbation by vehicle add new data
-          let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
+          let indexLicensePlate = this.chartLabels.indexOf(item.Placa)
 
-          if (indexLicensePlate >= 0){
-            this.chartData[2].data.splice(indexLicensePlate, 1, item.Cantidad);
-          }else{
-            this.chartLabels.push(item.Placa);
-            indexLicensePlate = this.chartLabels.indexOf(item.Placa);
-            this.chartData[2].data.splice(indexLicensePlate, 1, item.Cantidad);
+          if (indexLicensePlate >= 0) {
+            this.chartData[2].data.splice(indexLicensePlate, 1, item.Cantidad)
+          } else {
+            this.chartLabels.push(item.Placa)
+            indexLicensePlate = this.chartLabels.indexOf(item.Placa)
+            this.chartData[2].data.splice(indexLicensePlate, 1, item.Cantidad)
           }
-
-
-        });
-      });
+        })
+      })
   }
 
   async getWorkOrdersFinished() {
-
-    await this.reportService.GetWorkOrderFinishedByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
-      .then(data => {
-
-        data.forEach(item => {
+    await this.reportService
+      .GetWorkOrderFinishedByVehicle(
+        this.client_to_filter,
+        this.dealer_to_filter,
+        this.license_plate_to_filter,
+        this.init_date,
+        this.end_date
+      )
+      .then((data) => {
+        data.forEach((item) => {
           // TODO: find index of vehicle to asign the correct value
           // IF No exist approbation by vehicle add new data
-          let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
+          let indexLicensePlate = this.chartLabels.indexOf(item.Placa)
 
-          if (indexLicensePlate >= 0){
-            this.chartData[3].data.splice(indexLicensePlate, 1, item.Cantidad);
-          }else{
-            this.chartLabels.push(item.Placa);
-            indexLicensePlate = this.chartLabels.indexOf(item.Placa);
-            this.chartData[3].data.splice(indexLicensePlate, 1, item.Cantidad);
+          if (indexLicensePlate >= 0) {
+            this.chartData[3].data.splice(indexLicensePlate, 1, item.Cantidad)
+          } else {
+            this.chartLabels.push(item.Placa)
+            indexLicensePlate = this.chartLabels.indexOf(item.Placa)
+            this.chartData[3].data.splice(indexLicensePlate, 1, item.Cantidad)
           }
-
-
-        });
-      });
+        })
+      })
   }
 
   async getWorkOrdersAnnul() {
-
-    await this.reportService.GetWorkOrderAnnulByVehicle(this.client_to_filter, this.dealer_to_filter, this.license_plate_to_filter, this.init_date, this.end_date)
-      .then(data => {
-
-        data.forEach(item => {
+    await this.reportService
+      .GetWorkOrderAnnulByVehicle(
+        this.client_to_filter,
+        this.dealer_to_filter,
+        this.license_plate_to_filter,
+        this.init_date,
+        this.end_date
+      )
+      .then((data) => {
+        data.forEach((item) => {
           // TODO: find index of vehicle to asign the correct value
           // IF No exist approbation by vehicle add new data
-          let indexLicensePlate = this.chartLabels.indexOf(item.Placa);
+          let indexLicensePlate = this.chartLabels.indexOf(item.Placa)
 
-          if (indexLicensePlate >= 0){
-            this.chartData[4].data.splice(indexLicensePlate, 1, item.Cantidad);
-          }else{
-            this.chartLabels.push(item.Placa);
-            indexLicensePlate = this.chartLabels.indexOf(item.Placa);
-            this.chartData[4].data.splice(indexLicensePlate, 1, item.Cantidad);
+          if (indexLicensePlate >= 0) {
+            this.chartData[4].data.splice(indexLicensePlate, 1, item.Cantidad)
+          } else {
+            this.chartLabels.push(item.Placa)
+            indexLicensePlate = this.chartLabels.indexOf(item.Placa)
+            this.chartData[4].data.splice(indexLicensePlate, 1, item.Cantidad)
           }
-
-
-        });
-      });
+        })
+      })
   }
-
 }

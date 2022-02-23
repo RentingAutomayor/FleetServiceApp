@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { WorkOrderManagerComponent } from './work-order-manager.component';
+import { WorkOrderManagerComponent } from './work-order-manager.component'
 
 describe('WorkOrderManagerComponent', () => {
-  let component: WorkOrderManagerComponent;
-  let fixture: ComponentFixture<WorkOrderManagerComponent>;
+  let component: WorkOrderManagerComponent
+  let fixture: ComponentFixture<WorkOrderManagerComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WorkOrderManagerComponent ]
-    })
-    .compileComponents();
-  });
+      declarations: [WorkOrderManagerComponent],
+    }).compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WorkOrderManagerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(WorkOrderManagerComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

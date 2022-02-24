@@ -26,6 +26,13 @@ export class FrequencyComponent implements OnInit, OnChanges {
   frequencytoUpdate: Frequency
   @Output() frequencyWasSelected = new EventEmitter<Frequency>()
 
+  frequencySelected: Frequency = null
+  @Input('frequency')
+  set setFrequencySelected(frequency: Frequency) {
+    this.frequencySelected = frequency
+    this.setDataInForm(this.frequencySelected)
+  }
+
   disableControls: boolean
   @Input('disableControls')
   set setDisableControls(value: boolean) {
@@ -74,7 +81,11 @@ export class FrequencyComponent implements OnInit, OnChanges {
   }
 
   setDataInForm(pFrequency: Frequency) {
-    this.frmFrequency.controls.cmbFrequency.setValue(pFrequency.id)
+    if (pFrequency) {
+      this.frmFrequency.controls.cmbFrequency.setValue(pFrequency.id)
+    } else {
+      this.clearForm()
+    }
   }
 
   clearForm() {

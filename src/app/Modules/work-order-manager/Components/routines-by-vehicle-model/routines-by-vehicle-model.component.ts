@@ -54,11 +54,11 @@ export class RoutinesByVehicleModelComponent implements OnInit, OnChanges {
     this.getListMaintenanceRoutines(this.vehicleModel.id)
   }
 
-  async getListMaintenanceRoutines(model_id: number) {
+  getListMaintenanceRoutines(model_id: number) {
     try {
       this.maintenanceRoutineService
         .getMaintenanceRoutineByModel(model_id)
-        .then((data) => {
+        .subscribe((data) => {
           this.lsRoutine = data
         })
     } catch (error) {

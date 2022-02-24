@@ -1,68 +1,95 @@
-<div id="container__table">
-    <h2>Rutinas de mantenimiento</h2>
-    <div class="container__filter">
-        <div>
-            <app-vehicle-model
-                (VehicleModelWasSelected)="filterByVehicleModel($event)">
-            </app-vehicle-model>
-        </div>
-        <div>
-            <app-frequency
-                (frequencyWasSelected)="filterByFrequency($event)">
-            </app-frequency>
-        </div>
+<div id="container__table" *ngIf="isTableVisible">
+  <div class="container__filter">
+    <div>
+      <app-vehicle-model
+        [vehicleModel]="vehicleModelSelected"
+        (VehicleModelWasSelected)="filterByVehicleModel($event)"
+      >
+      </app-vehicle-model>
     </div>
-    <button
-      class="btn-add btn-info"
-      (click)="insertRoutine()">
-        <i class="fas fa-plus"></i>
-    </button>
-    <table class="table table-striped">
-        <thead>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>Línea</th>
-            <th>Kilometraje de la rutina</th>
-            <th>Precio de referencia con impuestos</th>
-            <th>Acciones</th>
-        </thead>
-        <tbody>
-            <tr
-                *ngFor="let i = index; let routine of lsMaintenanceRoutines  | paginate: { itemsPerPage: 20, currentPage: p }">
-                <td>{{ i + 1 }}</td>
-                <td>{{ routine.name }}</td>
-                <td>{{ routine.vehicleModel.shortName }}</td>
-                <td>{{ routine.frequency.name }}</td>
-                <td>{{ routine.referencePrice | currency:'USD':'symbol':'1.0-0' }}</td>
-                <td>
-                    <i
-                      (click)="seeDetailsRoutine(routine)"
-                      class="fas fa-info-circle text-info"
-                      title="Más información"></i>
-                    <i
-                      class="fas fa-edit text-warning"
-                      (click)="updateRoutine(routine)"
-                      title="Modificar"></i>
-                    <i
-                      class="fas fa-trash-alt text-danger"
-                      (click)="deleteRoutine(routine)"
-                      title="Eliminar"></i>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="paginationContainer">
-        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    <div>
+      <app-frequency
+        [frequency]="frequencySelected"
+        (frequencyWasSelected)="filterByFrequency($event)"
+      >
+      </app-frequency>
     </div>
+    <div>
+      <button
+        type="button"
+        class="btn btn-danger btn-filter"
+        (click)="clearFilter()"
+      >
+        Borrar filtro
+      </button>
+    </div>
+  </div>
+  <button class="btn-add btn-info" (click)="insertRoutine()">
+    <i class="fas fa-plus"></i>
+  </button>
+  <table class="table table-striped">
+    <thead>
+      <th>#</th>
+      <th>Nombre</th>
+      <th>Línea</th>
+      <th>Kilometraje de la rutina</th>
+      <th>Precio de referencia con impuestos</th>
+      <th>Acciones</th>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let i = index;
+          let routine;
+          of: lsMaintenanceRoutinesFiltered
+            | paginate: { itemsPerPage: 20, currentPage: p }
+        "
+      >
+        <td>{{ i + 1 }}</td>
+        <td>{{ routine.name }}</td>
+        <td>{{ routine.vehicleModel.shortName }}</td>
+        <td>{{ routine.frequency.name }}</td>
+        <td>{{ routine.referencePrice | currency: 'USD':'symbol':'1.0-0' }}</td>
+        <td>
+          <i
+            (click)="seeDetailsRoutine(routine)"
+            class="fas fa-info-circle text-info"
+            title="Más información"
+          ></i>
+          <i
+            class="fas fa-edit text-warning"
+            (click)="updateRoutine(routine)"
+            title="Modificar"
+          ></i>
+          <i
+            class="fas fa-trash-alt text-danger"
+            (click)="deleteRoutine(routine)"
+            title="Eliminar"
+          ></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="paginationContainer">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
 </div>
-<div id="container__maintenanceRoutine">
-    <app-maintenance-routine
-        [disableControls]="disableControls"
-        [countChanges]="oCountChanges"
-        (routineWasSaved)="saveDataRoutine()"
-        (routinewasCanceled)="cancelRoutine()">
-    </app-maintenance-routine>
+<div *ngIf="isRoutineVisible" class="container__maintenanceRoutine">
+  <app-maintenance-routine
+    [maintenanceRoutine]="maintenanceRoutineSelected"
+    [disableControls]="disableControls"
+    (routineWasSaved)="saveDataRoutine($event)"
+    (routinewasCanceled)="cancelRoutine()"
+  >
+  </app-maintenance-routine>
 </div>
 
+<app-alert-error
+  *ngIf="isErrorVisible"
+  [title]="errorTitle"
+  [errorMessage]="errorMessageApi"
+  (onAlertWasClose)="closeErrorMessage()"
+>
+</app-alert-error>
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

@@ -36,26 +36,22 @@ export class MaintenanceRoutineService {
     return this.http.get<Frequency[]>(urGetFrequency)
   }
 
-  async getMaintenanceRoutines(
+  getMaintenanceRoutines(
     vehicleModel_id: number = 0,
     frequency_id: number = 0
-  ): Promise<MaintenanceRoutine[]> {
+  ) {
     const urGetRoutines = `${this.URL_API}/GetMaintenanceRoutines?vehicleModel_id=${vehicleModel_id}&frequency_id=${frequency_id}`
-    return this.http.get<MaintenanceRoutine[]>(urGetRoutines).toPromise()
+    return this.http.get<MaintenanceRoutine[]>(urGetRoutines)
   }
 
-  async getMaintenanceRoutineByID(
-    pRoutine_id: number
-  ): Promise<MaintenanceRoutine> {
+  getMaintenanceRoutineByID(pRoutine_id: number) {
     const urGetRoutine = `${this.URL_API}/GetMaintenanceRoutineById?pRoutine_id=${pRoutine_id}`
-    return this.http.get<MaintenanceRoutine>(urGetRoutine).toPromise()
+    return this.http.get<MaintenanceRoutine>(urGetRoutine)
   }
 
-  async getMaintenanceRoutineByModel(
-    pModel_id: number
-  ): Promise<MaintenanceRoutine[]> {
+  getMaintenanceRoutineByModel(pModel_id: number) {
     const urGetRoutines = `${this.URL_API}/GetMaintenanceRoutineByModelId?model_id=${pModel_id}`
-    return this.http.get<MaintenanceRoutine[]>(urGetRoutines).toPromise()
+    return this.http.get<MaintenanceRoutine[]>(urGetRoutines)
   }
 
   async ValidateRoutineAndFrequency(
@@ -66,24 +62,26 @@ export class MaintenanceRoutineService {
     return this.http.get<ResponseApi>(urlValidateRoutine).toPromise()
   }
 
-  async insert(pRoutine: MaintenanceRoutine): Promise<ResponseApi> {
+  insert(routine: MaintenanceRoutine): Observable<ResponseApi> {
     const urlInsertRoutine = `${this.URL_API}/Insert`
-    return this.http
-      .post<ResponseApi>(urlInsertRoutine, pRoutine, this.HttpOptions)
-      .toPromise()
+    return this.http.post<ResponseApi>(
+      urlInsertRoutine,
+      routine,
+      this.HttpOptions
+    )
   }
 
-  async update(pRoutine: MaintenanceRoutine): Promise<ResponseApi> {
+  update(routine: MaintenanceRoutine): Observable<ResponseApi> {
     const urlUpdateRoutine = `${this.URL_API}/Update`
-    return this.http
-      .post<ResponseApi>(urlUpdateRoutine, pRoutine, this.HttpOptions)
-      .toPromise()
+    return this.http.put<ResponseApi>(
+      urlUpdateRoutine,
+      routine,
+      this.HttpOptions
+    )
   }
 
-  async delete(pRoutine: MaintenanceRoutine): Promise<ResponseApi> {
-    const urlDeleteRoutine = `${this.URL_API}/Delete`
-    return this.http
-      .post<ResponseApi>(urlDeleteRoutine, pRoutine, this.HttpOptions)
-      .toPromise()
+  delete(pRoutine: MaintenanceRoutine) {
+    const urlDeleteRoutine = `${this.URL_API}/Delete?routineId=${pRoutine.id}`
+    return this.http.delete<ResponseApi>(urlDeleteRoutine)
   }
 }

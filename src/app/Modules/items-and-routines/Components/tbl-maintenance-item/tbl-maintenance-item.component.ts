@@ -30,6 +30,7 @@ export class TblMaintenanceItemComponent implements OnInit {
   //feature/ft-0202
   descriptionFiltered: string = ''
   typeOfItemId: number = 0
+  isDetailVisible: boolean = false
 
   constructor(
     private vehicleService: VehicleService,
@@ -100,7 +101,7 @@ export class TblMaintenanceItemComponent implements OnInit {
     }
   }
 
-  async showTableItems() {
+  showTableItems() {
     this.isAwaiting = true
     this.maintenanceItemService
       .getMaintenanceItems(this.dealer_id)
@@ -113,25 +114,26 @@ export class TblMaintenanceItemComponent implements OnInit {
   }
 
   insertMaintenanceItem() {
+    this.isDetailVisible = true
     this.disableControls = false
     this.isToUpdate = false
 
     this.maintenanceItemService.setItemToUpdate(null)
-    this.vehicleService.setBrandSelected(null)
-    this.vehicleService.setVehicleTypeSelected(null)
-    this.vehicleService.setVehicleModelSelected(null)
-    this.showPopUp()
-    this.hideTable()
+    // this.vehicleService.setBrandSelected(null)
+    // this.vehicleService.setVehicleTypeSelected(null)
+    // this.vehicleService.setVehicleModelSelected(null)
+    // this.showPopUp()
+    // this.hideTable()
   }
 
   showTable() {
-    const containerTable = document.getElementById('container__table_items')
-    containerTable.setAttribute('style', 'display:block')
+    // const containerTable = document.getElementById('container__table_items')
+    // containerTable.setAttribute('style', 'display:block')
   }
 
   hideTable() {
-    const containerTable = document.getElementById('container__table_items')
-    containerTable.setAttribute('style', 'display:none')
+    // const containerTable = document.getElementById('container__table_items')
+    // containerTable.setAttribute('style', 'display:none')
   }
 
   updateMaintenanceItem(pItem: MaintenanceItem) {
@@ -142,8 +144,8 @@ export class TblMaintenanceItemComponent implements OnInit {
       .getMaintenanceItemById(pItem.id)
       .then((item) => {
         this.maintenanceItemSelected = item
-        this.showPopUp()
-        this.hideTable()
+        // this.showPopUp()
+        // this.hideTable()
       })
   }
 
@@ -170,8 +172,8 @@ export class TblMaintenanceItemComponent implements OnInit {
   }
 
   comeBackToTable() {
-    this.hidePopUp()
-    this.showTable()
+    // this.hidePopUp()
+    // this.showTable()
   }
 
   async saveMaintenanceItem() {
@@ -200,9 +202,9 @@ export class TblMaintenanceItemComponent implements OnInit {
         alert(rta.message)
         this.vehicleService.setListVehicleTypeSelected(null)
         this.vehicleService.setListVehicleModelsSelected(null)
-        this.hidePopUp()
-        this.showTableItems()
-        this.showTable()
+        // this.hidePopUp()
+        // this.showTableItems()
+        // this.showTable()
       }
     } catch (error) {
       alert(error.error.Message)
@@ -211,17 +213,17 @@ export class TblMaintenanceItemComponent implements OnInit {
   }
 
   showPopUp() {
-    const containerForm = document.getElementById(
-      'container__formMaintenanceItem'
-    )
-    containerForm.setAttribute('style', 'display:block')
+    // const containerForm = document.getElementById(
+    //   'container__formMaintenanceItem'
+    // )
+    // containerForm.setAttribute('style', 'display:block')
   }
 
   hidePopUp() {
-    const containerForm = document.getElementById(
-      'container__formMaintenanceItem'
-    )
-    containerForm.setAttribute('style', 'display:none')
+    // const containerForm = document.getElementById(
+    //   'container__formMaintenanceItem'
+    // )
+    // containerForm.setAttribute('style', 'display:none')
   }
   getVehicleModel(vehicleModel: VehicleModel) {
     if (vehicleModel == null) {

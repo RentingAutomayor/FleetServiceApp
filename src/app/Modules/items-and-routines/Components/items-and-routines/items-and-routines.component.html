@@ -1,30 +1,16 @@
 <div id="container__content">
-    <div class="container__tabPanel">
-        <div class="container__titles">
-            <button class="tab_link active" (click)="openTab($event,'matrix')">Matrices de mantenimiento</button>
-            <button class="tab_link" (click)="openTab($event,'maintenanceItems')">Artículos de mantenimiento</button>
-            <button class="tab_link" (click)="openTab($event,'routines')">Rutinas de mantenimiento</button>
-
-        </div>
-    </div>
-
-    <div class="tab_content tab_active" id="container__matrix">
-        <!-- <app-tbl-maintenance-matrix>
-        </app-tbl-maintenance-matrix>       -->
-     </div>
-
-    <div class="tab_content tab_inactive" id="container__maintenanceItems">
-        <app-tbl-maintenance-item>
-        </app-tbl-maintenance-item>
-
-    </div>
-
-    <div class="tab_content tab_inactive" id="container__routines">
-       <!-- <app-tbl-maintenance-routines>
-       </app-tbl-maintenance-routines>       -->
-    </div>
-
-
-
+  <mat-tab-group mat-align-tabs="start">
+    <mat-tab label="Matrices de mantenimiento">
+      <app-tbl-maintenance-matrix> </app-tbl-maintenance-matrix
+    ></mat-tab>
+    <mat-tab label="Artículos de mantenimiento">
+      <!-- <app-tbl-maintenance-item> </app-tbl-maintenance-item
+    >--></mat-tab
+    >
+    <mat-tab label="Rutinas de mantenimiento">
+      <app-tbl-maintenance-routines> </app-tbl-maintenance-routines
+    ></mat-tab>
+  </mat-tab-group>
 </div>
+
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

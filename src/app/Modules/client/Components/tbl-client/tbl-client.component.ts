@@ -57,13 +57,15 @@ export class TblClientComponent implements OnInit {
     this.isAwaiting = true
     this.clientService.setClientToUpdate(null)
     try {
-      this.lsClient = await this.clientService.getClients()
-      this.lsClientFiltered = this.lsClient
+      this.clientService.getClients().subscribe((clients) => {
+        this.lsClient = clients
+        this.lsClientFiltered = this.lsClient
+        this.isAwaiting = false
+      })
     } catch (err) {
       console.error(err.error.Message)
       alert(err.error.Message)
     }
-    this.isAwaiting = false
   }
 
   async validateCompanyLogged() {

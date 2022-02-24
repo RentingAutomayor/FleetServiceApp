@@ -1,172 +1,134 @@
 <div class="container__formRoutine">
-    <form [formGroup]="frmMaintenanceRoutine" (ngSubmit)="saveMaintenanceRoutine()">
-        <div class="card">
-            <div class="card-header" id="container__header">
-                <legend>Datos de la rutina de mantenimiento</legend>
-                <div class="container__buttonClose">
-                    <a (click)="cancelRoutine()">
-                      <i class="fas fa-times"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="container__row">
-                    <div class="col">
-                        <label>Nombre:</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          formControlName="name"
-                          placeholder="Nombre ...">
-                        <div
-                          class="error"
-                          *ngIf="fieldName.invalid && (fieldName.dirty || fieldName.touched)">
-                            <p *ngIf="fieldName.hasError('required')">* El campo de nombre es obligatorio</p>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <app-frequency
-                          [disableControls]="disableControls"
-                          [countChanges]="countChanges"
-                          (frequencyWasSelected)="setFrequency($event)">
-                        </app-frequency>
-                        <div class="error" *ngIf="!routineIsValid">
-                            <p>{{ msgRoutineDuplicated }}</p>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <label>Precio de la rutina:</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          formControlName="referencePrice"
-                          placeholder="Precio ..."
-                          disabled>
-                    </div>
-                </div>
-                <div class="container__row">
-                    <div class="col">
-                      <app-vehicle-brand
-                        [brand]="brandSelected"
-                        [disableControls]="disableControls"
-                        (onBrandWasSelected)="setBrand($event)">
-                      </app-vehicle-brand>
-                    </div>
-                    <div class="col">
-                        <app-vehicle-type
-                          [vehicleType]="vehicleTypeSelected"
-                          [disableControls]="disableControls"
-                          (onVehicleTypeWasModified)="setVehiclType($event)">
-                        </app-vehicle-type>
-                    </div>
-                    <div class="col">
-                        <app-vehicle-model
-                          [brand]="brandSelected"
-                          [vehicleType]="vehicleTypeSelected"
-                          [disableControls]="disableControls"
-                          (vehicleModelWasSetted)="vehicleWasChanged()"
-                          (VehicleModelWasSelected)="setVehicleModel($event)">
-                        </app-vehicle-model>
-
-                    </div>
-                </div>
-
-
-                <table class="table table-striped">
-                    <thead>
-                        <th>#</th>
-                        <th></th>
-                        <th>Nombre</th>
-                        <th>Presentación</th>
-                        <th>Cantidad</th>
-                        <th>Valor unitario sin impuesto</th>
-                        <th>Valor total sin impuesto</th>
-                        <th>Valor impuestos</th>
-                        <th>Valor total con impuestos</th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let i = index; let mItem of lsMaintenanceItems">
-                            <td>{{i + 1 }}</td>
-                            <td>
-                                <label class="container__checkbox">
-                                    <input
-                                      type="checkbox"
-                                      [id]="getCheckBoxId(mItem.id)"
-                                      (click)="pickItem($event.target,mItem)"
-                                      [disabled]="disableControls"/>
-                                    <span class="checkmark"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <Label [for]="getCheckBoxId(mItem.id)">
-                                    {{mItem.name | titlecase | slice:0:50 }}
-                                </Label>
-                            </td>
-                            <td>{{mItem.presentationUnit.shortName }}</td>
-                            <td>
-                                <input
-                                  type="number"
-                                  class="txt-amount"
-                                  step="0.01"
-                                  [id]="getTextAmountId(mItem.id)"
-                                  (input)="validateAmountByItem($event,mItem)"
-                                  [disabled]="disableControls"
-                                  [value]="0"
-                                  disabled>
-                            </td>
-                            <td>{{ mItem.referencePrice | currency:'USD':'symbol':'1.0-0' }}</td>
-                            <td>
-                                <span [id]="getLabelId(mItem.id)" class="lbl-total-price"></span>
-                            </td>
-                            <td>
-                                <span [id]="getLabelTaxesId(mItem.id)" class="lbl-total-price">
-                                    {{calculateTaxesByItem(mItem , 1) | currency:'USD':'symbol':'1.0-0'}}
-                                </span>
-                            </td>
-                            <td>
-                                <span [id]="getLabelTotalWithTaxes(mItem.id)" class="lbl-total-price-with-taxes"></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><b class="bold">Total mantenimiento:</b></td>
-                            <td><span id="lbl-total-routine" class="bold"></span></td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <div class="container__row_buttons">
-                    <button
-                      class="btn btn-success"
-                      type="submit"
-                      [disabled]="(fieldName.invalid || !routineIsValid)"
-                      *ngIf="!disableControls">
-                        Guardar rutina
-                      </button>
-                    <button
-                      type="button"
-                      class="btn btn-danger"
-                      (click)="cancelRoutine()">
-                        Cancelar
-                    </button>
-                </div>
-
-                <div>
-                    <div class="container__infoError" id="cont_error_add_maintenance_routine"
-                        *ngIf="(fieldName.invalid || !routineIsValid)">
-                        <span>No se puede guardar la rutina de mantenimiento debido a que el formulario no cumple con
-                            los datos requeridos</span>
-                    </div>
-                </div>
-            </div>
+  <form
+    [formGroup]="frmMaintenanceRoutine"
+    (ngSubmit)="saveMaintenanceRoutine()"
+  >
+    <div class="card">
+      <div class="card-header" id="container__header">
+        <legend>Datos de la rutina de mantenimiento</legend>
+        <div class="container__buttonClose">
+          <a (click)="cancelRoutine()">
+            <i class="fas fa-times"></i>
+          </a>
         </div>
-    </form>
+      </div>
+      <div class="card-body">
+        <div class="container__row">
+          <div class="col">
+            <label>Nombre:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name"
+              placeholder="Nombre ..."
+            />
+            <div
+              class="error"
+              *ngIf="
+                fieldName.invalid && (fieldName.dirty || fieldName.touched)
+              "
+            >
+              <p *ngIf="fieldName.hasError('required')">
+                * El campo de nombre es obligatorio
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <app-frequency
+              [frequency]="frequencySelected"
+              [disableControls]="disableControls"
+              (frequencyWasSelected)="setFrequency($event)"
+            >
+            </app-frequency>
+            <div class="error" *ngIf="!routineIsValid">
+              <p>{{ msgRoutineDuplicated }}</p>
+            </div>
+          </div>
+          <div class="col">
+            <label>Precio de la rutina:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="referencePrice"
+              placeholder="Precio ..."
+              [value]="totalRoutine"
+              disabled
+            />
+          </div>
+        </div>
+        <div class="container__row">
+          <div class="col">
+            <app-vehicle-brand
+              [brand]="brandSelected"
+              [disableControls]="disableControls"
+              (onBrandWasSelected)="setBrand($event)"
+            >
+            </app-vehicle-brand>
+          </div>
+          <div class="col">
+            <app-vehicle-type
+              [vehicleType]="vehicleTypeSelected"
+              [disableControls]="disableControls"
+              (onVehicleTypeWasModified)="setVehiclType($event)"
+            >
+            </app-vehicle-type>
+          </div>
+          <div class="col">
+            <app-vehicle-model
+              [brand]="brandSelected"
+              [vehicleType]="vehicleTypeSelected"
+              [vehicleModel]="vehicleModelSelected"
+              [disableControls]="disableControls"
+              (VehicleModelWasSelected)="setVehicleModel($event)"
+            >
+            </app-vehicle-model>
+          </div>
+        </div>
+
+        <div class="container-table">
+          <app-tbl-check-items-for-routine
+            [maintenanceItems]="lsMaintenanceItems"
+            [maintenanceItemsSelected]="lsItemsSelected"
+            (onItemsWereSelected)="setItemsToRoutine($event)"
+            (onRoutineWasCalculated)="setTotalRoutine($event)"
+          >
+          </app-tbl-check-items-for-routine>
+        </div>
+        <div class="container__row_buttons">
+          <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="fieldName.invalid || !routineIsValid"
+            *ngIf="!disableControls"
+          >
+            Guardar rutina
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="cancelRoutine()"
+          >
+            Cancelar
+          </button>
+        </div>
+
+        <div>
+          <div
+            class="container__infoError"
+            id="cont_error_add_maintenance_routine"
+            *ngIf="fieldName.invalid || !routineIsValid"
+          >
+            <span
+              >No se puede guardar la rutina de mantenimiento debido a que el
+              formulario no cumple con los datos requeridos</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
+<app-img-loading
+  style="position: absolut; z-index: 10"
+  *ngIf="isAwaiting"
+></app-img-loading>

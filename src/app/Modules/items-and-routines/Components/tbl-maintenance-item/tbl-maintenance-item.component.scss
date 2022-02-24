@@ -1,21 +1,25 @@
-#container__formMaintenanceItem{
-    display: none;
+#container__formMaintenanceItem {
+  display: none;
 }
-.card-body{
-    width: 1000px;
-}
-
-.container__filter{
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    grid-row: 1fr ;
+.card-body {
+  width: 1000px;
 }
 
-.container__filter > div{
-    padding: 0px 10px;
+.container__filter {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-row: 1fr;
 }
 
-.btn-filter{
+.container__filter > div {
+  padding: 0px 10px;
+}
+
+.btn-filter {
   margin-top: 28px;
   width: 150px;
+}
+
+.container__filter {
+  margin-top: 30px;
 }

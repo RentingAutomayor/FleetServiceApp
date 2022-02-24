@@ -14,7 +14,8 @@ import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/mai
   ],
 })
 export class TblMaintenanceRoutinesComponent implements OnInit {
-  lsMaintenanceRoutines: MaintenanceRoutine[]
+  lsMaintenanceRoutines: MaintenanceRoutine[] = []
+  lsMaintenanceRoutinesFiltered: MaintenanceRoutine[] = []
   isAwaiting: boolean
   p = 1
   containerTable: HTMLDivElement
@@ -24,6 +25,18 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   frequency_id: number
   vehicleModel_id: number
   disableControls: boolean
+  frequencySelected: Frequency = null
+  vehicleModelFilterSelected: VehicleModel = null
+
+  vehicleModelIdFiltered: number = 0
+  frequencyIdFiltered: number = 0
+  isRoutineVisible: boolean = false
+  isTableVisible: boolean = true
+  maintenanceRoutineSelected: MaintenanceRoutine = null
+
+  isErrorVisible = false
+  errorTitle = ''
+  errorMessageApi = ''
 
   constructor(private maintenanceRoutineService: MaintenanceRoutineService) {
     this.frequency_id = 0
@@ -45,63 +58,72 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     this.showTableRoutines()
   }
 
-  async showTableRoutines() {
-    try {
-      this.isAwaiting = true
-      this.lsMaintenanceRoutines =
-        await this.maintenanceRoutineService.getMaintenanceRoutines()
-      this.isAwaiting = false
-    } catch (err) {
-      this.isAwaiting = false
-      console.error(err.error.Message)
-      alert(err.error.Message)
-    }
+  showTableRoutines() {
+    this.isAwaiting = true
+
+    this.maintenanceRoutineService
+      .getMaintenanceRoutines()
+      .subscribe((routines) => {
+        this.lsMaintenanceRoutines = routines
+        this.lsMaintenanceRoutinesFiltered = routines
+        this.isAwaiting = false
+      })
   }
 
   insertRoutine() {
     this.disableControls = false
     this.isToUpdate = false
-    this.oCountChanges += 1
-    this.maintenanceRoutineService.setRoutine(null)
+    this.maintenanceRoutineSelected = null
     this.hideTable()
   }
 
   hideTable() {
-    this.containerTable.style.display = 'none'
-    this.containerFromRoutine.style.display = 'block'
+    this.isRoutineVisible = true
+    this.isTableVisible = false
   }
 
   showTable() {
-    this.containerTable.style.display = 'block'
-    this.containerFromRoutine.style.display = 'none'
+    this.isTableVisible = true
+    this.isRoutineVisible = false
   }
 
-  saveDataRoutine() {
-    this.saveDataInDB()
+  saveDataRoutine(routine: MaintenanceRoutine) {
+    console.log('saveDataRoutine')
+    console.log(routine)
+    this.saveDataInDB(routine)
     this.showTable()
   }
 
-  async saveDataInDB() {
-    try {
-      let rta = new ResponseApi()
-      const oMaintenanceRoutine = this.maintenanceRoutineService.getRoutine()
-      this.isAwaiting = true
-      if (this.isToUpdate) {
-        rta = await this.maintenanceRoutineService.update(oMaintenanceRoutine)
-      } else {
-        rta = await this.maintenanceRoutineService.insert(oMaintenanceRoutine)
-      }
-      this.isAwaiting = false
-
-      if (rta.response) {
-        alert(rta.message)
-        this.showTableRoutines()
-      }
-    } catch (err) {
-      this.isAwaiting = false
-      console.error(err.error.Message)
-      alert(err.error.Message)
+  saveDataInDB(routine: MaintenanceRoutine) {
+    this.isAwaiting = true
+    if (this.isToUpdate) {
+      this.maintenanceRoutineService.update(routine).subscribe(
+        (rta) => {
+          alert(rta.message)
+          this.isAwaiting = false
+        },
+        (err) => {
+          this.isErrorVisible = true
+          this.errorTitle =
+            'Ocurrió un error intentando Actualizar la rutina de mantenimiento'
+          this.errorMessageApi = err.Message
+        }
+      )
+    } else {
+      this.maintenanceRoutineService.insert(routine).subscribe(
+        (rta) => {
+          alert(rta.message)
+          this.isAwaiting = false
+        },
+        (err) => {
+          this.isErrorVisible = true
+          this.errorTitle =
+            'Ocurrió un error intentando Insertar la rutina de mantenimiento'
+          this.errorMessageApi = err.Message
+        }
+      )
     }
+    this.showTableRoutines()
   }
 
   cancelRoutine() {
@@ -114,93 +136,96 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     }
   }
 
-  async seeDetailsRoutine(pRoutine: MaintenanceRoutine) {
+  seeDetailsRoutine(pRoutine: MaintenanceRoutine) {
     this.disableControls = true
     this.isToUpdate = false
     this.isAwaiting = true
-    const routineToUpdate =
-      await this.maintenanceRoutineService.getMaintenanceRoutineByID(
-        pRoutine.id
-      )
-    this.isAwaiting = false
-    this.maintenanceRoutineService.setRoutine(routineToUpdate)
-    this.oCountChanges += 1
+
+    this.maintenanceRoutineService
+      .getMaintenanceRoutineByID(pRoutine.id)
+      .subscribe((mr) => {
+        this.maintenanceRoutineSelected = mr
+        this.isAwaiting = false
+      })
+
     this.hideTable()
   }
 
-  async updateRoutine(pRoutine: MaintenanceRoutine) {
+  updateRoutine(pRoutine: MaintenanceRoutine) {
     this.disableControls = false
     this.isToUpdate = true
     this.isAwaiting = true
-    const routineToUpdate =
-      await this.maintenanceRoutineService.getMaintenanceRoutineByID(
-        pRoutine.id
-      )
 
-    this.isAwaiting = false
-    this.maintenanceRoutineService.setRoutine(routineToUpdate)
-    this.oCountChanges += 1
+    this.maintenanceRoutineService
+      .getMaintenanceRoutineByID(pRoutine.id)
+      .subscribe((mr) => {
+        this.maintenanceRoutineSelected = mr
+        this.maintenanceRoutineService.setRoutine(mr)
+        this.isAwaiting = false
+      })
+
     this.hideTable()
   }
 
-  async deleteRoutine(pRoutine: MaintenanceRoutine) {
-    try {
-      if (
-        confirm('¿Está seguro que desea eliminar esta rutina de mantenimiento?')
-      ) {
-        this.isAwaiting = true
-        const rta = await this.maintenanceRoutineService.delete(pRoutine)
+  deleteRoutine(pRoutine: MaintenanceRoutine) {
+    if (
+      confirm('¿Está seguro que desea eliminar esta rutina de mantenimiento?')
+    ) {
+      this.isAwaiting = true
+      this.maintenanceRoutineService.delete(pRoutine).subscribe((rta) => {
         this.isAwaiting = false
-        if (rta.response) {
-          alert(rta.message)
-          this.showTableRoutines()
+        this.showTableRoutines()
+      })
+    }
+  }
+
+  filterByVehicleModel(vehicleModel: VehicleModel) {
+    this.vehicleModelIdFiltered = vehicleModel != null ? vehicleModel.id : 0
+    this.vehicleModelFilterSelected = vehicleModel
+    this.filterRoutines(this.vehicleModelIdFiltered, this.frequencyIdFiltered)
+  }
+
+  filterByFrequency(frequency: Frequency) {
+    this.frequencyIdFiltered = frequency != null ? frequency.id : 0
+    this.frequencySelected = frequency
+    this.filterRoutines(this.vehicleModelIdFiltered, this.frequencyIdFiltered)
+  }
+
+  filterRoutines(vehicleModelId, FrequencyId) {
+    if (vehicleModelId > 0 && FrequencyId > 0) {
+      this.lsMaintenanceRoutinesFiltered = this.lsMaintenanceRoutines.filter(
+        (mr) => {
+          return (
+            mr.frequency.id == FrequencyId &&
+            mr.vehicleModel.id == vehicleModelId
+          )
         }
+      )
+    } else {
+      if (vehicleModelId == 0 && FrequencyId == 0) {
+        this.lsMaintenanceRoutinesFiltered = this.lsMaintenanceRoutines
+        this.frequencySelected = null
+        this.vehicleModelFilterSelected = null
+      } else {
+        this.lsMaintenanceRoutinesFiltered = this.lsMaintenanceRoutines.filter(
+          (mr) => {
+            return (
+              mr.vehicleModel.id == vehicleModelId ||
+              mr.frequency.id == FrequencyId
+            )
+          }
+        )
       }
-    } catch (err) {
-      console.error(err.error.Message)
-      alert(err.error.Message)
     }
   }
 
-  async filterByVehicleModel(vehicleModel: VehicleModel) {
-    try {
-      this.isAwaiting = true
-
-      if (vehicleModel != null) {
-        this.vehicleModel_id = vehicleModel.id
-      } else {
-        this.vehicleModel_id = 0
-      }
-
-      this.maintenanceRoutineService
-        .getMaintenanceRoutines(this.vehicleModel_id)
-        .then((lsMaintenanceRoutines) => {
-          this.lsMaintenanceRoutines = lsMaintenanceRoutines
-          this.isAwaiting = false
-        })
-    } catch (error) {
-      console.warn(error)
-    }
+  clearFilter() {
+    this.frequencySelected = null
+    this.vehicleModelFilterSelected = null
+    this.filterRoutines(0, 0)
   }
 
-  async filterByFrequency(frequency: Frequency) {
-    try {
-      this.isAwaiting = true
-
-      if (frequency != null) {
-        this.frequency_id = frequency.id
-      } else {
-        this.frequency_id = 0
-      }
-
-      this.maintenanceRoutineService
-        .getMaintenanceRoutines(0, this.frequency_id)
-        .then((lsMaintenanceRoutines) => {
-          this.lsMaintenanceRoutines = lsMaintenanceRoutines
-          this.isAwaiting = false
-        })
-    } catch (error) {
-      console.warn(error)
-    }
+  closeErrorMessage() {
+    this.isErrorVisible = false
   }
 }

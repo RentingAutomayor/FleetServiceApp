@@ -14,13 +14,13 @@ export class VehicleBrandComponent implements OnInit {
   oBrand: Brand
 
   @Output() vehicleBrandWasSetted = new EventEmitter<boolean>()
-  @Input() defaultBrandId = 0
+  @Input() defaultBrandId = 1
 
   brandSelected: Brand = null
   @Input('brand')
   set setBrandSelected(brand: Brand) {
     this.brandSelected = brand
-    this.setDataInForm(this.brandSelected)
+    this.setDataInForm(brand)
   }
 
   disableControls: boolean

@@ -36,15 +36,16 @@ import { VehicleModel } from 'src/app/Models/VehicleModel'
   ],
 })
 export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
-  frmMaintenanceItem: FormGroup
+  frmMaintenanceItem: FormGroup = new FormGroup({})
   item: MaintenanceItem
-  itemToUpdate: MaintenanceItem
-  lsTaxesSelected: Tax[]
+  itemToUpdate: MaintenanceItem = new MaintenanceItem()
+  lsTaxesSelected: Tax[] = []
   itemHandleTax: Boolean
   @Output() maintenanceItemWasSetted = new EventEmitter<boolean>()
   @Output() maintenanceItemWasCanceled = new EventEmitter<boolean>()
-  @Input() countChanges: number
-  sharedFunction: SharedFunction
+  @Input()
+  countChanges!: number
+  sharedFunction: SharedFunction = new SharedFunction()
   presentationUnitIsInvalid: boolean
   vehicleTypeIsValid: boolean
   typeIsInvalid: boolean
@@ -57,9 +58,10 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
   idType: Number
 
   // TODO: Refactor about maintenance Items
-  maintenanceItem: MaintenanceItem
-  lsVehicleTypes: VehicleType[]
-  lsVehicleModels: VehicleModel[]
+  // TODO: Refactor about maintenance Items
+  maintenanceItem: MaintenanceItem = new MaintenanceItem()
+  lsVehicleTypes: VehicleType[] = []
+  lsVehicleModels: VehicleModel[] = []
   amountChangesVehicleType: number
 
   @Input('maintenanceItem')
@@ -83,7 +85,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  brandSelected: Brand = null
+  brandSelected: Brand | null | undefined = null
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -98,9 +100,9 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
     this.typeIsInvalid = false
     this.vehicleTypeIsValid = false
     this.taxesAreInvalid = false
-    this.typeOfItem = null
-    this.presentationUnit = null
-    this.category = null
+    this.typeOfItem = {} as TypeOfMaintenanceItem
+    this.presentationUnit = {} as PresentationUnit
+    this.category = {} as Category
     this.idType = 0
     this.amountChangesVehicleType = 0
   }
@@ -138,7 +140,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
     this.maintenanceItemWasSetted.emit(true)
   }
 
-  setDataToItem(): MaintenanceItem {
+  setDataToItem() {
     try {
       let oItem = new MaintenanceItem()
       oItem = this.frmMaintenanceItem.value
@@ -232,14 +234,14 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
   clearDataForm() {
     this.frmMaintenanceItem.reset()
     this.lsTaxesSelected = []
-    this.presentationUnit = null
-    this.typeOfItem = null
-    this.category = null
+    this.presentationUnit = {} as PresentationUnit
+    this.typeOfItem = {} as TypeOfMaintenanceItem
+    this.category = {} as Category
     this.idType = TypeOfMaintenanceItems.REPUESTO
-    this.vehicleService.setVehicleModelSelected(null)
-    this.vehicleService.setBrandSelected(null)
-    this.vehicleService.setListVehicleTypeSelected(null)
-    this.vehicleService.setListVehicleModelsSelected(null)
+    // this.vehicleService.setVehicleModelSelected(null)
+    // this.vehicleService.setBrandSelected(null)
+    // this.vehicleService.setListVehicleTypeSelected(null)
+    // this.vehicleService.setListVehicleModelsSelected(null)
     this.itemHandleTax = false
     this.lsTaxesSelected = []
     const txtTaxesValue: HTMLInputElement =
@@ -248,9 +250,9 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
       document.querySelector('#totalValue')
     txtTaxesValue.value = ''
     txtTotalValue.value = ''
-    this.maintenanceItem = null
-    this.lsVehicleTypes = null
-    this.lsVehicleModels = null
+    this.maintenanceItem = {} as MaintenanceItem
+    this.lsVehicleTypes = []
+    this.lsVehicleModels = []
   }
 
   comeBack() {

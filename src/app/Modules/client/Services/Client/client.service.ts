@@ -21,9 +21,9 @@ export class ClientService {
 
   constructor(private http: HttpClient) {}
 
-  async getClients(): Promise<Client[]> {
+  getClients(): Observable<Client[]> {
     const urlGetClients = `${this.URL_API}/Get`
-    return this.http.get<Client[]>(urlGetClients).toPromise()
+    return this.http.get<Client[]>(urlGetClients)
   }
 
   async getClientById(pId: number): Promise<Client> {

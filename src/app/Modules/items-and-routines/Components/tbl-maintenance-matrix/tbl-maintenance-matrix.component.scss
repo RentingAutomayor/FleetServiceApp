@@ -1,31 +1,55 @@
-.container__row{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr;
+.container__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
 }
 
-.row_frequency{
-    display: grid;
-    grid-template-rows: 1fr;
-    grid-template-columns: 500px repeat(13,40px);
+.row_frequency {
+  display: grid;
+  grid-template-rows: 1fr;
+  // grid-template-columns: 500px repeat(13, 40px);
+  grid-template-columns: 52% repeat(13, 4%);
 }
 
-.active{
-    display: block;
+.active {
+  display: block;
 }
 
-.inactive{
-    display: none;
+.inactive {
+  display: none;
 }
 
-.button_move{
-    cursor: pointer;
-    font-weight: bold;
-    color: #3282b8;
+.button_move {
+  cursor: pointer;
+  font-weight: bold;
+  color: #3282b8;
 }
 
-.arrow{
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
+.arrow {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.container__filter {
+  margin-top: 30px;
+}
+
+.th-filter {
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+}
+
+.th-filter label {
+  margin-top: 10px;
+  margin-right: 30px;
+}
+
+.th-filter select {
+  width: 200px;
+}
+
+.container__table_matrix {
+  overflow: hidden;
 }

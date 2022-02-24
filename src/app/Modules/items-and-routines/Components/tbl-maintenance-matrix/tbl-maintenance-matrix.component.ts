@@ -19,8 +19,9 @@ import { VehicleModel } from 'src/app/Models/VehicleModel'
 })
 export class TblMaintenanceMatrixComponent implements OnInit {
   isAwaiting: boolean
-  lsFrequency: Frequency[]
-  lsMaintenanceItems: MaintenanceItem[]
+  lsFrequency: Frequency[] = []
+  lsMaintenanceItemsFiltered: MaintenanceItem[] = []
+  lsMaintenanceItems: MaintenanceItem[] = []
   countChanges: number
   lsMaintenanceRoutinesByModel: MaintenanceRoutine[]
   TIPO_MANO_DE_OBRA = 2
@@ -34,22 +35,27 @@ export class TblMaintenanceMatrixComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    //this.initComponents();
+    this.initComponents()
   }
 
   initComponents() {
-    this.isAwaiting = false
-    const MANO_DE_OBRA = 2
+    this.isAwaiting = true
+
     this.countChanges = 0
     //TODO: Change that filter to don't call the API
     this.maintenanceRoutineService.getFrequency().subscribe((frequencies) => {
-      this.lsFrequency = frequencies
+      this.lsFrequency = frequencies.filter((fq) => fq.shortName != '0')
+      this.isAwaiting = false
     })
-
+    this.isAwaiting = true
     this.maintenanceItemService
       .getMaintenanceItems(0)
       .subscribe((maintenanceItems) => {
         this.lsMaintenanceItems = maintenanceItems
+        this.lsMaintenanceItemsFiltered = maintenanceItems
+        const MANO_DE_OBRA = 2
+        this.filterByType(MANO_DE_OBRA)
+        this.isAwaiting = false
       })
   }
 
@@ -69,24 +75,20 @@ export class TblMaintenanceMatrixComponent implements OnInit {
     this.countChanges += 1
   }
 
-  async setVehicleModel(vehicleModel: VehicleModel) {
-    this.isAwaiting = true
-    this.lsMaintenanceRoutinesByModel = await this.getRoutinesByModel(
-      vehicleModel.id
-    )
+  setVehicleModel(vehicleModel: VehicleModel) {
+    this.getRoutinesByModel(vehicleModel.id)
     this.clearCheckBoxSelected()
-    this.checkItemsByRoutines(this.lsMaintenanceRoutinesByModel)
-    this.isAwaiting = false
   }
 
-  async getRoutinesByModel(modelId: number): Promise<MaintenanceRoutine[]> {
-    try {
-      return this.maintenanceRoutineService.getMaintenanceRoutineByModel(
-        modelId
-      )
-    } catch (error) {
-      console.error(error)
-    }
+  getRoutinesByModel(modelId: number) {
+    this.isAwaiting = true
+    this.maintenanceRoutineService
+      .getMaintenanceRoutineByModel(modelId)
+      .subscribe((maintenanceItems) => {
+        this.lsMaintenanceRoutinesByModel = maintenanceItems
+        this.checkItemsByRoutines(this.lsMaintenanceRoutinesByModel)
+        this.isAwaiting = false
+      })
   }
 
   checkItemsByRoutines(lsRoutines: MaintenanceRoutine[]) {
@@ -148,5 +150,11 @@ export class TblMaintenanceMatrixComponent implements OnInit {
         aColum[i].classList.add('inactive')
       }
     }
+  }
+
+  filterByType(typeId: number) {
+    this.lsMaintenanceItemsFiltered = this.lsMaintenanceItems.filter(
+      (mi) => mi.type.id == typeId
+    )
   }
 }

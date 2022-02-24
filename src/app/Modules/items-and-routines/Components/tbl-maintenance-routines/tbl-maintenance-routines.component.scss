@@ -1,13 +1,22 @@
-#container__maintenanceRoutine{
-   display: none;
+.container__maintenanceRoutine {
+  position: relative;
+  top: 30px;
+  height: 100vh;
 }
 
-.container__filter{
-   display: grid;
-   grid-template-columns: repeat(3,1fr);
-   grid-template-rows: 1fr;
+.container__filter {
+  display: grid;
+  grid-template-columns: 40% 40% 20%;
+  grid-template-rows: 1fr;
+  margin-top: 30px;
 }
 
-.container__filter > div{
-   padding: 0px 10px;
+.container__filter > div {
+  padding: 0px 10px;
+}
+
+.btn-filter {
+  margin-top: 28px;
+  position: relative;
+  width: 100%;
 }

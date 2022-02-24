@@ -18,6 +18,7 @@ import { SharedFunction } from 'src/app/Models/SharedFunctions'
 import { Frequency } from 'src/app/Models/Frequency'
 import { Brand } from 'src/app/Models/Brand'
 import { VehicleType } from 'src/app/Models/VehicleType'
+import { BehaviorSubject } from 'rxjs'
 
 @Component({
   selector: 'app-maintenance-routine',
@@ -25,23 +26,40 @@ import { VehicleType } from 'src/app/Models/VehicleType'
   styleUrls: [
     './maintenance-routine.component.scss',
     '../../../../../assets/styles/app.scss',
-    '../../../../../assets/styles/checkbox.scss',
   ],
 })
-export class MaintenanceRoutineComponent implements OnInit, OnChanges {
+export class MaintenanceRoutineComponent implements OnInit {
   frmMaintenanceRoutine: FormGroup
-  lsMaintenanceItems: MaintenanceItem[]
-  lsItemsSelected: MaintenanceItem[]
-  @Output() routineWasSaved = new EventEmitter<boolean>()
+
+  lsMaintenanceItems: MaintenanceItem[] = []
+  lsItemsSelected: MaintenanceItem[] = []
+
   @Output() routinewasCanceled = new EventEmitter<boolean>()
   @Input() countChanges: number
-  routineToUpdate: MaintenanceRoutine
+
   sharedFunction: SharedFunction
   frequency_id: number
   vehicleModel_id: number
   routineIsValid: boolean
   msgRoutineDuplicated: string
   initialRoutine: number
+
+  maintenanceRoutineSelected: MaintenanceRoutine = null
+  @Input('maintenanceRoutine')
+  set setMaintenanceRoutineSelected(mr: MaintenanceRoutine) {
+    this.maintenanceRoutineSelected = mr
+    if (this.maintenanceRoutineSelected) {
+      this.setDataInForm(this.maintenanceRoutineSelected)
+      this.brandSelected = mr.vehicleModel.brand
+      this.vehicleTypeSelected = mr.vehicleModel.type
+      this.vehicleModelSelected = mr.vehicleModel
+    } else {
+      this.clearDataForm()
+      this.brandSelected = null
+      this.vehicleTypeSelected = null
+      this.vehicleModelSelected = null
+    }
+  }
 
   disableControls: boolean
   @Input('disableControls')
@@ -56,10 +74,24 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
 
   brandSelected: Brand = null
   vehicleTypeSelected: VehicleType = null
+  vehicleModelSelected: VehicleModel = null
+  frequencySelected: Frequency = null
+  isAwaiting: boolean = false
 
   get fieldName() {
     return this.frmMaintenanceRoutine.get('name')
   }
+
+  //ft-0202
+  itemsWereChanged: BehaviorSubject<MaintenanceItem[]> = new BehaviorSubject<
+    MaintenanceItem[]
+  >([])
+  maintenanceItems$ = this.itemsWereChanged.asObservable()
+
+  totalRoutine: string = '0'
+
+  @Output() routineWasSaved: EventEmitter<MaintenanceRoutine> =
+    new EventEmitter<MaintenanceRoutine>()
 
   constructor(
     private maintenanceItemService: MaintenanceItemService,
@@ -71,7 +103,6 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
       name: ['', [Validators.required]],
       referencePrice: [''],
     })
-
     this.sharedFunction = new SharedFunction()
     this.routineIsValid = true
     this.initialRoutine = 0
@@ -80,326 +111,40 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
     this.msgRoutineDuplicated = ''
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    for (const change in changes) {
-      if (change == 'countChanges') {
-        this.routineToUpdate = this.maintenanceRoutineService.getRoutine()
-        if (this.routineToUpdate != null) {
-          this.setDataInForm(this.routineToUpdate)
-
-          this.routineIsValid = true
-          this.vehicleModel_id = this.routineToUpdate.vehicleModel.id
-          this.frequency_id = this.routineToUpdate.frequency.id
-          this.initialRoutine = this.routineToUpdate.frequency.id
-        } else {
-          this.clearDataForm()
-        }
-      }
-    }
-  }
-
   ngOnInit(): void {
     this.initComponents()
   }
 
-  async initComponents() {
+  initComponents() {
     this.lsMaintenanceItems = []
     this.lsItemsSelected = []
-  }
-
-  async GetItemsByVehicleModel() {
-    const oVehicleModel = this.vehicleService.getVehicleModelSelected()
-    this.lsMaintenanceItems =
-      await this.maintenanceItemService.getItemsByVehicleModel(oVehicleModel.id)
-  }
-
-  getVehicleModelName(pVehicleModel: VehicleModel) {
-    if (pVehicleModel != null) {
-      return pVehicleModel.shortName
-    } else {
-      return 'Genérico'
-    }
-  }
-
-  validateAmountByItem(event: any, pItem: MaintenanceItem) {
-    try {
-      const amountValue = event.target.value
-      if (amountValue < 0) {
-        event.target.value = 0
-        throw new Error('No se permiten cantidades negativas')
-      }
-      this.calculatePriceByItem(amountValue, pItem)
-      this.calculateRoutinePrice()
-      this.updateAmountOfItem(pItem, amountValue)
-    } catch (error) {
-      alert(error)
-    }
-  }
-
-  calculatePriceByItem(amount: number, item: MaintenanceItem) {
-    try {
-      const price = amount * item.referencePrice
-      const taxes = parseFloat(this.calculateTaxesByItem(item, amount))
-      const totalByItem = Math.round(price + taxes)
-      this.showInfoItemIntoRow(item.id, price, taxes, totalByItem)
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  showInfoItemIntoRow(
-    item_id: number,
-    priceWothoutTaxes: number,
-    taxes: number,
-    priceWithTaxes: number
-  ) {
-    try {
-      const idSpan = 'lbl_price_' + item_id.toString()
-      const spanPrice: HTMLSpanElement = document.getElementById(idSpan)
-
-      const idSpanTaxes = `#${this.getLabelTaxesId(item_id)}`
-      const spanTaxes: HTMLSpanElement = document.querySelector(idSpanTaxes)
-
-      const idSpanTotalWithTaxes = `#${this.getLabelTotalWithTaxes(item_id)}`
-      const spanTotalByItem: HTMLSpanElement =
-        document.querySelector(idSpanTotalWithTaxes)
-
-      priceWothoutTaxes = Math.round(parseFloat(priceWothoutTaxes.toFixed(2)))
-      taxes = Math.round(parseFloat(taxes.toFixed(2)))
-      priceWithTaxes = Math.round(parseFloat(priceWithTaxes.toFixed(2)))
-
-      spanPrice.innerText =
-        this.sharedFunction.formatNumberToString(priceWothoutTaxes)
-      spanTaxes.innerText = this.sharedFunction.formatNumberToString(taxes)
-      spanTotalByItem.innerText =
-        this.sharedFunction.formatNumberToString(priceWithTaxes)
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  pickItem(event: any, pItem: MaintenanceItem) {
-    const idTxt = `#txt_${pItem.id}`
-    const txtAmount: HTMLInputElement = document.querySelector(idTxt)
-    const idSpanPrice = `#lbl_price_${pItem.id}`
-    const spanPrice: HTMLSpanElement = document.querySelector(idSpanPrice)
-
-    if (event.checked) {
-      txtAmount.disabled = false
-      this.addOrUpdateMaintenanceItemIntoList(pItem)
-    } else {
-      txtAmount.value = '0'
-      spanPrice.innerText = ''
-      txtAmount.disabled = true
-      this.calculateRoutinePrice()
-      this.deleteMaintenanceItemToList(pItem)
-    }
-  }
-
-  updateAmountOfItem(pItem: MaintenanceItem, amount: number) {
-    const oItemTmp = this.lsItemsSelected.find((item) => item.id == pItem.id)
-    const indexElement = this.lsItemsSelected.indexOf(oItemTmp)
-
-    this.lsItemsSelected[indexElement].amount = amount
-  }
-
-  addOrUpdateMaintenanceItemIntoList(pItem: MaintenanceItem) {
-    const oItem = this.lsItemsSelected.find((item) => item.id == pItem.id)
-    if (oItem != null) {
-      const indexItem = this.lsItemsSelected.indexOf(oItem)
-      this.lsItemsSelected[indexItem] = pItem
-    } else {
-      this.lsItemsSelected.push(pItem)
-    }
-  }
-
-  deleteMaintenanceItemToList(pItem: MaintenanceItem) {
-    const indexElement = this.lsItemsSelected.indexOf(pItem)
-    this.lsItemsSelected.splice(indexElement)
-  }
-
-  getTextAmountId(pId: number) {
-    return `txt_${pId}`
-  }
-
-  getCheckBoxId(pId: number) {
-    return `chk_${pId}`
-  }
-
-  getLabelId(pId: number) {
-    return 'lbl_price_' + pId.toString()
-  }
-
-  getLabelTaxesId(pId: number) {
-    return 'lbl_taxes_' + pId.toString()
-  }
-
-  getLabelTotalWithTaxes(pId: number) {
-    return 'lbl_total_with_taxes_' + pId.toString()
-  }
-
-  calculateRoutinePrice() {
-    try {
-      const { referencePrice } = this.frmMaintenanceRoutine.controls
-      const lblTotalPrice: HTMLSpanElement =
-        document.querySelector('#lbl-total-routine')
-      const aTotalByItem = document.getElementsByClassName(
-        'lbl-total-price-with-taxes'
-      )
-      let totalPrice = 0
-
-      for (let i = 0; i < aTotalByItem.length; i++) {
-        const priceItem = aTotalByItem[i].textContent
-        if (priceItem.trim() != '') {
-          const priceFormated = priceItem.replace(/,/g, '')
-          totalPrice += Math.round(parseFloat(priceFormated))
-        }
-      }
-
-      const nTotalPrice = Math.round(parseFloat(totalPrice.toFixed(2)))
-      const totalFormated =
-        this.sharedFunction.formatNumberToString(nTotalPrice)
-
-      referencePrice.setValue(totalFormated)
-      lblTotalPrice.innerText = totalFormated
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  calculateTaxesByItem(item: MaintenanceItem, amount: number) {
-    try {
-      const priceWithoutTaxes = item.referencePrice * amount
-      let taxesValue = 0
-      if (item.handleTax) {
-        for (const tax of item.lsTaxes) {
-          taxesValue += Math.round(priceWithoutTaxes * (tax.percentValue / 100))
-        }
-      }
-      return taxesValue.toFixed(2)
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  async saveMaintenanceRoutine() {
-    try {
-      this.calculateRoutinePrice()
-      const { name, referencePrice } = this.frmMaintenanceRoutine.controls
-      const oMaintenenceRoutine = new MaintenanceRoutine()
-      if (this.routineToUpdate != null) {
-        oMaintenenceRoutine.id = this.routineToUpdate.id
-      }
-      oMaintenenceRoutine.name = name.value
-      const totalPrice = parseFloat(referencePrice.value.replace(/,/g, ''))
-      oMaintenenceRoutine.referencePrice = totalPrice
-      oMaintenenceRoutine.vehicleModel =
-        this.vehicleService.getVehicleModelSelected()
-      oMaintenenceRoutine.frequency =
-        this.maintenanceRoutineService.getFrecuencySelected()
-      oMaintenenceRoutine.lsItems = this.lsItemsSelected
-
-      this.maintenanceRoutineService.setRoutine(oMaintenenceRoutine)
-      this.routineWasSaved.emit(true)
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  cancelRoutine() {
-    this.routinewasCanceled.emit(true)
   }
 
   setDataInForm(pRoutine: MaintenanceRoutine) {
     this.frmMaintenanceRoutine.patchValue(pRoutine)
     this.brandSelected = pRoutine.vehicleModel.brand
     this.vehicleTypeSelected = pRoutine.vehicleModel.type
+    this.frequencySelected = pRoutine.frequency
+    this.lsItemsSelected = pRoutine.lsItems
 
-    this.maintenanceRoutineService.setFrecuencySelected(pRoutine.frequency)
-    this.vehicleService.setVehicleModelSelected(pRoutine.vehicleModel)
-
+    this.totalRoutine = this.sharedFunction.formatNumberToString(
+      pRoutine.referencePrice
+    )
     this.maintenanceItemService
       .getItemsByVehicleModel(pRoutine.vehicleModel.id)
-      .then((data) => {
+      .subscribe((data) => {
         this.lsMaintenanceItems = data
-
-        setTimeout(() => {
-          if (pRoutine.lsItems != null) {
-            this.validateItemsToRoutine(pRoutine.lsItems)
-            this.calculateRoutinePrice()
-          }
-        }, 500)
       })
-  }
-
-  validateItemsToRoutine(pLsItems: MaintenanceItem[]) {
-    pLsItems.forEach((item) => {
-      this.addOrUpdateMaintenanceItemIntoList(item)
-      this.setDataInItemRow(item)
-    })
-
-    console.warn('[item selected tmp]: ', this.lsItemsSelected)
-  }
-
-  setDataInItemRow(pItem: MaintenanceItem) {
-    try {
-      const idChechBox = `#${this.getCheckBoxId(pItem.id)}`
-      const idTextBoxAmount = `#${this.getTextAmountId(pItem.id)}`
-
-      const chkItem: HTMLInputElement = document.querySelector(idChechBox)
-      const txtAmount: HTMLInputElement =
-        document.querySelector(idTextBoxAmount)
-
-      chkItem.checked = true
-      txtAmount.disabled = this.disableControls
-      txtAmount.value = pItem.amount.toString()
-
-      this.calculatePriceByItem(pItem.amount, pItem)
-    } catch (error) {
-      console.error(error)
-    }
   }
 
   clearDataForm() {
     this.frmMaintenanceRoutine.reset()
     this.brandSelected = null
     this.vehicleTypeSelected = null
-
-    this.maintenanceRoutineService.setFrecuencySelected(null)
-    this.vehicleService.setVehicleModelSelected(null)
-
+    this.frequencySelected = null
     this.lsMaintenanceItems = []
-    const lblTotalPrice: HTMLSpanElement =
-      document.querySelector('#lbl-total-routine')
-    lblTotalPrice.textContent = ''
-  }
-
-  vehicleWasChanged() {
-    if (this.routineToUpdate != null) {
-      const oVehicleModelSelected =
-        this.vehicleService.getVehicleModelSelected()
-      if (oVehicleModelSelected.id != this.routineToUpdate.vehicleModel.id) {
-        if (
-          confirm(
-            '¿Está seguro que desea modificar la línea?, al hacer eso perderá todos los cambios registrados hasta el momento'
-          )
-        ) {
-          this.GetItemsByVehicleModel()
-          this.lsItemsSelected = []
-          this.routineToUpdate.lsItems = []
-          const { referencePrice } = this.frmMaintenanceRoutine.controls
-          const lblTotalPrice: HTMLSpanElement =
-            document.querySelector('#lbl-total-routine')
-          referencePrice.setValue(0)
-          lblTotalPrice.textContent = ''
-        } else {
-          this.GetItemsByVehicleModel()
-        }
-      }
-      this.validateItemsToRoutine(this.routineToUpdate.lsItems)
-    } else {
-      this.GetItemsByVehicleModel()
-    }
+    this.lsItemsSelected = []
+    this.totalRoutine = '0'
   }
 
   setBrand(brand: Brand) {
@@ -411,6 +156,7 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   }
 
   setFrequency(frequency: Frequency) {
+    this.frequencySelected = frequency
     if (frequency != null && frequency != undefined) {
       this.frequency_id = frequency.id
     } else {
@@ -426,12 +172,32 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
   }
 
   setVehicleModel(vehicleModel: VehicleModel) {
+    this.vehicleModelSelected = vehicleModel
     if (vehicleModel != null && vehicleModel != undefined) {
       this.vehicleModel_id = vehicleModel.id
     } else {
       this.vehicleModel_id = 0
     }
 
+    this.GetItemsByVehicleModel(this.vehicleModel_id)
+    if (this.maintenanceRoutineSelected != null) {
+      if (vehicleModel.id != this.maintenanceRoutineSelected.vehicleModel.id) {
+        if (
+          confirm(
+            '¿Está seguro que desea modificar la línea?, al hacer eso perderá todos los cambios registrados hasta el momento'
+          )
+        ) {
+          this.GetItemsByVehicleModel(this.vehicleModel_id)
+          this.lsItemsSelected = []
+          this.totalRoutine = '0'
+        } else {
+          this.GetItemsByVehicleModel(this.vehicleModel_id)
+        }
+      }
+    } else {
+      this.GetItemsByVehicleModel(this.vehicleModel_id)
+    }
+    this.GetItemsByVehicleModel(this.vehicleModel_id)
     this.validateRoutineAndFrequency(this.vehicleModel_id, this.frequency_id)
   }
 
@@ -442,5 +208,51 @@ export class MaintenanceRoutineComponent implements OnInit, OnChanges {
         this.routineIsValid = rta.response
         this.msgRoutineDuplicated = rta.message
       })
+  }
+
+  setItemsToRoutine(itemsSelected: MaintenanceItem[]) {
+    this.lsItemsSelected = itemsSelected
+  }
+
+  setTotalRoutine(total: number) {
+    this.totalRoutine = this.sharedFunction.formatNumberToString(total)
+  }
+
+  GetItemsByVehicleModel(vehicleModelId: number) {
+    this.isAwaiting = true
+    this.maintenanceItemService
+      .getItemsByVehicleModel(vehicleModelId)
+      .subscribe((maintenanceItems) => {
+        this.lsMaintenanceItems = maintenanceItems
+        this.itemsWereChanged.next(this.lsMaintenanceItems)
+        this.isAwaiting = false
+      })
+  }
+
+  saveMaintenanceRoutine() {
+    try {
+      const { name } = this.frmMaintenanceRoutine.controls
+      const oMaintenenceRoutine = new MaintenanceRoutine()
+      if (this.maintenanceRoutineSelected != null) {
+        oMaintenenceRoutine.id = this.maintenanceRoutineSelected.id
+      } else {
+        oMaintenenceRoutine.id = 0
+      }
+      oMaintenenceRoutine.name = name.value
+      oMaintenenceRoutine.description = name.value
+      oMaintenenceRoutine.referencePrice = parseInt(
+        this.totalRoutine.replace(/,/g, '')
+      )
+      oMaintenenceRoutine.vehicleModel = this.vehicleModelSelected
+      oMaintenenceRoutine.frequency = this.frequencySelected
+      oMaintenenceRoutine.lsItems = this.lsItemsSelected
+      this.routineWasSaved.emit(oMaintenenceRoutine)
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  cancelRoutine() {
+    this.routinewasCanceled.emit(true)
   }
 }

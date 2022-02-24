@@ -11,7 +11,7 @@ import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenan
 })
 export class TypeOfMaintenanceItemComponent implements OnInit {
   frmType: FormGroup
-  lsType: TypeOfMaintenanceItem[]
+  lsType: TypeOfMaintenanceItem[] = []
 
   @Output() lostFocus = new EventEmitter<TypeOfMaintenanceItem>()
   @Output() chageType = new EventEmitter<TypeOfMaintenanceItem>()
@@ -29,7 +29,7 @@ export class TypeOfMaintenanceItemComponent implements OnInit {
         this.chageType.emit(this.typeOfItemSelected)
       } else {
         this.clearForm()
-        this.chageType.emit(null)
+        this.chageType.emit(undefined)
       }
     }
   }

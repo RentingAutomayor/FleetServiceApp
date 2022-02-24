@@ -1,0 +1,90 @@
+<div class="container-table">
+  <table class="table table-striped">
+    <thead>
+      <th>#</th>
+      <th></th>
+      <th>Nombre</th>
+      <th>Presentación</th>
+      <th>Cantidad</th>
+      <th>Valor unitario sin impuesto</th>
+      <th>Valor total sin impuesto</th>
+      <th>Valor impuestos</th>
+      <th>Valor total con impuestos</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mItem of maintenanceItems$ | async; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>
+          <label class="container__checkbox">
+            <input
+              type="checkbox"
+              [id]="getCheckBoxId(mItem.id)"
+              (click)="pickItem($event.target.checked, mItem)"
+              [disabled]="disableControls"
+            />
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td>
+          <Label [for]="getCheckBoxId(mItem.id)">
+            {{ mItem.name | titlecase | slice: 0:50 }}
+          </Label>
+        </td>
+        <td>{{ mItem.presentationUnit.shortName }}</td>
+        <td>
+          <input
+            [id]="getTextAmountId(mItem.id)"
+            type="number"
+            class="form-control txt-amount"
+            step="0.01"
+            (keypress)="validateTyping($event, mItem)"
+            (input)="updateAmoutByItem($event.target.value, mItem)"
+            [value]="mItem.amount"
+            disabled
+          />
+        </td>
+        <td>
+          {{ mItem.referencePrice | currency: 'USD':'symbol':'1.0-0' }}
+        </td>
+        <td>
+          {{
+            mItem
+              | calculatePriceByAmount: mItem.referencePrice:mItem.amount
+              | currency: 'USD':'symbol':'1.0-0'
+          }}
+        </td>
+        <td>
+          {{
+            mItem
+              | calculateTaxes: mItem.referencePrice:mItem.amount
+              | currency: 'USD':'symbol':'1.0-0'
+          }}
+        </td>
+        <td>
+          {{
+            mItem
+              | calculateTotalPrice: mItem.referencePrice:mItem.amount
+              | currency: 'USD':'symbol':'1.0-0'
+          }}
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b class="bold">Total mantenimiento:</b></td>
+        <td>
+          <span id="lbl-total-routine" class="bold">{{
+            totalRoutine | currency: 'USD':'symbol':'1.0-0'
+          }}</span>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

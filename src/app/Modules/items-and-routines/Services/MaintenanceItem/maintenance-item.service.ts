@@ -80,13 +80,9 @@ export class MaintenanceItemService {
     return this.http.get<MaintenanceItem[]>(urlGetMaintenanceItem).toPromise()
   }
 
-  async getItemsByVehicleModel(
-    pVehicleModel_id: number
-  ): Promise<MaintenanceItem[]> {
+  getItemsByVehicleModel(pVehicleModel_id: number) {
     const urlGetMaintenanceItems = `${this.URL_API}/GetItemsByVehicleModel?pVehicleModel_id=${pVehicleModel_id}`
-    return await this.http
-      .get<MaintenanceItem[]>(urlGetMaintenanceItems)
-      .toPromise()
+    return this.http.get<MaintenanceItem[]>(urlGetMaintenanceItems)
   }
 
   async getPresentationUnits(): Promise<PresentationUnit[]> {

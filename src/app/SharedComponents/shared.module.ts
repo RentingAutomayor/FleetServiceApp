@@ -23,6 +23,7 @@ import { AlertErrorComponent } from './alert-error/alert-error.component'
 import { CalculateTaxesPipe } from './Pipes/calculate-taxes.pipe'
 import { CalculateTotalPricePipe } from './Pipes/calculate-total-price.pipe'
 import { TblPricesMaintenanceItemsComponent } from './tbl-prices-maintenance-items/tbl-prices-maintenance-items.component'
+import { CalculatePriceByAmountPipe } from './Pipes/calculate-price-by-amount.pipe'
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { TblPricesMaintenanceItemsComponent } from './tbl-prices-maintenance-ite
     CalculateTaxesPipe,
     CalculateTotalPricePipe,
     TblPricesMaintenanceItemsComponent,
+    CalculatePriceByAmountPipe,
   ],
   imports: [
     CommonModule,
@@ -73,7 +75,9 @@ import { TblPricesMaintenanceItemsComponent } from './tbl-prices-maintenance-ite
     CalculateTaxesPipe,
     CalculateTotalPricePipe,
     TblPricesMaintenanceItemsComponent,
+    CalculatePriceByAmountPipe,
   ],
+  providers: [CalculateTotalPricePipe],
 
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

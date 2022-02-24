@@ -1,71 +1,90 @@
 <div class="container__table" id="container__table_items">
-    <h2>Artículos de mantenimiento</h2>
-    <div class="container__filter">
-        <div>
-            <app-type-of-maintenance-item
-              (chageType)="filterItems($event)">
-            </app-type-of-maintenance-item>
-        </div>
-        <div>
-            <label>Nombre / Código: </label>
-            <input type="text" placeholder="Nombre" class="form-control"
-            (input)="filterItemsByDescription($event)">
-        </div>
-        <div>
-
-          <button
-            type="button"
-            class="btn btn-danger btn-filter">
-            Borrar filtro
-          </button>
-        </div>
+  <div class="container__filter">
+    <div>
+      <app-type-of-maintenance-item (chageType)="filterItems($event)">
+      </app-type-of-maintenance-item>
     </div>
-    <button
-      class="btn-add btn-info"
-      (click)="insertMaintenanceItem()">
-        <i class="fas fa-plus"></i>
-    </button>
-    <table class="table table-striped">
-        <thead>
-            <th class="col-number col-mobile-hide">#</th>
-            <th>Código</th>
-            <th>Nombre</th>
-            <th class="col-mobile-hide">Tipo</th>
-            <th class="col-mobile-hide">Presentación</th>
-            <th class="col-mobile-hide">Valor sin impuestos</th>
-            <th class="col-mobile-hide">Valor Impuetos</th>
-            <th class="col-mobile-hide">Valor con impuestos</th>
-            <th class="col-mobile-hide">Acciones</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let i = index ;let item of lsMaintenanceItemsFiltered | paginate: { itemsPerPage: 100, currentPage: pag }">
-                <td>{{i+1}}</td>
-                <td>{{item.code}}</td>
-                <td>{{item.name | titlecase | slice:0:50 }}</td>
-                <td>{{item.type.name | titlecase}}</td>
-                <td>{{item.presentationUnit.longName | titlecase}}</td>
-                <td>{{item.referencePrice  | currency:'USD':'symbol':'1.0-0'}}</td>
-                <td>{{ item | calculateTaxes  | currency:'USD':'symbol':'1.0-0' }}</td>
-                <td>{{ item | calculateTotalPrice | currency:'USD':'symbol':'1.0-0' }}</td>
-                <td>
-                    <i class="fas fa-info-circle text-info" (click)="seeDetailsMaintenanceItem(item)" title="Más información"></i>
-                    <i class="fas fa-edit text-warning" (click)="updateMaintenanceItem(item)" title="Modificar"></i>
-                    <i class="fas fa-trash-alt text-danger" (click)="deleteMaintenanceItem(item)" title="Eliminar"></i>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="paginationContainer">
-        <pagination-controls (pageChange)="pag = $event"></pagination-controls>
+    <div>
+      <label>Nombre / Código: </label>
+      <input
+        type="text"
+        placeholder="Nombre"
+        class="form-control"
+        (input)="filterItemsByDescription($event)"
+      />
     </div>
+    <div>
+      <button type="button" class="btn btn-danger btn-filter">
+        Borrar filtro
+      </button>
+    </div>
+  </div>
+  <button class="btn-add btn-info" (click)="insertMaintenanceItem()">
+    <i class="fas fa-plus"></i>
+  </button>
+  <table class="table table-striped">
+    <thead>
+      <th class="col-number col-mobile-hide">#</th>
+      <th>Código</th>
+      <th>Nombre</th>
+      <th class="col-mobile-hide">Tipo</th>
+      <th class="col-mobile-hide">Presentación</th>
+      <th class="col-mobile-hide">Valor sin impuestos</th>
+      <th class="col-mobile-hide">Valor Impuetos</th>
+      <th class="col-mobile-hide">Valor con impuestos</th>
+      <th class="col-mobile-hide">Acciones</th>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let i = index;
+          let item;
+          of: lsMaintenanceItemsFiltered
+            | paginate: { itemsPerPage: 100, currentPage: pag }
+        "
+      >
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.code }}</td>
+        <td>{{ item.name | titlecase | slice: 0:50 }}</td>
+        <td>{{ item.type.name | titlecase }}</td>
+        <td>{{ item.presentationUnit.longName | titlecase }}</td>
+        <td>{{ item.referencePrice | currency: 'USD':'symbol':'1.0-0' }}</td>
+        <td>{{ item | calculateTaxes | currency: 'USD':'symbol':'1.0-0' }}</td>
+        <td>
+          {{ item | calculateTotalPrice | currency: 'USD':'symbol':'1.0-0' }}
+        </td>
+        <td>
+          <i
+            class="fas fa-info-circle text-info"
+            (click)="seeDetailsMaintenanceItem(item)"
+            title="Más información"
+          ></i>
+          <i
+            class="fas fa-edit text-warning"
+            (click)="updateMaintenanceItem(item)"
+            title="Modificar"
+          ></i>
+          <i
+            class="fas fa-trash-alt text-danger"
+            (click)="deleteMaintenanceItem(item)"
+            title="Eliminar"
+          ></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="paginationContainer">
+    <pagination-controls (pageChange)="pag = $event"></pagination-controls>
+  </div>
 </div>
-<div id="container__formMaintenanceItem">
-    <app-maintenance-item
-        [disableControls]="disableControls"
-        [maintenanceItem]="maintenanceItemSelected"
-        (maintenanceItemWasSetted)="saveMaintenanceItem()"
-        (maintenanceItemWasCanceled)="comeBackToTable()">
-    </app-maintenance-item>
+<div *ngIf="isDetailVisible">
+  <app-maintenance-item
+    [disableControls]="disableControls"
+    [maintenanceItem]="maintenanceItemSelected"
+    (maintenanceItemWasSetted)="saveMaintenanceItem()"
+    (maintenanceItemWasCanceled)="comeBackToTable()"
+  >
+  </app-maintenance-item>
 </div>
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

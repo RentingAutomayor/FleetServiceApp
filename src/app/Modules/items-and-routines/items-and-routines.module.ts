@@ -12,12 +12,11 @@ import { TblMaintenanceItemComponent } from './Components/tbl-maintenance-item/t
 import { TblMaintenanceMatrixComponent } from './Components/tbl-maintenance-matrix/tbl-maintenance-matrix.component'
 import { TblMaintenanceRoutinesComponent } from './Components/tbl-maintenance-routines/tbl-maintenance-routines.component'
 import { TypeOfMaintenanceItemComponent } from './Components/type-of-maintenance-item/type-of-maintenance-item.component'
-
 import { SharedModule } from 'src/app/SharedComponents/shared.module'
 import { ItemsAndRoutinesRoutingModule } from './items-and-routines-routing.module'
-import { CalculateTaxesPipe } from './pipes/calculate-taxes.pipe'
-import { CalculateTotalPricePipe } from './pipes/calculate-total-price.pipe'
 import { TaxesListComponent } from './Components/taxes-list/taxes-list.component'
+import { MatTabsModule } from '@angular/material/tabs'
+import { TblCheckItemsForRoutineComponent } from './Components/tbl-check-items-for-routine/tbl-check-items-for-routine.component'
 
 @NgModule({
   declarations: [
@@ -31,9 +30,9 @@ import { TaxesListComponent } from './Components/taxes-list/taxes-list.component
     TblMaintenanceMatrixComponent,
     TblMaintenanceRoutinesComponent,
     TypeOfMaintenanceItemComponent,
-    CalculateTaxesPipe,
-    CalculateTotalPricePipe,
+
     TaxesListComponent,
+    TblCheckItemsForRoutineComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +40,7 @@ import { TaxesListComponent } from './Components/taxes-list/taxes-list.component
     ReactiveFormsModule,
     SharedModule,
     ItemsAndRoutinesRoutingModule,
+    MatTabsModule,
   ],
 })
 export class ItemsAndRoutinesModule {}

@@ -1,20 +1,31 @@
-<div class="container__table" id="container__table_items">
+<div
+  class="container__table"
+  id="container__table_items"
+  *ngIf="isTableVisible"
+>
   <div class="container__filter">
     <div>
-      <app-type-of-maintenance-item (chageType)="filterItems($event)">
+      <app-type-of-maintenance-item
+        [typeOfItem]="typeFiltered"
+        (chageType)="filterItems($event)"
+      >
       </app-type-of-maintenance-item>
     </div>
     <div>
       <label>Nombre / Código: </label>
       <input
         type="text"
+        [formControl]="txtDescription"
         placeholder="Nombre"
         class="form-control"
-        (input)="filterItemsByDescription($event)"
       />
     </div>
     <div>
-      <button type="button" class="btn btn-danger btn-filter">
+      <button
+        type="button"
+        class="btn btn-danger btn-filter"
+        (click)="clearFilter()"
+      >
         Borrar filtro
       </button>
     </div>
@@ -49,9 +60,19 @@
         <td>{{ item.type.name | titlecase }}</td>
         <td>{{ item.presentationUnit.longName | titlecase }}</td>
         <td>{{ item.referencePrice | currency: 'USD':'symbol':'1.0-0' }}</td>
-        <td>{{ item | calculateTaxes | currency: 'USD':'symbol':'1.0-0' }}</td>
         <td>
-          {{ item | calculateTotalPrice | currency: 'USD':'symbol':'1.0-0' }}
+          {{
+            item
+              | calculateTaxes: item.referencePrice:1
+              | currency: 'USD':'symbol':'1.0-0'
+          }}
+        </td>
+        <td>
+          {{
+            item
+              | calculateTotalPrice: item.referencePrice:1
+              | currency: 'USD':'symbol':'1.0-0'
+          }}
         </td>
         <td>
           <i
@@ -77,7 +98,7 @@
     <pagination-controls (pageChange)="pag = $event"></pagination-controls>
   </div>
 </div>
-<div *ngIf="isDetailVisible">
+<div *ngIf="isMaintenanceItemVisible">
   <app-maintenance-item
     [disableControls]="disableControls"
     [maintenanceItem]="maintenanceItemSelected"

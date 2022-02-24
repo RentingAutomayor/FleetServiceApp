@@ -1,179 +1,239 @@
-<form
+<div class="container-item">
+  <form
     [formGroup]="frmMaintenanceItem"
-    (ngSubmit)="setDataMaintenanceItem($event)">
+    (ngSubmit)="setDataMaintenanceItem($event)"
+  >
     <div class="card">
-        <div class="card-header" id="container__header">
-            <legend>Datos del artículo de mantenimiento</legend>
-            <div class="container__buttonClose">
-                <a (click)="comeBack()"><i class="fas fa-times"></i></a>
-            </div>
+      <div class="card-header" id="container__header">
+        <legend>Datos del artículo de mantenimiento</legend>
+        <div class="container__buttonClose">
+          <a (click)="comeBack()"><i class="fas fa-times"></i></a>
         </div>
-        <div class="card-body">
-            <div id="container__maintenanceItem">
-                <div class="row__container">
-                    <div class="col">
-                        <label>Código</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          formControlName="code"
-                          placeholder="Código ...">
+      </div>
+      <div class="card-body">
+        <div id="container__maintenanceItem">
+          <div class="row__container">
+            <div class="col">
+              <label>Código</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="code"
+                placeholder="Código ..."
+              />
 
-                        <div class="error" *ngIf="(fieldCode.dirty || fieldCode.touched)  && fieldCode.invalid">
-                            <p *ngIf="fieldCode.hasError('required')">* El campo código es requerido</p>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <label>Nombre</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          formControlName="name"
-                          placeholder="Nombre ...">
-
-                        <div class="error" *ngIf="(fieldName.dirty || fieldName.touched)  && fieldName.invalid">
-                            <p *ngIf="fieldName.hasError('required')">* El campo nombre es requerido</p>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <label>Descripción</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          formControlName="description"
-                          placeholder="Descripción ...">
-                    </div>
-                </div>
-                <div class="row__container">
-                    <div class="col">
-                        <app-type-of-maintenance-item
-                            [disableControls]="disableControls"
-                            [typeOfItem]="typeOfItem"
-                            (chageType)="setTypeOfItem($event)"
-                            (lostFocus)="validateTypeOfMaintenanceItem($event)">
-                        </app-type-of-maintenance-item>
-                        <div class="error" *ngIf="typeIsInvalid">
-                            <p>* El campo tipo es requerido</p>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <app-presentation-unit
-                            [disableControls]="disableControls"
-                            [idTypeOfItem]="idType"
-                            [presentationUnit]="presentationUnit"
-                            (changePresentation)="setPresentationUnit($event)"
-                            (lostFocus)="validatePresentationUnit($event)">
-                        </app-presentation-unit>
-                        <div class="error" *ngIf="presentationUnitIsInvalid">
-                            <p>* El campo unidad de presentación es requerido</p>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <app-maintenance-item-category
-                          [disableControls]="disableControls"
-                          [category]="category"
-                          (changeCategory)="setCategory($event)"
-                          (onFocusOut)="setCategory($event)">
-                        </app-maintenance-item-category>
-                    </div>
-                </div>
-                <hr>
-                <div class="row__container">
-                    <div class="col">
-                        <label>Valor sin impuestos</label>
-                        <input
-                            class="form-control"
-                            type="number"
-                            formControlName="referencePrice"
-                            (input)="calculateTaxesByItem(itemAndTaxes)"
-                            placeholder="Valor sin impuestos ...">
-
-                        <div class="error" *ngIf="(fieldReferencePrice.dirty || fieldReferencePrice.touched)  && fieldReferencePrice.invalid">
-                            <p *ngIf="fieldReferencePrice.hasError('required')">* El campo valor sin impuesto es requerido</p>
-                            <p *ngIf="fieldReferencePrice.hasError('min')">* El campo valor no puede tener un valor inferior a 1</p>
-                        </div>
-                    </div>
-
-                    <div class="col">
-                        <label>Valor Impuestos</label>
-                        <input type="number" class="form-control" id="taxesValue" placeholder="Valor impuestos ..."
-                            disabled>
-                    </div>
-
-                    <div class="col">
-                        <label>Valor Total</label>
-                        <input type="number" class="form-control" id="totalValue" placeholder="Valor con impuestos ..."
-                            disabled>
-                    </div>
-
-                </div>
-                <div>
-                    <app-taxes-list
-                        [disableControls]="disableControls"
-                        [itemHandleTax]="itemHandleTax"
-                        [inpLsTaxSelected]="lsTaxesSelected"
-                        (taxWasSelected)="calculateTaxesByItem($event)">
-                    </app-taxes-list>
-                </div>
-                <hr>
-                <div class="row__container">
-                    <div class="col">
-                      <app-vehicle-brand
-                        [defaultBrandId]="brandChevrolet"
-                        [brand]="brandSelected"
-                        [disableControls]="disableControls"
-                        (onBrandWasSelected)="setBrand($event)">
-                      </app-vehicle-brand>
-                    </div>
-
-                    <div class="col">
-                        <div class="container__groups">
-                            <app-check-list-vehicle-type
-                                [disableControls]="disableControls"
-                                [lsTypes]="lsVehicleTypes"
-                                (onVehicleTypeWasSelected)="setListVehicleTypes($event)">
-                            </app-check-list-vehicle-type>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-
-                <hr>
-                <div class="container__groups">
-                    <app-check-list-vehicle-model
-                        [disableControls]="disableControls"
-                        [countChanges]="amountChangesVehicleType"
-                        [lsVehicleTypesSelected]="lsVehicleTypes"
-                        [lsVehicleModelsSelected]="lsVehicleModels"
-                        (onVehicleModelsWasSetted)="setLisVehicleModels($event)">
-                    </app-check-list-vehicle-model>
-                </div>
-                <hr>
-                <div class="buttons__container" id="container__buttons">
-                    <button
-                        type="button"
-                        class="btn btn-danger"
-                        (click)="comeBack()">
-                        Cancelar
-                    </button>
-                    <button
-                        type="submit"
-                        class="btn btn-success"
-                        [disabled]="frmMaintenanceItem.invalid || presentationUnitIsInvalid || typeIsInvalid || vehicleTypeIsValid || taxesAreInvalid"
-                        *ngIf="!disableControls">
-                        Guardar
-                    </button>
-                </div>
-                <div>
-                    <div
-                        *ngIf="frmMaintenanceItem.invalid || presentationUnitIsInvalid || typeIsInvalid || vehicleTypeIsValid || taxesAreInvalid"
-                        class="container__infoError"
-                        id="cont_error_add_maintenance_item">
-                        <span>No se puede guardar el item de mantenimiento debido a que el formulario no cumple con los datos requeridos</span>
-                    </div>
-
-                </div>
+              <div
+                class="error"
+                *ngIf="
+                  (fieldCode.dirty || fieldCode.touched) && fieldCode.invalid
+                "
+              >
+                <p *ngIf="fieldCode.hasError('required')">
+                  * El campo código es requerido
+                </p>
+              </div>
             </div>
+            <div class="col">
+              <label>Nombre</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="name"
+                placeholder="Nombre ..."
+              />
+
+              <div
+                class="error"
+                *ngIf="
+                  (fieldName.dirty || fieldName.touched) && fieldName.invalid
+                "
+              >
+                <p *ngIf="fieldName.hasError('required')">
+                  * El campo nombre es requerido
+                </p>
+              </div>
+            </div>
+            <div class="col">
+              <label>Descripción</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="description"
+                placeholder="Descripción ..."
+              />
+            </div>
+          </div>
+          <div class="row__container">
+            <div class="col">
+              <app-type-of-maintenance-item
+                [disableControls]="disableControls"
+                [typeOfItem]="typeOfItem"
+                (chageType)="setTypeOfItem($event)"
+                (lostFocus)="validateTypeOfMaintenanceItem($event)"
+              >
+              </app-type-of-maintenance-item>
+              <div class="error" *ngIf="typeIsInvalid">
+                <p>* El campo tipo es requerido</p>
+              </div>
+            </div>
+            <div class="col">
+              <app-presentation-unit
+                [disableControls]="disableControls"
+                [idTypeOfItem]="idType"
+                [presentationUnit]="presentationUnit"
+                (changePresentation)="setPresentationUnit($event)"
+                (lostFocus)="validatePresentationUnit($event)"
+              >
+              </app-presentation-unit>
+              <div class="error" *ngIf="presentationUnitIsInvalid">
+                <p>* El campo unidad de presentación es requerido</p>
+              </div>
+            </div>
+            <div class="col">
+              <app-maintenance-item-category
+                [disableControls]="disableControls"
+                [category]="category"
+                (changeCategory)="setCategory($event)"
+                (onFocusOut)="setCategory($event)"
+              >
+              </app-maintenance-item-category>
+            </div>
+          </div>
+          <hr />
+          <div class="row__container">
+            <div class="col">
+              <label>Valor sin impuestos</label>
+              <input
+                class="form-control"
+                type="number"
+                formControlName="referencePrice"
+                (input)="calculateTaxesByItem(itemAndTaxes)"
+                placeholder="Valor sin impuestos ..."
+              />
+
+              <div
+                class="error"
+                *ngIf="
+                  (fieldReferencePrice.dirty || fieldReferencePrice.touched) &&
+                  fieldReferencePrice.invalid
+                "
+              >
+                <p *ngIf="fieldReferencePrice.hasError('required')">
+                  * El campo valor sin impuesto es requerido
+                </p>
+                <p *ngIf="fieldReferencePrice.hasError('min')">
+                  * El campo valor no puede tener un valor inferior a 1
+                </p>
+              </div>
+            </div>
+
+            <div class="col">
+              <label>Valor Impuestos</label>
+              <input
+                type="number"
+                class="form-control"
+                id="taxesValue"
+                placeholder="Valor impuestos ..."
+                disabled
+              />
+            </div>
+
+            <div class="col">
+              <label>Valor Total</label>
+              <input
+                type="number"
+                class="form-control"
+                id="totalValue"
+                placeholder="Valor con impuestos ..."
+                disabled
+              />
+            </div>
+          </div>
+          <div>
+            <app-taxes-list
+              [disableControls]="disableControls"
+              [itemHandleTax]="itemHandleTax"
+              [inpLsTaxSelected]="lsTaxesSelected"
+              (taxWasSelected)="calculateTaxesByItem($event)"
+            >
+            </app-taxes-list>
+          </div>
+          <hr />
+          <div class="row__container">
+            <div class="col">
+              <app-vehicle-brand
+                [defaultBrandId]="brandChevrolet"
+                [brand]="brandSelected"
+                [disableControls]="disableControls"
+                (onBrandWasSelected)="setBrand($event)"
+              >
+              </app-vehicle-brand>
+            </div>
+
+            <div class="col">
+              <div class="container__groups">
+                <app-check-list-vehicle-type
+                  [disableControls]="disableControls"
+                  [lsTypes]="lsVehicleTypes"
+                  (onVehicleTypeWasSelected)="setListVehicleTypes($event)"
+                >
+                </app-check-list-vehicle-type>
+              </div>
+            </div>
+          </div>
+          <hr />
+
+          <hr />
+          <div class="container__groups">
+            <app-check-list-vehicle-model
+              [disableControls]="disableControls"
+              [countChanges]="amountChangesVehicleType"
+              [lsVehicleTypesSelected]="lsVehicleTypes"
+              [lsVehicleModelsSelected]="lsVehicleModels"
+              (onVehicleModelsWasSetted)="setLisVehicleModels($event)"
+            >
+            </app-check-list-vehicle-model>
+          </div>
+          <hr />
+          <div class="buttons__container" id="container__buttons">
+            <button type="button" class="btn btn-danger" (click)="comeBack()">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success"
+              [disabled]="
+                frmMaintenanceItem.invalid ||
+                presentationUnitIsInvalid ||
+                typeIsInvalid ||
+                vehicleTypeIsValid ||
+                taxesAreInvalid
+              "
+              *ngIf="!disableControls"
+            >
+              Guardar
+            </button>
+          </div>
+          <div>
+            <div
+              *ngIf="
+                frmMaintenanceItem.invalid ||
+                presentationUnitIsInvalid ||
+                typeIsInvalid ||
+                vehicleTypeIsValid ||
+                taxesAreInvalid
+              "
+              class="container__infoError"
+              id="cont_error_add_maintenance_item"
+            >
+              <span
+                >No se puede guardar el item de mantenimiento debido a que el
+                formulario no cumple con los datos requeridos</span
+              >
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</form>
+  </form>
+</div>

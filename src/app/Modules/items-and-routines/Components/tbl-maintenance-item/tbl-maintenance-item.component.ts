@@ -6,6 +6,9 @@ import { MaintenanceItemService } from 'src/app/Modules/items-and-routines/Servi
 import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.service'
 import { CompanyType } from 'src/app/Models/CompanyType'
 import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
+import { findLastIndex } from 'lodash'
+import { FormControl } from '@angular/forms'
+import { retry } from 'rxjs/operators'
 
 @Component({
   selector: 'app-tbl-maintenance-item',
@@ -31,6 +34,16 @@ export class TblMaintenanceItemComponent implements OnInit {
   descriptionFiltered: string = ''
   typeOfItemId: number = 0
   isDetailVisible: boolean = false
+
+  isErrorVisible = false
+  errorTitle = ''
+  errorMessageApi = ''
+
+  isTableVisible = true
+  isMaintenanceItemVisible = false
+
+  typeFiltered: TypeOfMaintenanceItem = null
+  txtDescription: FormControl = new FormControl()
 
   constructor(
     private vehicleService: VehicleService,
@@ -74,10 +87,19 @@ export class TblMaintenanceItemComponent implements OnInit {
       registrationDate: null,
     }
     this.disableControls = false
+
+    this.txtDescription.valueChanges.subscribe((desc) => {
+      if (desc != '') {
+        this.descriptionFiltered = desc
+        this.filterMaintenanceItems(desc, this.typeFiltered)
+      } else {
+        this.lsMaintenanceItemsFiltered = this.lsMaintenanceItems
+      }
+    })
   }
 
   ngOnInit(): void {
-    // this.initComponents();
+    this.initComponents()
   }
 
   async initComponents() {
@@ -102,6 +124,7 @@ export class TblMaintenanceItemComponent implements OnInit {
   }
 
   showTableItems() {
+    this.clearFilter()
     this.isAwaiting = true
     this.maintenanceItemService
       .getMaintenanceItems(this.dealer_id)
@@ -114,69 +137,66 @@ export class TblMaintenanceItemComponent implements OnInit {
   }
 
   insertMaintenanceItem() {
-    this.isDetailVisible = true
     this.disableControls = false
     this.isToUpdate = false
-
-    this.maintenanceItemService.setItemToUpdate(null)
-    // this.vehicleService.setBrandSelected(null)
-    // this.vehicleService.setVehicleTypeSelected(null)
-    // this.vehicleService.setVehicleModelSelected(null)
-    // this.showPopUp()
-    // this.hideTable()
+    this.maintenanceItemSelected = null
+    this.hideTable()
   }
 
   showTable() {
-    // const containerTable = document.getElementById('container__table_items')
-    // containerTable.setAttribute('style', 'display:block')
+    this.isTableVisible = true
+    this.isMaintenanceItemVisible = false
   }
 
   hideTable() {
-    // const containerTable = document.getElementById('container__table_items')
-    // containerTable.setAttribute('style', 'display:none')
+    this.isTableVisible = false
+    this.isMaintenanceItemVisible = true
   }
 
   updateMaintenanceItem(pItem: MaintenanceItem) {
     this.disableControls = false
     this.isToUpdate = true
-
+    this.isAwaiting = true
     this.maintenanceItemService
       .getMaintenanceItemById(pItem.id)
-      .then((item) => {
+      .subscribe((item) => {
         this.maintenanceItemSelected = item
-        // this.showPopUp()
-        // this.hideTable()
+        this.showTableItems()
+        this.isAwaiting = false
+        this.hideTable()
       })
   }
 
-  async deleteMaintenanceItem(pItem: MaintenanceItem) {
-    try {
-      if (
-        confirm(
-          '¿Está seguro que desea eliminar este artículo de mantenimiento?'
-        )
-      ) {
-        this.isAwaiting = true
-        const rta = await this.maintenanceItemService.delete(pItem)
-        if (rta.response) {
+  deleteMaintenanceItem(item: MaintenanceItem) {
+    if (
+      confirm('¿Está seguro que desea eliminar este artículo de mantenimiento?')
+    ) {
+      this.isAwaiting = true
+      this.maintenanceItemService.delete(item).subscribe(
+        (rta) => {
           alert(rta.message)
           this.showTableItems()
+          this.isAwaiting = false
+        },
+        (err) => {
+          this.isErrorVisible = true
+          this.errorTitle =
+            'Ocurrió un error intentando Eliminar el artículo de mantenimiento'
+          this.errorMessageApi = err.message
+          this.isAwaiting = false
         }
-        this.isAwaiting = false
-      }
-    } catch (err) {
-      this.isAwaiting = false
-      console.error(err.error.Message)
-      alert(err.error.Message)
+      )
+
+      this.showTableItems()
     }
+    this.isAwaiting = false
   }
 
   comeBackToTable() {
-    // this.hidePopUp()
-    // this.showTable()
+    this.showTable()
   }
 
-  async saveMaintenanceItem() {
+  saveMaintenanceItem() {
     try {
       const oItem = this.maintenanceItemService.getItem()
 
@@ -188,43 +208,43 @@ export class TblMaintenanceItemComponent implements OnInit {
     }
   }
 
-  async saveDataInDB(oItem: MaintenanceItem) {
-    try {
-      let rta = new ResponseApi()
-      this.isAwaiting = true
-      if (this.isToUpdate) {
-        rta = await this.maintenanceItemService.update(oItem)
-      } else {
-        rta = await this.maintenanceItemService.insert(oItem)
-      }
-      this.isAwaiting = false
-      if (rta.response) {
-        alert(rta.message)
-        this.vehicleService.setListVehicleTypeSelected(null)
-        this.vehicleService.setListVehicleModelsSelected(null)
-        // this.hidePopUp()
-        // this.showTableItems()
-        // this.showTable()
-      }
-    } catch (error) {
-      alert(error.error.Message)
-      this.isAwaiting = false
+  saveDataInDB(oItem: MaintenanceItem) {
+    this.isAwaiting = true
+    if (this.isToUpdate) {
+      this.maintenanceItemService.update(oItem).subscribe(
+        (rta) => {
+          alert(rta.message)
+          this.isAwaiting = false
+          this.showTable()
+          this.showTableItems()
+          this.isAwaiting = false
+        },
+        (err) => {
+          this.isErrorVisible = true
+          this.errorTitle =
+            'Ocurrió un error intentando Actualizar el item de mantenimiento'
+          this.errorMessageApi = err.Message
+          this.isAwaiting = false
+        }
+      )
+    } else {
+      this.maintenanceItemService.insert(oItem).subscribe(
+        (rta) => {
+          alert(rta.message)
+          this.isAwaiting = false
+          this.showTable()
+        },
+        (err) => {
+          this.isErrorVisible = true
+          this.errorTitle =
+            'Ocurrió un error intentando Insertar el item de mantenimiento'
+          this.errorMessageApi = err.Message
+          this.isAwaiting = false
+        }
+      )
     }
   }
 
-  showPopUp() {
-    // const containerForm = document.getElementById(
-    //   'container__formMaintenanceItem'
-    // )
-    // containerForm.setAttribute('style', 'display:block')
-  }
-
-  hidePopUp() {
-    // const containerForm = document.getElementById(
-    //   'container__formMaintenanceItem'
-    // )
-    // containerForm.setAttribute('style', 'display:none')
-  }
   getVehicleModel(vehicleModel: VehicleModel) {
     if (vehicleModel == null) {
       return 'GENÉRICO'
@@ -234,35 +254,46 @@ export class TblMaintenanceItemComponent implements OnInit {
   }
 
   filterItems(typeOfItem: TypeOfMaintenanceItem) {
-    if (typeOfItem) {
-      this.typeOfItemId = typeOfItem.id
-      this.filterMaintenanceItems()
-    }
+    this.typeOfItemId = typeOfItem.id
+    this.filterMaintenanceItems(this.descriptionFiltered, typeOfItem)
   }
 
-  filterItemsByDescription(event: any) {
-    this.descriptionFiltered = event.target.value.toLowerCase()
-    this.filterMaintenanceItems()
-  }
-
-  filterMaintenanceItems() {
+  filterMaintenanceItems(description: string, typeOfMi: TypeOfMaintenanceItem) {
     this.lsMaintenanceItemsFiltered = this.lsMaintenanceItems.filter((mi) => {
-      return (
-        (mi.code.toLowerCase().includes(this.descriptionFiltered) ||
-          mi.name.toLowerCase().includes(this.descriptionFiltered)) &&
-        mi.type.id == this.typeOfItemId
-      )
+      if (description != null && typeOfMi != null) {
+        return (
+          mi.code.toLowerCase().includes(this.descriptionFiltered) ||
+          (mi.name.toLowerCase().includes(this.descriptionFiltered) &&
+            mi.type.id == typeOfMi.id)
+        )
+      } else {
+        if (typeOfMi != null) {
+          return mi.type.id == typeOfMi.id
+        } else {
+          return (
+            mi.code.toLowerCase().includes(description) ||
+            mi.name.toLowerCase().includes(description)
+          )
+        }
+      }
     })
   }
 
   seeDetailsMaintenanceItem(maintenanceItem: MaintenanceItem) {
     this.disableControls = true
+    this.isAwaiting = true
     this.maintenanceItemService
       .getMaintenanceItemById(maintenanceItem.id)
-      .then((item) => {
+      .subscribe((item) => {
         this.maintenanceItemSelected = item
-        this.showPopUp()
+        this.isAwaiting = false
         this.hideTable()
       })
+  }
+
+  clearFilter() {
+    this.typeFiltered = null
+    this.txtDescription.setValue(null)
+    this.lsMaintenanceItemsFiltered = this.lsMaintenanceItems
   }
 }

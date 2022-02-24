@@ -70,9 +70,9 @@ export class MaintenanceItemService {
     return this.http.get<MaintenanceItem[]>(urlGetMaintenanceItems)
   }
 
-  async getMaintenanceItemById(pId: number): Promise<MaintenanceItem> {
+  getMaintenanceItemById(pId: number): Observable<MaintenanceItem> {
     const urlGetMaintenanceItem = `${this.URL_API}/GetById?itemId=${pId}`
-    return this.http.get<MaintenanceItem>(urlGetMaintenanceItem).toPromise()
+    return this.http.get<MaintenanceItem>(urlGetMaintenanceItem)
   }
 
   async getMaintenanceItemByType(pTypeId: number): Promise<MaintenanceItem[]> {
@@ -116,11 +116,9 @@ export class MaintenanceItemService {
       .toPromise()
   }
 
-  async insert(pItem: MaintenanceItem): Promise<ResponseApi> {
+  insert(pItem: MaintenanceItem): Observable<ResponseApi> {
     const urlInsert = `${this.URL_API}/Insert`
-    return this.http
-      .post<ResponseApi>(urlInsert, pItem, this.HttpOptions)
-      .toPromise()
+    return this.http.post<ResponseApi>(urlInsert, pItem, this.HttpOptions)
   }
 
   async getPricesByContract(pContract_id: number): Promise<PricesByContract> {
@@ -142,18 +140,14 @@ export class MaintenanceItemService {
     return this.http.get<Tax[]>(urlListTaxes).toPromise()
   }
 
-  async update(pItem: MaintenanceItem): Promise<ResponseApi> {
+  update(pItem: MaintenanceItem): Observable<ResponseApi> {
     const urlUpdate = `${this.URL_API}/Update`
-    return this.http
-      .post<ResponseApi>(urlUpdate, pItem, this.HttpOptions)
-      .toPromise()
+    return this.http.put<ResponseApi>(urlUpdate, pItem, this.HttpOptions)
   }
 
-  async delete(pItem: MaintenanceItem): Promise<ResponseApi> {
-    const urlDelete = `${this.URL_API}/Delete`
-    return this.http
-      .post<ResponseApi>(urlDelete, pItem, this.HttpOptions)
-      .toPromise()
+  delete(pItem: MaintenanceItem): Observable<ResponseApi> {
+    const urlDelete = `${this.URL_API}/Delete?maintenanceItemId=${pItem.id}`
+    return this.http.delete<ResponseApi>(urlDelete, this.HttpOptions)
   }
 
   calculateTaxes(referencePriceWithoutDiscount: number, lsTaxes: Tax[]) {

@@ -35,8 +35,8 @@ import { VehicleModel } from 'src/app/Models/VehicleModel'
     '../../../../../assets/styles/checkbox.scss',
   ],
 })
-export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
-  frmMaintenanceItem: FormGroup = new FormGroup({})
+export class MaintenanceItemComponent implements OnInit, OnDestroy {
+  frmMaintenanceItem: FormGroup
   item: MaintenanceItem
   itemToUpdate: MaintenanceItem = new MaintenanceItem()
   lsTaxesSelected: Tax[] = []
@@ -66,8 +66,9 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input('maintenanceItem')
   set setMaintenanceItem(item: MaintenanceItem) {
+    console.log(item)
     this.maintenanceItem = item
-    if (this.maintenanceItem.id > 0) {
+    if (this.maintenanceItem) {
       this.lsVehicleTypes = item.lsVehicleType
       this.lsVehicleModels = item.lsVehicleModel
       this.setDataInForm(this.maintenanceItem)
@@ -100,9 +101,9 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
     this.typeIsInvalid = false
     this.vehicleTypeIsValid = false
     this.taxesAreInvalid = false
-    this.typeOfItem = {} as TypeOfMaintenanceItem
-    this.presentationUnit = {} as PresentationUnit
-    this.category = {} as Category
+    this.typeOfItem = null
+    this.presentationUnit = null
+    this.category = null
     this.idType = 0
     this.amountChangesVehicleType = 0
   }
@@ -121,10 +122,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
     })
   }
 
-  ngOnChanges(changes: SimpleChanges): void {}
-
   ngOnInit(): void {
-    this.clearDataForm()
     this.initComponents()
   }
 
@@ -184,20 +182,20 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
     return oItem
   }
 
-  setDataInForm(pItem: MaintenanceItem) {
-    this.frmMaintenanceItem.patchValue(pItem)
-    this.typeOfItem = pItem.type
-    this.category = pItem.category
+  setDataInForm(item: MaintenanceItem) {
+    this.frmMaintenanceItem.patchValue(item)
+    this.typeOfItem = item.type
+    this.category = item.category
     let oBrandTmp = new Brand()
-    this.idType = pItem.type.id
-    this.presentationUnit = pItem.presentationUnit
+    this.idType = item.type.id
+    this.presentationUnit = item.presentationUnit
 
-    if (pItem.lsVehicleModel.length > 0) {
+    if (item.lsVehicleModel.length > 0) {
       if (
-        pItem.lsVehicleModel[0].brand != null &&
-        pItem.lsVehicleModel[0].brand != undefined
+        item.lsVehicleModel[0].brand != null &&
+        item.lsVehicleModel[0].brand != undefined
       ) {
-        oBrandTmp = pItem.lsVehicleModel[0].brand
+        oBrandTmp = item.lsVehicleModel[0].brand
       } else {
         oBrandTmp.id = 1
         oBrandTmp.name = 'CHEVROLET'
@@ -209,9 +207,9 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
 
     this.brandSelected = oBrandTmp
 
-    if (pItem.handleTax) {
+    if (item.handleTax) {
       this.itemHandleTax = true
-      this.lsTaxesSelected = pItem.lsTaxes
+      this.lsTaxesSelected = item.lsTaxes
       this.itemAndTaxes = {
         handleTaxes: this.itemHandleTax,
         lsTaxes: this.lsTaxesSelected,
@@ -227,16 +225,16 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
       this.calculateTaxesByItem(this.itemAndTaxes)
     }
 
-    this.vehicleService.setListVehicleTypeSelected(pItem.lsVehicleType)
-    this.vehicleService.setListVehicleModelsSelected(pItem.lsVehicleModel)
+    this.vehicleService.setListVehicleTypeSelected(item.lsVehicleType)
+    this.vehicleService.setListVehicleModelsSelected(item.lsVehicleModel)
   }
 
   clearDataForm() {
     this.frmMaintenanceItem.reset()
     this.lsTaxesSelected = []
-    this.presentationUnit = {} as PresentationUnit
-    this.typeOfItem = {} as TypeOfMaintenanceItem
-    this.category = {} as Category
+    this.presentationUnit = null
+    this.typeOfItem = null
+    this.category = null
     this.idType = TypeOfMaintenanceItems.REPUESTO
     // this.vehicleService.setVehicleModelSelected(null)
     // this.vehicleService.setBrandSelected(null)
@@ -250,7 +248,7 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
       document.querySelector('#totalValue')
     txtTaxesValue.value = ''
     txtTotalValue.value = ''
-    this.maintenanceItem = {} as MaintenanceItem
+    this.maintenanceItem = null
     this.lsVehicleTypes = []
     this.lsVehicleModels = []
   }
@@ -351,31 +349,19 @@ export class MaintenanceItemComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setTypeOfItem(type: TypeOfMaintenanceItem) {
-    try {
-      if (type) {
-        this.typeOfItem = type
-        this.idType = this.typeOfItem.id
-      }
-    } catch (error) {
-      console.warn(error)
+    if (type) {
+      this.typeOfItem = type
+      this.idType = this.typeOfItem.id
     }
   }
 
   setPresentationUnit(presentation: PresentationUnit) {
-    try {
-      if (presentation) {
-        this.presentationUnit = presentation
-      }
-    } catch (error) {
-      console.warn(error)
+    if (presentation) {
+      this.presentationUnit = presentation
     }
   }
 
   setCategory(category: Category) {
-    try {
-      this.category = category
-    } catch (error) {
-      console.warn(error)
-    }
+    this.category = category
   }
 }

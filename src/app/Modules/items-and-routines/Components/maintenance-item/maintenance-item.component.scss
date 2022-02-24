@@ -1,141 +1,140 @@
-.row__container{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr;  
-    margin-top: 10px; 
-    margin-bottom: 20px;
+.container-item {
+  margin-top: 30px;
 }
 
-.buttons__container{
-    display: flex;
-    justify-content: flex-end;   
+.row__container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
-legend{
-    margin-left: 10px;
-    margin-bottom: 10px;
+.buttons__container {
+  display: flex;
+  justify-content: flex-end;
 }
 
-button{
-    width: 250px;
-    margin-left: 10px;
-    margin-top: 20px;
+legend {
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 
-.container__groups{
-    margin-left: 10px;
+button {
+  width: 250px;
+  margin-left: 10px;
+  margin-top: 20px;
 }
 
-#container__header{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.container__groups {
+  margin-left: 10px;
 }
 
-label{
-    cursor: pointer;
+#container__header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.container__buttonClose{
-    margin-top: 10px ;
+label {
+  cursor: pointer;
 }
 
-@media only screen and (max-width: 600px){
-    form{
-        padding: 30px 20px  30px 20px;
-    }
-
-    .row__container{
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr 1fr;   
-        margin-top: 0px; 
-        margin-bottom: 0px;
-    }
-
-    .col{
-        margin-top: 10px; 
-        margin-bottom: 10px;
-    }
-
-    button{
-        width: 150px;
-    }
+.container__buttonClose {
+  margin-top: 10px;
 }
 
-.tax-description{
-    margin-left: 25px;
-}
-
-.container_handle_taxes{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-}
-
-.container__check{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    width: 60px;
-}
-
-
-.row__container_tax{
-    display: flex;
-    flex-direction: row; 
-    padding-left: 10px;
-}
-
-.container__tax{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;   
-    padding: 2px 5px;
-    margin-left: 10px;
-    width: auto;
-}
-
-.error{
-    color: red;
-    margin-top: 10px;
-}
-
-
-
-$arrow-size:10px;
-$arrow-color:#ebd4d4;
-
-%arrow {
-    &:before {
-      position: absolute;
-      content: "";
-      display:block;
-      width:0;
-      height:0;
-      left:50%;
-      margin-left: -$arrow-size;
-      margin-top:-($arrow-size*2)-10px;
-      border: $arrow-size solid transparent;
-      border-bottom: $arrow-size solid $arrow-color;
-     
-      
-    }
+@media only screen and (max-width: 600px) {
+  form {
+    padding: 30px 20px 30px 20px;
   }
 
-.container__infoError{
-    background-color: $arrow-color;
-    cursor: pointer;
+  .row__container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .col {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 150px;
+  }
+}
+
+.tax-description {
+  margin-left: 25px;
+}
+
+.container_handle_taxes {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.container__check {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 60px;
+}
+
+.row__container_tax {
+  display: flex;
+  flex-direction: row;
+  padding-left: 10px;
+}
+
+.container__tax {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 2px 5px;
+  margin-left: 10px;
+  width: auto;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+$arrow-size: 10px;
+$arrow-color: #ebd4d4;
+
+%arrow {
+  &:before {
     position: absolute;
-    padding: 10px 15px;
-    z-index: 50;    
-    width: 200px;
-    height: auto;
-    border-radius: 20px;
-    right: 3%;
-    margin-top: 30px;
-    -webkit-box-shadow: 10px 10px 17px -7px rgba(0,0,0,0.75);
-    -moz-box-shadow: 10px 10px 17px -7px rgba(0,0,0,0.75);
-    box-shadow: 10px 10px 17px -7px rgba(0,0,0,0.75);
-    @extend %arrow;
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    left: 50%;
+    margin-left: -$arrow-size;
+    margin-top: -($arrow-size * 2)-10px;
+    border: $arrow-size solid transparent;
+    border-bottom: $arrow-size solid $arrow-color;
+  }
+}
+
+.container__infoError {
+  background-color: $arrow-color;
+  cursor: pointer;
+  position: absolute;
+  padding: 10px 15px;
+  z-index: 50;
+  width: 200px;
+  height: auto;
+  border-radius: 20px;
+  right: 3%;
+  margin-top: 30px;
+  -webkit-box-shadow: 10px 10px 17px -7px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 17px -7px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px 10px 17px -7px rgba(0, 0, 0, 0.75);
+  @extend %arrow;
 }

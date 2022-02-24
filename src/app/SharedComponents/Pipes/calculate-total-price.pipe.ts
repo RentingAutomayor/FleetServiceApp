@@ -8,8 +8,7 @@ export class CalculateTotalPricePipe implements PipeTransform {
   transform(item: MaintenanceItem, price?: number, amount?: number): number {
     let totalPrice = 0
     let taxValue = 0
-    let amoutByItem = item.amount ? item.amount : 0
-    let referencePrice = item.referencePrice * amoutByItem
+    let referencePrice = price * amount
 
     if (item.handleTax) {
       for (const tax of item.lsTaxes) {

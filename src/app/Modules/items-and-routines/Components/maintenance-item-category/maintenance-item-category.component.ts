@@ -17,12 +17,20 @@ import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenan
   templateUrl: './maintenance-item-category.component.html',
   styleUrls: ['./maintenance-item-category.component.scss'],
 })
-export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
+export class MaintenanceItemCategoryComponent implements OnInit {
   frmCategory: FormGroup
   lsCategory: Category[]
-  categorySelected: Category
 
-  @Input() category: Category
+  categorySelected: Category = null
+  @Input('category')
+  set setCategorySelected(category: Category) {
+    this.categorySelected = category
+    if (this.categorySelected) {
+      this.showDataInForm(this.categorySelected)
+    } else {
+      this.clearDataForm()
+    }
+  }
 
   @Output() changeCategory = new EventEmitter<Category>()
   @Output() onFocusOut = new EventEmitter<Category>()
@@ -44,17 +52,12 @@ export class MaintenanceItemCategoryComponent implements OnInit, OnChanges {
     })
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.showDataInForm(this.category)
-  }
-
   ngOnInit(): void {
     this.initComponents()
   }
 
   initComponents() {
     try {
-      this.frmCategory.controls.cmbCategory.setValue(0)
       this.maintenanceItemService.getCategories().then((categories) => {
         this.lsCategory = categories
       })

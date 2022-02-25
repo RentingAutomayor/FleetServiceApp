@@ -1,6 +1,6 @@
 <div id="container__content">
   <h1>Órdenes de trabajo por aprobar</h1>
-  <div class="container-cards">
+  <div class="container-cards" *ngIf="lsTransactionsToApprove">
     <app-card-trx-detail
       *ngFor="let trx of lsTransactionsToApprove"
       [transaction]="trx"
@@ -8,6 +8,11 @@
       (onApproveTrx)="setTransactionToApprove($event)"
       (onDeniedTrx)="setTransactionToDenied($event)"
     ></app-card-trx-detail>
+  </div>
+  <div *ngIf="lsTransactionsToApprove.length == 0">
+    <div class="container-nothing">
+      <h2>No tienes aprobaciones pendientes!</h2>
+    </div>
   </div>
 </div>
 <div id="container__Approbation">

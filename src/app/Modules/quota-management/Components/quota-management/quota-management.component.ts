@@ -194,15 +194,6 @@ export class QuotaManagementComponent implements OnInit {
       lsObs,
       null
     )
-
-    this.saveTransaction(trxApprovedQuota).then((rta) => {
-      if (rta) {
-        this.closePopUp('container__QuotaManager')
-        this.getLsClientsWithoutQuota()
-        this.getLsClientsWithQuota()
-        this.getTodayTransactions()
-      }
-    })
   }
 
   setDataTransaction(
@@ -225,21 +216,20 @@ export class QuotaManagementComponent implements OnInit {
     return trx
   }
 
-  async saveTransaction(trx: Transaction): Promise<boolean> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        this.isAwaiting = true
-        const rta = await this.trxService.processTransaction(trx)
-        this.isAwaiting = false
-        if (rta.response) {
-          alert(rta.message)
-          resolve(true)
-        } else {
-          reject(false)
-        }
-      } catch (error) {
-        console.warn(error)
-      }
+  saveTransaction(trx: Transaction) {
+    this.isAwaiting = true
+    this.trxService.processTransaction(trx).subscribe((rta) => {
+      alert(rta.message)
+      this.isAwaiting = false
+
+      this.closePopUp('container__freeUpQuota')
+      this.closePopUp('container__addQuota')
+      this.closePopUp('container__cancelQuota')
+      this.closePopUp('container__QuotaManager')
+
+      this.getLsClientsWithoutQuota()
+      this.getLsClientsWithQuota()
+      this.getTodayTransactions()
     })
   }
 
@@ -387,15 +377,6 @@ export class QuotaManagementComponent implements OnInit {
           lsObs,
           null
         )
-
-        this.saveTransaction(trxFreeUpQuota).then((rta) => {
-          if (rta) {
-            this.closePopUp('container__freeUpQuota')
-            this.getLsClientsWithoutQuota()
-            this.getLsClientsWithQuota()
-            this.getTodayTransactions()
-          }
-        })
       }
     })
   }
@@ -428,15 +409,6 @@ export class QuotaManagementComponent implements OnInit {
       lsObs,
       null
     )
-
-    this.saveTransaction(trxAddQuota).then((rta) => {
-      if (rta) {
-        this.closePopUp('container__addQuota')
-        this.getLsClientsWithoutQuota()
-        this.getLsClientsWithQuota()
-        this.getTodayTransactions()
-      }
-    })
   }
 
   async validatePayment(
@@ -494,15 +466,6 @@ export class QuotaManagementComponent implements OnInit {
         lsObs,
         null
       )
-
-      this.saveTransaction(trxCancelQuota).then((rta) => {
-        if (rta) {
-          this.closePopUp('container__cancelQuota')
-          this.getLsClientsWithoutQuota()
-          this.getLsClientsWithQuota()
-          this.getTodayTransactions()
-        }
-      })
     }
   }
 

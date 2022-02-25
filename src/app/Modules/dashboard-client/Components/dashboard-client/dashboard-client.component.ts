@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core'
-import { FormGroup, FormControl } from '@angular/forms'
+import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { Client } from 'src/app/Models/Client'
 import { Movement } from 'src/app/Models/Movement'
 import { SharedFunction } from 'src/app/Models/SharedFunctions'
@@ -35,14 +35,21 @@ export class DashboardClientComponent implements OnInit {
     private movementService: MovementService
   ) {
     this.frmApprovedTrx = new FormGroup({
-      txtObservationApprobation: new FormControl(''),
+      txtObservationApprobation: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(\s+\S+\s*)*(?!\s).*$/),
+      ]),
     })
 
     this.frmCancelTrx = new FormGroup({
-      txtObservationCancelation: new FormControl(''),
+      txtObservationCancelation: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(\s+\S+\s*)*(?!\s).*$/),
+      ]),
     })
 
     this.trx_id = 0
+    this.client = {} as Client
   }
 
   ngOnInit(): void {
@@ -67,18 +74,14 @@ export class DashboardClientComponent implements OnInit {
     return userSession.company.id
   }
 
-  async getTransactionsToApprove(client_id: number) {
-    try {
-      this.isAwaiting = true
-      await this.transactionService
-        .getTransactionsToApprove(client_id)
-        .then((lsTrx) => {
-          this.lsTransactionsToApprove = lsTrx
-        })
-      this.isAwaiting = false
-    } catch (error) {
-      console.warn(error)
-    }
+  getTransactionsToApprove(client_id: number) {
+    this.isAwaiting = true
+    this.transactionService
+      .getTransactionsToApprove(client_id)
+      .subscribe((lsTrx) => {
+        this.lsTransactionsToApprove = lsTrx
+        this.isAwaiting = false
+      })
   }
 
   async getMovementList() {
@@ -110,31 +113,27 @@ export class DashboardClientComponent implements OnInit {
     this.trx_id = trx.id
   }
 
-  async approveWorkOrder() {
-    try {
-      this.isAwaiting = true
-      const movement = this.lsMovements.find(
-        (mv) => mv.id == this.APROBACION_ORDEN_DE_TRABAJO
-      )
-      const { txtObservationApprobation } = this.frmApprovedTrx.controls
-      const trxApproveWorkOrder = this.setDataTransaction(
-        this.transactionSelected,
-        movement,
-        txtObservationApprobation.value
-      )
-      this.transactionService
-        .processTransaction(trxApproveWorkOrder)
-        .then((rta) => {
-          if (rta.response) {
-            alert(rta.message)
-            this.getTransactionsToApprove(this.client.id)
-            this.closePopUp('container__Approbation')
-          }
-        })
-      this.isAwaiting = false
-    } catch (error) {
-      console.warn(error)
-    }
+  approveWorkOrder() {
+    this.isAwaiting = true
+    const movement = this.lsMovements.find(
+      (mv) => mv.id == this.APROBACION_ORDEN_DE_TRABAJO
+    )
+    const { txtObservationApprobation } = this.frmApprovedTrx.controls
+    const trxApproveWorkOrder = this.setDataTransaction(
+      this.transactionSelected,
+      movement,
+      txtObservationApprobation.value
+    )
+    this.transactionService
+      .processTransaction(trxApproveWorkOrder)
+      .subscribe((rta) => {
+        if (rta.response) {
+          alert(rta.message)
+          this.getTransactionsToApprove(this.client.id)
+          this.closePopUp('container__Approbation')
+        }
+      })
+    this.isAwaiting = false
   }
 
   async cancelWorkOrder() {
@@ -151,7 +150,7 @@ export class DashboardClientComponent implements OnInit {
       )
       this.transactionService
         .processTransaction(trxApproveWorkOrder)
-        .then((rta) => {
+        .subscribe((rta) => {
           if (rta.response) {
             alert(rta.message)
             this.getTransactionsToApprove(this.client.id)
@@ -195,5 +194,20 @@ export class DashboardClientComponent implements OnInit {
   clearForms() {
     this.frmApprovedTrx.reset()
     this.frmCancelTrx.reset()
+  }
+
+  setTransactionToShow(trx: Transaction) {
+    this.setTransaction(trx)
+    this.openPopUp('container__resume')
+  }
+
+  setTransactionToApprove(trx: Transaction) {
+    this.setTransaction(trx)
+    this.openPopUp('container__Approbation')
+  }
+
+  setTransactionToDenied(trx: Transaction) {
+    this.setTransaction(trx)
+    this.openPopUp('container__Cancelation')
   }
 }

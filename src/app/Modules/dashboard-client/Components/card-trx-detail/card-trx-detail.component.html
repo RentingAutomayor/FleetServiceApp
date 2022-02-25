@@ -1,0 +1,65 @@
+<mat-card class="card-trx">
+  <mat-card-title>
+    <div class="container-header">
+      <div class="container-info-header">
+        {{ transactionSelected.code }}
+      </div>
+      <div class="container-button-info">
+        <i
+          class="fas fa-info-circle text-info"
+          title="Más información"
+          (click)="showDetailTrx()"
+        ></i>
+      </div>
+    </div>
+  </mat-card-title>
+
+  <mat-card-content>
+    <div class="container-info-content">
+      <div>
+        <strong>{{
+          transactionSelected.headerDetails.vehicle.licensePlate
+        }}</strong>
+      </div>
+      <div class="container-left">
+        <ul>
+          <li>
+            <strong>Mantenimiento:</strong><br />
+            {{ transactionSelected.headerDetails.maintenanceRoutine.name }}
+          </li>
+          <li>
+            <strong>Concesionario:</strong><br />
+            {{ transactionSelected.headerDetails.dealer.name }} -
+            {{ transactionSelected.headerDetails.branch.name }}
+          </li>
+          <li>
+            <strong>Fecha:</strong><br />
+            {{ transactionSelected.registrationDate | date: 'yyyy/MM/dd' }}
+          </li>
+          <div class="trx-value">
+            <h1>
+              {{ transactionSelected.value | currency: 'USD':'symbol':'1.0-0' }}
+            </h1>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <div class="container-button-action">
+      <i
+        class="fas fa-check-circle text-success"
+        title="Aprobar"
+        (click)="approveTrx()"
+      ></i>
+      <i
+        class="fas fa-times-circle text-danger"
+        title="Negar"
+        (click)="deniedTrx()"
+      ></i>
+    </div>
+  </mat-card-actions>
+  <mat-card-footer>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </mat-card-footer>
+</mat-card>

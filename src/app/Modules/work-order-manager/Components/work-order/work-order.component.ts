@@ -9,7 +9,7 @@ import {
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
 import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.service'
 import { ContractService } from 'src/app/Modules/contract/Services/Contract/contract.service'
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms'
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { Dealer } from 'src/app/Models/Dealer'
 import { Branch } from 'src/app/Models/Branch'
 import { BranchService } from 'src/app/SharedComponents/Services/Branch/branch.service'
@@ -94,7 +94,10 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       txtClient: new FormControl(''),
       txtContract: new FormControl(''),
       txtDealer: new FormControl(''),
-      txtObservation: new FormControl(''),
+      txtObservation: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(\s+\S+\s*)*(?!\s).*$/),
+      ]),
       txtCurrentQuota: new FormControl(''),
       txtConsumedQuota: new FormControl(''),
       txtInTransitQuota: new FormControl(''),
@@ -652,7 +655,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
         if (trxWillBePorcesed) {
           await this.transactionService
             .processTransaction(trxWorkOrder)
-            .then((response) => {
+            .subscribe((response) => {
               const rta = response
               if (rta.response) {
                 alert(rta.message)

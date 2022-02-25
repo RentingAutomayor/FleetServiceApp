@@ -1,189 +1,322 @@
 <div class="container__info">
-    <form [formGroup]="frmTransaction">
-        <div class="container__info_client" *ngIf="infoClientIsVisible">
-            <legend>Datos del cliente</legend>
-            <div class="container__row">
-                <div class="container__col">
-                    <label>Documento</label>
-                    <input type="text" class="form-control" placeholder="NIT ..." formControlName="client_document"
-                        disabled>
-                </div>
-                <div class="container__col">
-                    <label>Nombre</label>
-                    <input type="text" class="form-control" placeholder="Cliente ..." formControlName="client_name"
-                        disabled>
-                </div>
-                <div class="container__col">
-                    <label>Contrato</label>
-                    <input type="text" class="form-control" placeholder="Contrato ..." formControlName="contract_code"
-                        disabled>
-                </div>
-            </div>
-            <hr>
+  <form [formGroup]="frmTransaction">
+    <div class="container__info_client" *ngIf="infoClientIsVisible">
+      <legend>Datos del cliente</legend>
+      <div class="container__row">
+        <div class="container__col">
+          <label>Documento</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="NIT ..."
+            formControlName="client_document"
+            disabled
+          />
         </div>
-        <div class="container__info_vehicle" *ngIf="infoVehicleIsVisible">
-            <legend>Datos del vehículo</legend>
-            <div class="container__row">
-                <div class="container__col">
-                    <label>Placa</label>
-                    <input type="text" class="form-control" placeholder="Placa" formControlName="vehicle_licensePlate"
-                        disabled>
-                </div>
-                <div class="container__col">
-                    <label>Modelo</label>
-                    <input type="text" class="form-control" placeholder="Modelo" formControlName="vehicle_year"
-                        disabled>
-                </div>
-                <div class="container__col">
-                    <label>Kilometraje</label>
-                    <input type="text" class="form-control" placeholder="Kilometraje" formControlName="vehicle_mileage"
-                        disabled>
-                </div>
-            </div>
-
-            <div class="container__row">
-                <div class="container__col">
-                    <label>Marca</label>
-                    <input type="text" class="form-control" placeholder="Marca" formControlName="vehicle_brand"
-                        disabled>
-                </div>
-
-                <div class="container__col">
-                    <label>Tipo</label>
-                    <input type="text" class="form-control" formControlName="vehicle_type" placeholder="Tipo" disabled>
-                </div>
-
-                <div class="container__col">
-                    <label>Línea</label>
-                    <input type="text" class="form-control" formControlName="vehicle_model" placeholder="Línea"
-                        disabled>
-                </div>
-            </div>
-            <hr>
+        <div class="container__col">
+          <label>Nombre</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Cliente ..."
+            formControlName="client_name"
+            disabled
+          />
         </div>
-
-        <div class="container__info_workOrder" *ngIf="infoWorkOrderIsVisible">
-            <legend>Datos de la orden</legend>
-            <div class="container__row">
-                <div class="container__col">
-                    <label>Concesionario</label>
-                    <input type="text" class="form-control" formControlName="dealer_name"
-                        placeholder="Concesionario ..." disabled>
-                </div>
-                <div class="container__col">
-                    <label>Sucursal</label>
-                    <input type="text" class="form-control" formControlName="dealer_branch" placeholder="Sucursal ..."
-                        disabled>
-                </div>
-                <div class="container__col">
-                    <label>Rutina de mantenimiento</label>
-                    <input type="text" class="form-control" formControlName="maintenance_routine"
-                        placeholder="Rutina de mantenimiento ..." disabled>
-                </div>
-            </div>
-            <hr>
+        <div class="container__col">
+          <label>Contrato</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Contrato ..."
+            formControlName="contract_code"
+            disabled
+          />
         </div>
-
-        <div class="container__info_transactionValues" *ngIf="infoTransactionIsVisible">
-            <legend>Datos de la transacción</legend>
-            <div class="container__row">
-                <div class="container__col">
-                    <label>Valor sin descuento</label>
-                    <input type="text" class="form-control" formControlName="trx_valueWithoutDiscount"
-                    placeholder="Valor con impuestos ..." disabled>
-                </div>
-                <div class="container__col">
-                    <label>Valor descuento</label>
-                    <input type="text" class="form-control" formControlName="trx_valueDiscount"
-                    placeholder="Valor con impuestos ..." disabled>
-
-                </div>
-                <div class="container__col">
-                    <label>Valor con descuento sin impuesto</label>
-                    <input type="text" class="form-control" formControlName="trx_valueWithDiscountWithoutTaxes"
-                        placeholder="Valor con impuestos ..." disabled>
-                </div>
-
-            </div>
-            <div class="container__row">
-                <div class="container__col">
-                    <label>Valor impuestos</label>
-                    <input type="text" class="form-control" formControlName="trx_valueTaxes"
-                        placeholder="Valor impuestos ..." disabled>
-                </div>
-                <div class="container__col">
-                    <label>Valor total</label>
-                    <input type="text" class="form-control" formControlName="trx_valueWithTaxes"
-                        placeholder="Valor con impuestos ..." disabled>
-                </div>
-            </div>
-            <hr>
-        </div>
-    </form>
-    <div class="container__info_workOrder_items" *ngIf="infoWorkOrderIsVisible">
-        <legend>Items orden de trabajo</legend>
-        <table class="table table-striped tbl">
-            <thead>
-                <th>#</th>
-                <th>Nombre</th>
-                <th>Presentación</th>
-                <th>Cantidad</th>
-                <th>Precio de referencia sin impuestos</th>
-                <th>Valor unitario x cantidad sin descuento</th>
-                <th>Dto</th>
-                <th>Valor unitario x cantidad con descuento</th>
-                <th>Valor impuestos</th>
-                <th>Valor total por item</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let i = index; let mItem of transaction.lsItems">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ mItem.name | titlecase}}</td>
-                    <td>{{ mItem.presentationUnit.longName | titlecase }}</td>
-                    <td>{{ mItem.amount}}</td>
-                    <td>{{ mItem.referencePrice | currency }}</td>
-                    <td>{{ mItem.valueWithoutDiscount | currency }}</td>
-                    <td>{{ mItem.discountValue | currency}}</td>
-                    <td>{{ mItem.valueWithDiscountWithoutTaxes | currency}}</td>
-                    <td>{{ mItem.taxesValue | currency }}</td>
-                    <td>{{ (mItem.valueWithDiscountWithoutTaxes + mItem.taxesValue) | currency }}</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr class="last-row">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><b class="bold">Total mantenimiento:</b></td>
-                    <td><span class="bold">{{ transaction.valueWithoutDiscount | currency }}</span> </td>
-                    <td> <span class="bold">{{ transaction.discountValue | currency }}</span> </td>                                    
-                    <td><span id="lbl-total-without_taxes" class="bold">{{ transaction.valueWithDiscountWithoutTaxes | currency }}</span></td>
-                    <td><span id="lbl-total-taxes" class="bold">{{ transaction.taxesValue | currency }}</span></td>
-                    <td><span id="lbl-total-routine" class="bold">{{ transaction.value | currency }}</span></td>
-                </tr>
-            </tfoot>
-        </table>
-
-        <hr>
+      </div>
+      <hr />
     </div>
-    <div class="container__info_observations" *ngIf="infoObservationsIsVisible">
-        <legend>Observaciones</legend>
-        <table class="table table-striped tbl">
-            <thead>
-                <th>#</th>
-                <th>Observación</th>
-                <th>Usuario</th>
-                <th>Fecha y hora</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let observation of transaction.lsObservations; let i = index">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ observation.description }}</td>
-                    <td>{{ observation.user.name +' '+ observation.user.lastName }}</td>
-                    <td>{{ observation.registrationDate | date: 'yyyy/MM/dd hh:mm:ss'}}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="container__info_vehicle" *ngIf="infoVehicleIsVisible">
+      <legend>Datos del vehículo</legend>
+      <div class="container__row">
+        <div class="container__col">
+          <label>Placa</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Placa"
+            formControlName="vehicle_licensePlate"
+            disabled
+          />
+        </div>
+        <div class="container__col">
+          <label>Modelo</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Modelo"
+            formControlName="vehicle_year"
+            disabled
+          />
+        </div>
+        <div class="container__col">
+          <label>Kilometraje</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Kilometraje"
+            formControlName="vehicle_mileage"
+            disabled
+          />
+        </div>
+      </div>
+
+      <div class="container__row">
+        <div class="container__col">
+          <label>Marca</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Marca"
+            formControlName="vehicle_brand"
+            disabled
+          />
+        </div>
+
+        <div class="container__col">
+          <label>Tipo</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="vehicle_type"
+            placeholder="Tipo"
+            disabled
+          />
+        </div>
+
+        <div class="container__col">
+          <label>Línea</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="vehicle_model"
+            placeholder="Línea"
+            disabled
+          />
+        </div>
+      </div>
+      <hr />
     </div>
+
+    <div class="container__info_workOrder" *ngIf="infoWorkOrderIsVisible">
+      <legend>Datos de la orden</legend>
+      <div class="container__row">
+        <div class="container__col">
+          <label>Concesionario</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="dealer_name"
+            placeholder="Concesionario ..."
+            disabled
+          />
+        </div>
+        <div class="container__col">
+          <label>Sucursal</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="dealer_branch"
+            placeholder="Sucursal ..."
+            disabled
+          />
+        </div>
+        <div class="container__col">
+          <label>Rutina de mantenimiento</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="maintenance_routine"
+            placeholder="Rutina de mantenimiento ..."
+            disabled
+          />
+        </div>
+      </div>
+      <hr />
+    </div>
+
+    <div
+      class="container__info_transactionValues"
+      *ngIf="infoTransactionIsVisible"
+    >
+      <legend>Datos de la transacción</legend>
+      <div class="container__row">
+        <div class="container__col">
+          <label>Valor sin descuento</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="trx_valueWithoutDiscount"
+            placeholder="Valor con impuestos ..."
+            disabled
+          />
+        </div>
+        <div class="container__col">
+          <label>Valor descuento</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="trx_valueDiscount"
+            placeholder="Valor con impuestos ..."
+            disabled
+          />
+        </div>
+        <div class="container__col">
+          <label>Valor con descuento sin impuesto</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="trx_valueWithDiscountWithoutTaxes"
+            placeholder="Valor con impuestos ..."
+            disabled
+          />
+        </div>
+      </div>
+      <div class="container__row">
+        <div class="container__col">
+          <label>Valor impuestos</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="trx_valueTaxes"
+            placeholder="Valor impuestos ..."
+            disabled
+          />
+        </div>
+        <div class="container__col">
+          <label>Valor total</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="trx_valueWithTaxes"
+            placeholder="Valor con impuestos ..."
+            disabled
+          />
+        </div>
+      </div>
+      <hr />
+    </div>
+  </form>
+  <div class="container__info_workOrder_items" *ngIf="infoWorkOrderIsVisible">
+    <legend>Items orden de trabajo</legend>
+    <table class="table table-striped tbl">
+      <thead>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Presentación</th>
+        <th>Cantidad</th>
+        <th>Precio de referencia sin impuestos</th>
+        <th>Valor unitario x cantidad sin descuento</th>
+        <th>Dto</th>
+        <th>Valor unitario x cantidad con descuento</th>
+        <th>Valor impuestos</th>
+        <th>Valor total por item</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i = index; let mItem; of: transaction.lsItems">
+          <td>{{ i + 1 }}</td>
+          <td>{{ mItem.name | titlecase }}</td>
+          <td>{{ mItem.presentationUnit.longName | titlecase }}</td>
+          <td>{{ mItem.amount }}</td>
+          <td>{{ mItem.referencePrice | currency: 'USD':'symbol':'1.0-0' }}</td>
+          <td>
+            {{ mItem.valueWithoutDiscount | currency: 'USD':'symbol':'1.0-0' }}
+          </td>
+          <td>{{ mItem.discountValue | currency: 'USD':'symbol':'1.0-0' }}</td>
+          <td>
+            {{
+              mItem.valueWithDiscountWithoutTaxes
+                | currency: 'USD':'symbol':'1.0-0'
+            }}
+          </td>
+          <td>{{ mItem.taxesValue | currency: 'USD':'symbol':'1.0-0' }}</td>
+          <td>
+            {{
+              mItem.valueWithDiscountWithoutTaxes + mItem.taxesValue
+                | currency: 'USD':'symbol':'1.0-0'
+            }}
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="last-row">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><b class="bold">Total mantenimiento:</b></td>
+          <td>
+            <span class="bold">{{
+              transaction.valueWithoutDiscount
+                | currency: 'USD':'symbol':'1.0-0'
+            }}</span>
+          </td>
+          <td>
+            <span class="bold">{{
+              transaction.discountValue | currency: 'USD':'symbol':'1.0-0'
+            }}</span>
+          </td>
+          <td>
+            <span id="lbl-total-without_taxes" class="bold">{{
+              transaction.valueWithDiscountWithoutTaxes
+                | currency: 'USD':'symbol':'1.0-0'
+            }}</span>
+          </td>
+          <td>
+            <span id="lbl-total-taxes" class="bold">{{
+              transaction.taxesValue | currency: 'USD':'symbol':'1.0-0'
+            }}</span>
+          </td>
+          <td>
+            <span id="lbl-total-routine" class="bold">{{
+              transaction.value | currency: 'USD':'symbol':'1.0-0'
+            }}</span>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <hr />
+  </div>
+  <div class="container__info_observations" *ngIf="infoObservationsIsVisible">
+    <legend>Observaciones</legend>
+    <table class="table table-striped tbl">
+      <thead>
+        <th>#</th>
+        <th>Movimiento</th>
+        <th>Observación</th>
+        <th>Usuario</th>
+        <th>Fecha y hora</th>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let observation of transaction.lsObservations; let i = index"
+        >
+          <td>{{ i + 1 }}</td>
+          <td>{{ observation.movementDescription | titlecase }}</td>
+          <td>
+            {{
+              observation.description.trim() != ''
+                ? observation.description
+                : '---'
+            }}
+          </td>
+          <td>{{ observation.user.name + ' ' + observation.user.lastName }}</td>
+          <td>
+            {{ observation.registrationDate | date: 'yyyy/MM/dd hh:mm:ss' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

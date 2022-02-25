@@ -1,190 +1,318 @@
 <div id="container__content">
+  <div id="container__table_workOrder">
+    <h1>Órdenes de trabajo</h1>
+    <form [formGroup]="frm_filter">
+      <div class="container__filter">
+        <div class="container__col">
+          <label>Código</label>
+          <input type="text" class="form-control" formControlName="txtCode" />
+        </div>
+        <div class="container__col">
+          <label>Placa</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="txtLicense_plate"
+          />
+        </div>
+        <div class="container__col">
+          <label>Fecha inicio:</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="fecha inicio ..."
+            [bsValue]="init_date"
+            [bsConfig]="{
+              dateInputFormat: 'YYYY/MM/DD',
+              containerClass: 'theme-dark-blue'
+            }"
+            bsDatepicker
+            formControlName="txtInit_date"
+          />
+        </div>
+        <div class="container__col">
+          <label>Fecha fin:</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="fecha fin ..."
+            [bsValue]="end_date"
+            [bsConfig]="{
+              dateInputFormat: 'YYYY/MM/DD',
+              containerClass: 'theme-dark-blue'
+            }"
+            bsDatepicker
+            formControlName="txtEnd_date"
+          />
+        </div>
+        <div class="container__col">
+          <label>Estado</label>
+          <select class="form-control" formControlName="cmbState">
+            <option [value]="-1">Seleccione ...</option>
+            <option
+              *ngFor="let state of lsTransactionStates"
+              [value]="state.id"
+            >
+              {{ state.name | titlecase }}
+            </option>
+          </select>
+        </div>
+        <div class="container__col" *ngIf="!isDealer || isMainCompany">
+          <app-input-search-dealer
+            [countChanges]="countChanges"
+            (dealerWasSetted)="setDealerToFilter()"
+          >
+          </app-input-search-dealer>
+        </div>
+        <div class="container__col" *ngIf="isDealer">
+          <app-input-search-client
+            [countChanges]="countChanges"
+            (clientWasSetted)="setClientToFilter()"
+          >
+          </app-input-search-client>
+        </div>
 
-    <div id="container__table_workOrder">
-        <h1>Órdenes de trabajo</h1>
-        <form [formGroup]="frm_filter">
-            <div class="container__filter">
-                <div class="container__col">
-                    <label>Código</label>
-                    <input type="text" class="form-control" formControlName="txtCode">
-                </div>
-                <div class="container__col">
-                    <label>Placa</label>
-                    <input type="text" class="form-control" formControlName="txtLicense_plate">
-                </div>
-                <div class="container__col">
-                    <label>Fecha inicio:</label>
-                    <input type="text" class="form-control" placeholder="fecha inicio ..." [bsValue]="init_date"
-                        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }" bsDatepicker
-                        formControlName="txtInit_date">
-                </div>
-                <div class="container__col">
-                    <label>Fecha fin:</label>
-                    <input type="text" class="form-control" placeholder="fecha fin ..." [bsValue]="end_date"
-                        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }" bsDatepicker
-                        formControlName="txtEnd_date">
-                </div>
-                <div class="container__col">
-                    <label>Estado</label>
-                    <select class="form-control" formControlName="cmbState">
-                        <option [value]="-1">Seleccione ...</option>
-                        <option *ngFor="let state of lsTransactionStates" [value]="state.id">{{state.name | titlecase}}
-                        </option>
-                    </select>
-                </div>
-                <div class="container__col" *ngIf="!isDealer || isMainCompany">
-                    <app-input-search-dealer [countChanges]="countChanges" (dealerWasSetted)="setDealerToFilter()">
-                    </app-input-search-dealer>
-                </div>
-                <div class="container__col" *ngIf="isDealer">
-                    <app-input-search-client [countChanges]="countChanges" (clientWasSetted)="setClientToFilter()">
-                    </app-input-search-client>
-                </div>
+        <div class="container__buttons">
+          <button
+            class="btn btn-info"
+            *ngIf="!isFiltered"
+            (click)="toggleBtnFilter()"
+          >
+            Filtrar
+          </button>
+          <button
+            class="btn btn-danger"
+            *ngIf="isFiltered"
+            (click)="toggleBtnFilter()"
+          >
+            &times; Quitar filtros
+          </button>
+        </div>
+      </div>
+    </form>
 
-                <div class="container__buttons">
-                    <button class="btn btn-info" *ngIf="!isFiltered" (click)="toggleBtnFilter()">Filtrar</button>
-                    <button class="btn btn-danger" *ngIf="isFiltered" (click)="toggleBtnFilter()">&times; Quitar
-                        filtros</button>
-                </div>
+    <button class="btn-add btn-info" (click)="openWorkOrder()" *ngIf="isDealer">
+      <i class="fas fa-plus"></i>
+    </button>
+    <table class="table table-striped">
+      <thead>
+        <th>#</th>
+        <th>Código</th>
+        <th>Placa</th>
+        <th>Cliente</th>
+        <th>Mantenimiento</th>
+        <th>Sucursal</th>
+        <th>Fecha</th>
+        <th>Valor</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let workOrder of lsWorkOrderByDealer; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ workOrder.code != null ? workOrder.code : '' }}</td>
+          <td>{{ workOrder.headerDetails.vehicle.licensePlate }}</td>
+          <td>{{ workOrder.client.name }}</td>
+          <td>{{ workOrder.headerDetails.maintenanceRoutine.name }}</td>
+          <td>{{ workOrder.headerDetails.branch.name | uppercase }}</td>
+          <td>
+            {{
+              workOrder.updateDate != null
+                ? (workOrder.updateDate | date: 'yyyy/MM/dd')
+                : (workOrder.registrationDate | date: 'yyyy/MM/dd')
+            }}
+          </td>
+          <td>{{ workOrder.value | currency: 'USD':'symbol':'1.0-0' }}</td>
+          <td>
+            <span [id]="getSpanStateId(workOrder.id)">{{
+              validateState(workOrder.transactionState, workOrder.id)
+            }}</span>
+          </td>
+          <td>
+            <i
+              class="fas fa-info-circle text-info"
+              (click)="
+                setTransaction(workOrder); openPopUp('container__resume_main')
+              "
+              title="Más información"
+            ></i>
+
+            <div
+              class="container__controls"
+              *ngIf="validateContainerControls(workOrder) && isDealer"
+            >
+              <i
+                class="fas fa-check-circle text-success"
+                (click)="
+                  setTransaction(workOrder);
+                  openPopUp('container__FinalizeWorkOrder')
+                "
+                title="Finalizar"
+              ></i>
+              <i
+                class="fas fa-times-circle text-danger"
+                (click)="
+                  setTransaction(workOrder); openPopUp('container__Cancelation')
+                "
+                title="Anular"
+              ></i>
             </div>
-        </form>
-
-        <button class="btn-add btn-info" (click)="openWorkOrder()" *ngIf="isDealer"><i class="fas fa-plus"></i></button>
-        <table class="table table-striped">
-            <thead>
-                <th>#</th>
-                <th>Código</th>
-                <th>Placa</th>
-                <th>Cliente</th>
-                <th>Mantenimiento</th>
-                <th>Sucursal</th>
-                <th>Fecha</th>
-                <th>Valor</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let workOrder of lsWorkOrderByDealer; let i = index">
-                    <td>{{ i + 1}}</td>
-                    <td>{{ (workOrder.code!=null)?workOrder.code:'' }}</td>
-                    <td>{{ workOrder.headerDetails.vehicle.licensePlate }}</td>
-                    <td>{{ workOrder.client.name }}</td>
-                    <td>{{ workOrder.headerDetails.maintenanceRoutine.name }}</td>
-                    <td>{{ workOrder.headerDetails.branch.name | uppercase}}</td>
-                    <td>{{ workOrder.registrationDate | date:'yyyy/MM/dd' }}</td>
-                    <td>{{ workOrder.value | currency:'USD':'symbol':'1.0-0'}}</td>
-                    <td><span [id]="getSpanStateId(workOrder.id)">{{ validateState(workOrder.transactionState,
-                            workOrder.id) }}</span></td>
-                    <td>
-                        <i class="fas fa-info-circle text-info"
-                            (click)="setTransaction(workOrder); openPopUp('container__resume_main')"
-                            title="Más información"></i>
-
-                        <div class="container__controls" *ngIf="validateContainerControls(workOrder) && isDealer">
-                            <i class="fas fa-check-circle text-success"
-                                (click)="setTransaction(workOrder); openPopUp('container__FinalizeWorkOrder')" title="Finalizar"></i>
-                            <i class="fas fa-times-circle text-danger"
-                                (click)="setTransaction(workOrder); openPopUp('container__Cancelation')" title="Anular"></i>
-                        </div>
-                        <!-- <i class="fas fa-trash-alt text-danger" title="Eliminar"></i> -->
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div id="container__workOrder">
-        <app-work-order (workOrderWasSaved)="getListWorkOrders()" (workOrderWasCanceled)="closeWorkOrder()">
-        </app-work-order>
-    </div>
-
-
+            <!-- <i class="fas fa-trash-alt text-danger" title="Eliminar"></i> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="container__workOrder">
+    <app-work-order
+      (workOrderWasSaved)="getListWorkOrders()"
+      (workOrderWasCanceled)="closeWorkOrder()"
+    >
+    </app-work-order>
+  </div>
 </div>
 
 <div id="container__resume_main">
-    <div class="overlay">
-        <div class="card card-review">
-            <div class="card-header container__header">
-                <h2>Resumen orden de trabajo: {{ (transactionSelected!=null &&
-                    transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
-                <div class="container__buttonClose">
-                    <a><i class="fas fa-times" (click)="closePopUp('container__resume_main')"></i></a>
-                </div>
-            </div>
-            <div class="card-body">
-                <app-transaction-review [trx_id]="trx_id">
-                </app-transaction-review>
-            </div>
+  <div class="overlay">
+    <div class="card card-review">
+      <div class="card-header container__header">
+        <h2>
+          Resumen orden de trabajo:
+          {{
+            transactionSelected != null && transactionSelected != undefined
+              ? transactionSelected.code
+              : ''
+          }}
+        </h2>
+        <div class="container__buttonClose">
+          <a
+            ><i
+              class="fas fa-times"
+              (click)="closePopUp('container__resume_main')"
+            ></i
+          ></a>
         </div>
+      </div>
+      <div class="card-body">
+        <app-transaction-review [trx_id]="trx_id"> </app-transaction-review>
+      </div>
     </div>
+  </div>
 </div>
-
 
 <div id="container__FinalizeWorkOrder">
-    <div class="overlay">
-        <div class="card card-review">
-            <div class="card-header container__header">
-                <h2>Finalizar orden de trabajo: {{ (transactionSelected!=null &&
-                    transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
-                <div class="container__buttonClose">
-                    <a><i class="fas fa-times" (click)="closePopUp('container__FinalizeWorkOrder')"></i></a>
-                </div>
-            </div>
-            <div class="card-body">
-                <app-transaction-review [trx_id]="trx_id">
-                </app-transaction-review>
-            </div>
-            <div class="card-footer">
-                <form [formGroup]="frmApprovedTrx">
-                    <div>
-                        <legend>Observaciones de la finalización de la orden de trabajo</legend>
-                        <textarea class="form-control" formControlName="txtObservationApprobation" cols="30" rows="2">
-                        </textarea>
-                    </div>
-                </form>
-                <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger"
-                        (click)="closePopUp('container__FinalizeWorkOrder');clearForms()">Cancelar</button>
-                    <button type="button" class="btn btn-success" (click)="finalizeWorkOrder()">Guardar</button>
-                </div>
-            </div>
+  <div class="overlay">
+    <div class="card card-review">
+      <div class="card-header container__header">
+        <h2>
+          Finalizar orden de trabajo:
+          {{
+            transactionSelected != null && transactionSelected != undefined
+              ? transactionSelected.code
+              : ''
+          }}
+        </h2>
+        <div class="container__buttonClose">
+          <a
+            ><i
+              class="fas fa-times"
+              (click)="closePopUp('container__FinalizeWorkOrder')"
+            ></i
+          ></a>
         </div>
+      </div>
+      <div class="card-body">
+        <app-transaction-review [trx_id]="trx_id"> </app-transaction-review>
+      </div>
+      <div class="card-footer">
+        <form [formGroup]="frmApprovedTrx">
+          <div>
+            <legend>
+              Observaciones de la finalización de la orden de trabajo
+            </legend>
+            <textarea
+              class="form-control"
+              formControlName="txtObservationApprobation"
+              cols="30"
+              rows="2"
+            >
+            </textarea>
+          </div>
+        </form>
+        <div class="buttons__container" id="container__buttons">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="closePopUp('container__FinalizeWorkOrder'); clearForms()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="finalizeWorkOrder()"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
-
 
 <div id="container__Cancelation">
-    <div class="overlay">
-        <div class="card card-review">
-            <div class="card-header container__header">
-                <h2>Anular orden de trabajo: {{ (transactionSelected!=null &&
-                    transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
-                <div class="container__buttonClose">
-                    <a><i class="fas fa-times" (click)="closePopUp('container__Cancelation')"></i></a>
-                </div>
-            </div>
-            <div class="card-body">
-                <app-transaction-review [trx_id]="trx_id">
-                </app-transaction-review>
-            </div>
-            <div class="card-footer">
-                <form [formGroup]="frmCancelTrx">
-                    <legend>Observaciones de la anulación</legend>
-                    <textarea class="form-control" formControlName="txtObservationCancelation" cols="30"
-                        rows="2"></textarea>
-                    <div class="buttons__container" id="container__buttons">
-                        <button type="button" class="btn btn-danger"
-                            (click)="closePopUp('container__Cancelation');clearForms()">Cancelar</button>
-                        <button type="button" class="btn btn-success" (click)="cancelWorkOrder()">Guardar</button>
-                    </div>
-                </form>
-            </div>
+  <div class="overlay">
+    <div class="card card-review">
+      <div class="card-header container__header">
+        <h2>
+          Anular orden de trabajo:
+          {{
+            transactionSelected != null && transactionSelected != undefined
+              ? transactionSelected.code
+              : ''
+          }}
+        </h2>
+        <div class="container__buttonClose">
+          <a
+            ><i
+              class="fas fa-times"
+              (click)="closePopUp('container__Cancelation')"
+            ></i
+          ></a>
         </div>
+      </div>
+      <div class="card-body">
+        <app-transaction-review [trx_id]="trx_id"> </app-transaction-review>
+      </div>
+      <div class="card-footer">
+        <form [formGroup]="frmCancelTrx">
+          <legend>Observaciones de la anulación</legend>
+          <textarea
+            class="form-control"
+            formControlName="txtObservationCancelation"
+            cols="30"
+            rows="2"
+          ></textarea>
+          <div class="buttons__container" id="container__buttons">
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="closePopUp('container__Cancelation'); clearForms()"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              (click)="cancelWorkOrder()"
+            >
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
-
-
-
-
-
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

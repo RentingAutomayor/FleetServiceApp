@@ -1,121 +1,162 @@
 <div id="container__content">
-    <h1>Órdenes de trabajo por aprobar</h1>
-
-    <table class="table table-striped">
-        <thead>
-            <th>#</th>
-            <th>Código</th>
-            <th>Placa</th>
-            <th>Mantenimiento</th>
-            <th>Contrato</th>
-            <th>Concesionario</th>
-            <th>Sede</th>
-            <th>Valor</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let i = index;let trx of lsTransactionsToApprove">
-                <td>{{ (i + 1) }}</td>
-                <td>{{ trx.code }}</td>
-                <td>{{ trx.headerDetails.vehicle.licensePlate }}</td>
-                <td>{{ trx.headerDetails.maintenanceRoutine.name }}</td>
-                <td>{{ trx.headerDetails.contract.code }}</td>
-                <td>{{ trx.headerDetails.dealer.name }}</td>
-                <td>{{ trx.headerDetails.branch.name }}</td>
-                <td>{{ trx.value | currency }}</td>
-                <td>{{ trx.registrationDate | date: 'yyyy/MM/dd hh:mm' }}</td>
-                <td>
-                    <i class="fas fa-info-circle text-info" (click)="setTransaction(trx); openPopUp('container__resume')" title="Más información"></i>
-                    <i class="fas fa-check-circle text-success"
-                        (click)="setTransaction(trx); openPopUp('container__Approbation')" title="Aprobar"></i>
-                    <i class="fas fa-times-circle text-danger"
-                        (click)="setTransaction(trx); openPopUp('container__Cancelation')" title="Negar"></i>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+  <h1>Órdenes de trabajo por aprobar</h1>
+  <div class="container-cards">
+    <app-card-trx-detail
+      *ngFor="let trx of lsTransactionsToApprove"
+      [transaction]="trx"
+      (onShowDetailTrx)="setTransactionToShow($event)"
+      (onApproveTrx)="setTransactionToApprove($event)"
+      (onDeniedTrx)="setTransactionToDenied($event)"
+    ></app-card-trx-detail>
+  </div>
 </div>
-
-
 <div id="container__Approbation">
-    <div class="overlay">
-        <div class="card card-review">
-            <div class="card-header container__header">
-                <h2>Aprobar orden de trabajo: {{ (transactionSelected!=null && transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
-                <div class="container__buttonClose">
-                    <a><i class="fas fa-times" (click)="closePopUp('container__Approbation')"></i></a>
-                </div>
-            </div>
-            <div class="card-body">
-                <app-transaction-review [trx_id]="trx_id">
-                </app-transaction-review>
-            </div>
-            <div class="card-footer">
-                <form [formGroup]="frmApprovedTrx">
-                    <div>
-                        <legend>Observaciones de la aprobación</legend>
-                        <textarea class="form-control" formControlName="txtObservationApprobation" cols="30" rows="2">
-                        </textarea>
-                    </div>
-                </form>
-                <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger"
-                        (click)="closePopUp('container__Approbation');clearForms()">Cancelar</button>
-                    <button type="button" class="btn btn-success" (click)="approveWorkOrder()">Guardar</button>
-                </div>
-            </div>
+  <div class="overlay">
+    <div class="card card-review">
+      <div class="card-header container__header">
+        <h2>
+          Aprobar orden de trabajo:
+          {{
+            transactionSelected != null && transactionSelected != undefined
+              ? transactionSelected.code
+              : ''
+          }}
+        </h2>
+        <div class="container__buttonClose">
+          <a
+            ><i
+              class="fas fa-times"
+              (click)="closePopUp('container__Approbation')"
+            ></i
+          ></a>
         </div>
+      </div>
+      <div class="card-body">
+        <app-transaction-review [trx_id]="trx_id"> </app-transaction-review>
+      </div>
+      <div class="card-footer">
+        <form [formGroup]="frmApprovedTrx">
+          <div>
+            <legend>Observaciones de la aprobación</legend>
+            <span *ngIf="frmApprovedTrx.invalid"
+              >** Debe asociar una observación **</span
+            >
+            <textarea
+              class="form-control"
+              formControlName="txtObservationApprobation"
+              cols="30"
+              rows="2"
+            >
+            </textarea>
+          </div>
+        </form>
+        <div class="buttons__container" id="container__buttons">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="closePopUp('container__Approbation'); clearForms()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="approveWorkOrder()"
+            [disabled]="frmApprovedTrx.invalid"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
-
 
 <div id="container__Cancelation">
-    <div class="overlay">
-        <div class="card card-review">
-            <div class="card-header container__header">
-                <h2>Cancelar orden de trabajo: {{ (transactionSelected!=null && transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
-                <div class="container__buttonClose">
-                    <a><i class="fas fa-times" (click)="closePopUp('container__Cancelation')"></i></a>
-                </div>
-            </div>
-            <div class="card-body">
-                <app-transaction-review [trx_id]="trx_id">
-                </app-transaction-review>
-            </div>
-            <div class="card-footer">
-                <form [formGroup]="frmCancelTrx">
-                    <legend>Observaciones de la cancelación</legend>
-                    <textarea class="form-control" formControlName="txtObservationCancelation" cols="30"
-                        rows="2"></textarea>
-                    <div class="buttons__container" id="container__buttons">
-                        <button type="button" class="btn btn-danger"
-                            (click)="closePopUp('container__Cancelation');clearForms()">Cancelar</button>
-                        <button type="button" class="btn btn-success" (click)="cancelWorkOrder()">Guardar</button>
-                    </div>
-                </form>
-            </div>
+  <div class="overlay">
+    <div class="card card-review">
+      <div class="card-header container__header">
+        <h2>
+          Cancelar orden de trabajo:
+          {{
+            transactionSelected != null && transactionSelected != undefined
+              ? transactionSelected.code
+              : ''
+          }}
+        </h2>
+        <div class="container__buttonClose">
+          <a
+            ><i
+              class="fas fa-times"
+              (click)="closePopUp('container__Cancelation')"
+            ></i
+          ></a>
         </div>
+      </div>
+      <div class="card-body">
+        <app-transaction-review [trx_id]="trx_id"> </app-transaction-review>
+      </div>
+      <div class="card-footer">
+        <form [formGroup]="frmCancelTrx">
+          <legend>Observaciones de la cancelación</legend>
+          <span *ngIf="frmCancelTrx.invalid"
+            >** Debe asociar una observación **</span
+          >
+          <textarea
+            class="form-control"
+            formControlName="txtObservationCancelation"
+            cols="30"
+            rows="2"
+          ></textarea>
+          <div class="buttons__container" id="container__buttons">
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="closePopUp('container__Cancelation'); clearForms()"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              (click)="cancelWorkOrder()"
+              [disabled]="frmCancelTrx.invalid"
+            >
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
-
 
 <div id="container__resume">
-    <div class="overlay">
-        <div class="card card-review">
-            <div class="card-header container__header">
-                <h2>Resumen orden de trabajo: {{ (transactionSelected!=null && transactionSelected!=undefined)?transactionSelected.code:'' }}</h2>
-                <div class="container__buttonClose">
-                    <a><i class="fas fa-times" (click)="closePopUp('container__resume')"></i></a>
-                </div>
-            </div>
-            <div class="card-body">
-                <app-transaction-review [trx_id]="trx_id">
-                </app-transaction-review>
-            </div>
+  <div class="overlay">
+    <div class="card card-review">
+      <div class="card-header container__header">
+        <h2>
+          Resumen orden de trabajo:
+          {{
+            transactionSelected != null && transactionSelected != undefined
+              ? transactionSelected.code
+              : ''
+          }}
+        </h2>
+        <div class="container__buttonClose">
+          <a
+            ><i
+              class="fas fa-times"
+              (click)="closePopUp('container__resume')"
+            ></i
+          ></a>
         </div>
+      </div>
+      <div class="card-body">
+        <app-transaction-review [trx_id]="trx_id"> </app-transaction-review>
+      </div>
     </div>
+  </div>
 </div>
-
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

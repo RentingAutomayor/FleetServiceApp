@@ -143,7 +143,7 @@ export class WorkOrderManagerComponent implements OnInit {
   async getDataTransactions() {
     try {
       this.isAwaiting = true
-      await this.transactionService
+      this.transactionService
         .getTransactionsByDealerOrClient(
           this.dealer_to_filter,
           this.client_to_filter,
@@ -153,7 +153,7 @@ export class WorkOrderManagerComponent implements OnInit {
           this.license_plate_toFilter,
           this.state_to_filter
         )
-        .then((dataTrx) => {
+        .subscribe((dataTrx) => {
           this.lsWorkOrderByDealer = dataTrx
         })
       this.isAwaiting = false
@@ -301,7 +301,7 @@ export class WorkOrderManagerComponent implements OnInit {
 
       this.transactionService
         .processTransaction(trxApproveWorkOrder)
-        .then((rta) => {
+        .subscribe((rta) => {
           if (rta.response) {
             alert(rta.message)
             this.getDataTransactions()
@@ -329,7 +329,7 @@ export class WorkOrderManagerComponent implements OnInit {
 
       this.transactionService
         .processTransaction(trxApproveWorkOrder)
-        .then((rta) => {
+        .subscribe((rta) => {
           if (rta.response) {
             alert(rta.message)
             this.getDataTransactions()

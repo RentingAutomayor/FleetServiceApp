@@ -4,6 +4,7 @@ import { Transaction } from '../../../Models/Transaction'
 import { ResponseApi } from '../../../Models/ResponseApi'
 import { LogTransaction } from '../../../Models/LogTransaction'
 import { TransactionState } from 'src/app/Models/TransactionState'
+import { Observable } from 'rxjs'
 
 @Injectable({
   providedIn: 'root',
@@ -15,11 +16,9 @@ export class TransactionService {
   }
   constructor(private http: HttpClient) {}
 
-  async processTransaction(trx: Transaction): Promise<ResponseApi> {
+  processTransaction(trx: Transaction): Observable<ResponseApi> {
     const urlProcessTrx = `${this.URL_API}/ProcessTransaction`
-    return this.http
-      .post<ResponseApi>(urlProcessTrx, trx, this.HttpOptions)
-      .toPromise()
+    return this.http.post<ResponseApi>(urlProcessTrx, trx, this.HttpOptions)
   }
 
   async getTodayTransactions(): Promise<Transaction[]> {
@@ -27,12 +26,12 @@ export class TransactionService {
     return this.http.get<Transaction[]>(urlTodaytransactions).toPromise()
   }
 
-  async getTransactionsToApprove(client_id: number): Promise<Transaction[]> {
+  getTransactionsToApprove(client_id: number): Observable<Transaction[]> {
     const urlGetTransactions = `${this.URL_API}/GetTransactionsToApproveByClient?client_id=${client_id}`
-    return this.http.get<Transaction[]>(urlGetTransactions).toPromise()
+    return this.http.get<Transaction[]>(urlGetTransactions)
   }
 
-  async getTransactionsByDealerOrClient(
+  getTransactionsByDealerOrClient(
     dealer_id: number = null,
     client_id: number = null,
     init_date: string = null,
@@ -40,9 +39,9 @@ export class TransactionService {
     code: string = null,
     license_plate: string = null,
     state_trx: number = null
-  ): Promise<Transaction[]> {
+  ): Observable<Transaction[]> {
     const urlGetTransactions = `${this.URL_API}/GetTransactionsByDealerOrClient?dealer_id=${dealer_id}&client_id=${client_id}&init_date=${init_date}&end_date=${end_date}&code=${code}&license_plate=${license_plate}&state_trx=${state_trx}`
-    return this.http.get<Transaction[]>(urlGetTransactions).toPromise()
+    return this.http.get<Transaction[]>(urlGetTransactions)
   }
 
   async getTransactionsByClient(client_id: number): Promise<LogTransaction[]> {

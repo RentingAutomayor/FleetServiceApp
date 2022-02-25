@@ -1,40 +1,64 @@
-
 <div id="container__content">
-    <h1>Contratos</h1>
-    <button class="btn-add btn-info" *ngIf="!hideButtonAdd" (click)="insertContract()"><i class="fas fa-plus"></i></button>
-    <table class="table table-striped">
-        <thead>
-            <th>#</th>
-            <th>Código interno</th>
-            <th>Código referencia</th>
-            <th>Cliente</th>
-            <th>Concesionario</th>
-            <th>Plazo en meses</th>            
-            <th title="Vehículos contratados">Veh. contratados</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let i = index ;let contract of lsContracts | paginate: { itemsPerPage: 10, currentPage: p }">
-                <td>{{ (i + 1) }}</td>
-                <td>{{ contract.code }}</td>
-                <td>{{ contract.name | uppercase }}</td>
-                <td>{{ contract.client.name | titlecase }}</td>
-                <td>{{ contract.dealer.name | titlecase }}</td>
-                <td>{{ contract.duration }}</td>                
-                <td>{{ contract.amountVehicles }}</td>
-                <td>{{ contract.contractState.name | titlecase }}</td>
-                <td>
-                    <i class="fas fa-info-circle text-info" title="Más información" (click)="getDetailsContract(contract)"></i>
-                    <i class="fas fa-edit text-warning" *ngIf="enableButtonsEditAndDelete" (click)="updateContract(contract)" title="Modificar"></i>
-                    <i class="fas fa-trash-alt text-danger" *ngIf="enableButtonsEditAndDelete" (click)="deleteContract(contract)" title="Eliminar"></i>
-                </td>
-            </tr>
-        </tbody>
-
-    </table>
-    <div class="paginationContainer">
-        <pagination-controls (pageChange)="p = $event"></pagination-controls>
-    </div>
+  <h1>Contratos</h1>
+  <button
+    class="btn-add btn-info"
+    *ngIf="!hideButtonAdd"
+    (click)="insertContract()"
+  >
+    <i class="fas fa-plus"></i>
+  </button>
+  <table class="table table-striped">
+    <thead>
+      <th>#</th>
+      <th>Código interno</th>
+      <th>Código referencia</th>
+      <th>Cliente</th>
+      <th>Concesionario</th>
+      <th>Plazo en meses</th>
+      <th title="Vehículos contratados">Veh. contratados</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let i = index;
+          let contract;
+          of: lsContracts | paginate: { itemsPerPage: 10, currentPage: p }
+        "
+      >
+        <td>{{ i + 1 }}</td>
+        <td>{{ contract.code }}</td>
+        <td>{{ contract.name | uppercase }}</td>
+        <td>{{ contract.client.name | titlecase }}</td>
+        <td>{{ contract.dealer.name | titlecase }}</td>
+        <td>{{ contract.duration }}</td>
+        <td>{{ contract.amountVehicles }}</td>
+        <td>{{ contract.contractState.name | titlecase }}</td>
+        <td>
+          <i
+            class="fas fa-info-circle text-info"
+            title="Más información"
+            (click)="getDetailsContract(contract)"
+          ></i>
+          <i
+            class="fas fa-edit text-warning"
+            *ngIf="enableButtonsEditAndDelete"
+            (click)="updateContract(contract)"
+            title="Modificar"
+          ></i>
+          <i
+            class="fas fa-trash-alt text-danger"
+            *ngIf="enableButtonsEditAndDelete"
+            (click)="deleteContract(contract)"
+            title="Eliminar"
+          ></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="paginationContainer">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

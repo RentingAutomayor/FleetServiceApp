@@ -6,6 +6,7 @@ import { ResponseApi } from '../../../../Models/ResponseApi'
 import { Contract } from '../../../../Models/Contract'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
 import { ActionType } from 'src/app/Models/ActionType'
+import { Observable } from 'rxjs'
 
 @Injectable({
   providedIn: 'root',
@@ -34,17 +35,17 @@ export class ContractService {
     return this.http.get<DiscountType[]>(urlGetDiscounts).toPromise()
   }
 
-  async getContracts(
+  getContracts(
     dealer_id: number = 0,
     client_id: number = 0
-  ): Promise<Contract[]> {
+  ): Observable<Contract[]> {
     const urlGetContracts = `${this.URL_API}/Get?dealer_id=${dealer_id}&client_id=${client_id}`
-    return this.http.get<Contract[]>(urlGetContracts).toPromise()
+    return this.http.get<Contract[]>(urlGetContracts)
   }
 
-  async getContractByID(contract_id: number): Promise<Contract> {
+  getContractByID(contract_id: number): Observable<Contract> {
     const urlGetById = `${this.URL_API}/GetById?pContract_id=${contract_id}`
-    return this.http.get<Contract>(urlGetById).toPromise()
+    return this.http.get<Contract>(urlGetById)
   }
 
   async getLastContractByClientAndDealer(
@@ -79,11 +80,9 @@ export class ContractService {
       .toPromise()
   }
 
-  async delete(pContract: Contract): Promise<ResponseApi> {
+  delete(pContract: Contract): Observable<ResponseApi> {
     const urlDelete = `${this.URL_API}/Delete`
-    return this.http
-      .post<ResponseApi>(urlDelete, pContract, this.HttpOptions)
-      .toPromise()
+    return this.http.post<ResponseApi>(urlDelete, pContract, this.HttpOptions)
   }
 
   getContractStateSelected(): ContractState {

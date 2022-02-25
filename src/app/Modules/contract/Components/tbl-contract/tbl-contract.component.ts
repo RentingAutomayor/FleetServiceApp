@@ -51,36 +51,37 @@ export class TblContractComponent implements OnInit {
     this.getListContracts()
   }
 
-  async getListContracts() {
-    try {
-      this.isAwaiting = true
-
-      switch (this.companyStorage.type) {
-        case CompanyType.DEALER:
-          this.lsContracts = await this.contractService.getContracts(
-            this.companyStorage.id
-          )
-          this.hideButtonAdd = true
-          this.enableButtonsEditAndDelete = false
-          break
-        case CompanyType.CLIENT:
-          this.lsContracts = await this.contractService.getContracts(
-            0,
-            this.companyStorage.id
-          )
-          this.hideButtonAdd = true
-          this.enableButtonsEditAndDelete = false
-          break
-        default:
-          this.lsContracts = await this.contractService.getContracts()
-          this.hideButtonAdd = false
-          this.enableButtonsEditAndDelete = true
-          break
-      }
-
-      this.isAwaiting = false
-    } catch (error) {
-      console.error(error)
+  getListContracts() {
+    this.isAwaiting = true
+    switch (this.companyStorage.type) {
+      case CompanyType.DEALER:
+        this.contractService
+          .getContracts(this.companyStorage.id)
+          .subscribe((contracts) => {
+            this.lsContracts = contracts
+            this.isAwaiting = false
+          })
+        this.hideButtonAdd = true
+        this.enableButtonsEditAndDelete = false
+        break
+      case CompanyType.CLIENT:
+        this.contractService
+          .getContracts(0, this.companyStorage.id)
+          .subscribe((contracts) => {
+            this.lsContracts = contracts
+            this.isAwaiting = false
+          })
+        this.hideButtonAdd = true
+        this.enableButtonsEditAndDelete = false
+        break
+      default:
+        this.contractService.getContracts().subscribe((contracts) => {
+          this.lsContracts = contracts
+          this.isAwaiting = false
+        })
+        this.hideButtonAdd = false
+        this.enableButtonsEditAndDelete = true
+        break
     }
   }
 
@@ -103,54 +104,44 @@ export class TblContractComponent implements OnInit {
     this.router.navigate(['/MasterContracts/Contract'])
   }
 
-  async getDetailsContract(pContract: Contract) {
-    try {
-      this.isAwaiting = true
-      const oContractDetails = await this.contractService.getContractByID(
-        pContract.id
-      )
+  getDetailsContract(pContract: Contract) {
+    this.isAwaiting = true
+    this.contractService.getContractByID(pContract.id).subscribe((contract) => {
+      const oContractDetails = contract
       this.isAwaiting = false
       this.contractService.setAction(ActionType.READ)
       this.contractService.setContract(oContractDetails)
+      this.isAwaiting = false
       this.router.navigate(['/MasterContracts/Contract'])
-    } catch (error) {
-      console.error(error)
-    }
+    })
   }
 
-  async updateContract(pContract: Contract) {
-    try {
-      this.isAwaiting = true
-      const oContractToUpdate = await this.contractService.getContractByID(
-        pContract.id
-      )
+  updateContract(pContract: Contract) {
+    this.isAwaiting = true
+    this.contractService.getContractByID(pContract.id).subscribe((contract) => {
+      const oContractToUpdate = contract
       this.isAwaiting = false
       this.contractService.setAction(ActionType.UPDATE)
       this.contractService.setContract(oContractToUpdate)
+      this.isAwaiting = false
       this.router.navigate(['/MasterContracts/Contract'])
-    } catch (error) {
-      console.error(error)
-    }
+    })
   }
 
-  async deleteContract(pContract: Contract) {
-    try {
-      if (
-        confirm(
-          '¿Está seguro que desea elminar este contrato?, al hacerlo se eliminará toda la información relacionada'
-        )
-      ) {
-        this.isAwaiting = true
-        const rta = await this.contractService.delete(pContract)
-        this.isAwaiting = false
+  deleteContract(pContract: Contract) {
+    if (
+      confirm(
+        '¿Está seguro que desea elminar este contrato?, al hacerlo se eliminará toda la información relacionada'
+      )
+    ) {
+      this.isAwaiting = true
+      this.contractService.delete(pContract).subscribe((rta) => {
         if (rta.response) {
           alert(rta.message)
           this.getListContracts()
         }
-      }
-    } catch (error) {
-      console.error(error)
-      alert(error)
+        this.isAwaiting = false
+      })
     }
   }
 }

@@ -182,7 +182,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     try {
       this.maintenanceItemService
         .getPricesByContract(contract_id)
-        .then((pricesByContract) => {
+        .subscribe((pricesByContract) => {
           this.pricesByContract = pricesByContract
 
           this.updateAmountsAndPrices(

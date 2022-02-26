@@ -167,19 +167,10 @@ export class MaintenanceItemComponent implements OnInit, OnDestroy {
           ? this.vehicleService.getListVehicleModelsSelected()
           : []
 
-      oItem = this.setDealerToItem(oItem)
       return oItem
     } catch (error) {
       console.warn(error)
     }
-  }
-
-  setDealerToItem(oItem: MaintenanceItem) {
-    const session = JSON.parse(sessionStorage.getItem('sessionUser'))
-    if (session.company.type == CompanyType.DEALER) {
-      oItem.dealer.id = session.company.id
-    }
-    return oItem
   }
 
   setDataInForm(item: MaintenanceItem) {

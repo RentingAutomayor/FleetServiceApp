@@ -70,79 +70,74 @@ export class MaintenanceItemService {
     return this.http.get<MaintenanceItem[]>(urlGetMaintenanceItems)
   }
 
-  getMaintenanceItemById(pId: number): Observable<MaintenanceItem> {
-    const urlGetMaintenanceItem = `${this.URL_API}/GetById?itemId=${pId}`
+  getMaintenanceItemById(itemId: number): Observable<MaintenanceItem> {
+    const urlGetMaintenanceItem = `${this.URL_API}/GetById?itemId=${itemId}`
     return this.http.get<MaintenanceItem>(urlGetMaintenanceItem)
   }
 
-  async getMaintenanceItemByType(pTypeId: number): Promise<MaintenanceItem[]> {
-    const urlGetMaintenanceItem = `${this.URL_API}/GetByType?typeId=${pTypeId}`
-    return this.http.get<MaintenanceItem[]>(urlGetMaintenanceItem).toPromise()
-  }
-
   getItemsByVehicleModel(pVehicleModel_id: number) {
-    const urlGetMaintenanceItems = `${this.URL_API}/GetItemsByVehicleModel?pVehicleModel_id=${pVehicleModel_id}`
+    const urlGetMaintenanceItems = `${this.URL_API}/GetItemsByVehicleModel?vehicleModel_id=${pVehicleModel_id}`
     return this.http.get<MaintenanceItem[]>(urlGetMaintenanceItems)
   }
 
-  async getPresentationUnits(): Promise<PresentationUnit[]> {
+  getPresentationUnits(): Observable<PresentationUnit[]> {
     const urlGetPresentationUnits = `${this.URL_API}/GetPresentationUnits`
-    return this.http
-      .get<PresentationUnit[]>(urlGetPresentationUnits)
-      .toPromise()
+    return this.http.get<PresentationUnit[]>(urlGetPresentationUnits)
   }
 
-  async getCategories(): Promise<Category[]> {
+  getCategories(): Observable<Category[]> {
     const urlCategory = `${this.URL_API}/GetCategories`
-    return this.http.get<Category[]>(urlCategory).toPromise()
+    return this.http.get<Category[]>(urlCategory)
   }
 
-  async getTypeOfMaintenanceItem(): Promise<TypeOfMaintenanceItem[]> {
+  getTypeOfMaintenanceItem(): Observable<TypeOfMaintenanceItem[]> {
     const urlTypeOfItem = `${this.URL_API}/getTypeOfMaintenanceItem`
-    return this.http.get<TypeOfMaintenanceItem[]>(urlTypeOfItem).toPromise()
+    return this.http.get<TypeOfMaintenanceItem[]>(urlTypeOfItem)
   }
 
   getPricesByDealer(pDealer_id: number): Observable<PricesByDealer> {
-    const urlGetPrices = `${this.URL_API}/GetPricesByDealer?pDealer_id=${pDealer_id}`
+    const urlGetPrices = `${this.URL_API}/GetPricesByDealer?dealer_id=${pDealer_id}`
     return this.http.get<PricesByDealer>(urlGetPrices)
   }
 
-  async setPricesByDealer(
-    pricesByDealer: PricesByDealer
-  ): Promise<ResponseApi> {
+  setPricesByDealer(pricesByDealer: PricesByDealer): Observable<ResponseApi> {
     const urlSetPrices = `${this.URL_API}/SetPricesByDealer`
-    return this.http
-      .post<ResponseApi>(urlSetPrices, pricesByDealer, this.HttpOptions)
-      .toPromise()
+    return this.http.post<ResponseApi>(
+      urlSetPrices,
+      pricesByDealer,
+      this.HttpOptions
+    )
   }
 
-  insert(pItem: MaintenanceItem): Observable<ResponseApi> {
-    const urlInsert = `${this.URL_API}/Insert`
-    return this.http.post<ResponseApi>(urlInsert, pItem, this.HttpOptions)
+  getPricesByContract(contract_id: number): Observable<PricesByContract> {
+    const urlGetPrices = `${this.URL_API}/GetPricesByContract?contract_id=${contract_id}`
+    return this.http.get<PricesByContract>(urlGetPrices)
   }
 
-  async getPricesByContract(pContract_id: number): Promise<PricesByContract> {
-    const urlGetPrices = `${this.URL_API}/GetPricesByContract?pContract_id=${pContract_id}`
-    return this.http.get<PricesByContract>(urlGetPrices).toPromise()
-  }
-
-  async setPricesByContract(
+  setPricesByContract(
     pricesByContract: PricesByContract
-  ): Promise<ResponseApi> {
+  ): Observable<ResponseApi> {
     const urlSetPrices = `${this.URL_API}/SetPricesByContract`
-    return this.http
-      .post<ResponseApi>(urlSetPrices, pricesByContract, this.HttpOptions)
-      .toPromise()
+    return this.http.post<ResponseApi>(
+      urlSetPrices,
+      pricesByContract,
+      this.HttpOptions
+    )
   }
 
-  async getTaxesList(): Promise<Tax[]> {
+  getTaxesList(): Observable<Tax[]> {
     const urlListTaxes = `${this.URL_API}/GetTaxesList`
-    return this.http.get<Tax[]>(urlListTaxes).toPromise()
+    return this.http.get<Tax[]>(urlListTaxes)
   }
 
-  update(pItem: MaintenanceItem): Observable<ResponseApi> {
+  insert(item: MaintenanceItem): Observable<ResponseApi> {
+    const urlInsert = `${this.URL_API}/Insert`
+    return this.http.post<ResponseApi>(urlInsert, item, this.HttpOptions)
+  }
+
+  update(item: MaintenanceItem): Observable<ResponseApi> {
     const urlUpdate = `${this.URL_API}/Update`
-    return this.http.put<ResponseApi>(urlUpdate, pItem, this.HttpOptions)
+    return this.http.put<ResponseApi>(urlUpdate, item, this.HttpOptions)
   }
 
   delete(pItem: MaintenanceItem): Observable<ResponseApi> {

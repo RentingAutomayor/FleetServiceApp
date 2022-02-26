@@ -58,7 +58,7 @@ export class MaintenanceItemCategoryComponent implements OnInit {
 
   initComponents() {
     try {
-      this.maintenanceItemService.getCategories().then((categories) => {
+      this.maintenanceItemService.getCategories().subscribe((categories) => {
         this.lsCategory = categories
       })
     } catch (error) {

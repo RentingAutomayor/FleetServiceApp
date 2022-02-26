@@ -77,7 +77,7 @@ export class PresentationUnitComponent implements OnInit {
     this.initComponents()
   }
 
-  async initComponents() {
+  initComponents() {
     try {
       this.getPresentationUnits()
     } catch (err) {
@@ -88,17 +88,17 @@ export class PresentationUnitComponent implements OnInit {
 
   getPresentationUnits() {
     try {
-      if (this.idTypeOfItem !== 0) {
-        this.maintenanceItemService
-          .getPresentationUnits()
-          .then((presentations) => {
-            this.lsPresentationUnit = presentations
+      this.maintenanceItemService
+        .getPresentationUnits()
+        .subscribe((presentations) => {
+          this.lsPresentationUnit = presentations
+          if (this.idTypeOfItem != 0) {
             this.filterPresentationsByType(this.idTypeOfItem)
             if (this.presentationUnitSelected !== null) {
               this.setDataInForm(this.presentationUnitSelected)
             }
-          })
-      }
+          }
+        })
     } catch (error) {}
   }
 

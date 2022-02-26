@@ -9,6 +9,8 @@ import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
 import { findLastIndex } from 'lodash'
 import { FormControl } from '@angular/forms'
 import { retry } from 'rxjs/operators'
+import { DealerComponent } from 'src/app/Modules/dealer/Componets/dealer/dealer.component'
+import { Dealer } from 'src/app/Models/Dealer'
 
 @Component({
   selector: 'app-tbl-maintenance-item',
@@ -199,8 +201,8 @@ export class TblMaintenanceItemComponent implements OnInit {
   saveMaintenanceItem() {
     try {
       const oItem = this.maintenanceItemService.getItem()
-
-      this.saveDataInDB(oItem)
+      const oItemWithDealer = this.setDealerToItem(oItem)
+      this.saveDataInDB(oItemWithDealer)
     } catch (err) {
       console.error(err.error.Message)
       alert(err.error.Message)
@@ -295,5 +297,21 @@ export class TblMaintenanceItemComponent implements OnInit {
     this.typeFiltered = null
     this.txtDescription.setValue(null)
     this.lsMaintenanceItemsFiltered = this.lsMaintenanceItems
+  }
+
+  setDealerToItem(oItem: MaintenanceItem) {
+    const session = JSON.parse(sessionStorage.getItem('sessionUser'))
+    let dealerTmp: Dealer | null = {} as Dealer
+    if (!this.isToUpdate) {
+      if (session.company.type == CompanyType.DEALER) {
+        dealerTmp.id = session.company.id
+      } else {
+        dealerTmp = null
+      }
+    } else {
+      dealerTmp = this.maintenanceItemSelected.dealer
+    }
+    oItem.dealer = dealerTmp
+    return oItem
   }
 }

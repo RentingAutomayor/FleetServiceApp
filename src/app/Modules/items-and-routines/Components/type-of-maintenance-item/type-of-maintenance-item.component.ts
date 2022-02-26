@@ -55,18 +55,20 @@ export class TypeOfMaintenanceItemComponent implements OnInit {
     this.initComponents()
   }
 
-  async initComponents() {
+  initComponents() {
     try {
       this.clearForm()
-      this.maintenanceItemService.getTypeOfMaintenanceItem().then((lsTypes) => {
-        this.lsType = lsTypes
-        if (this.typeOfItemSelected !== null) {
-          this.setDataInForm(this.typeOfItemSelected)
-          this.setType(this.typeOfItemSelected)
-        } else {
-          this.clearForm()
-        }
-      })
+      this.maintenanceItemService
+        .getTypeOfMaintenanceItem()
+        .subscribe((lsTypes) => {
+          this.lsType = lsTypes
+          if (this.typeOfItemSelected !== null) {
+            this.setDataInForm(this.typeOfItemSelected)
+            this.setType(this.typeOfItemSelected)
+          } else {
+            this.clearForm()
+          }
+        })
     } catch (err) {
       console.error(err.error.Message)
       alert(err.error.Message)

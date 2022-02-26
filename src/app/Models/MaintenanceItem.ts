@@ -26,5 +26,7 @@ export class MaintenanceItem {
   public handleTax: boolean
   public lsTaxes: Tax[]
   public dealer?: Dealer
-  public registrationDate: Date
+  public registrationDate?: Date
+  public updateDate?: Date
+  public deleteDate?: Date
 }

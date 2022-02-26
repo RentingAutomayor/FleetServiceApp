@@ -58,7 +58,7 @@ export class TaxesListComponent implements OnInit, OnChanges {
 
   async getTaxesList() {
     try {
-      this.maintenanceItemService.getTaxesList().then((taxes) => {
+      this.maintenanceItemService.getTaxesList().subscribe((taxes) => {
         this.lsTaxes = taxes
       })
     } catch (error) {

@@ -186,7 +186,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     }
   }
 
-  async getPricesByContract() {
+  getPricesByContract() {
     try {
       this.contractSelected = this.contractService.getContract()
       const contract_id =
@@ -194,8 +194,11 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
           ? this.contractSelected.id
           : 0
       this.isAwaiting = true
-      this.pricesByContract =
-        await this.maintenanceItemService.getPricesByContract(contract_id)
+      this.maintenanceItemService
+        .getPricesByContract(contract_id)
+        .subscribe((pricesByCntr) => {
+          this.pricesByContract = pricesByCntr
+        })
       this.isAwaiting = false
     } catch (error) {
       console.warn(error)

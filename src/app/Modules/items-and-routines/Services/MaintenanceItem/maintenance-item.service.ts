@@ -14,7 +14,7 @@ import { Observable } from 'rxjs'
   providedIn: 'root',
 })
 export class MaintenanceItemService {
-  private URL_API = '/API_FleetService/api/MaintenanceItem/'
+  private URL_API = '/API_FleetService/api/MaintenanceItem'
   private HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   }

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
+import { Contract } from 'src/app/Models/Contract'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
 import { MaintenanceRoutineManagerService } from 'src/app/SharedComponents/Services/MaintenanceRoutineManager/maintenance-routine-manager.service'
 
@@ -8,7 +9,7 @@ import { MaintenanceRoutineManagerService } from 'src/app/SharedComponents/Servi
   templateUrl: './tbl-check-items-for-routine.component.html',
   styleUrls: [
     './tbl-check-items-for-routine.component.scss',
-    '../../../../../assets/styles/checkbox.scss',
+    '../../../assets/styles/checkbox.scss',
   ],
 })
 export class TblCheckItemsForRoutineComponent implements OnInit {
@@ -22,17 +23,28 @@ export class TblCheckItemsForRoutineComponent implements OnInit {
   set setLsMaintenanceItems(items: MaintenanceItem[]) {
     this.lsMaintenanceItems = items
     this.itemsWereChanged.next(this.lsMaintenanceItems)
+    this.checkItemsSelected(this.lsMaintenanceItemsSelected)
   }
 
   lsMaintenanceItemsSelected: MaintenanceItem[] = []
   @Input('maintenanceItemsSelected')
   set setLsMaintenanceItemsSelected(itemsSelected: MaintenanceItem[]) {
     this.lsMaintenanceItemsSelected = itemsSelected
-    console.log(itemsSelected)
-    this.checkItemsSelected(itemsSelected)
+    //console.log(itemsSelected)
+    this.checkItemsSelected(this.lsMaintenanceItemsSelected)
+  }
+
+  contract: Contract = null
+  @Input('contract')
+  set setContract(contractSelected: Contract) {
+    this.contract = contractSelected
   }
 
   disableControls: boolean = false
+  totalPriceByAmount = 0
+  totalDiscount = 0
+  totalLessDiscount = 0
+  totalTaxes = 0
   totalRoutine = 0
 
   @Output()
@@ -62,14 +74,13 @@ export class TblCheckItemsForRoutineComponent implements OnInit {
     const itemSelected = this.lsMaintenanceItemsSelected.find(
       (mi) => mi.id == item.id
     )
-    const amount = itemSelected ? itemSelected.amount.toString() : '0'
+    const amount = '0'
 
     if (isChecked) {
       txtAmount.disabled = false
       this.addOrUpdateMaintenanceItemIntoList(item)
     } else {
       txtAmount.disabled = true
-      this.calculateRoutinePrice()
       this.deleteMaintenanceItemToList(item)
     }
     txtAmount.value = amount
@@ -94,10 +105,10 @@ export class TblCheckItemsForRoutineComponent implements OnInit {
     item.amount = amount
     this.lsMaintenanceItems[indexItem] = item
     this.addOrUpdateMaintenanceItemIntoList(item)
-    this.itemsWereChanged.next(this.lsMaintenanceItems)
   }
 
   addOrUpdateMaintenanceItemIntoList(item: MaintenanceItem) {
+    //Index de los items seleccionados pero no estan en la tabla que se muestra
     const indexItem = this.lsMaintenanceItemsSelected.findIndex(
       (mi) => mi.id == item.id
     )
@@ -106,8 +117,24 @@ export class TblCheckItemsForRoutineComponent implements OnInit {
     } else {
       this.lsMaintenanceItemsSelected.push(item)
     }
-    this.calculateRoutinePrice()
+
+    this.calculateTotals(this.lsMaintenanceItemsSelected)
+
     this.onItemsWereSelected.emit(this.lsMaintenanceItemsSelected)
+  }
+
+  updateAmountByIntoReferenceList(item: MaintenanceItem) {
+    const idesItemToShow = this.lsMaintenanceItems.findIndex(
+      (mi) => mi.id == item.id
+    )
+
+    if (idesItemToShow >= 0) {
+      this.lsMaintenanceItems[idesItemToShow] = item
+    } else {
+      this.lsMaintenanceItems.push(item)
+    }
+
+    this.itemsWereChanged.next(this.lsMaintenanceItems)
   }
 
   deleteMaintenanceItemToList(item: MaintenanceItem) {
@@ -115,27 +142,70 @@ export class TblCheckItemsForRoutineComponent implements OnInit {
       (mi) => mi.id == item.id
     )
     this.lsMaintenanceItemsSelected.splice(indexItem, 1)
+    this.calculateTotals(this.lsMaintenanceItemsSelected)
     this.onItemsWereSelected.emit(this.lsMaintenanceItemsSelected)
   }
 
-  calculateRoutinePrice() {
-    this.totalRoutine = this.maintenanceRoutineManagerService.calculateTotal(
-      this.lsMaintenanceItemsSelected
+  calculateTotalPriceByAmount(itemsSelected: MaintenanceItem[]) {
+    this.totalPriceByAmount =
+      this.maintenanceRoutineManagerService.calculateTotalPriceByAmount(
+        itemsSelected
+      )
+  }
+
+  calculateTotalDiscount(itemsSelected: MaintenanceItem[]) {
+    this.totalDiscount =
+      this.maintenanceRoutineManagerService.calculateTotalDiscount(
+        itemsSelected,
+        this.contract
+      )
+  }
+
+  calculatePriceLessDiscount() {
+    this.totalLessDiscount = this.totalPriceByAmount - this.totalDiscount
+  }
+
+  calculateTotalTaxes(itemsSelected: MaintenanceItem[]) {
+    this.totalTaxes = 0
+    this.totalTaxes = this.maintenanceRoutineManagerService.calculateTotalTaxes(
+      itemsSelected,
+      this.contract
     )
+  }
+
+  calculateRoutinePrice() {
+    this.totalRoutine = this.totalLessDiscount + this.totalTaxes
     this.onRoutineWasCalculated.emit(this.totalRoutine)
   }
 
-  async checkItemsSelected(itemsSelected: MaintenanceItem[]) {
-    await setTimeout(() => {
-      itemsSelected.forEach((item) => {
+  checkItemsSelected(itemsSelected: MaintenanceItem[]) {
+    if (itemsSelected) {
+      //debugger
+      itemsSelected.forEach((mi) => {
+        this.updateAmountByIntoReferenceList(mi)
         try {
-          const idCheck = `#${this.getCheckBoxId(item.id)}`
+          //check the input for the maintenance Item
+          const idCheck = `#${this.getCheckBoxId(mi.id)}`
           const chekbox: HTMLInputElement = document.querySelector(idCheck)
-          chekbox.click()
+          chekbox.checked = true
+          //enable the checkbox
+          const idTxt = `#${this.getTextAmountId(mi.id)}`
+          const txtAmount: HTMLInputElement = document.querySelector(idTxt)
+          txtAmount.disabled = false
         } catch (error) {
-          console.log('continua...')
+          console.log(`${mi.name} -> no existe checkbox ... continua`)
         }
       })
-    }, 1000)
+
+      this.calculateTotals(itemsSelected)
+    }
+  }
+
+  calculateTotals(itemsSelected: MaintenanceItem[]) {
+    this.calculateTotalPriceByAmount(itemsSelected)
+    this.calculateTotalDiscount(itemsSelected)
+    this.calculatePriceLessDiscount()
+    this.calculateTotalTaxes(itemsSelected)
+    this.calculateRoutinePrice()
   }
 }

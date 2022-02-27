@@ -1,56 +1,57 @@
-i{
-    margin: 0 3px;
-    cursor: pointer;
+i {
+  margin: 0 3px;
+  cursor: pointer;
 }
 
-.col-number{
-    max-width: 50px;
-    width: 50px;
+.col-number {
+  max-width: 50px;
+  width: 50px;
 }
 
-table{
-    cursor: pointer;
+table {
+  cursor: pointer;
 }
 
-.container-filter{
+.container-filter {
   display: flex;
   flex-direction: row;
+  margin-bottom: 30px;
 }
 
-.container-filter button{
+.container-filter button {
   width: 150px;
   cursor: pointer;
   margin-left: 10px;
 }
 
-.btn-add{
-    border-radius: 50%;
-     width: 50px;
-     height: 50px;
-    cursor: pointer;
-    position: relative;
-    left: 93%;
-    margin-bottom: 20px;
-    top: 15px;
-    outline: none;
-    text-align: center;
-    font-size: 24px;
-    border: none;
-    z-index: 55;
+.btn-add {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  position: relative;
+  left: 93%;
+  margin-bottom: 20px;
+  top: 15px;
+  outline: none;
+  text-align: center;
+  font-size: 24px;
+  border: none;
+  z-index: 55;
 }
 
-#container__content{
-    transition: margin-left 1s;
-    padding:  20px 50px;
-    margin-left: 250px;
+#container__content {
+  transition: margin-left 1s;
+  padding: 20px 50px;
+  margin-left: 250px;
 }
 
-@media only screen and (max-width:600px){
-    .col-mobile-hide{
-        display: none;
-    }
+@media only screen and (max-width: 600px) {
+  .col-mobile-hide {
+    display: none;
+  }
 
-    .btn-add{
-        left: 80vw;
-    }
+  .btn-add {
+    left: 80vw;
+  }
 }

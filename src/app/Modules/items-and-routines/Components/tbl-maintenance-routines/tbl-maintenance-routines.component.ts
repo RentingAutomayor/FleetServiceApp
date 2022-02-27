@@ -65,7 +65,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
       .getMaintenanceRoutines()
       .subscribe((routines) => {
         this.lsMaintenanceRoutines = routines
-        this.lsMaintenanceRoutinesFiltered = routines
+        this.lsMaintenanceRoutinesFiltered = this.lsMaintenanceRoutines
         this.isAwaiting = false
       })
   }
@@ -101,6 +101,10 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
         (rta) => {
           alert(rta.message)
           this.isAwaiting = false
+          const indexRoutine = this.lsMaintenanceRoutinesFiltered.findIndex(
+            (mr) => mr.id == routine.id
+          )
+          this.lsMaintenanceRoutinesFiltered[indexRoutine] = routine
         },
         (err) => {
           this.isErrorVisible = true
@@ -114,6 +118,11 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
         (rta) => {
           alert(rta.message)
           this.isAwaiting = false
+          try {
+            this.lsMaintenanceRoutinesFiltered.push(routine)
+          } catch {
+            this.showTableRoutines()
+          }
         },
         (err) => {
           this.isErrorVisible = true
@@ -123,7 +132,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
         }
       )
     }
-    this.showTableRoutines()
+    //this.showTableRoutines()
   }
 
   cancelRoutine() {

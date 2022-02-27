@@ -2,6 +2,7 @@ import { Branch } from './Branch'
 import { Person } from './Person'
 
 export interface Contact extends Person {
+  discountType: any
   branch?: Branch
 }
 

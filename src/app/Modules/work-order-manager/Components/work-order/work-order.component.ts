@@ -35,13 +35,13 @@ import { Tax } from 'src/app/Models/Tax'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { DiscountType, DiscountTypes } from 'src/app/Models/DiscountType'
 import { ConstractStates } from 'src/app/Models/ContractState'
+import { MaintenanceItemManagerService } from 'src/app/SharedComponents/Services/MaintenanceItemManager/maintenance-item-manager.service'
 
 @Component({
   selector: 'app-work-order',
   templateUrl: './work-order.component.html',
   styleUrls: [
     './work-order.component.scss',
-    '../../../../../assets/styles/checkbox.scss',
     '../../../../../assets/styles/app.scss',
   ],
 })
@@ -50,13 +50,16 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   frmWorkOrder: FormGroup
   dealer: Dealer
   branchSelected: Branch
-  contractSelected: Contract
+
   vehicleModelSelected: VehicleModel
   routineSelected: MaintenanceRoutine
-  lsMaintenanceItems: MaintenanceItem[]
+
   pricesByContract: PricesByContract
   sharedFunctions: SharedFunction
-  lsMaintenanceItemsSelected: MaintenanceItem[]
+
+  lsMaintenanceItems: MaintenanceItem[] = []
+  lsMaintenanceItemsSelected: MaintenanceItem[] = []
+
   totalRoutine: number
   totalTaxes: number
   totalWithoutTaxes: number
@@ -72,6 +75,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   fieldBranchIsInvalid: boolean
   fieldMaintenanceRoutineIsInvalid: boolean
 
+  contractSelected: Contract
+
   constructor(
     private ClientService: ClientService,
     private vehicleService: VehicleService,
@@ -82,7 +87,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     private movementService: MovementService,
     private transactionService: TransactionService,
     private quotaService: QuotaService,
-    private dealerService: DealerService
+    private dealerService: DealerService,
+    private maintenanceItemManagerService: MaintenanceItemManagerService
   ) {
     this.frmWorkOrder = new FormGroup({
       txtYear: new FormControl(''),
@@ -127,34 +133,12 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     this.routineSelected = null
     this.lsMaintenanceItems = []
     this.lsMaintenanceItemsSelected = []
-    this.updateLabelTotalRoutine(0)
-    this.updateLabelTotalTaxes(0)
-    this.updateLabelWithoutTaxes(0)
     this.getDealer()
   }
 
   ngOnInit(): void {
     this.getDealer()
     this.initComponents()
-  }
-  getLabeTaxesId(idItem: number): string {
-    return `lbl_taxes_${idItem}`
-  }
-
-  getLabeTotalId(idItem: number): string {
-    return `lbl_total_${idItem}`
-  }
-
-  getLabePriceByAmountId(idItem: number) {
-    return `lbl_price_amount_${idItem}`
-  }
-
-  getLabePriceByAmountLessDiscountId(idItem: number) {
-    return `lbl_price_amount_less_discount_${idItem}`
-  }
-
-  getLabelDiscountId(idItem: number) {
-    return `lbl_discount_${idItem}`
   }
 
   getDealer() {
@@ -179,20 +163,16 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   }
 
   getPricesByContract(contract_id: number) {
-    try {
-      this.maintenanceItemService
-        .getPricesByContract(contract_id)
-        .subscribe((pricesByContract) => {
-          this.pricesByContract = pricesByContract
+    this.maintenanceItemService
+      .getPricesByContract(contract_id)
+      .subscribe((pricesByContract) => {
+        this.pricesByContract = pricesByContract
 
-          this.updateAmountsAndPrices(
-            this.lsMaintenanceItems,
-            this.pricesByContract
-          )
-        })
-    } catch (error) {
-      console.warn(error)
-    }
+        // this.updateAmountsAndPrices(
+        //   this.lsMaintenanceItems,
+        //   this.pricesByContract
+        // )
+      })
   }
 
   getLsMovements() {
@@ -203,58 +183,6 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     } catch (error) {
       console.warn(error)
     }
-  }
-
-  updateAmountsAndPrices(
-    lsMaintenanceItems: MaintenanceItem[],
-    pricesByContract: PricesByContract
-  ) {
-    this.totalRoutine = 0
-    lsMaintenanceItems.forEach((mItem) => {
-      try {
-        const priceContract = pricesByContract.lsMaintenanceItems.find(
-          (mi) => mi.id == mItem.id
-        )
-
-        mItem.referencePrice = priceContract.referencePrice
-
-        this.updateLabelPriceByAmount(mItem)
-        this.turnOnCheckbox(mItem)
-        this.addItemToRoutine(mItem)
-      } catch (error) {
-        console.warn(error)
-      }
-    })
-
-    this.calculateTotalRoutine(this.lsMaintenanceItemsSelected)
-  }
-
-  updateLabelTotalRoutine(totalRoutine: number) {
-    const totalFormatted = totalRoutine.toFixed(2)
-    const lblTotalRoutine: HTMLElement =
-      document.querySelector('#lbl-total-routine')
-    lblTotalRoutine.innerText = this.sharedFunctions.formatNumberToString(
-      parseFloat(totalFormatted)
-    )
-  }
-
-  updateLabelWithoutTaxes(totalWithoutTaxes: number) {
-    const totalFormatted = totalWithoutTaxes.toFixed(2)
-    const lblTotalWithoutTaxes: HTMLSpanElement = document.querySelector(
-      '#lbl-total-without-taxes'
-    )
-    lblTotalWithoutTaxes.innerText = this.sharedFunctions.formatNumberToString(
-      parseFloat(totalFormatted)
-    )
-  }
-
-  updateLabelTotalTaxes(totalTaxes: number) {
-    const totalFormatted = totalTaxes.toFixed(2)
-    const lblTotalTaxes: HTMLSpanElement =
-      document.querySelector('#lbl-total-taxes')
-    lblTotalTaxes.innerText = this.sharedFunctions.formatNumberToString(
-      parseFloat(totalFormatted)
-    )
   }
 
   async searchVehicleOwner(client_id: number) {
@@ -285,7 +213,6 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
       this.resetItemsToRoutine()
       this.resetMaintenanceItems()
-      this.calculateTotalRoutine(this.lsMaintenanceItemsSelected)
 
       this.vehicleSelected = this.vehicleService.getVehicle()
 
@@ -330,6 +257,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
             const contractDescription = `${this.contractSelected.code} - ${this.contractSelected.name}`
             txtContract.setValue(contractDescription)
             this.vehicleModelSelected = this.vehicleSelected.vehicleModel
+
+            this.getPricesByContract(this.contractSelected.id)
 
             this.quotaService
               .getFinancialInformationByClient(this.contractSelected.client.id)
@@ -392,118 +321,40 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     }
   }
 
-  showMaintenanceItems() {
+  showMaintenanceItems(maintenanceRoutine: MaintenanceRoutine) {
     this.resetItemsToRoutine()
-    this.routineSelected = this.maintenanceRoutineService.getRoutine()
+    this.routineSelected = maintenanceRoutine
     if (this.routineSelected == null || this.routineSelected == undefined) {
       this.fieldMaintenanceRoutineIsInvalid = true
     } else {
       this.fieldMaintenanceRoutineIsInvalid = false
       this.lsMaintenanceItems = this.routineSelected.lsItems
-      this.getPricesByContract(this.contractSelected.id)
+      this.lsMaintenanceItemsSelected = this.lsMaintenanceItems
+      this.updateReferencePrices(
+        this.lsMaintenanceItems,
+        this.pricesByContract.lsMaintenanceItems
+      )
     }
   }
 
-  getTextAmountId(pId: number) {
-    return `txt_${pId}`
-  }
+  updateReferencePrices(
+    referenceItems: MaintenanceItem[],
+    contractItems: MaintenanceItem[]
+  ) {
+    const itemsContractFiltered = []
 
-  getCheckBoxId(pId: number) {
-    return `chk_${pId}`
-  }
+    referenceItems.forEach((itr) => {
+      const itemByCntr = contractItems.find((mi) => mi.id == itr.id)
+      itemsContractFiltered.push(itemByCntr)
+    })
 
-  getPriceId(pId: number) {
-    return `lbl_price_contract_${pId}`
-  }
+    console.log(`updateReferencePrices`)
+    console.log(itemsContractFiltered)
 
-  pickItem(event: any, pItem: MaintenanceItem) {
-    if (event.checked) {
-      this.addItemToRoutine(pItem)
-      this.enableTxtAmount(pItem)
-    } else {
-      this.deleteItemToRoutine(pItem)
-      this.disableTxtAmount(pItem)
-    }
-
-    this.calculateTotalRoutine(this.lsMaintenanceItemsSelected)
-  }
-
-  enableTxtAmount(pItem: MaintenanceItem) {
-    const idTxt = `#${this.getTextAmountId(pItem.id)}`
-    const txtAmount: HTMLInputElement = document.querySelector(idTxt)
-    txtAmount.value = pItem.amount.toString()
-    txtAmount.disabled = false
-
-    const totalByItemWithoutTaxes = pItem.amount * pItem.referencePrice
-
-    let taxValue = 0
-    if (pItem.handleTax) {
-      taxValue = this.calculateTaxes(totalByItemWithoutTaxes, pItem.lsTaxes)
-    }
-
-    const idLabelPriceByAmount = `#${this.getLabePriceByAmountId(pItem.id)}`
-    const labelPriceByAmount: HTMLSpanElement =
-      document.querySelector(idLabelPriceByAmount)
-    const totalWithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2)
-    labelPriceByAmount.innerText = this.sharedFunctions.formatNumberToString(
-      parseFloat(totalWithoutTaxesFormatted)
+    this.lsMaintenanceItems = this.maintenanceItemManagerService.updatePrices(
+      referenceItems,
+      itemsContractFiltered
     )
-
-    const idLabelTax = `#${this.getLabeTaxesId(pItem.id)}`
-    const labelTax: HTMLSpanElement = document.querySelector(idLabelTax)
-    const taxesFormatted = taxValue.toFixed(2)
-    labelTax.innerText = this.sharedFunctions.formatNumberToString(
-      parseFloat(taxesFormatted)
-    )
-
-    const idLblTotalByItem = `#${this.getLabeTotalId(pItem.id)}`
-    const lblPriceTotalByItem: HTMLElement =
-      document.querySelector(idLblTotalByItem)
-
-    const totalByItem = totalByItemWithoutTaxes + taxValue
-    const totalFormatted = totalByItem.toFixed(2)
-    lblPriceTotalByItem.innerText = this.sharedFunctions.formatNumberToString(
-      parseFloat(totalFormatted)
-    )
-  }
-
-  disableTxtAmount(pItem) {
-    const idTxt = `#${this.getTextAmountId(pItem.id)}`
-    const txtAmount: HTMLInputElement = document.querySelector(idTxt)
-    txtAmount.value = '0'
-    txtAmount.disabled = true
-
-    const idLabelPriceByAmount = `#${this.getLabePriceByAmountId(pItem.id)}`
-    const labelPriceByAmount: HTMLSpanElement =
-      document.querySelector(idLabelPriceByAmount)
-    labelPriceByAmount.innerText = ''
-
-    const idLabelDiscount = `#${this.getLabelDiscountId(pItem.id)}`
-    const labelDiscount: HTMLSpanElement =
-      document.querySelector(idLabelDiscount)
-    labelDiscount.innerText = ''
-
-    const idLabelPriceWithoutDiscount = `#${this.getLabePriceByAmountLessDiscountId(
-      pItem.id
-    )}`
-    const LabelPriceWithoutDiscount: HTMLSpanElement = document.querySelector(
-      idLabelPriceWithoutDiscount
-    )
-    LabelPriceWithoutDiscount.innerText = ''
-
-    const idLabelTax = `#${this.getLabeTaxesId(pItem.id)}`
-    const labelTax: HTMLSpanElement = document.querySelector(idLabelTax)
-    labelTax.innerText = ''
-
-    const idLabelTotal = `#${this.getLabeTotalId(pItem.id)}`
-    const lblPriceWithTaxes: HTMLElement = document.querySelector(idLabelTotal)
-    lblPriceWithTaxes.innerText = ''
-  }
-
-  turnOnCheckbox(pItem: MaintenanceItem) {
-    const idChkItem = `#${this.getCheckBoxId(pItem.id)}`
-    const chkItem: HTMLInputElement = document.querySelector(idChkItem)
-    chkItem.checked = true
   }
 
   resetItemsToRoutine() {
@@ -527,12 +378,6 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     ) {
       this.resetItemsToRoutine()
     }
-    const totalByItemWithoutTaxes = item.amount * item.referencePrice
-    let taxValue = 0
-    if (item.handleTax) {
-      taxValue = this.calculateTaxes(totalByItemWithoutTaxes, item.lsTaxes)
-    }
-    item.taxesValue = parseFloat(taxValue.toFixed(2))
     this.lsMaintenanceItemsSelected.push(item)
   }
 
@@ -544,35 +389,6 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     this.lsMaintenanceItemsSelected.splice(indexOfItem, 1)
   }
 
-  updateAmountByItem(event: any, pItem: MaintenanceItem) {
-    const amount = event.target.value
-    if (amount < 0.1) {
-      alert('La cantidad ingresada no es válida')
-      event.target.value = 0.1
-      event.preventDefault()
-      return false
-    } else {
-      this.lsMaintenanceItemsSelected.find(
-        (item) => item.id == pItem.id
-      ).amount = amount
-      const mItem = this.lsMaintenanceItemsSelected.find(
-        (item) => item.id == pItem.id
-      )
-      this.updateLabelTotalItem(mItem)
-      this.calculateTotalRoutine(this.lsMaintenanceItemsSelected)
-    }
-  }
-
-  updateLabelPriceByAmount(mItem: MaintenanceItem) {
-    const totalByItemWithoutTaxes = mItem.amount * mItem.referencePrice
-    this.setTotalWithoutTaxesByItem(mItem.id, totalByItemWithoutTaxes)
-  }
-
-  updateLabelTotalItem(mItem: MaintenanceItem) {
-    const totalByItemWithoutTaxes = mItem.amount * mItem.referencePrice
-    this.setTotalWithoutTaxesByItem(mItem.id, totalByItemWithoutTaxes)
-  }
-
   clearFrmWorkOrder() {
     this.frmWorkOrder.reset()
     this.fieldBranchIsInvalid = true
@@ -581,57 +397,6 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   formatNumberToString(oNumber: number) {
     return this.sharedFunctions.formatNumberToString(oNumber)
-  }
-
-  getValueWithoutTaxesByItem(idItem: number): number {
-    try {
-      const idSpanWithoutTaxes = `#${this.getLabePriceByAmountId(idItem)}`
-      const spanWithoutTaxes: HTMLSpanElement =
-        document.querySelector(idSpanWithoutTaxes)
-      return parseFloat(spanWithoutTaxes.innerText.replace(/,/g, ''))
-    } catch (error) {
-      console.warn('[getValueWithoutTaxesByItem]', error)
-    }
-  }
-
-  getValueTaxesByItem(idItem: number): number {
-    try {
-      const idSpanTax = `#${this.getLabeTaxesId(idItem)}`
-      const spanTaxes: HTMLSpanElement = document.querySelector(idSpanTax)
-      return parseFloat(spanTaxes.innerText.replace(/,/g, ''))
-    } catch (error) {
-      console.warn('[getValueTaxesByItem]', error)
-    }
-  }
-
-  getValueTotalByItem(idItem: number): number {
-    try {
-      const idItemReference = `#${this.getLabeTotalId(idItem)}`
-      const spanElemt: HTMLSpanElement = document.querySelector(idItemReference)
-      return parseFloat(spanElemt.innerText.replace(/,/g, ''))
-    } catch (error) {
-      console.warn('[getValueTotalByItem]', error)
-    }
-  }
-
-  calculateTotalRoutine(lsMaintenanceItemsSelected: MaintenanceItem[]) {
-    try {
-      this.totalRoutine = 0
-      this.totalTaxes = 0
-      this.totalWithoutTaxes = 0
-      this.totalWithoutTaxesAndDiscount = 0
-      this.totalDiscount = 0
-
-      lsMaintenanceItemsSelected.forEach((item) => {
-        const valueWithoutTaxes = this.getValueWithoutTaxesByItem(item.id)
-        this.totalWithoutTaxes += valueWithoutTaxes
-      })
-      this.updateLabelWithoutTaxes(this.totalWithoutTaxes)
-
-      this.calculateDiscount(this.lsMaintenanceItemsSelected)
-    } catch (error) {
-      console.warn(error)
-    }
   }
 
   async saveWorkOrder() {
@@ -746,7 +511,6 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   formatMileageToString(event: any) {
     const numberToTransform = event.target.value.toString().replace(/\,/g, '')
-
     event.target.value = this.formatNumberToString(numberToTransform)
   }
 
@@ -759,42 +523,6 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       this.clearFrmWorkOrder()
       this.clearBufferForm()
       this.workOrderWasCanceled.emit(true)
-    }
-  }
-
-  calculateTaxes(referencePrice: number, lsTaxes: Tax[]): number {
-    let taxValue = 0
-    for (const tax of lsTaxes) {
-      const taxTmp = referencePrice * (tax.percentValue / 100)
-      taxValue += taxTmp
-    }
-    return taxValue
-  }
-
-  setTaxesValue(item_id: number, taxesValue: number) {
-    try {
-      const idLblTaxes = `#${this.getLabeTaxesId(item_id)}`
-      const labelTaxes: HTMLSpanElement = document.querySelector(idLblTaxes)
-      const taxesFormatted = this.sharedFunctions.formatNumberToString(
-        parseFloat(taxesValue.toFixed(2))
-      )
-      labelTaxes.innerText = taxesFormatted
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  setTotalValue(item_id: number, totalValue: number) {
-    try {
-      const idLblTotal = `#${this.getLabeTotalId(item_id)}`
-      const labelTotal: HTMLSpanElement = document.querySelector(idLblTotal)
-
-      const totalFormatted = this.sharedFunctions.formatNumberToString(
-        parseFloat(totalValue.toFixed(2))
-      )
-      labelTotal.innerText = totalFormatted
-    } catch (error) {
-      console.warn(error)
     }
   }
 
@@ -828,9 +556,6 @@ export class WorkOrderComponent implements OnInit, OnChanges {
           this.lsMaintenanceItems.push(newItem)
           setTimeout(() => {
             this.addItemToRoutine(newItem)
-            this.enableTxtAmount(newItem)
-            this.turnOnCheckbox(newItem)
-            this.calculateTotalRoutine(this.lsMaintenanceItemsSelected)
           }, 300)
         }
       } catch (error) {
@@ -842,184 +567,11 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     this.closePopUp('container__addItems')
   }
 
-  getTotalWithoutTaxes() {
-    let totalWithoutTaxes = 0
-    const lblTotalWithoutTaxes: HTMLSpanElement = document.querySelector(
-      '#lbl-total-without-taxes'
-    )
-    totalWithoutTaxes = parseFloat(
-      lblTotalWithoutTaxes.innerText.replace(/,/g, '')
-    )
-    return totalWithoutTaxes
+  calculateDiscount(lsItemsSelected: MaintenanceItem[]) {}
+
+  setItemsToRoutine(maintenanceItems: MaintenanceItem[]) {
+    this.lsMaintenanceItemsSelected = maintenanceItems
   }
 
-  calculateDiscount(lsItemsSelected: MaintenanceItem[]) {
-    try {
-      this.totalDiscount = 0
-      const totalWithoutTaxes = this.getTotalWithoutTaxes()
-
-      switch (this.contractSelected.discountType.id) {
-        case DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO:
-          this.totalDiscount =
-            totalWithoutTaxes * (this.contractSelected.discountValue / 100)
-          break
-        case DiscountTypes.VALOR_FIJO_POR_TOTAL_MANTENIMIENTO:
-          this.totalDiscount = this.contractSelected.discountValue
-          break
-      }
-
-      this.updateLabelDiscount(this.totalDiscount)
-      this.calculateDiscountAndTaxesByItem(
-        totalWithoutTaxes,
-        this.totalDiscount
-      )
-
-      this.totalRoutine = this.totalWithoutTaxesAndDiscount + this.totalTaxes
-
-      this.updateLabelTotalRoutine(this.totalRoutine)
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  calculateDiscountAndTaxesByItem(
-    totalWithoutTaxes: number,
-    totalDiscount: number
-  ) {
-    try {
-      let valueWithoutTaxesAndDiscount = 0
-      let valueTotaTaxes = 0
-
-      this.lsMaintenanceItemsSelected.forEach((item) => {
-        let discountByItem = 0
-        const valueWithoutTaxesByItem = item.referencePrice * item.amount
-        item.valueWithoutDiscount = valueWithoutTaxesByItem
-
-        if (totalDiscount > 0) {
-          const participationPercent =
-            valueWithoutTaxesByItem / totalWithoutTaxes
-
-          discountByItem = participationPercent * totalDiscount
-        }
-        item.discountValue = discountByItem
-        this.setDiscountByItem(item.id, discountByItem)
-
-        const totalWithoutTaxesAndDiscountByItem =
-          valueWithoutTaxesByItem - discountByItem
-        item.valueWithDiscountWithoutTaxes = totalWithoutTaxesAndDiscountByItem
-        valueWithoutTaxesAndDiscount += totalWithoutTaxesAndDiscountByItem
-        this.setTotalWithoutTaxesAndDiscountByItem(
-          item.id,
-          totalWithoutTaxesAndDiscountByItem
-        )
-
-        let taxValue = 0
-        if (item.handleTax) {
-          taxValue = this.calculateTaxes(
-            totalWithoutTaxesAndDiscountByItem,
-            item.lsTaxes
-          )
-        }
-        item.taxesValue = taxValue
-        valueTotaTaxes += taxValue
-        this.setTaxesValue(item.id, taxValue)
-
-        const totalByItem = totalWithoutTaxesAndDiscountByItem + taxValue
-        this.setTotalByItem(item.id, totalByItem)
-      })
-
-      this.totalTaxes = valueTotaTaxes
-      this.totalWithoutTaxesAndDiscount = valueWithoutTaxesAndDiscount
-      this.updateLabelWithoutTaxesAndDiscount(valueWithoutTaxesAndDiscount)
-      this.updateLabelTotalTaxes(this.totalTaxes)
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  setTotalWithoutTaxesByItem(idItem: number, totalByItemWithoutTaxes: number) {
-    try {
-      const idTotalWithoutTaxes = `#${this.getLabePriceByAmountId(idItem)}`
-      const labelTotalWithoutTaxes: HTMLSpanElement =
-        document.querySelector(idTotalWithoutTaxes)
-      const totalwithoutTaxesFormatted = totalByItemWithoutTaxes.toFixed(2)
-      labelTotalWithoutTaxes.innerText =
-        this.sharedFunctions.formatNumberToString(
-          parseFloat(totalwithoutTaxesFormatted)
-        )
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  setDiscountByItem(idItem: number, discount: number) {
-    try {
-      const idDiscountByItem = `#${this.getLabelDiscountId(idItem)}`
-      const labelDiscountByItem: HTMLSpanElement =
-        document.querySelector(idDiscountByItem)
-      const discountFormatted = discount.toFixed(2)
-      labelDiscountByItem.innerText = this.sharedFunctions.formatNumberToString(
-        parseFloat(discountFormatted)
-      )
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  setTotalWithoutTaxesAndDiscountByItem(
-    idItem: number,
-    totalByItemWithoutTaxesAndDiscount: number
-  ) {
-    try {
-      const idTotalWithoutTaxesAndDiscount = `#${this.getLabePriceByAmountLessDiscountId(
-        idItem
-      )}`
-      const labelTotalWithoutTaxesAndDiscount: HTMLSpanElement =
-        document.querySelector(idTotalWithoutTaxesAndDiscount)
-      const totalByItemWithoutTaxesAndDiscountFormatted =
-        totalByItemWithoutTaxesAndDiscount.toFixed(2)
-      labelTotalWithoutTaxesAndDiscount.innerText =
-        this.sharedFunctions.formatNumberToString(
-          parseFloat(totalByItemWithoutTaxesAndDiscountFormatted)
-        )
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  setTotalByItem(idItem: number, totalByItem: number) {
-    try {
-      const idTotalByItem = this.getLabeTotalId(idItem)
-      const labelTotalByItem: HTMLElement = document.querySelector(
-        `#${idTotalByItem}`
-      )
-      const TotalFormatted = totalByItem.toFixed(2)
-      labelTotalByItem.innerText = this.sharedFunctions.formatNumberToString(
-        parseFloat(TotalFormatted)
-      )
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  updateLabelDiscount(totalDiscount: number) {
-    const totalDiscountFormatted = totalDiscount.toFixed(2)
-    const lblTotalDiscount: HTMLSpanElement = document.querySelector(
-      '#lbl-total-discount'
-    )
-    lblTotalDiscount.innerText = `-${this.sharedFunctions.formatNumberToString(
-      parseFloat(totalDiscountFormatted)
-    )}`
-  }
-
-  updateLabelWithoutTaxesAndDiscount(totalWithoutTaxesAndDiscount: number) {
-    const totalWithoutTaxesAndDiscountFormatted =
-      totalWithoutTaxesAndDiscount.toFixed(2)
-    const lblTotalWithoutTaxesDiscount: HTMLSpanElement =
-      document.querySelector('#lbl-total-without-taxes-and-discount')
-    lblTotalWithoutTaxesDiscount.innerText =
-      this.sharedFunctions.formatNumberToString(
-        parseFloat(totalWithoutTaxesAndDiscountFormatted)
-      )
-  }
+  setTotalRoutine(totalRoutine: number) {}
 }

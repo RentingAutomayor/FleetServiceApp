@@ -87,6 +87,7 @@
 
         <div class="container-table">
           <app-tbl-check-items-for-routine
+            [contract]="null"
             [maintenanceItems]="lsMaintenanceItems"
             [maintenanceItemsSelected]="lsItemsSelected"
             (onItemsWereSelected)="setItemsToRoutine($event)"

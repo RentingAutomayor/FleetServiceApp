@@ -24,6 +24,9 @@ import { CalculateTaxesPipe } from './Pipes/calculate-taxes.pipe'
 import { CalculateTotalPricePipe } from './Pipes/calculate-total-price.pipe'
 import { TblPricesMaintenanceItemsComponent } from './tbl-prices-maintenance-items/tbl-prices-maintenance-items.component'
 import { CalculatePriceByAmountPipe } from './Pipes/calculate-price-by-amount.pipe'
+import { TblCheckItemsForRoutineComponent } from './tbl-check-items-for-routine/tbl-check-items-for-routine.component'
+import { CalculateDiscountPipe } from './Pipes/calculate-discount.pipe'
+import { CalculatePriceWithoutDiscountPipe } from './Pipes/calculate-price-without-discount.pipe'
 
 @NgModule({
   declarations: [
@@ -47,6 +50,9 @@ import { CalculatePriceByAmountPipe } from './Pipes/calculate-price-by-amount.pi
     CalculateTotalPricePipe,
     TblPricesMaintenanceItemsComponent,
     CalculatePriceByAmountPipe,
+    TblCheckItemsForRoutineComponent,
+    CalculateDiscountPipe,
+    CalculatePriceWithoutDiscountPipe,
   ],
   imports: [
     CommonModule,
@@ -76,6 +82,9 @@ import { CalculatePriceByAmountPipe } from './Pipes/calculate-price-by-amount.pi
     CalculateTotalPricePipe,
     TblPricesMaintenanceItemsComponent,
     CalculatePriceByAmountPipe,
+    TblCheckItemsForRoutineComponent,
+    CalculateDiscountPipe,
+    CalculatePriceWithoutDiscountPipe,
   ],
   providers: [CalculateTotalPricePipe],
 

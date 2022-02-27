@@ -6,8 +6,11 @@
       <th>Nombre</th>
       <th>Presentación</th>
       <th>Cantidad</th>
+      <th>Cantidad</th>
       <th>Valor unitario sin impuesto</th>
       <th>Valor total sin impuesto</th>
+      <th>DTO</th>
+      <th>Valor con DTO</th>
       <th>Valor impuestos</th>
       <th>Valor total con impuestos</th>
     </thead>
@@ -31,6 +34,9 @@
           </Label>
         </td>
         <td>{{ mItem.presentationUnit.shortName }}</td>
+        <td>
+          {{ mItem.amount }}
+        </td>
         <td>
           <input
             [id]="getTextAmountId(mItem.id)"
@@ -56,14 +62,31 @@
         <td>
           {{
             mItem
-              | calculateTaxes: mItem.referencePrice:mItem.amount
+              | calculateDiscount: mItem.referencePrice:mItem.amount:contract
               | currency: 'USD':'symbol':'1.0-0'
           }}
         </td>
         <td>
           {{
             mItem
-              | calculateTotalPrice: mItem.referencePrice:mItem.amount
+              | calculatePriceWithoutDiscount
+                : mItem.referencePrice
+                : mItem.amount
+                : contract
+              | currency: 'USD':'symbol':'1.0-0'
+          }}
+        </td>
+        <td>
+          {{
+            mItem
+              | calculateTaxes: mItem.referencePrice:mItem.amount:contract
+              | currency: 'USD':'symbol':'1.0-0'
+          }}
+        </td>
+        <td>
+          {{
+            mItem
+              | calculateTotalPrice: mItem.referencePrice:mItem.amount:contract
               | currency: 'USD':'symbol':'1.0-0'
           }}
         </td>
@@ -77,8 +100,27 @@
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
         <td><b class="bold">Total mantenimiento:</b></td>
+        <td>
+          <span id="lbl-total-routine" class="bold">{{
+            totalPriceByAmount | currency: 'USD':'symbol':'1.0-0'
+          }}</span>
+        </td>
+        <td>
+          <span id="lbl-total-routine" class="bold less-value">
+            {{ totalDiscount | currency: 'USD':'symbol':'1.0-0' }}</span
+          >
+        </td>
+        <td>
+          <span id="lbl-total-routine" class="bold">
+            {{ totalLessDiscount | currency: 'USD':'symbol':'1.0-0' }}</span
+          >
+        </td>
+        <td>
+          <span id="lbl-total-routine" class="bold">
+            {{ totalTaxes | currency: 'USD':'symbol':'1.0-0' }}</span
+          >
+        </td>
         <td>
           <span id="lbl-total-routine" class="bold">{{
             totalRoutine | currency: 'USD':'symbol':'1.0-0'

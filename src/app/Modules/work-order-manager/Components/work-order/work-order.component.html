@@ -168,8 +168,9 @@
         </div>
         <div class="container__col">
           <app-routines-by-vehicle-model
+            [areRoutineFiltered]="true"
             [vehicleModel]="vehicleModelSelected"
-            (routineWasSetted)="showMaintenanceItems()"
+            (onRoutineWasChanged)="showMaintenanceItems($event)"
           >
           </app-routines-by-vehicle-model>
           <div class="error" *ngIf="fieldMaintenanceRoutineIsInvalid">
@@ -185,97 +186,19 @@
       >
         <i class="fas fa-plus"></i>
       </button>
-      <table class="table table-striped">
-        <thead>
-          <th>#</th>
-          <th>-</th>
-          <th>Nombre</th>
-          <th>Presentación</th>
-          <th>Cantidad</th>
-          <th>Val. Und</th>
-          <th>Val und x cantidad</th>
-          <th>Dto</th>
-          <th>(Val und x cantidad) - Dto</th>
-          <th>Valor impuestos</th>
-          <th>Valor total por item</th>
-        </thead>
-        <tbody>
-          <tr *ngFor="let i = index; let mItem; of: lsMaintenanceItems">
-            <td>{{ i + 1 }}</td>
-            <td>
-              <label class="container__checkbox">
-                <input
-                  type="checkbox"
-                  [id]="getCheckBoxId(mItem.id)"
-                  (click)="pickItem($event.target, mItem)"
-                />
-                <span class="checkmark"></span>
-              </label>
-            </td>
-            <td>
-              <Label [for]="getCheckBoxId(mItem.id)">
-                {{ mItem.code + ' - ' + mItem.name | titlecase | slice: 0:200 }}
-              </Label>
-            </td>
-            <td>{{ mItem.presentationUnit.shortName }}</td>
-            <td>
-              <input
-                type="number"
-                class="txt-amount form-control"
-                step="0.01"
-                [id]="getTextAmountId(mItem.id)"
-                (input)="updateAmountByItem($event, mItem)"
-                [value]="mItem.amount"
-              />
-            </td>
-            <td [id]="getPriceId(mItem.id)">
-              {{ formatNumberToString(mItem.referencePrice) }}
-            </td>
-
-            <td>
-              <span [id]="getLabePriceByAmountId(mItem.id)"></span>
-            </td>
-
-            <td>
-              <span [id]="getLabelDiscountId(mItem.id)">0</span>
-            </td>
-            <td>
-              <span [id]="getLabePriceByAmountLessDiscountId(mItem.id)"></span>
-            </td>
-
-            <td>
-              <span [id]="getLabeTaxesId(mItem.id)"></span>
-            </td>
-            <td>
-              <span
-                [id]="getLabeTotalId(mItem.id)"
-                class="lbl-total-price"
-              ></span>
-            </td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr class="last-row">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><b class="bold">Total mantenimiento</b></td>
-            <td><span id="lbl-total-without-taxes" class="bold"></span></td>
-            <td><span id="lbl-total-discount" class="bold error"></span></td>
-            <td>
-              <span
-                id="lbl-total-without-taxes-and-discount"
-                class="bold"
-              ></span>
-            </td>
-            <td><span id="lbl-total-taxes" class="bold"></span></td>
-            <td><span id="lbl-total-routine" class="bold"></span></td>
-          </tr>
-        </tfoot>
-      </table>
+      x
       <hr />
+      <div class="container-table-items">
+        <app-tbl-check-items-for-routine
+          [maintenanceItems]="lsMaintenanceItems"
+          [maintenanceItemsSelected]="lsMaintenanceItemsSelected"
+          [contract]="contractSelected"
+          (onItemsWereSelected)="setItemsToRoutine($event)"
+          (onRoutineWasCalculated)="setTotalRoutine($event)"
+        >
+        </app-tbl-check-items-for-routine>
+      </div>
+
       <legend>Observaciones</legend>
       <div>
         <textarea

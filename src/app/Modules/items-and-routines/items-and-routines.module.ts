@@ -16,7 +16,6 @@ import { SharedModule } from 'src/app/SharedComponents/shared.module'
 import { ItemsAndRoutinesRoutingModule } from './items-and-routines-routing.module'
 import { TaxesListComponent } from './Components/taxes-list/taxes-list.component'
 import { MatTabsModule } from '@angular/material/tabs'
-import { TblCheckItemsForRoutineComponent } from './Components/tbl-check-items-for-routine/tbl-check-items-for-routine.component'
 
 @NgModule({
   declarations: [
@@ -30,9 +29,7 @@ import { TblCheckItemsForRoutineComponent } from './Components/tbl-check-items-f
     TblMaintenanceMatrixComponent,
     TblMaintenanceRoutinesComponent,
     TypeOfMaintenanceItemComponent,
-
     TaxesListComponent,
-    TblCheckItemsForRoutineComponent,
   ],
   imports: [
     CommonModule,

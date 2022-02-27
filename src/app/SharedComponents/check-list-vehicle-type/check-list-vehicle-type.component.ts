@@ -113,17 +113,7 @@ export class CheckListVehicleTypeComponent implements OnInit {
         const oCheckBox: HTMLInputElement = document.querySelector(idCheck)
         oCheckBox.checked = true
       })
-
-      // this.toggleChecks();
-    } catch (error) {
-      // console.warn("[Puede que no exista una lista de tipo de vehículos aún]");
-      // setTimeout(() => {
-      //   this.lsVehicleTypeSelected = this.vehicleService.getListVehicleTypeSelected();
-      //   //console.warn("Intenta de nuevo mostrar información", this.lsVehicleTypeSelected);
-      //   this.showDataInForm(this.lsVehicleTypeSelected);
-      //   this.toggleChecks();
-      // },800);
-    }
+    } catch (error) {}
   }
 
   clearDataForm() {
@@ -133,22 +123,16 @@ export class CheckListVehicleTypeComponent implements OnInit {
         const oCheckBox: HTMLInputElement = document.querySelector(idCheck)
         oCheckBox.checked = false
       })
-    } catch (error) {
-      // console.warn('[No hay una lista de tipo de vehículo aún]');
-    }
+    } catch (error) {}
   }
 
   toggleChecks() {
     try {
-      // console.log("[toggleChecks]",this.disableChecks);
-
       this.lsVehicleTypes.forEach((vehicleType) => {
         const idCheck = `#${this.getIdChk(vehicleType.id)}`
         const oCheckBox: HTMLInputElement = document.querySelector(idCheck)
         oCheckBox.disabled = this.disableChecks
       })
-    } catch (error) {
-      // console.warn(error);
-    }
+    } catch (error) {}
   }
 }

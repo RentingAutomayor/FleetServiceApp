@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Client } from 'src/app/Models/Client'
 import { Movement } from 'src/app/Models/Movement'
 import { Transaction } from 'src/app/Models/Transaction'
@@ -12,6 +12,8 @@ import { MovementService } from '../../../movement/Services/Movement/movement.se
 import { FinancialInformation } from 'src/app/Models/FinancialInformation'
 import { SharedFunction } from 'src/app/Models/SharedFunctions'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
+import { ContractualInformation } from 'src/app/Models/ContractualInformation'
+import { InputValidator } from 'src/app/Utils/InputValidator'
 
 @Component({
   selector: 'app-quota-management',
@@ -20,11 +22,11 @@ import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 })
 export class QuotaManagementComponent implements OnInit {
   isAwaiting: boolean
-  lsClientsWithoutQuota: Client[]
-  lsClientsWithQuota: FinancialInformation[]
-  lsTodayTransactions: Transaction[]
+  lsClientsWithoutQuota: Client[] = []
+  lsClientsWithQuota: FinancialInformation[] = []
+  lsTodayTransactions: Transaction[] = []
 
-  lsMovements: Movement[]
+  lsMovements: Movement[] = []
   clientSelected: Client
   frmApprovedQuota: FormGroup
   frmFreeUpQuota: FormGroup
@@ -39,6 +41,7 @@ export class QuotaManagementComponent implements OnInit {
   sharedFunction: SharedFunction
   transactionSelected: Transaction
   trx_id: number
+  contractualInformationSelected: ContractualInformation = null
 
   constructor(
     private quotaService: QuotaService,
@@ -47,7 +50,7 @@ export class QuotaManagementComponent implements OnInit {
   ) {
     this.frmApprovedQuota = new FormGroup({
       txtApprovedQuotaClient: new FormControl(''),
-      txtApprovedQuota: new FormControl(''),
+      txtApprovedQuota: new FormControl('', [Validators.required]),
       txtApprovedQuotaObservation: new FormControl(''),
     })
 
@@ -90,13 +93,10 @@ export class QuotaManagementComponent implements OnInit {
     this.isAwaiting = false
   }
 
-  async getLsClientsWithoutQuota() {
-    try {
-      this.lsClientsWithoutQuota =
-        await this.quotaService.getClientsWithoutQuota()
-    } catch (error) {
-      console.warn(error)
-    }
+  getLsClientsWithoutQuota() {
+    this.quotaService.getClientsWithoutQuota().subscribe((clients) => {
+      this.lsClientsWithoutQuota = clients
+    })
   }
 
   async getLsClientsWithQuota() {
@@ -143,6 +143,7 @@ export class QuotaManagementComponent implements OnInit {
 
   setClientInformation(idPopUp: string, pClient: Client) {
     this.clientSelected = pClient
+    this.contractualInformationSelected = pClient.contractualInformation
 
     if (idPopUp == 'container__QuotaManager') {
       const { txtApprovedQuotaClient } = this.frmApprovedQuota.controls
@@ -194,6 +195,8 @@ export class QuotaManagementComponent implements OnInit {
       lsObs,
       null
     )
+
+    this.saveTransaction(trxApprovedQuota)
   }
 
   setDataTransaction(
@@ -329,12 +332,15 @@ export class QuotaManagementComponent implements OnInit {
     }
   }
 
+  valideTyping(event: any) {
+    InputValidator.validateTyping(event, 'numbers')
+  }
+
   formatNumber(event: any) {
     const { txtApprovedQuota } = this.frmApprovedQuota.controls
-
     const numberToTransform = event.target.value.toString().replace(/\,/g, '')
-
-    event.target.value = this.formatNumberToString(numberToTransform)
+    const num = this.formatNumberToString(numberToTransform)
+    txtApprovedQuota.setValue(num)
   }
 
   formatNumberToString(oNumber: number): string {
@@ -377,6 +383,8 @@ export class QuotaManagementComponent implements OnInit {
           lsObs,
           null
         )
+
+        this.saveTransaction(trxFreeUpQuota)
       }
     })
   }
@@ -409,6 +417,8 @@ export class QuotaManagementComponent implements OnInit {
       lsObs,
       null
     )
+
+    this.saveTransaction(trxAddQuota)
   }
 
   async validatePayment(
@@ -466,6 +476,8 @@ export class QuotaManagementComponent implements OnInit {
         lsObs,
         null
       )
+
+      this.saveTransaction(trxCancelQuota)
     }
   }
 

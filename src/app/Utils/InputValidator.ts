@@ -7,6 +7,7 @@ export class InputValidator {
         event.preventDefault()
         return false
       }
+      return true
     }
   }
 }

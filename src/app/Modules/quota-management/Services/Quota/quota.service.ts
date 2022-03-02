@@ -20,9 +20,9 @@ export class QuotaService {
       .get<FinancialInformation[]>(urlClientsWithQuota)
       .toPromise()
   }
-  async getClientsWithoutQuota(): Promise<Client[]> {
+  getClientsWithoutQuota(): Observable<Client[]> {
     const urlClientsWithoutQuota = `${this.URL_API}/GetClientsWithoutQuota`
-    return this.http.get<Client[]>(urlClientsWithoutQuota).toPromise()
+    return this.http.get<Client[]>(urlClientsWithoutQuota)
   }
 
   getFinancialInformationByClient(

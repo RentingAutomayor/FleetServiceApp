@@ -38,5 +38,6 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker'
     BsDatepickerModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  exports: [ContractualInformationComponent],
 })
 export class ClientModule {}

@@ -47,6 +47,12 @@ export class ContractualInformationComponent implements OnInit {
     this.enableOrDisableForm(this.isFormBlocked)
   }
 
+  isForResume: boolean = false
+  @Input('isForResume')
+  set setIsForResume(value: boolean) {
+    this.isForResume = value
+  }
+
   @Output()
   onContractualInformationWasSetted = new EventEmitter<ContractualInformationDTO>()
 

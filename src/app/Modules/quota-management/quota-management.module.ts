@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { QuotaManagementComponent } from './Components/quota-management/quota-management.component'
 import { SharedModule } from 'src/app/SharedComponents/shared.module'
 import { QuotaManagementRoutingModule } from './quotaManagement-routing.module'
+import { ClientModule } from '../client/client.module'
 
 @NgModule({
   declarations: [QuotaManagementComponent],
@@ -14,6 +15,7 @@ import { QuotaManagementRoutingModule } from './quotaManagement-routing.module'
     FormsModule,
     ReactiveFormsModule,
     QuotaManagementRoutingModule,
+    ClientModule,
   ],
 })
 export class QuotaManagementModule {}

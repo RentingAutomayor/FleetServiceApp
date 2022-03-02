@@ -1,343 +1,539 @@
 <div id="container__content">
-    <h1>Administración de cupos</h1>
-    <div class="container__cards">
-        <div class="card">
-            <div class="card-body default-color" (click)="showElements('clientsWithQuota')">
-                <span>Clientes con cupo aprobado</span><span class="quantity dark-green">{{ lsClientsWithQuota.length }}</span>                
-            </div>
-            <div class="selection__indicator dark-green element-to-hide" id="indicator__clientsWithQuota">
-
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body danger-color" (click)="showElements('clientsWithoutQuota')">
-                <span>Clientes sin cupo</span><span class="quantity dark-red">{{ lsClientsWithoutQuota.length }}</span>
-            </div>
-            <div class="selection__indicator dark-red element-to-hide" id="indicator__clientsWithoutQuota">
-
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body warning-color" (click)="showElements('transactions')">
-                <span>Transacciones de hoy</span><span class="quantity dark-yellow">{{ lsTodayTransactions.length }}</span>
-            </div>
-            <div class="selection__indicator dark-yellow element-to-hide" id="indicator__transactions">
-                
-            </div>
-        </div>
+  <h1>Administración de cupos</h1>
+  <div class="container__cards">
+    <div class="card">
+      <div
+        class="card-body default-color"
+        (click)="showElements('clientsWithQuota')"
+      >
+        <span>Clientes con cupo aprobado</span
+        ><span class="quantity dark-green">{{
+          lsClientsWithQuota ? lsClientsWithQuota.length : 0
+        }}</span>
+      </div>
+      <div
+        class="selection__indicator dark-green element-to-hide"
+        id="indicator__clientsWithQuota"
+      ></div>
     </div>
-
-    <div id="container__clientsWithQuota" class="element-to-hide container__tab">
-        <h3>Clientes con cupo</h3>
-        <table class="table table-striped">
-            <thead>
-                <th>#</th>
-                <th>Nombre</th>
-                <th>Cupo Aprobado</th>
-                <th>Cupo disponible</th>
-                <th>Cupo consumido</th>
-                <th>Cupo en tránsito</th>
-                <th>Acciones</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let index = index;let financialInformation of lsClientsWithQuota">
-                    <td>{{ index + 1}}</td>
-                    <td>{{ financialInformation.client.name | titlecase}}</td>
-                    <td>{{ financialInformation.approvedQuota | currency }}</td>
-                    <td>{{ financialInformation.currentQuota | currency }}</td>
-                    <td>{{ financialInformation.consumedQuota | currency }}</td>
-                    <td>{{ financialInformation.inTransitQuota | currency }}</td>
-                    <td>
-                        <i class="fas fa-info-circle text-info" title="Más información" ></i>
-                        <i class="fas fa-plus-circle text-success" (click)="openPopUp('container__addQuota') ; setClientInformation('container__addQuota',financialInformation.client)" title="Ampliar cupo"></i>
-                        <i class="fas fa-hand-holding-usd" (click)="openPopUp('container__freeUpQuota') ; setClientInformation('container__freeUpQuota',financialInformation.client)" title="Liberar cupo"></i>
-                        <i class="fas fa-trash-alt text-danger" (click)="openPopUp('container__cancelQuota') ;setClientInformation('container__cancelQuota',financialInformation.client)" title="Anular cupo"></i>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="card">
+      <div
+        class="card-body danger-color"
+        (click)="showElements('clientsWithoutQuota')"
+      >
+        <span>Clientes sin cupo</span
+        ><span class="quantity dark-red">{{
+          lsClientsWithoutQuota.length
+        }}</span>
+      </div>
+      <div
+        class="selection__indicator dark-red element-to-hide"
+        id="indicator__clientsWithoutQuota"
+      ></div>
     </div>
+    <div class="card">
+      <div
+        class="card-body warning-color"
+        (click)="showElements('transactions')"
+      >
+        <span>Transacciones de hoy</span
+        ><span class="quantity dark-yellow">{{
+          lsTodayTransactions.length
+        }}</span>
+      </div>
+      <div
+        class="selection__indicator dark-yellow element-to-hide"
+        id="indicator__transactions"
+      ></div>
+    </div>
+  </div>
 
-    <div id="container__clientsWithoutQuota" class="element-to-hide container__tab">
-        <h3>Clientes sin cupo</h3>
-        <table class="table table-striped">
-            <thead>
-                <th class="col-number col-mobile-hide">#</th>
-                <th>Documento</th>
-                <th>Razón social</th>
-                <th class="col-mobile-hide">Teléfono</th>
-                <th class="col-mobile-hide">Celular</th>
-                <th class="col-mobile-hide">Dirección</th>
-                <th class="col-mobile-hide">Acciones</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let i = index ;let client of lsClientsWithoutQuota">
-                    <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
-                    <td>{{ client.document }}</td>
-                    <td>{{ client.name | titlecase }}</td>
-                    <td class="col-mobile-hide">{{ client.phone }}</td>
-                    <td class="col-mobile-hide">{{ client.cellphone }}</td>
-                    <td class="col-mobile-hide">{{ client.address }}</td>
-                    <td>
+  <div id="container__clientsWithQuota" class="element-to-hide container__tab">
+    <h3>Clientes con cupo</h3>
+    <table class="table table-striped">
+      <thead>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Cupo Aprobado</th>
+        <th>Cupo disponible</th>
+        <th>Cupo consumido</th>
+        <th>Cupo en tránsito</th>
+        <th>Acciones</th>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let index = index;
+            let financialInformation;
+            of: lsClientsWithQuota
+          "
+        >
+          <td>{{ index + 1 }}</td>
+          <td>{{ financialInformation.client.name | titlecase }}</td>
+          <td>
+            {{
+              financialInformation.approvedQuota
+                | currency: 'USD':'symbol':'1.0-0'
+            }}
+          </td>
+          <td>
+            {{
+              financialInformation.currentQuota
+                | currency: 'USD':'symbol':'1.0-0'
+            }}
+          </td>
+          <td>
+            {{
+              financialInformation.consumedQuota
+                | currency: 'USD':'symbol':'1.0-0'
+            }}
+          </td>
+          <td>
+            {{
+              financialInformation.inTransitQuota
+                | currency: 'USD':'symbol':'1.0-0'
+            }}
+          </td>
+          <td>
+            <i class="fas fa-info-circle text-info" title="Más información"></i>
+            <i
+              class="fas fa-plus-circle text-success"
+              (click)="
+                openPopUp('container__addQuota');
+                setClientInformation(
+                  'container__addQuota',
+                  financialInformation.client
+                )
+              "
+              title="Ampliar cupo"
+            ></i>
+            <i
+              class="fas fa-hand-holding-usd"
+              (click)="
+                openPopUp('container__freeUpQuota');
+                setClientInformation(
+                  'container__freeUpQuota',
+                  financialInformation.client
+                )
+              "
+              title="Liberar cupo"
+            ></i>
+            <i
+              class="fas fa-trash-alt text-danger"
+              (click)="
+                openPopUp('container__cancelQuota');
+                setClientInformation(
+                  'container__cancelQuota',
+                  financialInformation.client
+                )
+              "
+              title="Anular cupo"
+            ></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-                        <i class="fas fa-plus-circle text-success"
-                            (click)="openPopUp('container__QuotaManager'); setClientInformation('container__QuotaManager',client)"
-                            title="Crear cupo"></i>
-                        <!-- <i class="fas fa-edit text-warning" (click)="updateClient(client.id)" title="Modificar"></i>
+  <div
+    id="container__clientsWithoutQuota"
+    class="element-to-hide container__tab"
+  >
+    <h3>Clientes sin cupo</h3>
+    <table class="table table-striped">
+      <thead>
+        <th class="col-number col-mobile-hide">#</th>
+        <th>Documento</th>
+        <th>Razón social</th>
+        <th class="col-mobile-hide">Teléfono</th>
+        <th class="col-mobile-hide">Celular</th>
+        <th class="col-mobile-hide">Dirección</th>
+        <th class="col-mobile-hide">Acciones</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i = index; let client; of: lsClientsWithoutQuota">
+          <th class="col-number col-mobile-hide">{{ i + 1 }}</th>
+          <td>{{ client.document }}</td>
+          <td>{{ client.name | titlecase }}</td>
+          <td class="col-mobile-hide">{{ client.phone }}</td>
+          <td class="col-mobile-hide">{{ client.cellphone }}</td>
+          <td class="col-mobile-hide">{{ client.address }}</td>
+          <td>
+            <i
+              class="fas fa-plus-circle text-success"
+              (click)="
+                openPopUp('container__QuotaManager');
+                setClientInformation('container__QuotaManager', client)
+              "
+              title="Crear cupo"
+            ></i>
+            <!-- <i class="fas fa-edit text-warning" (click)="updateClient(client.id)" title="Modificar"></i>
                         -->
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <div id="container__transactions" class="element-to-hide container__tab">
-        <h3>Transacciones del día</h3>
-        <table class="table table-striped">
-            <thead>
-                <th class="col-number col-mobile-hide">#</th>
-                <th>Código</th>
-                <th>Movimiento</th>  
-                <th>Cliente</th>                            
-                <th>Valor</th>
-                <th>Hora</th>
-                <th>Usuario</th>
-                <th class="col-mobile-hide">Acciones</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let index = index; let trx of lsTodayTransactions">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ (trx.code!=null)?trx.code:trx.consecutive }}</td>
-                    <td>{{ trx.movement.name | titlecase }}</td> 
-                    <td>{{ trx.client.name | titlecase }}</td>                                      
-                    <td>{{ trx.value | currency }}</td>
-                    <td>{{ getStringHour(trx.registrationDate) }}</td>
-                    <td>{{ trx.user.name +' '+ trx.user.lastName }}</td>
-                    <td>
-                        <i class="fas fa-info-circle text-info" (click)="setTransaction(trx); openPopUp('container__resume')" title="Más información"></i>
-                        <i class="fas fa-trash-alt text-danger" title="Anular transacción"></i>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div id="container__transactions" class="element-to-hide container__tab">
+    <h3>Transacciones del día</h3>
+    <table class="table table-striped">
+      <thead>
+        <th class="col-number col-mobile-hide">#</th>
+        <th>Código</th>
+        <th>Movimiento</th>
+        <th>Cliente</th>
+        <th>Valor</th>
+        <th>Hora</th>
+        <th>Usuario</th>
+        <th class="col-mobile-hide">Acciones</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let index = index; let trx; of: lsTodayTransactions">
+          <td>{{ index + 1 }}</td>
+          <td>{{ trx.code != null ? trx.code : trx.consecutive }}</td>
+          <td>{{ trx.movement.name | titlecase }}</td>
+          <td>{{ trx.client.name | titlecase }}</td>
+          <td>{{ trx.value | currency: 'USD':'symbol':'1.0-0' }}</td>
+          <td>{{ getStringHour(trx.registrationDate) }}</td>
+          <td>{{ trx.user.name + ' ' + trx.user.lastName | titlecase }}</td>
+          <td>
+            <i
+              class="fas fa-info-circle text-info"
+              (click)="setTransaction(trx); openPopUp('container__resume')"
+              title="Más información"
+            ></i>
+            <i
+              class="fas fa-trash-alt text-danger"
+              title="Anular transacción"
+            ></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
-
-
-
 
 <div id="container__QuotaManager">
-    <div class="overlay">
-        <div class="card">
-            <div class="card-body container__createQuota">
-                <div class="container__row">
-                    <div></div>
-                    <div></div>
-                    <div class="container__buttonClose">
-                        <a (click)="closePopUp('container__QuotaManager')"><i class="fas fa-times"></i></a>
-                    </div>
-                </div>
-                <form [formGroup]="frmApprovedQuota">
-                    <div class="container__row">
-                        <h2>Creación de cupo</h2>
-                    </div>
-                    <div>
-                        <div class="container__field">
-                            <label>Cliente:</label>
-                            <input type="text" formControlName="txtApprovedQuotaClient" class="form-control" disabled>
-                        </div>
-                        <div class="container__field">
-                            <label>Cupo aprobado:</label>
-                            <input type="text" 
-                                formControlName="txtApprovedQuota" 
-                                class="form-control"
-                                (input)="formatNumber($event)">
-                        </div>
-
-                        <div class="container__field">
-                            <label>Observaciones:</label>
-                            <textarea formControlName="txtApprovedQuotaObservation" class="form-control" cols="30"
-                                rows="2">
-                            </textarea>
-                        </div>
-
-                    </div>
-                </form>
-
-                <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger"
-                        (click)="closePopUp('container__QuotaManager')">Cancelar</button>
-                    <button type="button" class="btn btn-success" (click)="saveApprovedQuota()">Guardar</button>
-                </div>
-            </div>
+  <div class="overlay">
+    <div class="card">
+      <div class="card-body container__createQuota">
+        <div class="container__row">
+          <div></div>
+          <div></div>
+          <div class="container__buttonClose">
+            <a (click)="closePopUp('container__QuotaManager')"
+              ><i class="fas fa-times"></i
+            ></a>
+          </div>
         </div>
+        <form [formGroup]="frmApprovedQuota">
+          <div class="container__row">
+            <h2>Creación de cupo</h2>
+          </div>
+          <div
+            class="error-contractual-information"
+            *ngIf="!contractualInformationSelected"
+          >
+            ** No se puede asociar un cupo hasta que no se diligencie la
+            información contractual del cliente. **
+          </div>
+          <div>
+            <div class="container__field container__field-client">
+              <label>Cliente:</label>
+              <input
+                type="text"
+                formControlName="txtApprovedQuotaClient"
+                class="form-control"
+                disabled
+              />
+            </div>
+          </div>
+          <div>
+            <app-contractual-information
+              [isFormBlocked]="true"
+              [isForResume]="true"
+              [contractualInformation]="contractualInformationSelected"
+            ></app-contractual-information>
+          </div>
+          <div>
+            <div class="container__field container__field-quota">
+              <label>Cupo aprobado:</label>
+              <input
+                type="text"
+                formControlName="txtApprovedQuota"
+                class="form-control"
+                (keypress)="valideTyping($event)"
+                (input)="formatNumber($event)"
+              />
+            </div>
+
+            <div class="container__field">
+              <label>Observaciones:</label>
+              <textarea
+                formControlName="txtApprovedQuotaObservation"
+                class="form-control"
+                cols="30"
+                rows="2"
+              >
+              </textarea>
+            </div>
+          </div>
+        </form>
+
+        <div class="buttons__container" id="container__buttons">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="closePopUp('container__QuotaManager')"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="saveApprovedQuota()"
+            [disabled]="
+              contractualInformationSelected == null ||
+              frmApprovedQuota.get('txtApprovedQuota').invalid
+            "
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
-
 <div id="container__freeUpQuota">
-    <div class="overlay">
-        <div class="card">
-            <div class="card-body container__createQuota">
-                <div class="container__row">
-                    <div></div>
-                    <div></div>
-                    <div class="container__buttonClose">
-                        <a (click)="closePopUp('container__freeUpQuota')"><i class="fas fa-times"></i></a>
-                    </div>
-                </div>
-                <form [formGroup]="frmFreeUpQuota">
-                    <div class="container__row">
-                        <h2>Liberar cupo</h2>
-                    </div>
-                    <div>
-                        <div class="container__field">
-                            <label>Cliente:</label>
-                            <input type="text" 
-                                formControlName="txtFreeUpQuotaClient" 
-                                class="form-control" disabled>
-                        </div>
-                        <div class="container__field">
-                            <label>Valor:</label>
-                            <input type="text" 
-                                formControlName="txtFreeUpQuota" 
-                                class="form-control"
-                                (input)="formatNumber($event)">
-                        </div>
-
-                        <div class="container__field">
-                            <label>Observaciones:</label>
-                            <textarea formControlName="txtFreeUpQuotaObservation" class="form-control" cols="30"
-                                rows="2">
-                            </textarea>
-                        </div>
-
-                    </div>
-                </form>
-
-                <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger"
-                        (click)="closePopUp('container__freeUpQuota')">Cancelar</button>
-                    <button type="button" class="btn btn-success" (click)="saveFreeUpQuota()">Guardar</button>
-                </div>
-            </div>
+  <div class="overlay">
+    <div class="card">
+      <div class="card-body container__createQuota">
+        <div class="container__row">
+          <div></div>
+          <div></div>
+          <div class="container__buttonClose">
+            <a (click)="closePopUp('container__freeUpQuota')"
+              ><i class="fas fa-times"></i
+            ></a>
+          </div>
         </div>
+        <form [formGroup]="frmFreeUpQuota">
+          <div class="container__row">
+            <h2>Liberar cupo</h2>
+          </div>
+          <div>
+            <div class="container__field">
+              <label>Cliente:</label>
+              <input
+                type="text"
+                formControlName="txtFreeUpQuotaClient"
+                class="form-control"
+                disabled
+              />
+            </div>
+            <div class="container__field">
+              <label>Valor:</label>
+              <input
+                type="text"
+                formControlName="txtFreeUpQuota"
+                class="form-control"
+                (input)="formatNumber($event)"
+              />
+            </div>
+
+            <div class="container__field">
+              <label>Observaciones:</label>
+              <textarea
+                formControlName="txtFreeUpQuotaObservation"
+                class="form-control"
+                cols="30"
+                rows="2"
+              >
+              </textarea>
+            </div>
+          </div>
+        </form>
+
+        <div class="buttons__container" id="container__buttons">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="closePopUp('container__freeUpQuota')"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="saveFreeUpQuota()"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <div id="container__addQuota">
-    <div class="overlay">
-        <div class="card">
-            <div class="card-body container__createQuota">
-                <div class="container__row">
-                    <div></div>
-                    <div></div>
-                    <div class="container__buttonClose">
-                        <a (click)="closePopUp('container__addQuota')"><i class="fas fa-times"></i></a>
-                    </div>
-                </div>
-                <form [formGroup]="frmAddQuota">
-                    <div class="container__row">
-                        <h2>Adicionar cupo</h2>
-                    </div>
-                    <div>
-                        <div class="container__field">
-                            <label>Cliente:</label>
-                            <input type="text" 
-                                formControlName="txtAddQuotaClient" 
-                                class="form-control" disabled>
-                        </div>
-                        <div class="container__field">
-                            <label>Valor:</label>
-                            <input type="text" 
-                                formControlName="txtAddQuota" 
-                                class="form-control"
-                                (input)="formatNumber($event)">
-                        </div>
-
-                        <div class="container__field">
-                            <label>Observaciones:</label>
-                            <textarea formControlName="txtAddQuotaObservation" class="form-control" cols="30"
-                                rows="2">
-                            </textarea>
-                        </div>
-
-                    </div>
-                </form>
-
-                <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger"
-                        (click)="closePopUp('container__addQuota')">Cancelar</button>
-                    <button type="button" class="btn btn-success" (click)="saveAddQuota()">Guardar</button>
-                </div>
-            </div>
+  <div class="overlay">
+    <div class="card">
+      <div class="card-body container__createQuota">
+        <div class="container__row">
+          <div></div>
+          <div></div>
+          <div class="container__buttonClose">
+            <a (click)="closePopUp('container__addQuota')"
+              ><i class="fas fa-times"></i
+            ></a>
+          </div>
         </div>
+        <form [formGroup]="frmAddQuota">
+          <div class="container__row">
+            <h2>Adicionar cupo</h2>
+          </div>
+          <div>
+            <div class="container__field">
+              <label>Cliente:</label>
+              <input
+                type="text"
+                formControlName="txtAddQuotaClient"
+                class="form-control"
+                disabled
+              />
+            </div>
+            <div class="container__field">
+              <label>Valor:</label>
+              <input
+                type="text"
+                formControlName="txtAddQuota"
+                class="form-control"
+                (input)="formatNumber($event)"
+              />
+            </div>
+
+            <div class="container__field">
+              <label>Observaciones:</label>
+              <textarea
+                formControlName="txtAddQuotaObservation"
+                class="form-control"
+                cols="30"
+                rows="2"
+              >
+              </textarea>
+            </div>
+          </div>
+        </form>
+
+        <div class="buttons__container" id="container__buttons">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="closePopUp('container__addQuota')"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="saveAddQuota()"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <div id="container__cancelQuota">
-    <div class="overlay">
-        <div class="card">
-            <div class="card-body container__createQuota">
-                <div class="container__row">
-                    <div></div>
-                    <div></div>
-                    <div class="container__buttonClose">
-                        <a (click)="closePopUp('container__cancelQuota')"><i class="fas fa-times"></i></a>
-                    </div>
-                </div>
-                <form [formGroup]="frmCancelQuota">
-                    <div class="container__row">
-                        <h2>Anular cupo</h2>
-                    </div>
-                    <div>
-                        <div class="container__field">
-                            <label>Cliente:</label>
-                            <input type="text" 
-                                formControlName="txtCancelQuotaClient" 
-                                class="form-control" disabled>
-                        </div>                      
-                        <div class="container__field">
-                            <label>Observaciones:</label>
-                            <textarea formControlName="txtCancelQuotaObservation" class="form-control" cols="30"
-                                rows="2">
-                            </textarea>
-                        </div>
-
-                    </div>
-                </form>
-
-                <div class="buttons__container" id="container__buttons">
-                    <button type="button" class="btn btn-danger"
-                        (click)="closePopUp('container__cancelQuota')">Cancelar</button>
-                    <button type="button" class="btn btn-success" (click)="cancelQuota()">Guardar</button>
-                </div>
-            </div>
+  <div class="overlay">
+    <div class="card">
+      <div class="card-body container__createQuota">
+        <div class="container__row">
+          <div></div>
+          <div></div>
+          <div class="container__buttonClose">
+            <a (click)="closePopUp('container__cancelQuota')"
+              ><i class="fas fa-times"></i
+            ></a>
+          </div>
         </div>
-    </div>
-</div>
+        <form [formGroup]="frmCancelQuota">
+          <div class="container__row">
+            <h2>Anular cupo</h2>
+          </div>
+          <div>
+            <div class="container__field">
+              <label>Cliente:</label>
+              <input
+                type="text"
+                formControlName="txtCancelQuotaClient"
+                class="form-control"
+                disabled
+              />
+            </div>
+            <div class="container__field">
+              <label>Observaciones:</label>
+              <textarea
+                formControlName="txtCancelQuotaObservation"
+                class="form-control"
+                cols="30"
+                rows="2"
+              >
+              </textarea>
+            </div>
+          </div>
+        </form>
 
+        <div class="buttons__container" id="container__buttons">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="closePopUp('container__cancelQuota')"
+          >
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-success" (click)="cancelQuota()">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="container__resume">
-    <div class="overlay">
-        <div class="card card-review">
-            <div class="card-header container__header" id="container__header">
-                <h2 class="title_resume">{{( ((transactionSelected.movement.name!=null)?transactionSelected.movement.name:'') + ' ' + ((transactionSelected.code!=null)?transactionSelected.code:transactionSelected.consecutive) ) | lowercase }}</h2>
-                <div class="container__buttonClose">
-                    <a><i class="fas fa-times" (click)="closePopUp('container__resume')"></i></a>
-                </div>
-            </div>
-            <div class="card-body">
-                <app-transaction-review [trx_id]="trx_id">
-                </app-transaction-review>
-            </div>
+  <div class="overlay">
+    <div class="card card-review">
+      <div class="card-header container__header" id="container__header">
+        <h2 class="title_resume">
+          {{
+            (transactionSelected.movement.name != null
+              ? transactionSelected.movement.name
+              : '') +
+              ' ' +
+              (transactionSelected.code != null
+                ? transactionSelected.code
+                : transactionSelected.consecutive) | lowercase
+          }}
+        </h2>
+        <div class="container__buttonClose">
+          <a
+            ><i
+              class="fas fa-times"
+              (click)="closePopUp('container__resume')"
+            ></i
+          ></a>
         </div>
+      </div>
+      <div class="card-body">
+        <app-transaction-review [trx_id]="trx_id"> </app-transaction-review>
+      </div>
     </div>
+  </div>
 </div>
-
-
-
-
-
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

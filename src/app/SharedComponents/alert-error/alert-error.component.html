@@ -1,17 +1,18 @@
 <div class="item-overlay">
   <div class="card">
     <div class="card-header" id="container__header">
-      <a (click)="closeAlert()" class="buttonClose"><i class="fas fa-times"></i></a>
+      <a (click)="closeAlert()" class="buttonClose"
+        ><i class="fas fa-times"></i
+      ></a>
     </div>
     <div class="card-body">
       <div class="container-error">
-        <img width="100px" src="assets/error.png" alt="error">
+        <img width="100px" height="100px" src="assets/error.png" alt="error" />
         <div class="error-description">
-          <h2>{{title}}</h2>
-          <p><b>Detalle: </b>{{errorMessage}}</p>
+          <h2>{{ title }}</h2>
+          <p><b>Detalle: </b>{{ errorMessage }}</p>
         </div>
       </div>
     </div>
   </div>
 </div>
-

@@ -166,8 +166,8 @@ export class ReportAmountWorkordersByClientOrByDealerComponent
   }
 
   validateDataSets(data: any) {
-    console.log('validateDataSets')
-    console.table(data)
+    //console.log('validateDataSets')
+    //console.table(data)
     const aDataSet = []
     let clientExist = false
     let dealerExist = false

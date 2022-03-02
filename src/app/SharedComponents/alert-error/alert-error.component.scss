@@ -1,33 +1,33 @@
-.card{
+.card {
   position: relative;
   width: 650px;
   margin: 10px;
 }
 
-
-.card-body{
+.card-body {
   padding: 10px;
 }
 
-.container-error{
+.container-error {
   display: flex;
   flex-direction: row;
+  align-items: center;
   padding: 10px;
 }
 
-.error-description{
+.error-description {
   position: relative;
   max-width: 450px;
   left: 30px;
 }
 
-#container__header{
+#container__header {
   display: flex;
   flex-direction: row;
   direction: rtl;
 }
 
-.item-overlay{
+.item-overlay {
   display: grid;
   grid-template-columns: repeat(3fr);
   grid-template-rows: repeat(3fr);
@@ -44,5 +44,3 @@
   width: 100%;
   height: 100%;
 }
-
-

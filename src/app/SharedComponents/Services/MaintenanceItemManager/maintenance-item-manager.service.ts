@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core'
+import { Injectable, Type } from '@angular/core'
 import { Contract } from 'src/app/Models/Contract'
 import { DiscountTypes } from 'src/app/Models/DiscountType'
+import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
+import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
 import { RoutinesByVehicleModelComponent } from 'src/app/Modules/work-order-manager/Components/routines-by-vehicle-model/routines-by-vehicle-model.component'
 
 @Injectable({
@@ -47,25 +49,32 @@ export class MaintenanceItemManagerService {
   calculateDiscountByItem(
     referencePrice: number,
     amount: number,
-    contract: Contract
+    contract: Contract,
+    item?: MaintenanceItem
   ): number {
     let totalWithoutTaxes = referencePrice * amount
 
     let totalDiscount = 0
-    if (contract) {
-      switch (contract.discountType.id) {
-        case DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO:
-          totalDiscount = Math.round(
-            totalWithoutTaxes * (contract.discountValue / 100)
-          )
-          break
-        case DiscountTypes.VALOR_FIJO_POR_TOTAL_MANTENIMIENTO:
-          totalDiscount = Math.round(contract.discountValue)
-          break
+    try {
+      if (item.type.id != TypeOfMaintenanceItems.ADMIN_RA) {
+        if (contract) {
+          switch (contract.discountType.id) {
+            case DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO:
+              totalDiscount = Math.round(
+                totalWithoutTaxes * (contract.discountValue / 100)
+              )
+              break
+            case DiscountTypes.VALOR_FIJO_POR_TOTAL_MANTENIMIENTO:
+              totalDiscount = Math.round(contract.discountValue)
+              break
+          }
+        }
       }
-    }
 
-    return totalDiscount
+      return totalDiscount
+    } catch (error) {
+      return 0
+    }
   }
 
   calculatePriceWithDiscount(referencePrice: number, totalDiscount: number) {

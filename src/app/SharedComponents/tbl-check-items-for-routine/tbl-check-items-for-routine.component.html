@@ -6,7 +6,6 @@
       <th>Nombre</th>
       <th>Presentación</th>
       <th>Cantidad</th>
-      <th>Cantidad</th>
       <th>Valor unitario sin impuesto</th>
       <th>Valor total sin impuesto</th>
       <th>DTO</th>
@@ -34,9 +33,6 @@
           </Label>
         </td>
         <td>{{ mItem.presentationUnit.shortName }}</td>
-        <td>
-          {{ mItem.amount }}
-        </td>
         <td>
           <input
             [id]="getTextAmountId(mItem.id)"
@@ -94,7 +90,6 @@
     </tbody>
     <tfoot>
       <tr>
-        <td></td>
         <td></td>
         <td></td>
         <td></td>

@@ -10,4 +10,5 @@ export enum PresentationUnits {
 export enum TypeOfMaintenanceItems {
   REPUESTO = 1,
   MANO_DE_OBRA = 2,
+  ADMIN_RA = 3,
 }

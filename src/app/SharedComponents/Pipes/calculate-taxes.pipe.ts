@@ -31,7 +31,8 @@ export class CalculateTaxesPipe implements PipeTransform {
           this.maintenanceItemManagerService.calculateDiscountByItem(
             referencePrice,
             amount,
-            contract
+            contract,
+            item
           )
       }
 

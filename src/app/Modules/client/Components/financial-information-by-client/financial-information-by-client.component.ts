@@ -81,7 +81,7 @@ export class FinancialInformationByClientComponent implements OnInit {
     try {
       this.quotaService
         .getFinancialInformationByClient(client_id)
-        .then((infclient) => {
+        .subscribe((infclient) => {
           this.financialInformationByClient = infclient
           if (this.financialInformationByClient) {
             this.setFinancialInformationByClient(

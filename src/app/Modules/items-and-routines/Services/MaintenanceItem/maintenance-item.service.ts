@@ -164,4 +164,10 @@ export class MaintenanceItemService {
   ) {
     return Math.round(referencePrice - discount + taxesValue)
   }
+
+  getItemRAAdministration(): Observable<MaintenanceItem> {
+    const typeAdminRA = 3
+    const url = `${this.URL_API}/GetByTypeId?typeId=${typeAdminRA}`
+    return this.http.get<MaintenanceItem>(url)
+  }
 }

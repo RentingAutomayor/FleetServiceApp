@@ -98,16 +98,18 @@ export class TransactionReviewComponent implements OnInit {
 
   async getTransactionById(trx_id: number) {
     try {
-      this.transactionService
-        .getTransactionById(trx_id)
-        .then((trx) => {
-          this.transaction = trx
-          this.setDataInForm(this.transaction)
-          this.validateRenderComponent(this.transaction.movement)
-        })
-        .catch((error) => {
-          console.warn(error)
-        })
+      if (trx_id > 0) {
+        this.transactionService
+          .getTransactionById(trx_id)
+          .then((trx) => {
+            this.transaction = trx
+            this.setDataInForm(this.transaction)
+            this.validateRenderComponent(this.transaction.movement)
+          })
+          .catch((error) => {
+            console.warn(error)
+          })
+      }
     } catch (error) {
       console.warn(error)
     }

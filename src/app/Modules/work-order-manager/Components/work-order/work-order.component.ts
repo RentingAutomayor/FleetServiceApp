@@ -36,6 +36,8 @@ import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { DiscountType, DiscountTypes } from 'src/app/Models/DiscountType'
 import { ConstractStates } from 'src/app/Models/ContractState'
 import { MaintenanceItemManagerService } from 'src/app/SharedComponents/Services/MaintenanceItemManager/maintenance-item-manager.service'
+import { Router } from '@angular/router'
+import { ITransactionValues } from 'src/app/Models/transactionValues.model'
 
 @Component({
   selector: 'app-work-order',
@@ -77,6 +79,10 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   contractSelected: Contract
 
+  isErrorVisible = false
+  errorTitle = ''
+  errorMessageApi = ''
+
   constructor(
     private ClientService: ClientService,
     private vehicleService: VehicleService,
@@ -88,7 +94,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     private transactionService: TransactionService,
     private quotaService: QuotaService,
     private dealerService: DealerService,
-    private maintenanceItemManagerService: MaintenanceItemManagerService
+    private maintenanceItemManagerService: MaintenanceItemManagerService,
+    private router: Router
   ) {
     this.frmWorkOrder = new FormGroup({
       txtYear: new FormControl(''),
@@ -168,10 +175,25 @@ export class WorkOrderComponent implements OnInit, OnChanges {
       .subscribe((pricesByContract) => {
         this.pricesByContract = pricesByContract
 
-        // this.updateAmountsAndPrices(
-        //   this.lsMaintenanceItems,
-        //   this.pricesByContract
-        // )
+        try {
+          const contractualInformationByClient =
+            this.contractSelected.client.contractualInformation
+
+          if (!contractualInformationByClient) {
+            throw Error(
+              'El cliente aún no tiene configurado un contrato con Renting Automayor, por favor comuniquese con el administrador de la plataforma.'
+            )
+          }
+        } catch (error) {
+          this.clearFrmWorkOrder()
+          this.resetItemsToRoutine()
+          this.resetMaintenanceItems()
+          this.resetMaintenanceRoutines()
+          this.isErrorVisible = true
+          this.errorTitle =
+            'Error validando la información del cliente asociado a la placa'
+          this.errorMessageApi = error
+        }
       })
   }
 
@@ -262,37 +284,46 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
             this.quotaService
               .getFinancialInformationByClient(this.contractSelected.client.id)
-              .then((data) => {
-                if (data == null || data == undefined) {
-                  throw new Error(
-                    'El cliente no tiene un cupo asignado aún, por favor comuniquese con el administrador para que se realice la correspondiente gestión.'
-                  )
-                } else {
-                  const financialInformation = data
-                  txtCurrentQuota.setValue(
-                    this.sharedFunctions.formatNumberToString(
-                      parseFloat(financialInformation.currentQuota.toString())
+              .subscribe(
+                (data) => {
+                  if (data == null || data == undefined) {
+                    throw new Error(
+                      'El cliente no tiene un cupo asignado aún, por favor comuniquese con el administrador para que se realice la correspondiente gestión.'
                     )
-                  )
-                  txtConsumedQuota.setValue(
-                    this.sharedFunctions.formatNumberToString(
-                      parseFloat(financialInformation.consumedQuota.toString())
+                  } else {
+                    const financialInformation = data
+                    txtCurrentQuota.setValue(
+                      this.sharedFunctions.formatNumberToString(
+                        parseFloat(financialInformation.currentQuota.toString())
+                      )
                     )
-                  )
-                  txtInTransitQuota.setValue(
-                    this.sharedFunctions.formatNumberToString(
-                      parseFloat(financialInformation.inTransitQuota.toString())
+                    txtConsumedQuota.setValue(
+                      this.sharedFunctions.formatNumberToString(
+                        parseFloat(
+                          financialInformation.consumedQuota.toString()
+                        )
+                      )
                     )
-                  )
+                    txtInTransitQuota.setValue(
+                      this.sharedFunctions.formatNumberToString(
+                        parseFloat(
+                          financialInformation.inTransitQuota.toString()
+                        )
+                      )
+                    )
+                  }
+                },
+                (err) => {
+                  this.clearFrmWorkOrder()
+                  this.resetItemsToRoutine()
+                  this.resetMaintenanceItems()
+                  this.resetMaintenanceRoutines()
+                  this.isErrorVisible = true
+                  this.errorTitle =
+                    'Error validando la información del cliente.'
+                  this.errorMessageApi = err
                 }
-              })
-              .catch((error) => {
-                this.clearFrmWorkOrder()
-                this.resetItemsToRoutine()
-                this.resetMaintenanceItems()
-                this.resetMaintenanceRoutines()
-                alert(error)
-              })
+              )
           } else {
             throw new Error(
               'El vehículo que ingresó no tienen un contrato vínculado, por favor comuniquese con el administrador'
@@ -304,11 +335,15 @@ export class WorkOrderComponent implements OnInit, OnChanges {
           this.resetItemsToRoutine()
           this.resetMaintenanceItems()
           this.resetMaintenanceRoutines()
-          alert(error)
+          this.isErrorVisible = true
+          this.errorTitle = 'Error validando la información del vehículo'
+          this.errorMessageApi = error
         })
     } catch (error) {
       console.warn(error)
-      alert(error)
+      this.isErrorVisible = true
+      this.errorTitle = 'Error validando la información del vehículo'
+      this.errorMessageApi = error
     }
   }
 
@@ -326,14 +361,24 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     this.routineSelected = maintenanceRoutine
     if (this.routineSelected == null || this.routineSelected == undefined) {
       this.fieldMaintenanceRoutineIsInvalid = true
+      this.lsMaintenanceItems = []
+      this.lsMaintenanceItemsSelected = []
     } else {
-      this.fieldMaintenanceRoutineIsInvalid = false
-      this.lsMaintenanceItems = this.routineSelected.lsItems
-      this.lsMaintenanceItemsSelected = this.lsMaintenanceItems
-      this.updateReferencePrices(
-        this.lsMaintenanceItems,
-        this.pricesByContract.lsMaintenanceItems
-      )
+      let ItemRA = null
+      this.maintenanceItemService
+        .getItemRAAdministration()
+        .subscribe((itemRa) => {
+          ItemRA = itemRa
+          this.fieldMaintenanceRoutineIsInvalid = false
+          this.lsMaintenanceItems = maintenanceRoutine.lsItems
+          this.lsMaintenanceItems.push(ItemRA)
+          this.lsMaintenanceItemsSelected = this.lsMaintenanceItems
+
+          this.updateReferencePrices(
+            this.lsMaintenanceItems,
+            this.pricesByContract.lsMaintenanceItems
+          )
+        })
     }
   }
 
@@ -344,8 +389,13 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     const itemsContractFiltered = []
 
     referenceItems.forEach((itr) => {
-      const itemByCntr = contractItems.find((mi) => mi.id == itr.id)
-      itemsContractFiltered.push(itemByCntr)
+      try {
+        const itemByCntr = contractItems.find((mi) => mi.id == itr.id)
+        itemsContractFiltered.push(itemByCntr)
+      } catch {
+        console.log(`no se encontro item
+        para actualizar precio`)
+      }
     })
 
     console.log(`updateReferencePrices`)
@@ -407,36 +457,42 @@ export class WorkOrderComponent implements OnInit, OnChanges {
         const trxWorkOrder = this.setDataToWorkOrder()
 
         this.isAwaiting = true
-        const financialInformationByClient =
-          await this.quotaService.getFinancialInformationByClient(
-            trxWorkOrder.client.id
-          )
-        const trxWillBePorcesed =
-          parseFloat(financialInformationByClient.currentQuota.toString()) -
-            trxWorkOrder.value >
-          0
-            ? true
-            : false
-        if (trxWillBePorcesed) {
-          await this.transactionService
-            .processTransaction(trxWorkOrder)
-            .subscribe((response) => {
-              const rta = response
-              if (rta.response) {
-                alert(rta.message)
-                this.clearBufferForm()
-                this.workOrderWasSaved.emit(true)
-              }
-            })
-        } else {
-          alert(
-            '¡No se puede procesar esta órden de trabajo puesto que el cliente no cuenta con el suficiente cupo disponible!'
-          )
-        }
-        this.isAwaiting = false
+
+        this.quotaService
+          .getFinancialInformationByClient(trxWorkOrder.client.id)
+          .subscribe((finInfo) => {
+            const trxWillBePorcesed =
+              parseFloat(finInfo.currentQuota.toString()) - trxWorkOrder.value >
+              0
+                ? true
+                : false
+
+            if (trxWillBePorcesed) {
+              this.transactionService
+                .processTransaction(trxWorkOrder)
+                .subscribe((response) => {
+                  const rta = response
+                  if (rta.response) {
+                    alert(rta.message)
+                    this.clearBufferForm()
+                    this.isAwaiting = false
+                    this.workOrderWasSaved.emit(true)
+                  }
+                })
+            } else {
+              this.isAwaiting = false
+              this.isErrorVisible = true
+              this.errorTitle = 'Error intentando procesar la órden de trabajo'
+              this.errorMessageApi =
+                '¡No se puede procesar esta órden de trabajo puesto que el cliente no cuenta con el suficiente cupo disponible!'
+            }
+          })
       }
     } catch (error) {
       console.warn(error)
+      this.isErrorVisible = true
+      this.errorTitle = 'Error intentando procesar la órden de trabajo'
+      this.errorMessageApi = error
     }
   }
 
@@ -504,7 +560,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
       return trxWorkOrder
     } catch (error) {
-      alert(error)
+      this.isErrorVisible = true
+      this.errorTitle = 'Error inentando procesar la órden de trabajo.'
+      this.errorMessageApi = error
       return null
     }
   }
@@ -544,7 +602,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
   addNewMaintenanceItemsToRoutine(maintenanceItemsToAdd: MaintenanceItem[]) {
     maintenanceItemsToAdd.forEach((newItem) => {
       try {
-        const exitsItem = this.lsMaintenanceItemsSelected.find(
+        const exitsItem = this.lsMaintenanceItems.find(
           (it) => it.id == newItem.id
         )
         if (exitsItem) {
@@ -552,11 +610,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
             '[addNewMaintenanceItemsToRoutine]: Ya existe el item seleccionado en la rutina'
           )
         } else {
-          newItem.amount = 1
-          this.lsMaintenanceItems.push(newItem)
-          setTimeout(() => {
-            this.addItemToRoutine(newItem)
-          }, 300)
+          newItem.amount = 0
+          this.lsMaintenanceItems.unshift(newItem)
         }
       } catch (error) {
         console.warn(error)
@@ -571,7 +626,21 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   setItemsToRoutine(maintenanceItems: MaintenanceItem[]) {
     this.lsMaintenanceItemsSelected = maintenanceItems
+    console.log(`Items selecccionados para la rutina`)
+    console.log(this.lsMaintenanceItemsSelected)
   }
 
-  setTotalRoutine(totalRoutine: number) {}
+  setTotalRoutine(transactionValues: ITransactionValues) {
+    this.totalWithoutTaxesAndDiscount =
+      transactionValues.valueWithDiscountWithoutTaxes
+    this.totalWithoutTaxes = transactionValues.valueWithoutDiscount
+    this.totalTaxes = transactionValues.taxesValue
+    this.totalDiscount = transactionValues.discountValue
+    this.totalRoutine = transactionValues.value
+  }
+
+  closeErrorMessage() {
+    this.isErrorVisible = false
+    this.workOrderWasCanceled.emit(true)
+  }
 }

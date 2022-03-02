@@ -18,9 +18,17 @@ import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
     '../../../../../assets/styles/app.scss',
   ],
 })
-export class TblItemsToAddComponent implements OnInit, OnChanges {
+export class TblItemsToAddComponent implements OnInit {
   lsMaintenanceItemsTemp: MaintenanceItem[]
-  @Input() lsMaintenanceItems: MaintenanceItem[]
+
+  lsMaintenanceItems: MaintenanceItem[]
+  @Input('lsMaintenanceItems')
+  set setLsMaintenanceItems(items: MaintenanceItem[]) {
+    this.lsMaintenanceItems = items
+    this.turnOffCheckBoxes()
+    this.lsItemsToAddSelected = []
+    this.lsMaintenanceItemsTemp = this.lsMaintenanceItems
+  }
   @Input() countChanges: number
   lsItemsToAddSelected: MaintenanceItem[]
   @Output() newItemsWasSetted = new EventEmitter<MaintenanceItem[]>()
@@ -32,18 +40,6 @@ export class TblItemsToAddComponent implements OnInit, OnChanges {
     this.clearFilterIsVisible = false
     this.lsItemsToAddSelected = []
     this.countChanges = 0
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.lsMaintenanceItemsTemp = this.lsMaintenanceItems
-    for (const change in changes) {
-      switch (change) {
-        case 'countChanges':
-          this.turnOffCheckBoxes()
-          this.lsItemsToAddSelected = []
-          break
-      }
-    }
   }
 
   ngOnInit(): void {

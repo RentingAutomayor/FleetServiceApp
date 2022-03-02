@@ -23,13 +23,15 @@ export class CalculatePriceWithoutDiscountPipe implements PipeTransform {
         referencePrice,
         amount
       )
+
     let totalDiscount = 0
     if (contract) {
       totalDiscount =
         this.maintenanceItemManagerService.calculateDiscountByItem(
           referencePrice,
           amount,
-          contract
+          contract,
+          item
         )
     }
 

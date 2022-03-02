@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Client } from '../../../../Models/Client'
 import { FinancialInformation } from '../../../../Models/FinancialInformation'
 import { ResponseApi } from '../../../../Models/ResponseApi'
+import { Observable } from 'rxjs'
 
 @Injectable({
   providedIn: 'root',
@@ -24,13 +25,11 @@ export class QuotaService {
     return this.http.get<Client[]>(urlClientsWithoutQuota).toPromise()
   }
 
-  async getFinancialInformationByClient(
+  getFinancialInformationByClient(
     client_id: number
-  ): Promise<FinancialInformation> {
+  ): Observable<FinancialInformation> {
     const urlGetFinancialInformation = `${this.URL_API}/GetFinancialInformationByClient?client_id=${client_id}`
-    return this.http
-      .get<FinancialInformation>(urlGetFinancialInformation)
-      .toPromise()
+    return this.http.get<FinancialInformation>(urlGetFinancialInformation)
   }
 
   async validatePaymentVsConsumedQuota(

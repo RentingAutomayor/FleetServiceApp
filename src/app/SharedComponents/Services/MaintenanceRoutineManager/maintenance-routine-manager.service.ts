@@ -32,11 +32,15 @@ export class MaintenanceRoutineManagerService {
   ) {
     let totalDiscount = 0
     maintenanceItems.forEach((mi) => {
+      // console.log(
+      //   `${mi.name} -> price: ${mi.referencePrice} amount: ${mi.amount}`
+      // )
       totalDiscount +=
         this.maintenanceItemManagerService.calculateDiscountByItem(
           mi.referencePrice,
           mi.amount,
-          contract
+          contract,
+          mi
         )
     })
     return totalDiscount
@@ -47,29 +51,38 @@ export class MaintenanceRoutineManagerService {
     contract?: Contract
   ): number {
     let totalTaxes = 0
+    //console.log(`****************************************************`)
+    if (maintenanceItems != null) {
+      maintenanceItems.forEach((mi) => {
+        const priceByAmoutn =
+          this.maintenanceItemManagerService.calculatePriceByAmount(
+            mi.referencePrice,
+            mi.amount
+          )
+        const discountByItem =
+          this.maintenanceItemManagerService.calculateDiscountByItem(
+            mi.referencePrice,
+            mi.amount,
+            contract,
+            mi
+          )
+        const priceLessDiscount =
+          this.maintenanceItemManagerService.calculatePriceWithDiscount(
+            priceByAmoutn,
+            discountByItem
+          )
 
-    maintenanceItems.forEach((mi) => {
-      const priceByAmoutn =
-        this.maintenanceItemManagerService.calculatePriceByAmount(
-          mi.referencePrice,
-          mi.amount
+        // console.log(
+        //   `${mi.name} -> price by amount: ${priceByAmoutn} discount: ${discountByItem} price less discount ${priceLessDiscount}`
+        // )
+
+        totalTaxes += this.maintenanceItemManagerService.calculateTaxesByItem(
+          mi,
+          priceLessDiscount
         )
-      const discountByItem =
-        this.maintenanceItemManagerService.calculateDiscountByItem(
-          mi.referencePrice,
-          mi.amount,
-          contract
-        )
-      const priceLessDiscount =
-        this.maintenanceItemManagerService.calculatePriceWithDiscount(
-          priceByAmoutn,
-          discountByItem
-        )
-      totalTaxes += this.maintenanceItemManagerService.calculateTaxesByItem(
-        mi,
-        priceLessDiscount
-      )
-    })
+      })
+    }
+    // console.log(`****************************************************`)
 
     console.log(`Taxes By routine -> ${totalTaxes}`)
     return totalTaxes

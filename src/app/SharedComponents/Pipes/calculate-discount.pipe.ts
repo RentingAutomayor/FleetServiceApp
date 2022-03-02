@@ -25,7 +25,8 @@ export class CalculateDiscountPipe implements PipeTransform {
       discount = this.maintenanceItemManagerService.calculateDiscountByItem(
         referencePrice,
         amount,
-        contract
+        contract,
+        item
       )
     }
     return discount

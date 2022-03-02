@@ -186,8 +186,6 @@
       >
         <i class="fas fa-plus"></i>
       </button>
-      x
-      <hr />
       <div class="container-table-items">
         <app-tbl-check-items-for-routine
           [maintenanceItems]="lsMaintenanceItems"
@@ -261,7 +259,6 @@
       </div>
       <div class="card-body" id="container__tableAddNewItems">
         <app-tbl-items-to-add
-          [countChanges]="oCountChanges"
           [lsMaintenanceItems]="
             pricesByContract != null ? pricesByContract.lsMaintenanceItems : []
           "
@@ -273,5 +270,11 @@
     </div>
   </div>
 </div>
-
+<app-alert-error
+  *ngIf="isErrorVisible"
+  [title]="errorTitle"
+  [errorMessage]="errorMessageApi"
+  (onAlertWasClose)="closeErrorMessage()"
+>
+</app-alert-error>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

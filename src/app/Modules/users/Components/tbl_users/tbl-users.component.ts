@@ -81,7 +81,7 @@ export class TblUsersComponent implements OnInit {
       this.action = ActionType.UPDATE
       this.userService.setAction(this.action)
       saveInStorage('actionToPerform', this.action)
-      this.router.navigate(['/MasterUsers/Client', pId])
+      this.router.navigate(['/MasterUsers/User', pId])
     } catch (err) {
       console.error(err.error.Message)
       alert(err.error.Message)

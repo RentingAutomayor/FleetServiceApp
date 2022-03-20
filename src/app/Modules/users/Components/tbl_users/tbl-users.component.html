@@ -30,9 +30,9 @@
                 <td>{{ user.lastName }}</td>
                 <td class="col-mobile-hide">{{ user.user }}</td>
                 <td>
-                    <i class="fas fa-info-circle text-info" title="Más información" (click)="getDetailsClient(client.id)"></i>
-                    <i class="fas fa-edit text-warning" *ngIf="enableButtonsEditAndDelete" (click)="updateClient(client.id)" title="Modificar"></i>
-                    <i class="fas fa-trash-alt text-danger" *ngIf="enableButtonsEditAndDelete" (click)="deleteClient(client)" title="Eliminar"></i>
+                    <i class="fas fa-info-circle text-info" title="Más información" (click)="getDetailsUser(user.id_user)"></i>
+                    <i class="fas fa-edit text-warning" *ngIf="enableButtonsEditAndDelete" (click)="updateUser(user.id_user)" title="Modificar"></i>
+                    <i class="fas fa-trash-alt text-danger" *ngIf="enableButtonsEditAndDelete" (click)="deleteUser(user)" title="Eliminar"></i>
                 </td>
             </tr>
         </tbody>

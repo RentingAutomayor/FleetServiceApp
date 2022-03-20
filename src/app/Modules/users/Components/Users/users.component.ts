@@ -14,6 +14,7 @@ import {
   import { MatVerticalStepper, MatStep } from '@angular/material/stepper'
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent'
 import { PersonService } from 'src/app/SharedComponents/Services/Person/person.service'
+import { Person } from 'src/app/Models/Person'
   
   @Component({
     selector: 'app-user',
@@ -25,6 +26,7 @@ import { PersonService } from 'src/app/SharedComponents/Services/Person/person.s
     bFormHasError: boolean
     errorMessage: string
     isAwaiting: boolean
+    oPersonToUpdate: Person
     areVisibleButtonsForBasicData = false
     user: User = {
       id: 0,
@@ -99,6 +101,7 @@ import { PersonService } from 'src/app/SharedComponents/Services/Person/person.s
   
     ngOnInit(): void {
       this.initComponents()
+      this.configurePersonComponent()
       this.extractDataFromParams()
     }
   

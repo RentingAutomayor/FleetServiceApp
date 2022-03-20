@@ -54,6 +54,10 @@ export class PersonComponent implements OnInit {
     registrationDate: new Date(),
     updateDate: new Date(),
     deleteDate: new Date(),
+    id_user: 0,
+    lastName: '',
+    user: '',
+    id_group: 0
   }
 
   jobTitleSelected: JobTitle = null

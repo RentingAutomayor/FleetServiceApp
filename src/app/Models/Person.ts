@@ -17,4 +17,8 @@ export interface Person {
   registrationDate: Date
   updateDate: Date
   deleteDate: Date
+  id_user: number
+  lastName: string
+  user: string
+  id_group: number
 }

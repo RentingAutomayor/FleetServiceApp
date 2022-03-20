@@ -18,6 +18,12 @@ export class LoginService {
 
   // tslint:disable-next-line: typedef
   loginUser(user: any) {
-    return this.http.post<any>(this.URL_API, user)
+    let response = this.http.post<any>(this.URL_API, user)
+    if(response != undefined){
+      return response
+    }else{
+      return user = null;
+    }
+    
   }
 }

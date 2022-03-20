@@ -1,0 +1,45 @@
+<div id="container__content">
+    <h1>Usuarios</h1>
+    <div class="container-filter">
+      <input
+        [formControl]="txtFilter"
+        type="text"
+        class="form-control"
+        placeholder="Nombres, Apellidos, Usuario...">
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="removeFilter()">Borrar filtro</button>
+    </div>
+    <button
+      class="btn-add btn-info"
+      (click)="insertUser()"
+      *ngIf="enableButtonsEditAndDelete"><i class="fas fa-plus"></i></button>
+    <table class="table table-striped">
+        <thead>
+            <th class="col-number col-mobile-hide">#</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th class="col-mobile-hide">Usuario</th>
+            <th class="col-mobile-hide">Acciones</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let i = index ;let user of lsUserFiltered | paginate: { itemsPerPage: 10, currentPage: p }">
+                <th class="col-number col-mobile-hide">{{ (i + 1) }}</th>
+                <td>{{ user.name }}</td>
+                <td>{{ user.lastName }}</td>
+                <td class="col-mobile-hide">{{ user.user }}</td>
+                <td>
+                    <i class="fas fa-info-circle text-info" title="Más información" (click)="getDetailsClient(client.id)"></i>
+                    <i class="fas fa-edit text-warning" *ngIf="enableButtonsEditAndDelete" (click)="updateClient(client.id)" title="Modificar"></i>
+                    <i class="fas fa-trash-alt text-danger" *ngIf="enableButtonsEditAndDelete" (click)="deleteClient(client)" title="Eliminar"></i>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+    <div class="paginationContainer">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

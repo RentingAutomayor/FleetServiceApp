@@ -24,6 +24,7 @@ import { ContractGuard } from 'src/app/Guardians/contract-guardian/contract.guar
 import { QuotaGuard } from 'src/app/Guardians/quota-guardian/quota.guard'
 import { WorkorderGuard } from 'src/app/Guardians/workorder-guardian/workorder.guard'
 import { DashboardClientGuard } from 'src/app/Guardians/dashboard-client-guardian/dashboard-client.guard'
+import { UsersGuardianGuard } from './Guardians/users-guardian/users-guardian.guard'
 
 const routes: Routes = [
   {
@@ -99,6 +100,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('../app/Modules/dashboard-client/dashboard-client.module').then(
         (m) => m.DashboardClientModule
+      ),
+  },
+  {
+    path: 'MasterUsers',
+    canActivate: [UsersGuardianGuard],
+    loadChildren: () =>
+      import('../app/Modules/users/users.module').then(
+        (m) => m.UsersModule
       ),
   },
 ]

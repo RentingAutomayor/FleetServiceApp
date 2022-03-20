@@ -93,6 +93,10 @@ export class DealerComponent implements OnInit {
           address: '',
           email: '',
           website: '',
+          id_user: 0,
+          lastName: '',
+          user: '',
+          id_group: 0,
           city: {
             id: 0,
             name: '',

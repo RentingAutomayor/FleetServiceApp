@@ -1,0 +1,39 @@
+<div id="container__content">
+  <mat-vertical-stepper
+  [linear]="true">
+    <mat-step [completed]="isBasicDataCompleted">
+      <ng-template matStepLabel>Datos básicos del usuario</ng-template>
+      <div class="card">
+        <app-person
+          [configComponent]="oConfigPersonComp"
+          [formHasError]="bFormHasError"
+          [error]="errorMessage"
+          [returnPath]="sReturnPath"
+          [personToUpdate]="oDataIsToUpdate"
+          [frmPersonMustBeBlocked]="blockFormUser"
+          (personWasSetted)="setPersonInfo()"
+          [areVisibleButtonActions]="areVisibleButtonsForBasicData">
+        </app-person>
+      </div>
+      <div class="container-buttons">
+        <button
+          id="btn-next-step-basic-data"
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step" >
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+  <app-alert-error
+    *ngIf="isErrorVisible"
+    [title]="errorTitle"
+    [errorMessage]="errorMessageApi"
+    (onAlertWasClose)="closeErrorMessage()">
+  </app-alert-error>
+</div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>
+

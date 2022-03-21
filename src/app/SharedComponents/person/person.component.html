@@ -40,6 +40,25 @@
                     formControlName = "lastname">
             </div>
         </div>
+        <div
+          id="container__username"
+          [class.row__container_single]="!configComponent.userNameIsVisible"
+          class="row__container">
+            <div class="col" *ngIf="configComponent.userNameIsVisible">
+                <label for="#">Usuario:</label>
+                <input type="text" class="form-control" placeholder="Usuario ..."
+                    formControlName = "username">
+
+                <div class="error" *ngIf= "(nameField.dirty || nameField.touched) && nameField.errors">
+                    <p *ngIf= "nameField.hasError('required')">* El usuario es requerido </p>
+                </div>
+            </div>
+            <div class="col" *ngIf="configComponent.passwordIsVisible">
+                <label for="">Contraseña:</label>
+                <input type="password" class="form-control" placeholder="Contraseña..."
+                    formControlName = "password">
+            </div>
+        </div>
         <div class="row__container" id="container__phone">
             <div class="col" *ngIf="configComponent.phoneIsVisible">
                 <label for="#">Teléfono:</label>
@@ -106,6 +125,14 @@
               [blockFieldCity]="frmPersonMustBeBlocked"
               (onCityWasSetted)="setSelectedCity($event)">
             </app-city>
+        </div>
+        <div *ngIf="configComponent.grupoIsVisible">
+            <div>Nuevo compoennte que no aparece</div>
+            <app-group
+              [group]="selectedGroup"
+              [blockFieldGroup]="frmPersonMustBeBlocked"
+              (onGroupWasSetted)="setSelectedGroup($event)">
+            </app-group>
         </div>
         <div  class="container__error" *ngIf="formHasError">
             <p><span class="error"> * {{error}} *</span></p>

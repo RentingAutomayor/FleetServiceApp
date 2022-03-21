@@ -12,6 +12,9 @@ export class ConfigPersonComponent {
   public addressIsVisible: boolean
   public jobTitleIsVisible: boolean
   public cityIsVisible: boolean
+  public userNameIsVisible: boolean
+  public passwordIsVisible: boolean
+  public grupoIsVisible: boolean
 
   constructor() {
     this.kindOfDocumentIsVisible = false
@@ -25,5 +28,8 @@ export class ConfigPersonComponent {
     this.addressIsVisible = false
     this.jobTitleIsVisible = false
     this.cityIsVisible = false
+    this.userNameIsVisible = false
+    this.passwordIsVisible = false
+    this.grupoIsVisible = false
   }
 }

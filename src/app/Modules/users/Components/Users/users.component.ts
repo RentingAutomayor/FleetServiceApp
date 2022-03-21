@@ -182,6 +182,9 @@ import { Person } from 'src/app/Models/Person'
       this.oConfigPersonComp = new ConfigPersonComponent()
       this.oConfigPersonComp.nameIsVisible = true
       this.oConfigPersonComp.lastNameIsVisible = true
+      this.oConfigPersonComp.userNameIsVisible = true
+      this.oConfigPersonComp.passwordIsVisible = true
+      this.oConfigPersonComp.grupoIsVisible = true
     }
 
     async setPersonInfo() {

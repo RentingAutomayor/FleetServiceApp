@@ -96,7 +96,11 @@ export class DealerComponent implements OnInit {
           id_user: 0,
           lastName: '',
           user: '',
-          id_group: 0,
+          group: {
+            id: 0,
+            name: '',
+            description: ''
+          },
           city: {
             id: 0,
             name: '',

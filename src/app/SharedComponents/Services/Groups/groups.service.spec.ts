@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing'
 
-import { CityService } from './city.service'
+import { GroupsService } from './groups.service'
 
-describe('CityService', () => {
-  let service: CityService
+describe('GroupsService', () => {
+  let service: GroupsService
 
   beforeEach(() => {
     TestBed.configureTestingModule({})
-    service = TestBed.inject(CityService)
+    service = TestBed.inject(GroupsService)
   })
 
   it('should be created', () => {

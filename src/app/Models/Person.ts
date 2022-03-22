@@ -1,4 +1,5 @@
 import { City } from './City'
+import { Groups } from './Groups'
 import { JobTitle } from './JobTitle'
 
 export interface Person {
@@ -20,5 +21,5 @@ export interface Person {
   id_user: number
   lastName: string
   user: string
-  id_group: number
+  group: Groups
 }

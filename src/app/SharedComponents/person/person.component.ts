@@ -14,9 +14,11 @@ import { PersonService } from '../Services/Person/person.service'
 import { CityService } from '../Services/City/city.service'
 import { JobTitleService } from '../Services/JobTitle/job-title.service'
 import { City } from 'src/app/Models/City'
+import { Groups } from 'src/app/Models/Groups'
 import { Router } from '@angular/router'
 import { JobTitle } from 'src/app/Models/JobTitle'
 import { InputValidator } from 'src/app/Utils/InputValidator'
+import { GroupsService } from '../Services/Groups/groups.service'
 
 @Component({
   selector: 'app-person',
@@ -57,7 +59,11 @@ export class PersonComponent implements OnInit {
     id_user: 0,
     lastName: '',
     user: '',
-    id_group: 0
+    group: {
+      id: 0,
+      name: '',
+      description: ''
+    },
   }
 
   jobTitleSelected: JobTitle = null
@@ -75,6 +81,7 @@ export class PersonComponent implements OnInit {
       this.personToUpdate = person
       this.jobTitleSelected = this.personToUpdate.jobTitle
       this.selectedCity = this.personToUpdate.city
+      this.selectedGroups = this.personToUpdate.group
       this.setDataInForm(this.personToUpdate)
       this.enableDisableForm(this.frmPersonMustBeBlocked)
     } else {
@@ -96,6 +103,7 @@ export class PersonComponent implements OnInit {
   }
 
   selectedCity: City = null
+  selectedGroups: Groups = null
 
   // getInfoComponent:boolean = false;
   // @Input('getInfoComponent')
@@ -118,6 +126,7 @@ export class PersonComponent implements OnInit {
     private personService: PersonService,
     private cityService: CityService,
     private jobTitleService: JobTitleService,
+    private GroupsService: GroupsService,
     private router: Router,
     private formBuilder: FormBuilder
   ) {
@@ -223,6 +232,7 @@ export class PersonComponent implements OnInit {
     this.oJobTitleSelected.id = 0
     this.oJobTitleSelected.description = ''
     this.selectedCity = null
+    this.selectedGroups = null
     this.jobTitleSelected = null
   }
 
@@ -238,6 +248,10 @@ export class PersonComponent implements OnInit {
     this.selectedCity = city
   }
 
+  setSelectedGroups(groups: Groups) {
+    this.selectedGroups = groups
+  }
+
   getDataPersonForm(): Person {
     let objPerson: Person
 
@@ -250,6 +264,10 @@ export class PersonComponent implements OnInit {
 
     if (this.configComponent.cityIsVisible) {
       objPerson.city = this.selectedCity
+    }
+
+    if (this.configComponent.grupoIsVisible) {
+      objPerson.group = this.selectedGroups
     }
 
     if (this.configComponent.jobTitleIsVisible) {

@@ -1,4 +1,5 @@
 import { City } from './City'
+import { Groups } from './Groups'
 import { JobTitle } from './JobTitle'
 import { Person } from './Person'
 
@@ -21,7 +22,7 @@ export class Branch implements Person {
   id_user: number
   lastName: string
   user: string
-  id_group: number
+  group: Groups
   public isMain: boolean
   public Client_id: number
   public Dealer_id: number

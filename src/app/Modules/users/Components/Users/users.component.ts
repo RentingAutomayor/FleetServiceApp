@@ -41,7 +41,11 @@ import { Person } from 'src/app/Models/Person'
       id_user: 0,
       lastName: '',
       user: '',
-      id_group: 0,
+      group: {
+        id: 0,
+        name: '',
+        description: ''
+      },
       city: {
         id: 0,
         name: '',
@@ -132,7 +136,11 @@ import { Person } from 'src/app/Models/Person'
             id_user: 0,
             lastName: '',
             user: '',
-            id_group: 0,
+            group: {
+              id: 0,
+              name: '',
+              description: ''
+            },
             city: {
               id: 0,
               name: '',
@@ -207,7 +215,7 @@ import { Person } from 'src/app/Models/Person'
       this.user.user = this.user.user
       this.user.name = this.user.name
       this.user.lastName = this.user.lastName
-      this.user.id_group = this.user.id_group
+      this.user.group = this.user.group
   
       if (this.action == ActionType.CREATE) {
         this.userService.insertUser(this.user).subscribe(

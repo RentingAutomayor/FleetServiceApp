@@ -12,7 +12,7 @@ import { Groups } from 'src/app/Models/Groups'
 export class GroupsService {
   private lsDepartment: Department[]
   private lsCities: City[]
-  private oSelectedCity: City
+  private oSelectedGroups: City
   private URL_API = '/API_FleetService/api/City/'
   constructor(private http: HttpClient) {}
 
@@ -31,11 +31,11 @@ export class GroupsService {
     return this.http.get<Groups[]>(urlCities)
   }
 
-  setSelectedCity(pCity: City) {
-    this.oSelectedCity = pCity
+  setSelectedGroups(pCity: City) {
+    this.oSelectedGroups = pCity
   }
 
-  getSelectedCity(): City {
-    return this.oSelectedCity
+  getSelectedGroups(): City {
+    return this.oSelectedGroups
   }
 }

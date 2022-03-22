@@ -12,26 +12,26 @@ import { Groups } from 'src/app/Models/Groups'
 import { GroupsService } from '../Services/Groups/groups.service'
 
 @Component({
-  selector: 'app-group',
+  selector: 'app-groups',
   templateUrl: './groups.component.html',
   styleUrls: ['./groups.component.scss'],
 })
 export class GroupsComponent implements OnInit {
-  group: Groups
-  @Input('group')
+  groups: Groups
+  @Input('groups')
 
-  blockFieldGroup: boolean
+  blockFieldGroups: boolean
   @Input('blockFieldGroup')
   set setBlockFieldGroup(value: boolean) {
-    this.blockFieldGroup = value
+    this.blockFieldGroups = value
     console.log(value)
-    if (this.blockFieldGroup) {
-      this.frmGroup.disable()
+    if (this.blockFieldGroups) {
+      this.frmGroups.disable()
     } else {
-      this.frmGroup.enable()
+      this.frmGroups.enable()
     }
   }
-  frmGroup: FormGroup
+  frmGroups: FormGroup
   lsGroups: Groups[]
   lsGroupsFiltered: Groups[] = []
 
@@ -40,11 +40,11 @@ export class GroupsComponent implements OnInit {
   onGroupWasSetted = new EventEmitter<Groups>()
 
   constructor(private groupService: GroupsService) {
-    this.frmGroup = new FormGroup({
+    this.frmGroups = new FormGroup({
       cmbGroup: new FormControl('Seleccione ...'),
     })
 
-    this.blockFieldGroup = false
+    this.blockFieldGroups = false
     this.lsGroups = []
   }
 
@@ -64,18 +64,18 @@ export class GroupsComponent implements OnInit {
     })
   }
 
-  setSelectedGroup(obj: any) {
+  setSelectedGroups(obj: any) {
     const selectedGroup = this.lsGroups.find((grp) => grp.id == obj.value)
     this.onGroupWasSetted.emit(selectedGroup)
   }
 
   async setDataInForm(pGroup: Groups) {
     if (pGroup) {
-      this.frmGroup.controls.cmbGroup.setValue(pGroup.id)
+      this.frmGroups.controls.cmbGroup.setValue(pGroup.id)
     }
   }
 
   clearDateForm(): void {
-    this.frmGroup.controls.cmbGroup.setValue(0)
+    this.frmGroups.controls.cmbGroup.setValue(0)
   }
 }

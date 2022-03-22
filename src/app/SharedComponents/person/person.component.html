@@ -128,11 +128,11 @@
         </div>
         <div *ngIf="configComponent.grupoIsVisible">
             <div>Nuevo compoennte que no aparece</div>
-            <app-group
-              [group]="selectedGroup"
-              [blockFieldGroup]="frmPersonMustBeBlocked"
-              (onGroupWasSetted)="setSelectedGroup($event)">
-            </app-group>
+            <app-groups
+              [groups]="selectedGroups"
+              [blockFieldGroups]="frmPersonMustBeBlocked"
+              (onGroupWasSetted)="setSelectedGroups($event)">
+            </app-groups>
         </div>
         <div  class="container__error" *ngIf="formHasError">
             <p><span class="error"> * {{error}} *</span></p>

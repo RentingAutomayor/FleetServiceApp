@@ -1,186 +1,277 @@
 <div id="container__content">
+  <div class="container__tabPanel">
+    <div class="container__titles">
+      <button class="tab_link active" (click)="openTab($event, 'basicData')">
+        Datos del contrato
+      </button>
+      <button class="tab_link" (click)="openTab($event, 'vehicleModels')">
+        Líneas contratadas
+      </button>
+      <button class="tab_link" (click)="openTab($event, 'vehicles')">
+        Vehículos
+      </button>
+      <button class="tab_link" (click)="openTab($event, 'prices')">
+        Precios contratados
+      </button>
+    </div>
+  </div>
 
-    <div class="container__tabPanel">
-        <div class="container__titles">
-            <button class="tab_link active" (click)="openTab($event,'basicData')">Datos del contrato</button>
-            <button class="tab_link" (click)="openTab($event,'vehicleModels')">Líneas contratadas</button>
-            <button class="tab_link" (click)="openTab($event,'vehicles')">Vehículos</button>
-            <button class="tab_link" (click)="openTab($event,'prices')">Precios contratados</button>
+  <form [formGroup]="frmContract" (ngSubmit)="saveContract()">
+    <div class="tab_content tab_active" id="container__basicData">
+      <div class="container__row">
+        <div class="container__col">
+          <app-input-search-client
+            [countChanges]="countChanges"
+            [disableField]="disableClientField"
+            (clientWasSetted)="setClientSelected()"
+          >
+          </app-input-search-client>
+
+          <div class="error" *ngIf="clientFieldIsInvalid">
+            <p>* El cliente es necesario para guardar el contrato</p>
+          </div>
         </div>
+        <div class="container__col">
+          <app-input-search-dealer
+            [countChanges]="countChanges"
+            [disableField]="disableDealerField"
+            (dealerWasSetted)="setDealerSelected()"
+          >
+          </app-input-search-dealer>
+
+          <div class="error" *ngIf="dealerFieldIsInvalid">
+            <p>* El concesionario es necesario para guardar el contrato</p>
+          </div>
+        </div>
+      </div>
+      <div class="container__row">
+        <div class="container__col">
+          <label>Código de referencia del contrato</label>
+          <input
+            type="text"
+            formControlName="name"
+            class="form-control"
+            placeholder="Código de referencia del contrato ..."
+          />
+        </div>
+        <div class="container__col">
+          <app-contract-state
+            [countChanges]="countChanges"
+            (contractStateWasSelected)="setContractState($event)"
+            [cmbStateIsDisable]="disableCmbState"
+          ></app-contract-state>
+
+          <div class="error" *ngIf="contracStateFieldIsInvalid">
+            <p>* El estado es requerido para guardar el contrato</p>
+          </div>
+        </div>
+      </div>
+      <div class="container__row">
+        <div class="container__col">
+          <label>Cantidad de vehículos contratados</label>
+          <input
+            class="form-control"
+            type="text"
+            formControlName="amountVehicles"
+            (keypress)="validateNumbers($event)"
+            placeholder="cantidad de vehículos contratados"
+          />
+
+          <div
+            class="error"
+            *ngIf="
+              amountVehiclesField.invalid &&
+              (amountVehiclesField.touched || amountVehiclesField.dirty)
+            "
+          >
+            <p *ngIf="amountVehiclesField.hasError('required')">
+              * La cantidad de vehículos es requerida
+            </p>
+          </div>
+        </div>
+        <div class="container__col">
+          <label>Duración en meses:</label>
+          <input
+            type="number"
+            formControlName="duration"
+            class="form-control"
+            placeholder="Duración del contrato ..."
+            (keypress)="validateNumbers($event)"
+            (input)="calculateEndingDate()"
+          />
+
+          <div
+            class="error"
+            *ngIf="
+              durationField.invalid &&
+              (durationField.touched || durationField.dirty)
+            "
+          >
+            <p *ngIf="durationField.hasError('required')">
+              * La duración del contrato es requerida
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="container__row">
+        <div class="container__col">
+          <label>Fecha de inicio:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="startingDate"
+            [bsValue]="dtStartingDate"
+            (keypress)="validateInputDate($event)"
+            [bsConfig]="{
+              dateInputFormat: 'YYYY/MM/DD',
+              containerClass: 'theme-dark-blue'
+            }"
+            placeholder="fecha de inicio ..."
+            (onHidden)="calculateEndingDate()"
+            bsDatepicker
+          />
+
+          <div
+            class="error"
+            *ngIf="
+              startingDateField.invalid &&
+              (startingDateField.touched || startingDateField.dirty)
+            "
+          >
+            <p *ngIf="startingDateField.hasError('required')">
+              * La fecha inicial del contrato es requerida
+            </p>
+          </div>
+        </div>
+        <div class="container__col">
+          <label>Fecha de finalización:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="endingDate"
+            placeholder="fecha de finalización ..."
+            [bsValue]="dtEndingDate"
+            [bsConfig]="{
+              dateInputFormat: 'YYYY/MM/DD',
+              containerClass: 'theme-dark-blue'
+            }"
+            bsDatepicker
+            disabled
+          />
+        </div>
+      </div>
+      <div class="container__row">
+        <div class="container__col">
+          <app-contract-discount-type
+            [countChanges]="countChanges"
+            [disableField]="disableTypeOfDiscoutnField"
+            (discountWasSelected)="setDiscountType($event)"
+          ></app-contract-discount-type>
+          <div class="error" *ngIf="discountFieldIsInvalid">
+            <p>* El tipo de descuento es requerido para guardar el contrato</p>
+          </div>
+        </div>
+        <div class="container__col">
+          <label>Valor del descuento:</label>
+          <input
+            type="number"
+            formControlName="discountValue"
+            class="form-control"
+            placeholder="valor del descuento ..."
+            (keypress)="validateNumbers($event)"
+          />
+
+          <div
+            class="error"
+            *ngIf="
+              discountValueField.invalid &&
+              (discountValueField.touched || discountValueField.dirty)
+            "
+          >
+            <p *ngIf="discountValueField.hasError('required')">
+              * El valor del descuento que debe aplicarse al contrato es
+              requerido
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="container__observation">
+        <label>Observaciones: </label>
+        <textarea
+          class="form-control"
+          formControlName="observation"
+          cols="30"
+          rows="2"
+        >
+        </textarea>
+      </div>
+    </div>
+    <div class="tab_content tab_inactive" id="container__vehicleModels">
+      <app-check-list-vehicle-model
+        [disableChecks]="disableVehicleTypesAndVehicleModels"
+        (onVehicleModelsWasSetted)="setLisVehicleModels($event)"
+      >
+      </app-check-list-vehicle-model>
+    </div>
+    <div class="tab_content tab_inactive" id="container__vehicles">
+      <app-tbl-check-vehicles
+        [clientToFilter]="clientToFilter"
+        [amountAllowed]="amountVehiclesField.value"
+        [disableChecks]="disableVehicles"
+        [contractToFilter]="contractToUpdate"
+        [vehicleModels]="modelsToFilter"
+      >
+      </app-tbl-check-vehicles>
     </div>
 
-    <form [formGroup]="frmContract" (ngSubmit)="saveContract()">
-        <div class="tab_content tab_active" id="container__basicData">
-            <div class="container__row">
-                <div class="container__col">
-                    <app-input-search-client
-                        [countChanges]="countChanges"
-                        [disableField]="disableClientField"
-                        (clientWasSetted)="setClientSelected()">
-                    </app-input-search-client>
+    <div class="tab_content tab_inactive" id="container__prices">
+      <app-tbl-prices-by-contract
+        [changeDealer]="oChangeDealer"
+        [getPricesOfContract]="oGetPricesOfContract"
+        [discountType]="discountType"
+        [discountValue]="discountValueField.value"
+        (lsMaintenanceItemsWasSetted)="setItemsByContract($event)"
+      >
+      </app-tbl-prices-by-contract>
+    </div>
 
-                    <div class="error" *ngIf="clientFieldIsInvalid">
-                        <p>* El cliente es necesario para guardar el contrato</p>
-                    </div>
-                </div>
-                <div class="container__col">
-                    <app-input-search-dealer
-                        [countChanges]="countChanges"
-                        [disableField]="disableDealerField"
-                        (dealerWasSetted)="setDealerSelected()">
-                    </app-input-search-dealer>
-
-                     <div class="error" *ngIf="dealerFieldIsInvalid">
-                        <p>* El concesionario es necesario para guardar el contrato</p>
-                    </div>
-                </div>
-            </div>
-            <div class="container__row">
-                <div class="container__col">
-                    <label>Código de referencia del contrato</label>
-                    <input type="text"
-                        formControlName="name"
-                        class="form-control"
-                        placeholder="Código de referencia del contrato ...">
-                </div>
-                <div class="container__col">
-                    <app-contract-state
-                        [countChanges]="countChanges"
-                        (contractStateWasSelected)="setContractState($event)"
-                        [cmbStateIsDisable]="disableCmbState"></app-contract-state>
-
-                    <div class="error" *ngIf="contracStateFieldIsInvalid">
-                        <p>* El estado es requerido para guardar el contrato</p>
-                    </div>
-
-                </div>
-            </div>
-            <div class="container__row">
-                <div class="container__col">
-                    <label>Cantidad de vehículos contratados</label>
-                    <input class="form-control"
-                        type="text"
-                        formControlName="amountVehicles"
-                        (keypress)="validateNumbers($event)"
-                        placeholder="cantidad de vehículos contratados">
-
-                    <div class="error" *ngIf="amountVehiclesField.invalid && (amountVehiclesField.touched || amountVehiclesField.dirty) ">
-                        <p *ngIf="amountVehiclesField.hasError('required')">* La cantidad de vehículos es requerida</p>
-                    </div>
-                </div>
-                <div class="container__col">
-                    <label>Duración en meses:</label>
-                    <input type="number"
-                        formControlName="duration"
-                        class="form-control"
-                        placeholder="Duración del contrato ..."
-                        (keypress)="validateNumbers($event)"
-                        (input)="calculateEndingDate()">
-
-                    <div class="error" *ngIf="durationField.invalid && (durationField.touched || durationField.dirty) ">
-                        <p *ngIf="durationField.hasError('required')">* La duración del contrato es requerida</p>
-                    </div>
-                </div>
-            </div>
-            <div class="container__row">
-                <div class="container__col">
-                    <label>Fecha de inicio:</label>
-                    <input type="text" class="form-control"
-                        formControlName="startingDate"
-                        [bsValue]="dtStartingDate"
-                        (keypress)="validateInputDate($event)"
-                        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
-                        placeholder="fecha de inicio ..."
-                        (onHidden)="calculateEndingDate()"
-                        bsDatepicker>
-
-                    <div class="error" *ngIf="startingDateField.invalid && (startingDateField.touched || startingDateField.dirty) ">
-                        <p *ngIf="startingDateField.hasError('required')">* La fecha inicial del contrato es requerida</p>
-                    </div>
-                </div>
-                <div class="container__col">
-                    <label>Fecha de finalización:</label>
-                    <input type="text" class="form-control" formControlName="endingDate"
-                        placeholder="fecha de finalización ..." [bsValue]="dtEndingDate"
-                        [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }" bsDatepicker
-                        disabled>
-                </div>
-            </div>
-            <div class="container__row">
-                <div class="container__col">
-                    <app-contract-discount-type
-                        [countChanges]="countChanges"
-                        [disableField]="disableTypeOfDiscoutnField"
-                        (discountWasSelected)="setDiscountType($event)"></app-contract-discount-type>
-                    <div class="error" *ngIf="discountFieldIsInvalid">
-                        <p>* El tipo de descuento es requerido para guardar el contrato</p>
-                    </div>
-                </div>
-                <div class="container__col">
-                    <label>Valor del descuento:</label>
-                    <input
-                        type="number"
-                        formControlName="discountValue"
-                        class="form-control"
-                        placeholder="valor del descuento ..."
-                        (keypress)="validateNumbers($event)">
-
-                    <div class="error" *ngIf="discountValueField.invalid && (discountValueField.touched || discountValueField.dirty) ">
-                        <p *ngIf="discountValueField.hasError('required')">* El valor del descuento que debe aplicarse al contrato es requerido</p>
-                    </div>
-
-                </div>
-            </div>
-            <div class="container__observation">
-                <label>Observaciones: </label>
-                <textarea class="form-control" formControlName="observation" cols="30" rows="2">
-        </textarea>
-            </div>
-
-        </div>
-        <div class="tab_content tab_inactive" id="container__vehicleModels">
-            <app-check-list-vehicle-type
-                [disableChecks]="disableVehicleTypesAndVehicleModels"
-                (vehicleTypeWasSelected)="setListVehicleTypes()">
-            </app-check-list-vehicle-type>
-            <app-check-list-vehicle-model
-                [disableChecks]="disableVehicleTypesAndVehicleModels"
-                (onVehicleModelsWasSetted)="setLisVehicleModels($event)">
-            </app-check-list-vehicle-model>
-        </div>
-        <div class="tab_content tab_inactive" id="container__vehicles">
-
-            <app-tbl-check-vehicles
-                [countChanges]="countChanges"
-                [amountAllowed]="amountVehiclesField.value"
-                [disableChecks]="disableVehicles"
-                [contractToFilter]="contractToUpdate">
-            </app-tbl-check-vehicles>
-
-        </div>
-
-        <div class="tab_content tab_inactive" id="container__prices">
-            <app-tbl-prices-by-contract
-                [changeDealer]="oChangeDealer"
-                [getPricesOfContract]="oGetPricesOfContract"
-                [discountType]="discountType"
-                [discountValue]="discountValueField.value"
-                (lsMaintenanceItemsWasSetted)="setItemsByContract($event)">
-            </app-tbl-prices-by-contract>
-        </div>
-
-        <div class="buttons__container" id="container__buttons">
-            <button type="button" class="btn btn-danger" (click)="comeBackTable()">Cancelar</button>
-            <button type="submit" class="btn btn-success"
-                [disabled]="frmContract.invalid || clientFieldIsInvalid || dealerFieldIsInvalid  || contracStateFieldIsInvalid || discountFieldIsInvalid || buttonSaveIsDisable">Guardar</button>
-        </div>
-        <div>
-            <div class="container__infoError" id="cont_error_add_contract"
-                *ngIf="frmContract.invalid || clientFieldIsInvalid || dealerFieldIsInvalid || contracStateFieldIsInvalid || discountFieldIsInvalid">
-                <span>No se puede guardar el contrato debido a que el formulario no cumple con los datos requeridos</span>
-            </div>
-        </div>
-    </form>
-
+    <div class="buttons__container" id="container__buttons">
+      <button type="button" class="btn btn-danger" (click)="comeBackTable()">
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="
+          frmContract.invalid ||
+          clientFieldIsInvalid ||
+          dealerFieldIsInvalid ||
+          contracStateFieldIsInvalid ||
+          discountFieldIsInvalid ||
+          buttonSaveIsDisable
+        "
+      >
+        Guardar
+      </button>
+    </div>
+    <div>
+      <div
+        class="container__infoError"
+        id="cont_error_add_contract"
+        *ngIf="
+          frmContract.invalid ||
+          clientFieldIsInvalid ||
+          dealerFieldIsInvalid ||
+          contracStateFieldIsInvalid ||
+          discountFieldIsInvalid
+        "
+      >
+        <span
+          >No se puede guardar el contrato debido a que el formulario no cumple
+          con los datos requeridos</span
+        >
+      </div>
+    </div>
+  </form>
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

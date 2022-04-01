@@ -67,6 +67,9 @@ export class ContractComponent implements OnInit, OnChanges {
   isAwaiting: boolean
   action: ActionType
 
+  modelsToFilter: VehicleModel[] = []
+  clientToFilter: Client | undefined = undefined
+
   constructor(
     private clientService: ClientService,
     private vehicleService: VehicleService,
@@ -149,11 +152,11 @@ export class ContractComponent implements OnInit, OnChanges {
     this.action = this.contractService.getAction()
     this.validateCompanyLogged()
     this.oChangeDealer = 0
-    this.oGetPricesOfContract = 0
+    ////this.oGetPricesOfContract = 0
     this.isToUpdate = false
     this.isAwaiting = false
     this.contract = new Contract()
-    this.countChanges = 0
+    ////this.countChanges = 0
     this.hideContainerTabs()
     this.validateContractToUpdate()
     this.enableOrDisableForm()
@@ -169,7 +172,7 @@ export class ContractComponent implements OnInit, OnChanges {
             .getDealerById(this.company.id)
             .subscribe((dataDealer) => {
               this.dealerService.setDealerSelected(dataDealer)
-              this.countChanges += 1
+              ////this.countChanges += 1
             })
 
           break
@@ -240,20 +243,22 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
   setVehiclType() {
-    this.countChanges += 1
-  }
-
-  setListVehicleTypes() {
-    this.countChanges += 1
+    ////this.countChanges += 1
   }
 
   setLisVehicleModels(lsVehicleModels: VehicleModel[]) {
-    this.countChanges += 1
-    this.contract.lsVehicleModels = lsVehicleModels
+    this.modelsToFilter = null
+    // console.log(`contract`)
+    // console.log(lsVehicleModels)
+    //this.contract.lsVehicleModels = lsVehicleModels
+    setTimeout(() => {
+      this.modelsToFilter = lsVehicleModels
+    }, 100)
   }
 
   setClientSelected() {
     this.contract.client = this.clientService.getClientSelected()
+    this.clientToFilter = this.contract.client
     this.vehicleService.setListVehicleTypeSelected(null)
     this.vehicleService.setListVehicleModelsSelected(null)
     if (this.contract.client == null || this.contract.client == undefined) {
@@ -261,7 +266,7 @@ export class ContractComponent implements OnInit, OnChanges {
     } else {
       this.clientFieldIsInvalid = false
     }
-    this.countChanges += 1
+    ////this.countChanges += 1
   }
 
   setDealerSelected() {
@@ -321,7 +326,7 @@ export class ContractComponent implements OnInit, OnChanges {
     this.vehicleService.setListVehicleModelsSelected(pContract.lsVehicleModels)
     this.vehicleService.setListVehiclesSelected(pContract.lsVehicles)
 
-    this.countChanges += 1
+    ////this.countChanges += 1
   }
 
   getVehicletypesByContract(lsVehicleModel: VehicleModel[]): VehicleType[] {
@@ -360,7 +365,7 @@ export class ContractComponent implements OnInit, OnChanges {
         this.contract.discountValue = discountValue.value
         this.contract.observation = observation.value
 
-        this.oGetPricesOfContract += 1
+        //this.oGetPricesOfContract += 1
 
         if (
           confirm(

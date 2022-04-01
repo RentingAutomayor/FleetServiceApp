@@ -67,13 +67,13 @@ export class VehicleService {
     return this.http.get<Vehicle[]>(urlGetVehiclesByClient).toPromise()
   }
 
-  async getVehiclesByClientAndModel(
+  getVehiclesByClientAndModel(
     pClient_id: number,
     sModels: string,
     contract_id: number = 0
-  ): Promise<Vehicle[]> {
+  ): Observable<Vehicle[]> {
     const urlVehiclesByClientAndModel = `${this.URL_API}/GetVehiclesByClientAndModel?pClient_id=${pClient_id}&sModels=${sModels}&contract_id=${contract_id}`
-    return this.http.get<Vehicle[]>(urlVehiclesByClientAndModel).toPromise()
+    return this.http.get<Vehicle[]>(urlVehiclesByClientAndModel)
   }
 
   Insert(pVehicle: Vehicle): Observable<Vehicle> {

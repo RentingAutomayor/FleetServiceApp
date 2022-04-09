@@ -1,4 +1,5 @@
 import { City } from './City'
+import { IContactType } from './IContactType'
 import { JobTitle } from './JobTitle'
 
 export interface Person {
@@ -17,4 +18,6 @@ export interface Person {
   registrationDate: Date
   updateDate: Date
   deleteDate: Date
+  type?: IContactType | undefined
+  mustNotify?: boolean | undefined
 }

@@ -1,0 +1,13 @@
+<div class="container-contact-type">
+  <label>Tipo de contacto</label>
+  <select
+    class="browser-default custom-select"
+    [formControl]="cmbTypes"
+    [disabled]="isDisabled"
+  >
+    <option value="0">Seleccione ...</option>
+    <option *ngFor="let type of types" [value]="type.id">
+      {{ type.name }}
+    </option>
+  </select>
+</div>

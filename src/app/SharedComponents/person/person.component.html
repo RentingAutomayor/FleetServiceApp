@@ -1,131 +1,225 @@
 <div class="container__person">
-    <form
-      [formGroup]="formPerson"
-      (ngSubmit)="setDataPerson($event)">
-
-        <div class="row__container_single" id="container__document">
-            <div
-              class="col"
-              *ngIf="configComponent.documentIsVisible">
-                <label for="">Documento:</label>
-                <input type="text"
-                    class="form-control"
-                    placeholder="Documento ..."
-                    formControlName="document"
-                    (keypress)="validateTyping($event,'numbers')">
-                <div class="error" *ngIf= "(this.formPerson.dirty || documentField.touched) && documentField.errors">
-                    <p *ngIf= "documentField.hasError('required')">* El campo de documento es requerido </p>
-                    <p *ngIf= "documentField.hasError('minlength')">* El documento no cumple con el número de caracteres requerido </p>
-                    <p *ngIf= "documentField.hasError('maxlength')">* El documento contiene muchos caracteres por favor rectifiquelo </p>
-                </div>
-            </div>
+  <form [formGroup]="formPerson" (ngSubmit)="setDataPerson($event)">
+    <div class="row__container_single" id="container__document">
+      <div class="col" *ngIf="configComponent.documentIsVisible">
+        <label for="">Documento:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Documento ..."
+          formControlName="document"
+          (keypress)="validateTyping($event, 'numbers')"
+        />
+        <div
+          class="error"
+          *ngIf="
+            (this.formPerson.dirty || documentField.touched) &&
+            documentField.errors
+          "
+        >
+          <p *ngIf="documentField.hasError('required')">
+            * El campo de documento es requerido
+          </p>
+          <p *ngIf="documentField.hasError('minlength')">
+            * El documento no cumple con el número de caracteres requerido
+          </p>
+          <p *ngIf="documentField.hasError('maxlength')">
+            * El documento contiene muchos caracteres por favor rectifiquelo
+          </p>
         </div>
+      </div>
+    </div>
+
+    <div
+      id="container__name"
+      [class.row__container_single]="!configComponent.lastNameIsVisible"
+      class="row__container"
+    >
+      <div class="col" *ngIf="configComponent.nameIsVisible">
+        <label for="#">Nombre:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Nombre ..."
+          formControlName="name"
+        />
 
         <div
-          id="container__name"
-          [class.row__container_single]="!configComponent.lastNameIsVisible"
-          class="row__container">
-            <div class="col" *ngIf="configComponent.nameIsVisible">
-                <label for="#">Nombre:</label>
-                <input type="text" class="form-control" placeholder="Nombre ..."
-                    formControlName = "name">
+          class="error"
+          *ngIf="(nameField.dirty || nameField.touched) && nameField.errors"
+        >
+          <p *ngIf="nameField.hasError('required')">* El nombre es requerido</p>
+        </div>
+      </div>
+      <div class="col" *ngIf="configComponent.lastNameIsVisible">
+        <label for="">Apellido:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Apellido..."
+          formControlName="lastname"
+        />
+      </div>
+    </div>
+    <div class="row__container" id="container__phone">
+      <div class="col" *ngIf="configComponent.phoneIsVisible">
+        <label for="#">Teléfono:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Teléfono ..."
+          formControlName="phone"
+        />
+      </div>
+      <div class="col" *ngIf="configComponent.cellphoneIsVisible">
+        <label for="">Celular:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Celular..."
+          formControlName="cellphone"
+          (keypress)="validateTyping($event, 'numbers')"
+        />
 
-                <div class="error" *ngIf= "(nameField.dirty || nameField.touched) && nameField.errors">
-                    <p *ngIf= "nameField.hasError('required')">* El nombre es requerido </p>
-                </div>
-            </div>
-            <div class="col" *ngIf="configComponent.lastNameIsVisible">
-                <label for="">Apellido:</label>
-                <input type="text" class="form-control" placeholder="Apellido..."
-                    formControlName = "lastname">
-            </div>
+        <div
+          class="error"
+          *ngIf="cellphoneField.dirty && cellphoneField.errors"
+        >
+          <p *ngIf="cellphoneField.hasError('minlength')">
+            * El celular no cumple con el número de caracteres requerido
+          </p>
+          <p *ngIf="cellphoneField.hasError('maxlength')">
+            * El celular contiene muchos caracteres por favor rectifiquelo
+          </p>
         </div>
-        <div class="row__container" id="container__phone">
-            <div class="col" *ngIf="configComponent.phoneIsVisible">
-                <label for="#">Teléfono:</label>
-                <input type="text" class="form-control" placeholder="Teléfono ..."
-                    formControlName = "phone">
-            </div>
-            <div class="col" *ngIf="configComponent.cellphoneIsVisible">
-                <label for="">Celular:</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Celular..."
-                    formControlName = "cellphone"
-                    (keypress)="validateTyping($event,'numbers')">
+      </div>
+    </div>
+    <div
+      id="container__email"
+      [class.row__container_single]="
+        !configComponent.websiteIsVisible || !configComponent.emailIsVisible
+      "
+      class="row__container"
+    >
+      <div class="col" *ngIf="configComponent.emailIsVisible">
+        <label for="#">Email:</label>
+        <input
+          type="email"
+          class="form-control"
+          placeholder="Email ..."
+          formControlName="email"
+        />
 
-                <div class="error" *ngIf= "cellphoneField.dirty && cellphoneField.errors">
-                    <p *ngIf= "cellphoneField.hasError('minlength')">* El celular no cumple con el número de caracteres requerido </p>
-                    <p *ngIf= "cellphoneField.hasError('maxlength')">* El celular contiene muchos caracteres por favor rectifiquelo </p>
-                </div>
-            </div>
+        <div class="error" *ngIf="emailField.dirty && emailField.errors">
+          <p *ngIf="emailField.hasError('email')">* Ingrese un email valido</p>
         </div>
-        <div
-          id="container__email"
-          [class.row__container_single]="!configComponent.websiteIsVisible || !configComponent.emailIsVisible"
-          class="row__container" >
-            <div class="col" *ngIf="configComponent.emailIsVisible">
-                <label for="#">Email:</label>
-                <input type="email"
-                    class="form-control"
-                    placeholder="Email ..."
-                    formControlName = "email">
+      </div>
+      <div class="col" *ngIf="configComponent.websiteIsVisible">
+        <label for="">Sitio Web:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Sitio web..."
+          formControlName="website"
+        />
+      </div>
+    </div>
+    <div
+      [class.row__container_single]="
+        !configComponent.addressIsVisible || !configComponent.jobTitleIsVisible
+      "
+      class="row__container"
+      id="container__address"
+    >
+      <div class="col" *ngIf="configComponent.addressIsVisible">
+        <label for="#">Dirección:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Dirección ..."
+          formControlName="address"
+        />
+      </div>
+      <div class="col" *ngIf="configComponent.jobTitleIsVisible">
+        <app-job-title
+          [isFormDisable]="frmPersonMustBeBlocked"
+          [jobTitleSelected]="jobTitleSelected"
+        >
+        </app-job-title>
+      </div>
+    </div>
+    <div *ngIf="configComponent.cityIsVisible">
+      <app-city
+        [city]="selectedCity"
+        [blockFieldCity]="frmPersonMustBeBlocked"
+        (onCityWasSetted)="setSelectedCity($event)"
+      >
+      </app-city>
+    </div>
+    <div class="container__error" *ngIf="formHasError">
+      <p>
+        <span class="error"> * {{ error }} *</span>
+      </p>
+    </div>
+    <div class="row__container" *ngIf="isFormContact">
+      <div class="col">
+        <app-contact-type
+          [isDisabled]="frmPersonMustBeBlocked"
+          [contactTypeSelected]="contactTypeSelected"
+          (onTypeChanged)="setContactType($event)"
+        ></app-contact-type>
+      </div>
 
-                <div class="error" *ngIf= "emailField.dirty && emailField.errors">
-                    <p *ngIf= "emailField.hasError('email')">* Ingrese un email valido </p>
-                </div>
-            </div>
-            <div class="col" *ngIf="configComponent.websiteIsVisible">
-                <label for="">Sitio Web:</label>
-                <input type="text"
-                    class="form-control"
-                    placeholder="Sitio web..."
-                    formControlName = "website">
-            </div>
+      <div class="col col-notification">
+        <label>¿Debe enviar notificación?</label>
+        <mat-slide-toggle
+          class="example-margin"
+          [color]="color"
+          [checked]="checked"
+          [disabled]="disabled"
+          formControlName="mustNotify"
+        >
+        </mat-slide-toggle>
+
+        <div class="error">
+          <p *ngIf="isErrorInNotifyValidation">
+            * Si requiere ser notificado, debe proporcionar un email válido.
+          </p>
         </div>
-        <div
-        [class.row__container_single]="!configComponent.addressIsVisible || !configComponent.jobTitleIsVisible"
-          class="row__container"
-          id="container__address">
-            <div class="col" *ngIf="configComponent.addressIsVisible">
-                <label for="#">Dirección:</label>
-                <input type="text" class="form-control" placeholder="Dirección ..."
-                    formControlName = "address">
-            </div>
-            <div class="col" *ngIf="configComponent.jobTitleIsVisible">
-                <app-job-title
-                  [isFormDisable]="frmPersonMustBeBlocked"
-                  [jobTitleSelected]="jobTitleSelected">
-                </app-job-title>
-            </div>
-        </div>
-        <div *ngIf="configComponent.cityIsVisible">
-            <app-city
-              [city]="selectedCity"
-              [blockFieldCity]="frmPersonMustBeBlocked"
-              (onCityWasSetted)="setSelectedCity($event)">
-            </app-city>
-        </div>
-        <div  class="container__error" *ngIf="formHasError">
-            <p><span class="error"> * {{error}} *</span></p>
-        </div>
-        <div
-          *ngIf="areVisibleButtonActions"
-          class="buttons__container"
-          id="container__buttons" >
-            <button type="button" class="btn btn-danger" (click)="comeBack()">Cancelar</button>
-            <button type="submit" class="btn btn-success" [disabled]="formPerson.invalid  || frmPersonMustBeBlocked">Guardar</button>
-        </div>
-        <div class="container-button-next">
-          <button
-            *ngIf="!areVisibleButtonActions"
-            type="button"
-            (click)="getInformationComponent()"
-            [disabled]="formPerson.invalid"
-            mat-raised-button
-            class="btn-step"
-            color="primary">Siguiente</button>
-        </div>
-    </form>
+      </div>
+    </div>
+    <div
+      *ngIf="areVisibleButtonActions"
+      class="buttons__container"
+      id="container__buttons"
+    >
+      <button type="button" class="btn btn-danger" (click)="comeBack()">
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="
+          formPerson.invalid ||
+          frmPersonMustBeBlocked ||
+          isErrorInNotifyValidation
+        "
+      >
+        Guardar
+      </button>
+    </div>
+    <div class="container-button-next">
+      <button
+        *ngIf="!areVisibleButtonActions"
+        type="button"
+        (click)="getInformationComponent()"
+        [disabled]="formPerson.invalid"
+        mat-raised-button
+        class="btn-step"
+        color="primary"
+      >
+        Siguiente
+      </button>
+    </div>
+  </form>
 </div>

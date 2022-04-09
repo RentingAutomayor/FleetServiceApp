@@ -3,13 +3,8 @@ import { Client } from 'src/app/Models/Client'
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent'
 import { PersonService } from '../Services/Person/person.service'
 import { Person } from 'src/app/Models/Person'
-import {
-  Contact,
-  CreateContactDTO,
-  UpdateContactDTO,
-} from 'src/app/Models/Contact'
+import { Contact, CreateContactDTO } from 'src/app/Models/Contact'
 import { JobTitle } from 'src/app/Models/JobTitle'
-import { JobTitleService } from '../Services/JobTitle/job-title.service'
 import { Dealer } from 'src/app/Models/Dealer'
 import { ActionType } from 'src/app/Models/ActionType'
 import { ContactService } from '../Services/Contact/contact.service'
@@ -127,6 +122,7 @@ export class ContactComponent implements OnInit {
       (contact) => contact.id === contactId
     )
     this.isFormBlocked = true
+    console.log(this.oPersonToUpdate)
     this.showPopUp()
   }
 
@@ -289,6 +285,8 @@ export class ContactComponent implements OnInit {
     oContact.city = oPerson.city != null ? oPerson.city : null
     oContact.Dealer_id = this.dealer != null ? this.dealer.id : null
     oContact.Client_id = this.client != null ? this.client.id : null
+    oContact.type = oPerson.type
+    oContact.mustNotify = oPerson.mustNotify
 
     return oContact
   }

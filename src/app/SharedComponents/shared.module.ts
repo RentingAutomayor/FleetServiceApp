@@ -27,6 +27,8 @@ import { CalculatePriceByAmountPipe } from './Pipes/calculate-price-by-amount.pi
 import { TblCheckItemsForRoutineComponent } from './tbl-check-items-for-routine/tbl-check-items-for-routine.component'
 import { CalculateDiscountPipe } from './Pipes/calculate-discount.pipe'
 import { CalculatePriceWithoutDiscountPipe } from './Pipes/calculate-price-without-discount.pipe'
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ContactTypeComponent } from './contact-type/contact-type.component'
 
 @NgModule({
   declarations: [
@@ -53,12 +55,14 @@ import { CalculatePriceWithoutDiscountPipe } from './Pipes/calculate-price-witho
     TblCheckItemsForRoutineComponent,
     CalculateDiscountPipe,
     CalculatePriceWithoutDiscountPipe,
+    ContactTypeComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     NgxPaginationModule,
     MatButtonModule,
+    MatSlideToggleModule,
   ],
   exports: [
     BranchComponent,

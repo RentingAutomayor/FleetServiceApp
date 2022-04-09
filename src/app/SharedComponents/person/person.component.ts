@@ -17,6 +17,8 @@ import { City } from 'src/app/Models/City'
 import { Router } from '@angular/router'
 import { JobTitle } from 'src/app/Models/JobTitle'
 import { InputValidator } from 'src/app/Utils/InputValidator'
+import { ThemePalette } from '@angular/material/core'
+import { IContactType } from 'src/app/Models/IContactType'
 
 @Component({
   selector: 'app-person',
@@ -36,7 +38,8 @@ export class PersonComponent implements OnInit {
   oJobTitleSelected: JobTitle
   oInputvalidator: InputValidator
 
-  isContact = true
+  @Input()
+  isFormContact: boolean = false
 
   personToUpdate: Person = {
     id: 0,
@@ -54,6 +57,8 @@ export class PersonComponent implements OnInit {
     registrationDate: new Date(),
     updateDate: new Date(),
     deleteDate: new Date(),
+    type: undefined,
+    mustNotify: false,
   }
 
   jobTitleSelected: JobTitle = null
@@ -69,8 +74,12 @@ export class PersonComponent implements OnInit {
   set setPersonToUpdate(person: Person) {
     if (person) {
       this.personToUpdate = person
+      console.log(this.personToUpdate)
       this.jobTitleSelected = this.personToUpdate.jobTitle
       this.selectedCity = this.personToUpdate.city
+      this.contactTypeSelected = person.type
+      console.log('Type selected')
+      console.log(this.contactTypeSelected)
       this.setDataInForm(this.personToUpdate)
       this.enableDisableForm(this.frmPersonMustBeBlocked)
     } else {
@@ -110,6 +119,16 @@ export class PersonComponent implements OnInit {
 
   @Output() onNextStepClicked = new EventEmitter<boolean>()
 
+  color: ThemePalette = 'primary'
+  checked = false
+  disabled = false
+
+  contactType: IContactType | undefined = undefined
+
+  contactTypeSelected: IContactType | undefined = undefined
+
+  isErrorInNotifyValidation: boolean = false
+
   constructor(
     private personService: PersonService,
     private cityService: CityService,
@@ -142,6 +161,7 @@ export class PersonComponent implements OnInit {
           email: ['', [Validators.email]],
           website: [''],
           address: [''],
+          mustNotify: [false],
         })
 
         this.formPerson.get('document').valueChanges.subscribe((val) => {
@@ -158,8 +178,40 @@ export class PersonComponent implements OnInit {
           email: ['', [Validators.email]],
           website: [''],
           address: [''],
+          mustNotify: [false],
         })
       }
+
+      let email: string = ''
+      let musNotifyValue: boolean = false
+
+      this.formPerson.controls.email.valueChanges.subscribe((data) => {
+        email = data ? data : ''
+
+        if (musNotifyValue) {
+          if (this.formPerson.controls.email.invalid || email == '') {
+            this.isErrorInNotifyValidation = true
+          } else {
+            this.isErrorInNotifyValidation = false
+          }
+        } else {
+          this.isErrorInNotifyValidation = false
+        }
+      })
+
+      this.formPerson.controls.mustNotify.valueChanges.subscribe((value) => {
+        console.log(`check notify: ${value}`)
+        musNotifyValue = value
+        if (value) {
+          if (email.trim() == '') {
+            this.isErrorInNotifyValidation = true
+          } else {
+            this.isErrorInNotifyValidation = false
+          }
+        } else {
+          this.isErrorInNotifyValidation = false
+        }
+      })
     } catch (error) {
       console.warn(
         'No se ha detectado una consiguración para el componente de persona'
@@ -256,6 +308,14 @@ export class PersonComponent implements OnInit {
       }
     }
 
+    if (this.isFormContact) {
+      objPerson.mustNotify = this.formPerson.controls.mustNotify.value
+      objPerson.type = this.contactType
+    } else {
+      objPerson.mustNotify = false
+      objPerson.type = undefined
+    }
+
     return objPerson
   }
 
@@ -276,5 +336,9 @@ export class PersonComponent implements OnInit {
 
   validateTyping(event: any, type: string) {
     InputValidator.validateTyping(event, type)
+  }
+
+  setContactType(type: IContactType) {
+    this.contactType = type
   }
 }

@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
+import { IContactType } from 'src/app/Models/IContactType'
 import {
   Contact,
   CreateContactDTO,
@@ -39,5 +40,10 @@ export class ContactService {
   delete(contactId: number): Observable<ResponseApi> {
     const urlDeletetContacts = `${this.URL_API}/Delete?contactId=${contactId}`
     return this.http.delete<ResponseApi>(urlDeletetContacts)
+  }
+
+  getContactTypes(): Observable<IContactType[]> {
+    const urlGEtTypes = `${this.URL_API}/getContactTypes`
+    return this.http.get<IContactType[]>(urlGEtTypes)
   }
 }

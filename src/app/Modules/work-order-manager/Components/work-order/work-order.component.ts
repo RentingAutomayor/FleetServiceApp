@@ -38,6 +38,7 @@ import { ConstractStates } from 'src/app/Models/ContractState'
 import { MaintenanceItemManagerService } from 'src/app/SharedComponents/Services/MaintenanceItemManager/maintenance-item-manager.service'
 import { Router } from '@angular/router'
 import { ITransactionValues } from 'src/app/Models/transactionValues.model'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-work-order',
@@ -473,7 +474,12 @@ export class WorkOrderComponent implements OnInit, OnChanges {
                 .subscribe((response) => {
                   const rta = response
                   if (rta.response) {
-                    alert(rta.message)
+                    Swal.fire({
+                      position: 'center',
+                      icon: 'success',
+                      title: rta.message,
+                      showConfirmButton: true,
+                    })
                     this.clearBufferForm()
                     this.isAwaiting = false
                     this.workOrderWasSaved.emit(true)

@@ -11,6 +11,7 @@ import { FormControl } from '@angular/forms'
 import { retry } from 'rxjs/operators'
 import { DealerComponent } from 'src/app/Modules/dealer/Componets/dealer/dealer.component'
 import { Dealer } from 'src/app/Models/Dealer'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-tbl-maintenance-item',
@@ -176,7 +177,12 @@ export class TblMaintenanceItemComponent implements OnInit {
       this.isAwaiting = true
       this.maintenanceItemService.delete(item).subscribe(
         (rta) => {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.showTableItems()
           this.isAwaiting = false
         },
@@ -205,7 +211,12 @@ export class TblMaintenanceItemComponent implements OnInit {
       this.saveDataInDB(oItemWithDealer)
     } catch (err) {
       console.error(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
       this.isAwaiting = false
     }
   }
@@ -215,7 +226,12 @@ export class TblMaintenanceItemComponent implements OnInit {
     if (this.isToUpdate) {
       this.maintenanceItemService.update(oItem).subscribe(
         (rta) => {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.isAwaiting = false
           this.showTable()
           this.showTableItems()
@@ -232,7 +248,12 @@ export class TblMaintenanceItemComponent implements OnInit {
     } else {
       this.maintenanceItemService.insert(oItem).subscribe(
         (rta) => {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.isAwaiting = false
           this.showTable()
         },

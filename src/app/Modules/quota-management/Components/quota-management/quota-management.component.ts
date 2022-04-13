@@ -14,6 +14,7 @@ import { SharedFunction } from 'src/app/Models/SharedFunctions'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { ContractualInformation } from 'src/app/Models/ContractualInformation'
 import { InputValidator } from 'src/app/Utils/InputValidator'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-quota-management',
@@ -222,7 +223,12 @@ export class QuotaManagementComponent implements OnInit {
   saveTransaction(trx: Transaction) {
     this.isAwaiting = true
     this.trxService.processTransaction(trx).subscribe((rta) => {
-      alert(rta.message)
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: rta.message,
+        showConfirmButton: true,
+      })
       this.isAwaiting = false
 
       this.closePopUp('container__freeUpQuota')
@@ -433,7 +439,12 @@ export class QuotaManagementComponent implements OnInit {
           paymentValue
         )
         if (!rta.response) {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           resolve(false)
         } else {
           resolve(true)

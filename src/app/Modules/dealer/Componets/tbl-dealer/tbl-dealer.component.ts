@@ -7,6 +7,7 @@ import { ActionType } from 'src/app/Models/ActionType'
 import { NavigationService } from 'src/app/SharedComponents/Services/navigation.service'
 import { FormControl } from '@angular/forms'
 import { saveInStorage } from 'src/app/Utils/storage'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-tbl-dealer',
@@ -88,7 +89,12 @@ export class TblDealerComponent implements OnInit {
           this.lsDealer.splice(indexDealerDeleted, 1)
           this.lsDealerFiltered = this.lsDealer
           this.isAwaiting = false
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
         },
         (err) => {
           this.isErrorVisible = true

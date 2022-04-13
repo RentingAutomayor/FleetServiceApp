@@ -29,6 +29,7 @@ import { DiscountType } from 'src/app/Models/DiscountType'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
 import { ActionType } from 'src/app/Models/ActionType'
 import { Action } from 'rxjs/internal/scheduler/Action'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-contract',
@@ -433,7 +434,12 @@ export class ContractComponent implements OnInit, OnChanges {
       }
     } catch (error) {
       console.warn(error)
-      alert(error)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 
@@ -455,15 +461,24 @@ export class ContractComponent implements OnInit, OnChanges {
       }
 
       if (rta.response) {
-        alert(rta.message)
-
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: rta.message,
+          showConfirmButton: true,
+        })
         this.router.navigate(['/MasterContracts'])
         this.isAwaiting = false
       }
     } catch (error) {
       this.isAwaiting = false
       console.error(error)
-      alert(`Se ha producido un error guardando el contrato: ${error}`)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `Se ha producido un error guardando el contrato: ${error}`,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 

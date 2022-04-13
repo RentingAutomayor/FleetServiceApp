@@ -12,6 +12,7 @@ import { Contact } from 'src/app/Models/Contact'
 import { Branch } from 'src/app/Models/Branch'
 import { getFromStorage } from 'src/app/Utils/storage'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-dealer',
@@ -173,9 +174,12 @@ export class DealerComponent implements OnInit {
     if (this.action == ActionType.CREATE) {
       this.dealerService.insertDealer(dealer).subscribe(
         (newDealer) => {
-          alert(
-            `El concesionario ha sido insertado de manera correcta en la base de datos`
-          )
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: `El concesionario ha sido insertado de manera correcta en la base de datos`,
+            showConfirmButton: true,
+          })
           this.isAwaiting = false
           this.router.navigate([this.sReturnPath])
         },
@@ -190,7 +194,12 @@ export class DealerComponent implements OnInit {
     } else if (this.action == ActionType.UPDATE) {
       this.dealerService.updateDealer(dealer).subscribe(
         (dealerUpdated) => {
-          alert(`El concesionario ha sido actualizado de manera correcta`)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: `El concesionario ha sido actualizado de manera correcta`,
+            showConfirmButton: true,
+          })
           this.isAwaiting = false
           this.router.navigate([this.sReturnPath])
         },

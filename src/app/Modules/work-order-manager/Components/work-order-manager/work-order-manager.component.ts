@@ -14,6 +14,7 @@ import { Movement, Movements } from 'src/app/Models/Movement'
 import { MovementService } from '../../../movement/Services/Movement/movement.service'
 import { TransactionDetail } from 'src/app/Models/TransactionDetail'
 import { TransactionObservation } from 'src/app/Models/TransactionObservation'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-work-order-manager',
@@ -303,7 +304,12 @@ export class WorkOrderManagerComponent implements OnInit {
         .processTransaction(trxApproveWorkOrder)
         .subscribe((rta) => {
           if (rta.response) {
-            alert(rta.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: rta.message,
+              showConfirmButton: true,
+            })
             this.getDataTransactions()
             this.closePopUp('container__FinalizeWorkOrder')
           }
@@ -331,7 +337,12 @@ export class WorkOrderManagerComponent implements OnInit {
         .processTransaction(trxApproveWorkOrder)
         .subscribe((rta) => {
           if (rta.response) {
-            alert(rta.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: rta.message,
+              showConfirmButton: true,
+            })
             this.getDataTransactions()
             this.closePopUp('container__Cancelation')
           }

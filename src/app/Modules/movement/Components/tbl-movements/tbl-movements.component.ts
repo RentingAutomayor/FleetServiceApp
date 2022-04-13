@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { Movement } from 'src/app/Models/Movement'
 import { MovementService } from '../../Services/Movement/movement.service'
 import { Router } from '@angular/router'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-tbl-movements',
@@ -63,7 +64,12 @@ export class TblMovementsComponent implements OnInit {
         const rta = await this.movementService.delete(pMovement)
         this.isAwaiting = false
         if (rta.response) {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.getMovementList()
         }
       }

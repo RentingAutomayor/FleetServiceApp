@@ -3,6 +3,7 @@ import { Frequency } from 'src/app/Models/Frequency'
 import { MaintenanceRoutine } from 'src/app/Models/MaintenanceRoutine'
 import { ResponseApi } from 'src/app/Models/ResponseApi'
 import { VehicleModel } from 'src/app/Models/VehicleModel'
+import Swal from 'sweetalert2'
 import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/maintenance-routine.service'
 
 @Component({
@@ -99,7 +100,12 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     if (this.isToUpdate) {
       this.maintenanceRoutineService.update(routine).subscribe(
         (rta) => {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.isAwaiting = false
           const indexRoutine = this.lsMaintenanceRoutinesFiltered.findIndex(
             (mr) => mr.id == routine.id
@@ -116,7 +122,12 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     } else {
       this.maintenanceRoutineService.insert(routine).subscribe(
         (rta) => {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.isAwaiting = false
           try {
             this.lsMaintenanceRoutinesFiltered.push(routine)

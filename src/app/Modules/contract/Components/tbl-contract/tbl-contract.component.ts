@@ -8,6 +8,7 @@ import { Company } from 'src/app/Models/Company'
 import { CompanyType } from 'src/app/Models/CompanyType'
 import { FasDirective } from 'angular-bootstrap-md'
 import { ActionType } from 'src/app/Models/ActionType'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-tbl-contract',
@@ -137,7 +138,12 @@ export class TblContractComponent implements OnInit {
       this.isAwaiting = true
       this.contractService.delete(pContract).subscribe((rta) => {
         if (rta.response) {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.getListContracts()
         }
         this.isAwaiting = false

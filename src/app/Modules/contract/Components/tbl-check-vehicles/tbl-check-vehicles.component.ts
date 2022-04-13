@@ -5,6 +5,7 @@ import { VehicleModel } from 'src/app/Models/VehicleModel'
 import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service'
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
 import { Contract } from 'src/app/Models/Contract'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-tbl-check-vehicles',
@@ -224,9 +225,11 @@ export class TblCheckVehiclesComponent implements OnInit {
       if (this.lsVehiclesSelected.length < this._amountAllowed) {
         this.lsVehiclesSelected.push(pVehicle)
       } else {
-        alert(
-          `No se puede adicionar este vehículo, puesto que el contrato sólo tiene configurado un máximo de ${this._amountAllowed} vehículos`
-        )
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: `No se puede adicionar este vehículo, puesto que el contrato sólo tiene configurado un máximo de ${this._amountAllowed} vehículos`
+        })
         event.preventDefault()
       }
     } else {

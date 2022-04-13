@@ -2,6 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core'
 import { FormGroup, FormControl } from '@angular/forms'
 import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit'
 import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
+import Swal from 'sweetalert2'
 import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service'
 
 @Component({
@@ -71,7 +72,12 @@ export class TypeOfMaintenanceItemComponent implements OnInit {
         })
     } catch (err) {
       console.error(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 

@@ -10,6 +10,7 @@ import { TransactionDetail } from 'src/app/Models/TransactionDetail'
 import { TransactionObservation } from 'src/app/Models/TransactionObservation'
 import { SessionUser } from 'src/app/Models/SessionUser'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-dashboard-client',
@@ -128,7 +129,12 @@ export class DashboardClientComponent implements OnInit {
       .processTransaction(trxApproveWorkOrder)
       .subscribe((rta) => {
         if (rta.response) {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.response,
+            showConfirmButton: true,
+          })
           this.getTransactionsToApprove(this.client.id)
           this.closePopUp('container__Approbation')
         }
@@ -152,7 +158,12 @@ export class DashboardClientComponent implements OnInit {
         .processTransaction(trxApproveWorkOrder)
         .subscribe((rta) => {
           if (rta.response) {
-            alert(rta.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: rta.response,
+              showConfirmButton: true,
+            })
             this.getTransactionsToApprove(this.client.id)
             this.closePopUp('container__Cancelation')
           }

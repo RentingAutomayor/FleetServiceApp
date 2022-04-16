@@ -1,5 +1,16 @@
 <div id="container__content">
   <h1>Contratos</h1>
+  <div class="container-filter">
+    <input
+      [formControl]="txtFilter"
+      type="text"
+      class="form-control"
+      placeholder="Código , Cliente ó Concesionario"
+    />
+    <button type="button" class="btn btn-danger" (click)="removeFilter()">
+      Borrar filtro
+    </button>
+  </div>
   <button
     class="btn-add btn-info"
     *ngIf="!hideButtonAdd"
@@ -24,7 +35,8 @@
         *ngFor="
           let i = index;
           let contract;
-          of: lsContracts | paginate: { itemsPerPage: 10, currentPage: p }
+          of: lsContractsFiltered
+            | paginate: { itemsPerPage: 10, currentPage: p }
         "
       >
         <td>{{ i + 1 }}</td>

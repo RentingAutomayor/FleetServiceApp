@@ -8,6 +8,7 @@ import { CompanyType } from 'src/app/Models/CompanyType'
 import { ActionType } from 'src/app/Models/ActionType'
 import { ContractStateService } from '../../Services/contract-state.service'
 import { saveInStorage } from 'src/app/Utils/storage'
+import { FormControl } from '@angular/forms'
 
 @Component({
   selector: 'app-tbl-contract',
@@ -17,12 +18,14 @@ import { saveInStorage } from 'src/app/Utils/storage'
 export class TblContractComponent implements OnInit {
   isAwaiting: boolean
   p = 1
-  lsContracts: Contract[]
+  lsContracts: Contract[] = []
+  lsContractsFiltered: Contract[] = []
   isToUpdate: boolean
   companyStorage: Company
   hideButtonAdd: boolean
   enableButtonsEditAndDelete: boolean
   action: ActionType
+  txtFilter: FormControl = new FormControl()
 
   constructor(
     private contractService: ContractService,
@@ -30,6 +33,9 @@ export class TblContractComponent implements OnInit {
     private contracStateService: ContractStateService
   ) {
     this.hideButtonAdd = false
+    this.txtFilter.valueChanges.subscribe((desc) => {
+      this.filterContracts(desc)
+    })
   }
 
   ngOnInit(): void {
@@ -60,6 +66,7 @@ export class TblContractComponent implements OnInit {
           .getContracts(this.companyStorage.id)
           .subscribe((contracts) => {
             this.lsContracts = contracts
+            this.lsContractsFiltered = this.lsContracts
             this.isAwaiting = false
           })
         this.hideButtonAdd = true
@@ -70,6 +77,7 @@ export class TblContractComponent implements OnInit {
           .getContracts(0, this.companyStorage.id)
           .subscribe((contracts) => {
             this.lsContracts = contracts
+            this.lsContractsFiltered = this.lsContracts
             this.isAwaiting = false
           })
         this.hideButtonAdd = true
@@ -78,6 +86,7 @@ export class TblContractComponent implements OnInit {
       default:
         this.contractService.getContracts().subscribe((contracts) => {
           this.lsContracts = contracts
+          this.lsContractsFiltered = this.lsContracts
           this.isAwaiting = false
         })
         this.hideButtonAdd = false
@@ -137,5 +146,34 @@ export class TblContractComponent implements OnInit {
 
   resetContractState() {
     this.contracStateService.resetContractInformation()
+  }
+
+  filterContracts(description) {
+    try {
+      this.lsContractsFiltered = this.lsContracts.filter((contract) => {
+        return (
+          contract.code
+            .toLocaleLowerCase()
+            .includes(description.toLocaleLowerCase()) ||
+          contract.name
+            .toLocaleLowerCase()
+            .includes(description.toLocaleLowerCase()) ||
+          contract.consecutive == parseInt(description) ||
+          contract.client.name
+            .toLocaleLowerCase()
+            .includes(description.toLocaleLowerCase()) ||
+          contract.dealer.name
+            .toLocaleLowerCase()
+            .includes(description.toLocaleLowerCase())
+        )
+      })
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
+
+  removeFilter() {
+    this.txtFilter.setValue(null)
+    this.lsContractsFiltered = this.lsContracts
   }
 }

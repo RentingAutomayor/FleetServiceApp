@@ -28,6 +28,7 @@ import { ContractStateService } from '../../Services/contract-state.service'
 import { Vehicle } from 'src/app/Models/Vehicle'
 import { getFromStorage } from 'src/app/Utils/storage'
 import { Action } from 'rxjs/internal/scheduler/Action'
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast'
 
 @Component({
   selector: 'app-contract',
@@ -521,6 +522,7 @@ export class ContractComponent implements OnInit, OnChanges {
       this.disableContract(contractState)
       this.contracStateFieldIsInvalid = false
     }
+    this.contracStateService.setContractState(contractState)
   }
 
   validateInputDate(event: any) {

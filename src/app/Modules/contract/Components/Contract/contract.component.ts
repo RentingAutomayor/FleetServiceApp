@@ -13,21 +13,21 @@ import { Contract } from 'src/app/Models/Contract'
 import { ContractState, ConstractStates } from 'src/app/Models/ContractState'
 import { VehicleModel } from 'src/app/Models/VehicleModel'
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
-import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service'
 import { Dealer } from 'src/app/Models/Dealer'
 import { DealerService } from '../../../dealer/Services/Dealer/dealer.service'
 import { ContractService } from '../../Services/Contract/contract.service'
-import { ResponseApi } from 'src/app/Models/ResponseApi'
 import { ActivatedRoute, Router } from '@angular/router'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { Company } from 'src/app/Models/Company'
 import { CompanyType } from 'src/app/Models/CompanyType'
 import { InputValidator } from 'src/app/Utils/InputValidator'
-import { DiscountType } from 'src/app/Models/DiscountType'
+import { DiscountType, DiscountTypes } from 'src/app/Models/DiscountType'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
 import { ActionType } from 'src/app/Models/ActionType'
 import { ContractStateService } from '../../Services/contract-state.service'
 import { Vehicle } from 'src/app/Models/Vehicle'
+import { getFromStorage } from 'src/app/Utils/storage'
+import { Action } from 'rxjs/internal/scheduler/Action'
 
 @Component({
   selector: 'app-contract',
@@ -73,12 +73,16 @@ export class ContractComponent implements OnInit, OnChanges {
   dealer: Dealer | undefined = undefined
   contractState: ContractState | undefined = undefined
   discountType: DiscountType | undefined = undefined
+  discountValue: number = 0
   vehicles: Vehicle[] = []
   maintenanceItems: MaintenanceItem[] = []
 
+  isErrorVisible: boolean = false
+  errorTitle: string = ''
+  errorDescription: string = ''
+
   constructor(
     private clientService: ClientService,
-    private vehicleService: VehicleService,
     private dealerService: DealerService,
     private contractService: ContractService,
     private router: Router,
@@ -124,6 +128,19 @@ export class ContractComponent implements OnInit, OnChanges {
       }
     })
 
+    this.contracStateService.contractState$.subscribe((state) => {
+      this.contractState = state
+    })
+
+    this.contracStateService.discountType$.subscribe((type) => {
+      this.discountType = type
+      this.validateDiscountValues()
+    })
+
+    this.contracStateService.discountValue$.subscribe((value) => {
+      this.discountValue = value
+    })
+
     this.contracStateService.vehicleModel$.subscribe((vehicleModels) => {
       this.modelsToFilter = vehicleModels
     })
@@ -132,12 +149,13 @@ export class ContractComponent implements OnInit, OnChanges {
       this.vehicles = vechicle
     })
 
-    this.frmContract.controls.discountValue.valueChanges.subscribe((value) => {
-      this.contracStateService.setDiscountValue(value)
-    })
-
     this.contracStateService.maintenanceItems$.subscribe((items) => {
       this.maintenanceItems = items
+    })
+
+    this.frmContract.controls.discountValue.valueChanges.subscribe((value) => {
+      this.contracStateService.setDiscountValue(value)
+      this.validateDiscountValues()
     })
   }
 
@@ -181,6 +199,7 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
   getContractByID(contractID: number) {
+    this.isAwaiting = true
     this.contractService.getContractByID(contractID).subscribe({
       next: (contractData) => {
         this.contractToUpdate = contractData
@@ -195,6 +214,18 @@ export class ContractComponent implements OnInit, OnChanges {
             this.contractToUpdate.dealer
           )
 
+          this.contracStateService.setContractState(
+            this.contractToUpdate.contractState
+          )
+
+          this.contracStateService.setDiscountType(
+            this.contractToUpdate.discountType
+          )
+
+          this.contracStateService.setDiscountValue(
+            this.contractToUpdate.discountValue
+          )
+
           this.contractToUpdate.lsVehicleModels.forEach((veicleModel) => {
             this.contracStateService.addVehicleModelToList(veicleModel)
           })
@@ -204,6 +235,13 @@ export class ContractComponent implements OnInit, OnChanges {
           )
           this.validateContractToUpdate()
         }
+        this.isAwaiting = false
+      },
+      error: (err) => {
+        this.isAwaiting = false
+        this.isErrorVisible = true
+        this.errorTitle = `Ocurrió un error intentando consultar el contrato`
+        this.errorDescription = `${err.error.Message}`
       },
     })
   }
@@ -237,7 +275,9 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
   initComponents() {
-    this.action = this.contractService.getAction()
+    const actionToPerform = getFromStorage('actionToPerform')
+    this.action = parseInt(actionToPerform)
+
     this.validateCompanyLogged()
     this.oChangeDealer = 0
 
@@ -331,16 +371,14 @@ export class ContractComponent implements OnInit, OnChanges {
   }
 
   setDataInForm(pContract: Contract) {
-    this.setDataForComponents(pContract).then((rta) => {
-      this.frmContract.patchValue(pContract)
+    this.frmContract.patchValue(pContract)
 
-      this.dtStartingDate = this.formatDate(
-        pContract.startingDate.toString().substr(0, 10)
-      )
-      this.dtEndingDate = this.formatDate(
-        pContract.endingDate.toString().substr(0, 10)
-      )
-    })
+    this.dtStartingDate = this.formatDate(
+      pContract.startingDate.toString().substr(0, 10)
+    )
+    this.dtEndingDate = this.formatDate(
+      pContract.endingDate.toString().substr(0, 10)
+    )
   }
 
   saveContract() {
@@ -350,11 +388,9 @@ export class ContractComponent implements OnInit, OnChanges {
       endingDate,
       amountVehicles,
       duration,
-      discountValue,
       observation,
     } = this.frmContract.controls
     try {
-      this.isAwaiting = true
       if (this.frmContract.valid) {
         this.contract = new Contract()
         this.contract.name = name.value
@@ -362,7 +398,6 @@ export class ContractComponent implements OnInit, OnChanges {
         this.contract.endingDate = endingDate.value
         this.contract.amountVehicles = amountVehicles.value
         this.contract.duration = duration.value
-        this.contract.discountValue = discountValue.value
         this.contract.observation = observation.value
 
         if (
@@ -386,9 +421,7 @@ export class ContractComponent implements OnInit, OnChanges {
             this.contract.client == undefined
           ) {
             this.clientFieldIsInvalid = true
-            throw new Error(
-              'Error guardando el contrato. Se debe seleccionar un cliente'
-            )
+            throw new Error('Se debe seleccionar un cliente')
           }
 
           this.contract.dealer = this.dealer
@@ -398,23 +431,19 @@ export class ContractComponent implements OnInit, OnChanges {
             this.contract.dealer == undefined
           ) {
             this.dealerFieldIsInvalid = true
-            throw new Error(
-              'Error guardando el contrato. Se debe seleccionar un concesionario'
-            )
+            throw new Error('Se debe seleccionar un concesionario')
           }
 
-          this.contract.contractState =
-            this.contractService.getContractStateSelected()
-
+          this.contract.contractState = this.contractState
           this.contract.discountType = this.discountType
-
+          this.contract.discountValue = this.discountValue
           this.contract.lsVehicleModels = this.modelsToFilter
-
           this.contract.lsVehicles = this.vehicles
 
           if (this.contract.lsVehicles.length > this.contract.amountVehicles) {
             throw new Error(
-              'No se puede guardar el contrato. verifique la cantidad de vehículos seleccionados dentro del mismo'
+              `Verifique que la cantidad de vehículos seleccionados no exceda la cantidad de vehiculos contratados.
+                Cantidad de vehículos permitida: ${this.contract.amountVehicles} Cantidad de vehículos seleccionados: ${this.contract.lsVehicles.length}`
             )
           }
 
@@ -423,47 +452,48 @@ export class ContractComponent implements OnInit, OnChanges {
           //console.log(this.contract)
           this.saveData(this.contract)
         }
-        this.isAwaiting = false
       }
     } catch (error) {
-      console.warn(error)
-      alert(error)
+      this.isErrorVisible = true
+      this.errorTitle = `Se ha encontrado una inconsistencia dentro de la información del contrato.`
+      this.errorDescription = `${error}`
+      this.isAwaiting = false
     }
   }
 
   saveData(pContract: Contract) {
-    try {
-      console.warn('[saveData - Contract]', pContract)
-      this.isAwaiting = true
-      let rta = new ResponseApi()
-      if (this.isToUpdate) {
-        this.contractService.update(pContract).subscribe({
-          next: (rta) => {
-            console.log(rta)
-          },
-        })
-      } else {
-        this.contractService.insert(pContract).subscribe({
-          next: (rta) => {
-            const lastContract =
-              this.contractService.getLastContractByClientAndDealer(
-                pContract.client.id,
-                pContract.dealer.id
-              )
-            //this.contractService.setContract(lastContract)
-          },
-        })
-      }
-      if (rta.response) {
-        alert(rta.message)
-
-        this.router.navigate(['/MasterContracts'])
-        this.isAwaiting = false
-      }
-    } catch (error) {
-      this.isAwaiting = false
-      console.error(error)
-      alert(`Se ha producido un error guardando el contrato: ${error}`)
+    console.warn('[saveData - Contract]', pContract)
+    this.isAwaiting = true
+    if (this.isToUpdate) {
+      this.contractService.update(pContract).subscribe({
+        next: (rta) => {
+          alert(rta.message)
+          this.isAwaiting = false
+          this.contracStateService.resetContractInformation()
+          this.router.navigate(['/MasterContracts'])
+        },
+        error: (err) => {
+          this.isAwaiting = false
+          this.isErrorVisible = true
+          this.errorTitle = `Error actualizando contrato`
+          this.errorDescription = `Se ha producido un error intentando actualizar el contrato. ${err.error.Message}`
+        },
+      })
+    } else {
+      this.contractService.insert(pContract).subscribe({
+        next: (rta) => {
+          alert(rta.message)
+          this.isAwaiting = false
+          this.contracStateService.resetContractInformation()
+          this.router.navigate(['/MasterContracts'])
+        },
+        error: (err) => {
+          this.isAwaiting = false
+          this.isErrorVisible = true
+          this.errorTitle = `Error creando contrato`
+          this.errorDescription = `Se ha producido un error intentando guardar el contrato en la base de datos.  ${err.error.Message}`
+        },
+      })
     }
   }
 
@@ -560,14 +590,33 @@ export class ContractComponent implements OnInit, OnChanges {
   enableOrDisableForm() {
     try {
       const isFormToEdit = this.contractService.getContractIsToEdit()
-      if (isFormToEdit || this.action == ActionType.UPDATE) {
-        this.disableCmbState = false
-      } else {
-      }
 
-      if (this.action == ActionType.READ) {
-        this.buttonSaveIsDisable = true
-        this.disableCmbState = true
+      switch (this.action) {
+        case ActionType.CREATE:
+          this.disableClientField = false
+          this.disableDealerField = false
+          this.disableTypeOfDiscoutnField = false
+          this.frmContract.enable()
+          this.buttonSaveIsDisable = false
+          this.disableCmbState = false
+          this.disableVehicleTypesAndVehicleModels = false
+          this.disableVehicles = false
+          break
+        case ActionType.READ:
+          this.disableClientField = true
+          this.disableDealerField = true
+          this.disableTypeOfDiscoutnField = true
+          this.frmContract.disable()
+          this.buttonSaveIsDisable = true
+          this.disableCmbState = true
+          this.disableVehicleTypesAndVehicleModels = true
+          this.disableVehicles = true
+          break
+        case ActionType.UPDATE:
+          if (isFormToEdit || this.action == ActionType.UPDATE) {
+            this.disableCmbState = false
+          }
+          break
       }
     } catch (error) {
       console.warn('[Enable or diable form]', error)
@@ -576,24 +625,30 @@ export class ContractComponent implements OnInit, OnChanges {
 
   resetContractData() {
     this.isToUpdate = false
-    this.contractState = undefined
-    this.discountType = undefined
-    this.contracStateService.setClientToContract(undefined)
-    this.contracStateService.setDealerToContract(undefined)
-    this.contracStateService.resetVehicleModelList()
-    this.contracStateService.resetVehicleList()
+    this.contracStateService.resetContractInformation()
   }
 
-  setDataForComponents(contract: Contract) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        this.client = contract.client
-        this.dealer = contract.dealer
-        this.contractState = contract.contractState
-        this.discountType = contract.discountType
-        this.modelsToFilter = contract.lsVehicleModels
-        resolve(true)
-      }, 100)
-    })
+  closeError() {
+    this.isErrorVisible = false
+  }
+
+  validateDiscountValues() {
+    if (this.discountType) {
+      if (
+        this.discountType.id == DiscountTypes.PORCENTAJE_POR_REPUESTOS ||
+        this.discountType.id ==
+          DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO
+      ) {
+        if (this.discountValue > 100) {
+          this.frmContract.controls.discountValue.setErrors({
+            maxValueAllowed: true,
+          })
+        } else {
+          this.frmContract.controls.discountValue.setErrors(null)
+        }
+      } else {
+        this.frmContract.controls.discountValue.setErrors(null)
+      }
+    }
   }
 }

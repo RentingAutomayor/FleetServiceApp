@@ -23,6 +23,7 @@
             <app-input-checkbox
               [option]="vehicleStatus.vehicle.licensePlate"
               [isActive]="vehicleStatus.status"
+              [disable]="disableChecks"
               (onCheckItem)="
                 setVehicleToContract($event, vehicleStatus.vehicle)
               "

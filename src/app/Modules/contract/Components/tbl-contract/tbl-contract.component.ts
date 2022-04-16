@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core'
 import { Contract } from 'src/app/Models/Contract'
 import { ContractService } from '../../Services/Contract/contract.service'
 import { Router } from '@angular/router'
-import { ResponseApi } from 'src/app/Models/ResponseApi'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { Company } from 'src/app/Models/Company'
 import { CompanyType } from 'src/app/Models/CompanyType'
-import { FasDirective } from 'angular-bootstrap-md'
 import { ActionType } from 'src/app/Models/ActionType'
+import { ContractStateService } from '../../Services/contract-state.service'
+import { saveInStorage } from 'src/app/Utils/storage'
 
 @Component({
   selector: 'app-tbl-contract',
@@ -26,7 +26,8 @@ export class TblContractComponent implements OnInit {
 
   constructor(
     private contractService: ContractService,
-    private router: Router
+    private router: Router,
+    private contracStateService: ContractStateService
   ) {
     this.hideButtonAdd = false
   }
@@ -98,19 +99,22 @@ export class TblContractComponent implements OnInit {
   }
 
   insertContract() {
+    this.resetContractState()
     this.isToUpdate = false
     this.contractService.setContract(null)
-    this.contractService.setAction(ActionType.CREATE)
+    saveInStorage('actionToPerform', ActionType.CREATE)
     this.router.navigate(['/MasterContracts/Contract'])
   }
 
   getDetailsContract(pContract: Contract) {
-    this.contractService.setAction(ActionType.READ)
+    this.resetContractState()
+    saveInStorage('actionToPerform', ActionType.READ)
     this.router.navigate([`/MasterContracts/Contract/${pContract.id}`])
   }
 
   updateContract(pContract: Contract) {
-    this.contractService.setAction(ActionType.UPDATE)
+    this.resetContractState()
+    saveInStorage('actionToPerform', ActionType.UPDATE)
     this.router.navigate([`/MasterContracts/Contract/${pContract.id}`])
   }
 
@@ -129,5 +133,9 @@ export class TblContractComponent implements OnInit {
         this.isAwaiting = false
       })
     }
+  }
+
+  resetContractState() {
+    this.contracStateService.resetContractInformation()
   }
 }

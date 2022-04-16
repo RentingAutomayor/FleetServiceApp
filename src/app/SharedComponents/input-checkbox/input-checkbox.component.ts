@@ -16,6 +16,8 @@ export class InputCheckboxComponent {
     this.isActive = value
   }
 
+  @Input() disable: boolean = false
+
   @Output()
   onCheckItem = new EventEmitter<boolean>()
 

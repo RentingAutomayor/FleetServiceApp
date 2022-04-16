@@ -20,6 +20,7 @@ export class CheckListVehicleModelComponent implements OnInit {
   lsVehicleModeslObserver = new BehaviorSubject<IVehicleModelStatus[]>([])
   lsVehicleModes$ = this.lsVehicleModeslObserver.asObservable()
 
+  lsAllVehicleModelStatus: IVehicleModelStatus[] = []
   lsVehicleModelAutomovil: IVehicleModelStatus[] = []
   lsVehicleModelCamioneta: IVehicleModelStatus[] = []
   lsVehicleModelCarga: IVehicleModelStatus[] = []
@@ -35,20 +36,6 @@ export class CheckListVehicleModelComponent implements OnInit {
   set setLsVehicleModelsSelected(vehicleModels: VehicleModel[]) {
     this.lsVehicleModelsSelected =
       vehicleModels != null && vehicleModels != undefined ? vehicleModels : []
-    try {
-      if (this.lsVehicleModelsSelected.length > 0) {
-        let vehicleModelStatus: IVehicleModelStatus[] = []
-        this.lsVehicleModes$.subscribe((vmStatus) => {
-          this.lsVehicleModelsSelected.forEach((vm) => {
-            vehicleModelStatus = this.updateStatusByModel(vmStatus, vm, true)
-            this.contractStateService.addVehicleModelToList(vm)
-          })
-        })
-        this.lsVehicleModeslObserver.next(vehicleModelStatus)
-      }
-    } catch (error) {
-      console.info(error)
-    }
   }
 
   disableControls!: boolean
@@ -61,7 +48,12 @@ export class CheckListVehicleModelComponent implements OnInit {
     private vehicleService: VehicleService,
     private contractStateService: ContractStateService
   ) {
+    this.contractStateService.vehicleModel$.subscribe((modelsSelected) => {
+      this.lsVehicleModelsSelected = modelsSelected
+    })
+
     this.lsVehicleModes$.subscribe((vmStatus) => {
+      this.lsAllVehicleModelStatus = vmStatus
       this.splitVehicleModelsByType(vmStatus)
     })
     this.disableChecks = false
@@ -129,6 +121,8 @@ export class CheckListVehicleModelComponent implements OnInit {
         )
 
         this.lsVehicleModeslObserver.next(vehicleModelStatus)
+
+        this.updateVehicleModelsSelected()
       })
   }
 
@@ -140,6 +134,27 @@ export class CheckListVehicleModelComponent implements OnInit {
     }
   }
 
+  updateVehicleModelsSelected() {
+    let vehicleModelStatus: IVehicleModelStatus[] = this.lsAllVehicleModelStatus
+    this.contractStateService.vehicleModel$.subscribe(
+      (vehicleModelsSelected) => {
+        if (vehicleModelsSelected.length > 0) {
+          vehicleModelsSelected.forEach((vm) => {
+            //Update status to check input
+            vehicleModelStatus = this.updateStatusByModel(
+              vehicleModelStatus,
+              vm,
+              true
+            )
+          })
+        } else {
+          this.resetAllStatus()
+        }
+      }
+    )
+    this.lsVehicleModeslObserver.next(vehicleModelStatus)
+  }
+
   updateStatusByModel(
     vehicleModelStatus: IVehicleModelStatus[],
     vehicleModel: VehicleModel,
@@ -149,5 +164,20 @@ export class CheckListVehicleModelComponent implements OnInit {
       (vms) => vms.vehicleModel.id == vehicleModel.id
     ).status = isChecked
     return vehicleModelStatus
+  }
+
+  resetAllStatus() {
+    const stateTMP = this.lsAllVehicleModelStatus
+    stateTMP.forEach((vms) => {
+      this.lsAllVehicleModelStatus = this.updateStatusByModel(
+        stateTMP,
+        vms.vehicleModel,
+        false
+      )
+    })
+    this.lsVehicleModelAutomovil = []
+    this.lsVehicleModelCamioneta = []
+    this.lsVehicleModelCarga = []
+    this.splitVehicleModelsByType(this.lsAllVehicleModelStatus)
   }
 }

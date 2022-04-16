@@ -1,5 +1,5 @@
 <div class="container-checkbox">
-  <div class="checkmark" [class.active]="isActive">
+  <div class="checkmark" [class.active]="isActive" [class.disable]="disable">
     <em class="material-icons" *ngIf="isActive">done</em>
   </div>
   <div>
@@ -8,6 +8,7 @@
       type="button"
       [id]="option"
       (click)="toogleCheck()"
+      [disabled]="disable"
     />
     <label [for]="option" class="lbl-check">{{ option }}</label>
   </div>

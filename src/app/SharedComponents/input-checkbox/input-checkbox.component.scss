@@ -22,9 +22,13 @@
     background-color: #81b214;
     border-radius: 50%;
     border: none;
-    border: solid white;
-    border-width: 0 2px 2px 0;
     color: white;
+    &.disable {
+      background-color: #4c6811;
+      border-radius: 50%;
+      border: none;
+      color: white;
+    }
   }
 }
 
@@ -35,4 +39,10 @@
 .input-chk {
   background-color: transparent !important;
   border: none;
+}
+
+.disable {
+  background-color: #e6e6e6;
+  border: none;
+  color: white;
 }

@@ -145,7 +145,6 @@
         <div class="container__row">
           <div class="container__col">
             <app-contract-discount-type
-              [discountType]="discountType"
               [disableField]="disableTypeOfDiscoutnField"
               (discountWasSelected)="setDiscountType($event)"
             ></app-contract-discount-type>
@@ -175,6 +174,10 @@
               <p *ngIf="discountValueField.hasError('required')">
                 * El valor del descuento que debe aplicarse al contrato es
                 requerido
+              </p>
+              <p *ngIf="discountValueField.hasError('maxValueAllowed')">
+                * Si el tipo de descuento es por porcentaje, el valor de este
+                campo no puede sobrepasar el valor de 100
               </p>
             </div>
           </div>
@@ -207,12 +210,6 @@
     </mat-tab>
     <mat-tab label="Precios contratados">
       <app-tbl-prices-by-contract> </app-tbl-prices-by-contract>
-
-      <!-- [changeDealer]="oChangeDealer"
-      [getPricesOfContract]="oGetPricesOfContract"
-      [discountType]="discountType"
-      [discountValue]="discountValueField.value"
-      (lsMaintenanceItemsWasSetted)="setItemsByContract($event)" -->
     </mat-tab>
   </mat-tab-group>
 
@@ -257,3 +254,9 @@
 </div>
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>
+<app-alert-error
+  *ngIf="isErrorVisible"
+  [title]="errorTitle"
+  [errorMessage]="errorDescription"
+  (onAlertWasClose)="closeError()"
+></app-alert-error>

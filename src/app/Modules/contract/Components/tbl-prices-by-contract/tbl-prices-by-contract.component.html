@@ -16,7 +16,14 @@
       <th>Valor final</th>
     </thead>
     <tbody>
-      <tr *ngFor="let i = index; let item; of: lsMaintenanceItems">
+      <tr
+        *ngFor="
+          let i = index;
+          let item;
+          of: lsMaintenanceItems
+            | paginate: { itemsPerPage: 10, currentPage: p }
+        "
+      >
         <td>{{ i + 1 }}</td>
         <td>{{ item.code }}</td>
         <td>{{ item.name | titlecase | slice: 0:40 }}</td>
@@ -35,11 +42,9 @@
       </tr>
     </tbody>
   </table>
-
-  <!-- <div class="buttons__container" id="container__buttons">
-        <button type="button" class="btn btn-danger" (click)="cancelPrices()">Cancelar</button>
-        <button type="button" class="btn btn-success" (click)="savePrices()">Guardar precios</button>
-    </div> -->
+  <div class="paginationContainer">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
 </div>
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

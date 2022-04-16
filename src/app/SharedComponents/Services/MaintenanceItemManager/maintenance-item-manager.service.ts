@@ -29,11 +29,11 @@ export class MaintenanceItemManagerService {
             itemNew.referencePrice
           )
         } catch (err) {
-          console.log(itemNew)
+          //console.log(itemNew)
           if (itemNew != null && itemNew != undefined) {
-            console.log(
-              `No se encontro item: ${itemNew.name} - ${itemNew.code} - se agregara a la lista`
-            )
+            // console.log(
+            //   `No se encontro item: ${itemNew.name} - ${itemNew.code} - se agregara a la lista`
+            // )
             lsMaintenanceItemsReferece.push(itemNew)
           }
         }
@@ -59,12 +59,12 @@ export class MaintenanceItemManagerService {
       if (item.type.id != TypeOfMaintenanceItems.ADMIN_RA) {
         if (contract) {
           switch (contract.discountType.id) {
-            case DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO:
+            case DiscountTypes.PORCENTAJE_POR_REPUESTOS:
               totalDiscount = Math.round(
                 totalWithoutTaxes * (contract.discountValue / 100)
               )
               break
-            case DiscountTypes.VALOR_FIJO_POR_TOTAL_MANTENIMIENTO:
+            case DiscountTypes.VALOR_FIJO_POR_REPUESTOS:
               totalDiscount = Math.round(contract.discountValue)
               break
           }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
 import { Client } from 'src/app/Models/Client'
 import { Contract } from 'src/app/Models/Contract'
+import { ContractState } from 'src/app/Models/ContractState'
 import { Dealer } from 'src/app/Models/Dealer'
 import { DiscountType } from 'src/app/Models/DiscountType'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
@@ -19,6 +20,10 @@ export class ContractStateService {
   private dealer: Dealer | undefined = undefined
   private dealerObserver = new BehaviorSubject<Dealer>(undefined)
   dealer$ = this.dealerObserver.asObservable()
+
+  private contractState: ContractState | undefined = undefined
+  private contractStateObserver = new BehaviorSubject<ContractState>(undefined)
+  contractState$ = this.contractStateObserver.asObservable()
 
   private vehicleModels: VehicleModel[] = []
   private vehicleModelsObserver = new BehaviorSubject<VehicleModel[]>([])
@@ -97,10 +102,12 @@ export class ContractStateService {
   }
 
   resetVehicleModelList() {
+    this.vehicleModels = []
     this.vehicleModelsObserver.next([])
   }
 
   resetVehicleList() {
+    this.vehicles = []
     this.vehiclesObserver.next([])
   }
 
@@ -110,6 +117,7 @@ export class ContractStateService {
   }
 
   resetDiscountType() {
+    this.discountType = undefined
     this.discountTypeObserver.next(undefined)
   }
 
@@ -126,5 +134,26 @@ export class ContractStateService {
   setMaintenanceItems(maintenanceItems: MaintenanceItem[]) {
     this.maintenanceItems = maintenanceItems
     this.maintenanceItemsObserver.next(this.maintenanceItems)
+  }
+
+  setContractState(state: ContractState) {
+    this.contractState = state
+    this.contractStateObserver.next(this.contractState)
+  }
+
+  resetMaintenanceItems() {
+    this.maintenanceItems = []
+    this.maintenanceItemsObserver.next([])
+  }
+
+  resetContractInformation() {
+    this.clientObserver.next(undefined)
+    this.dealerObserver.next(undefined)
+    this.contractStateObserver.next(undefined)
+    this.resetDiscountType()
+    this.resetDiscountValue()
+    this.resetVehicleModelList()
+    this.resetVehicleList()
+    this.resetMaintenanceItems()
   }
 }

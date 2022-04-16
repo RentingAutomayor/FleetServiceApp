@@ -9,6 +9,7 @@ import {
 } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { DiscountType } from 'src/app/Models/DiscountType'
+import { ContractStateService } from '../../Services/contract-state.service'
 import { ContractService } from '../../Services/Contract/contract.service'
 
 @Component({
@@ -34,9 +35,21 @@ export class ContractDiscountTypeComponent implements OnInit, OnChanges {
     }
   }
 
-  constructor(private contractService: ContractService) {
+  constructor(
+    private contractService: ContractService,
+    private contracStateService: ContractStateService
+  ) {
     this.frmDiscountType = new FormGroup({
       cmbDiscount: new FormControl('Seleccione ...'),
+    })
+
+    this.contracStateService.discountType$.subscribe((type) => {
+      this.discountSelected = type
+      if (this.discountSelected) {
+        this.setDataInForm(this.discountSelected)
+      } else {
+        this.frmDiscountType.reset()
+      }
     })
     this.disableField = false
   }

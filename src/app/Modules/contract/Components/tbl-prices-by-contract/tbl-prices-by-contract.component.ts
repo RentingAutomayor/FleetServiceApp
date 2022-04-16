@@ -10,7 +10,6 @@ import {
 import { Dealer } from 'src/app/Models/Dealer'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
 import { MaintenanceItemService } from '../../../items-and-routines/Services/MaintenanceItem/maintenance-item.service'
-import { DealerService } from '../../../dealer/Services/Dealer/dealer.service'
 import { PricesByDealer } from 'src/app/Models/PricesByDealer'
 import { PricesByContract } from 'src/app/Models/PricesByContract'
 import { ContractService } from '../../Services/Contract/contract.service'
@@ -19,6 +18,10 @@ import { cloneDeep } from 'lodash'
 import { DiscountType, DiscountTypes } from 'src/app/Models/DiscountType'
 import { Tax } from 'src/app/Models/Tax'
 import { SharedFunction } from 'src/app/Models/SharedFunctions'
+import { ContractStateService } from '../../Services/contract-state.service'
+import { MaintenanceItemManagerService } from 'src/app/SharedComponents/Services/MaintenanceItemManager/maintenance-item-manager.service'
+import { ItemsAndRoutinesModule } from 'src/app/Modules/items-and-routines/items-and-routines.module'
+import { isObjectEmpty } from 'ngx-bootstrap/chronos/utils/type-checks'
 
 @Component({
   selector: 'app-tbl-prices-by-contract',
@@ -35,15 +38,19 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
   contractSelected: Contract
   @Input() getPricesOfContract: number
   @Input() changeDealer: number
-  @Input() discountType: DiscountType
-  @Input() discountValue: number
+
   @Output() lsMaintenanceItemsWasSetted = new EventEmitter<MaintenanceItem[]>()
   sharedFunction: SharedFunction
 
+  dealer: Dealer | undefined = undefined
+  discountType: DiscountType | undefined = undefined
+  discountValue: number = 0
+
   constructor(
     private maintenanceItemService: MaintenanceItemService,
-    private dealerService: DealerService,
-    private contractService: ContractService
+    private contractService: ContractService,
+    private contracStateService: ContractStateService,
+    private maintenanceItemManagerService: MaintenanceItemManagerService
   ) {
     this.lsMaintenanceItems = []
     this.pricesByDealer = new PricesByDealer()
@@ -52,6 +59,23 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     this.discountType = new DiscountType()
     this.sharedFunction = new SharedFunction()
     this.lsMaintenanceItemsWithPrice = []
+
+    this.contracStateService.dealer$.subscribe((dealer) => {
+      this.dealer = dealer
+      if (this.dealer) {
+        this.getInfoToShowTable()
+      }
+    })
+
+    this.contracStateService.discountType$.subscribe((discount) => {
+      this.discountType = discount
+      this.calculateDiscountAndTaxes()
+    })
+
+    this.contracStateService.discountValue$.subscribe((value) => {
+      this.discountValue = value
+      this.calculateDiscountAndTaxes()
+    })
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -61,7 +85,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
           this.setPricesByContract()
           break
         case 'changeDealer':
-          this.dealerSelected = this.dealerService.getDealerSelected()
+          this.dealerSelected = this.dealer
           if (this.dealerSelected != null && this.dealerSelected != undefined) {
             this.getInfoToShowTable()
           }
@@ -82,7 +106,7 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     this.getPricesOfContract = 0
     this.changeDealer = 0
     this.isAwaiting = false
-    this.dealerSelected = this.dealerService.getDealerSelected()
+    this.dealerSelected = this.dealer
     if (this.dealerSelected != null && this.dealerSelected != undefined) {
       this.getInfoToShowTable()
     }
@@ -104,14 +128,14 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     return `lbl_total_${idItem}`
   }
 
-  async getInfoToShowTable() {
-    await this.getListMaintenanceItems()
-    await this.getPricesByDealer()
-    await this.getPricesByContract()
-    await this.setValuesIntoTable()
+  getInfoToShowTable() {
+    this.getListMaintenanceItems()
+    this.getPricesByDealer()
+    //await this.getPricesByContract()
+    //await this.setValuesIntoTable()
   }
 
-  async getListMaintenanceItems() {
+  getListMaintenanceItems() {
     /*
     Here, we need to bring the maintenance items of dealer setted into a contract
     */
@@ -131,15 +155,23 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
 
   getPricesByDealer() {
     try {
-      this.dealerSelected = this.dealerService.getDealerSelected()
+      this.dealerSelected = this.dealer
       this.isAwaiting = true
       const dealer_id = this.dealerSelected != null ? this.dealerSelected.id : 0
       this.maintenanceItemService
         .getPricesByDealer(dealer_id)
         .subscribe((itemsByDealer) => {
           this.pricesByDealer = itemsByDealer
+          this.lsMaintenanceItems =
+            this.maintenanceItemManagerService.updatePrices(
+              this.lsMaintenanceItems,
+              this.pricesByDealer.lsMaintenanceItems
+            )
+
+          this.calculateDiscountAndTaxes()
+
+          this.isAwaiting = false
         })
-      this.isAwaiting = false
     } catch (error) {
       console.warn(error)
     }
@@ -198,6 +230,11 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
         .getPricesByContract(contract_id)
         .subscribe((pricesByCntr) => {
           this.pricesByContract = pricesByCntr
+          this.maintenanceItemManagerService.updatePrices(
+            this.lsMaintenanceItems,
+            this.pricesByContract.lsMaintenanceItems
+          )
+          this.calculateDiscountAndTaxes()
         })
       this.isAwaiting = false
     } catch (error) {
@@ -386,5 +423,54 @@ export class TblPricesByContractComponent implements OnInit, OnChanges {
     } catch (error) {
       console.warn(error)
     }
+  }
+
+  calculateDiscountPerPercentage(totalWithoutTaxes, discountValue): number {
+    return Math.round(totalWithoutTaxes * (discountValue / 100))
+  }
+
+  calculateDiscountAndTaxes() {
+    this.lsMaintenanceItems = this.lsMaintenanceItems.map((item) => {
+      item.amount = 1
+      let discountValue = 0
+
+      if (this.discountType) {
+        if (
+          this.discountType.id ==
+            DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO ||
+          this.discountType.id == DiscountTypes.PORCENTAJE_POR_REPUESTOS
+        ) {
+          discountValue = this.calculateDiscountPerPercentage(
+            item.referencePrice,
+            this.discountValue
+          )
+        } else {
+          discountValue = this.discountValue
+        }
+      }
+
+      const valueWithoutDiscount = item.referencePrice - discountValue
+
+      const taxesValue =
+        this.maintenanceItemManagerService.calculateTaxesByItem(
+          item,
+          valueWithoutDiscount
+        )
+
+      return {
+        code: item.code,
+        name: item.name,
+        presentationUnit: {
+          longName: item.presentationUnit.longName,
+        },
+        handleTax: item.handleTax,
+        lsTaxes: item.lsTaxes,
+        referencePrice: item.referencePrice,
+        discountValue: discountValue,
+        taxesValue: taxesValue,
+      } as MaintenanceItem
+    })
+
+    this.contracStateService.setMaintenanceItems(this.lsMaintenanceItems)
   }
 }

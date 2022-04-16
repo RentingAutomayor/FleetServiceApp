@@ -25,6 +25,16 @@ export class ContractStateComponent implements OnInit, OnChanges {
   @Output() contractStateWasSelected = new EventEmitter<ContractState>()
   @Input() cmbStateIsDisable: boolean
 
+  @Input('contractState')
+  set setContractStateSelected(state: ContractState) {
+    this.contractStateSelected = state
+    if (this.contractStateSelected) {
+      this.setDataInForm(this.contractStateSelected)
+    } else {
+      this.frmContractState.reset()
+    }
+  }
+
   constructor(private contractService: ContractService) {
     this.frmContractState = new FormGroup({
       cmbStates: new FormControl('Seleccione ...'),

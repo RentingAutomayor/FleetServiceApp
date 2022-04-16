@@ -31,6 +31,16 @@ export class InputSearchDealerComponent implements OnInit, OnChanges {
   @Input() disableField: boolean
   @Output() dealerWasSetted = new EventEmitter<boolean>()
 
+  @Input('dealer')
+  set setDealerSelected(dealer: Dealer) {
+    this.dealerSelected = dealer
+    if (this.dealerSelected) {
+      this.setDataInForm(this.dealerSelected)
+    } else {
+      this.frmSearchDealer.reset()
+    }
+  }
+
   constructor(private dealerService: DealerService) {
     this.frmSearchDealer = new FormGroup({
       txtDealer: new FormControl(''),

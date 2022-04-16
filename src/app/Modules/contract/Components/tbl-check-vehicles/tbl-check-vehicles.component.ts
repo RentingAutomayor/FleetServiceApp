@@ -3,8 +3,10 @@ import { Client } from 'src/app/Models/Client'
 import { Vehicle } from 'src/app/Models/Vehicle'
 import { VehicleModel } from 'src/app/Models/VehicleModel'
 import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service'
-import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
 import { Contract } from 'src/app/Models/Contract'
+import { ContractStateService } from '../../Services/contract-state.service'
+import { BehaviorSubject } from 'rxjs'
+import { IVehicleStatus } from 'src/app/Models/IVehicleStatus'
 
 @Component({
   selector: 'app-tbl-check-vehicles',
@@ -15,14 +17,15 @@ import { Contract } from 'src/app/Models/Contract'
   ],
 })
 export class TblCheckVehiclesComponent implements OnInit {
-  lsVehicles: Vehicle[]
   lsVehiclesSelected: Vehicle[] = []
+
+  lsVehicles: IVehicleStatus[] = []
+  vehiclesObserver = new BehaviorSubject<IVehicleStatus[]>([])
+  vehicles$ = this.vehiclesObserver.asObservable()
 
   clientToFilter: Client | undefined = undefined
   @Input('clientToFilter')
   set setClientToFilter(client: Client) {
-    console.log(`CLIENT TO FILTER`)
-    console.log(client)
     this.clientToFilter = client
   }
 
@@ -30,6 +33,7 @@ export class TblCheckVehiclesComponent implements OnInit {
   @Input('vehicleModels')
   set setVehicleModels(models: VehicleModel[]) {
     this._vehicleModels = models
+    console.log(`Models to filter`)
     console.log(this._vehicleModels)
     this.setModelsString(this._vehicleModels)
     this.getVehicles()
@@ -39,7 +43,6 @@ export class TblCheckVehiclesComponent implements OnInit {
   @Input('amountAllowed')
   set setAmountAllowed(amount: number) {
     this._amountAllowed = amount
-    this.getVehiclesSelected()
   }
 
   contractToFilter: Contract | undefined = undefined
@@ -57,98 +60,44 @@ export class TblCheckVehiclesComponent implements OnInit {
   sModels: string
   lsVehiclesEmty: boolean
 
-  constructor(private vehicleService: VehicleService) {
+  constructor(
+    private vehicleService: VehicleService,
+    private contractStateService: ContractStateService
+  ) {
     this.clientToFilter = null
     this.sModels = ''
     this.disableChecks = false
+
+    this.contractStateService.client$.subscribe((client) => {
+      this.clientToFilter = client
+    })
+
+    this.vehicles$.subscribe((vehicles) => {
+      this.lsVehicles = vehicles
+    })
+
+    this.contractStateService.vehicleModel$.subscribe(
+      (vehicleModelsToFilter) => {
+        //console.log(vehicleModelsToFilter)
+        try {
+          this.setModelsString(vehicleModelsToFilter)
+          this.getVehicles()
+        } catch (error) {
+          console.info(error)
+        }
+      }
+    )
   }
 
-  getVehiclesSelected() {
-    this.lsVehiclesSelected = this.vehicleService.getListVehiclesSelected()
-    if (
-      this.lsVehiclesSelected != null &&
-      this.lsVehiclesSelected != undefined
-    ) {
-      this.checkVehiclesSelected(this.lsVehiclesSelected)
-      this.lsVehiclesEmty = false
-    } else {
-      this.lsVehiclesEmty = true
-    }
+  updateVehiclesSelected() {
+    this.contractStateService.vehicles$.subscribe((vehicles) => {
+      this.lsVehiclesSelected = vehicles
+
+      this.lsVehiclesSelected.forEach((veh) => {
+        this.updateVehicleStatus(veh, true)
+      })
+    })
   }
-
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   try {
-  //     console.log(changes)
-  //     //this.vehicleModels = changes['vehicleModels'].currentValue
-  //     //console.log(this.vehicleModels)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-
-  //   // for (const change in changes) {
-  //   //   switch (change) {
-  //   //     case 'countChanges':
-  //   //       this.sModels = ''
-  //   //       this.clientToFilter = this.clientService.getClientSelected()
-
-  //   //       this.lsVehiclesSelected =
-  //   //         this.vehicleService.getListVehiclesSelected()
-  //   //       if (
-  //   //         this.lsVehiclesSelected != null &&
-  //   //         this.lsVehiclesSelected != undefined
-  //   //       ) {
-  //   //         this.checkVehiclesSelected(this.lsVehiclesSelected)
-  //   //         this.lsVehiclesEmty = false
-  //   //       } else {
-  //   //         this.lsVehiclesEmty = true
-  //   //       }
-
-  //   //       break
-  //   //     case 'amountAllowed':
-  //   //       this.lsVehiclesSelected =
-  //   //         this.vehicleService.getListVehiclesSelected()
-  //   //       if (
-  //   //         this.lsVehiclesSelected != null &&
-  //   //         this.lsVehiclesSelected != undefined
-  //   //       ) {
-  //   //         this.checkVehiclesSelected(this.lsVehiclesSelected)
-  //   //         this.lsVehiclesEmty = false
-  //   //       } else {
-  //   //         this.lsVehiclesEmty = true
-  //   //       }
-  //   //       break
-  //   //     case 'contractToFilter':
-  //   //       this.lsVehiclesSelected =
-  //   //         this.vehicleService.getListVehiclesSelected()
-  //   //       if (
-  //   //         this.lsVehiclesSelected != null &&
-  //   //         this.lsVehiclesSelected != undefined
-  //   //       ) {
-  //   //         this.checkVehiclesSelected(this.lsVehiclesSelected)
-  //   //         this.lsVehiclesEmty = false
-  //   //       } else {
-  //   //         this.lsVehiclesEmty = true
-  //   //       }
-  //   //       this.getVehicles()
-  //   //       break
-  //   //     case 'disableChecks':
-  //   //       this.lsVehiclesSelected =
-  //   //         this.vehicleService.getListVehiclesSelected()
-  //   //       if (
-  //   //         this.lsVehiclesSelected != null &&
-  //   //         this.lsVehiclesSelected != undefined
-  //   //       ) {
-  //   //         this.checkVehiclesSelected(this.lsVehiclesSelected)
-  //   //         this.lsVehiclesEmty = false
-  //   //       } else {
-  //   //         this.lsVehiclesEmty = true
-  //   //       }
-  //   //       this.toggleChecks()
-  //   //       break
-  //   //   }
-  //   // }
-  //   // this.getVehicles()
-  // }
 
   ngOnInit(): void {
     this.initComponents()
@@ -174,11 +123,6 @@ export class TblCheckVehiclesComponent implements OnInit {
   }
 
   getVehicles() {
-    console.log(`client to filter: `)
-    console.log(this.clientToFilter)
-
-    console.log(`contract to filter: `)
-    console.log(this.contractToFilter)
     if (
       this.clientToFilter != null &&
       this.clientToFilter != undefined &&
@@ -197,11 +141,15 @@ export class TblCheckVehiclesComponent implements OnInit {
         )
         .subscribe({
           next: (vehiclesData) => {
-            this.lsVehicles = vehiclesData
+            if (vehiclesData.length > 0) {
+              let vehStatus = vehiclesData.map((vh) => {
+                return { vehicle: vh, status: false }
+              })
 
-            setTimeout(() => {
-              this.toggleChecks()
-            }, 800)
+              this.vehiclesObserver.next(vehStatus)
+
+              this.updateVehiclesSelected()
+            }
           },
         })
     } else {
@@ -209,64 +157,27 @@ export class TblCheckVehiclesComponent implements OnInit {
     }
   }
 
-  getIdChk(idVehicle: number): string {
-    return `chk_vehicle_${idVehicle}`
-  }
-
-  setVehicleToContract(event: any, pVehicle: Vehicle) {
-    if (event.target.checked) {
-      if (
-        this.lsVehiclesSelected == null &&
-        this.lsVehiclesSelected == undefined
-      ) {
-        this.lsVehiclesSelected = []
-      }
-      if (this.lsVehiclesSelected.length < this._amountAllowed) {
-        this.lsVehiclesSelected.push(pVehicle)
-      } else {
-        alert(
-          `No se puede adicionar este vehículo, puesto que el contrato sólo tiene configurado un máximo de ${this._amountAllowed} vehículos`
-        )
-        event.preventDefault()
-      }
+  setVehicleToContract(isToAdd: boolean, vehicle: Vehicle) {
+    if (isToAdd) {
+      this.contractStateService.addVehicleToList(vehicle)
     } else {
-      const vehicle = this.lsVehiclesSelected.find((vh) => vh.id == pVehicle.id)
-      const index = this.lsVehiclesSelected.indexOf(vehicle)
-      if (index != -1) {
-        this.lsVehiclesSelected.splice(index, 1)
-      }
+      this.contractStateService.removeVehicleFromList(vehicle)
     }
-    this.vehicleService.setListVehiclesSelected(this.lsVehiclesSelected)
   }
 
-  checkVehiclesSelected(lsVehicles: Vehicle[]) {
-    setTimeout(() => {
-      lsVehicles.forEach((vh) => {
-        try {
-          const idCheck = `#${this.getIdChk(vh.id)}`
-          console.warn('[checkVehiclesSelected]', idCheck)
-          const vehicleCheckbox: HTMLInputElement =
-            document.querySelector(idCheck)
-          vehicleCheckbox.checked = true
-        } catch (error) {
-          console.warn(error)
-        }
-      })
-    }, 1500)
-  }
-
-  toggleChecks() {
+  updateVehicleStatus(vehicle: Vehicle, isChecked: boolean) {
     try {
-      setTimeout(() => {
-        this.lsVehicles.forEach((vehicle) => {
-          const idCheck = `#${this.getIdChk(vehicle.id)}`
-          const vehicleCheckbox: HTMLInputElement =
-            document.querySelector(idCheck)
-          vehicleCheckbox.disabled = this.disableChecks
-        })
-      }, 800)
+      const vhStaus = this.lsVehicles
+
+      const indexItem = vhStaus.findIndex((vhs) => vehicle.id == vhs.vehicle.id)
+
+      if (indexItem >= 0) {
+        vhStaus[indexItem].status = isChecked
+      }
+
+      this.vehiclesObserver.next(vhStaus)
     } catch (error) {
-      console.warn('[toggleChecks VEHI]', error)
+      console.info(error)
     }
   }
 }

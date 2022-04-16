@@ -1,16 +1,10 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  OnInit,
-  Output,
-  EventEmitter,
-} from '@angular/core'
-import { setTime } from 'ngx-bootstrap/chronos/utils/date-setters'
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core'
 import { VehicleModel } from 'src/app/Models/VehicleModel'
-import { VehicleType } from 'src/app/Models/VehicleType'
 import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.service'
+import { vehicleTypes } from 'src/app/Models/VehicleTypes'
+import { IVehicleModelStatus } from 'src/app/Models/IVehicleModelStatus'
+import { BehaviorSubject } from 'rxjs'
+import { ContractStateService } from 'src/app/Modules/contract/Services/contract-state.service'
 
 @Component({
   selector: 'app-check-list-vehicle-model',
@@ -21,44 +15,40 @@ import { VehicleService } from '../../Modules/client/Services/Vehicle/vehicle.se
   ],
 })
 export class CheckListVehicleModelComponent implements OnInit {
-  lsVehicleType!: VehicleType[]
-  lsVehicleModels!: VehicleModel[]
-  lsVehicleModelEnabled: VehicleModel[] = []
+  lsVehicleModels: VehicleModel[] = []
 
-  prefixContainerType = 'container_type_'
-  prefixContainerModel = 'container_model_'
+  lsVehicleModeslObserver = new BehaviorSubject<IVehicleModelStatus[]>([])
+  lsVehicleModes$ = this.lsVehicleModeslObserver.asObservable()
+
+  lsVehicleModelAutomovil: IVehicleModelStatus[] = []
+  lsVehicleModelCamioneta: IVehicleModelStatus[] = []
+  lsVehicleModelCarga: IVehicleModelStatus[] = []
+
+  lsCargaModels: VehicleModel[] = []
 
   @Input() disableChecks: boolean = false
-  @Output() onVehicleModelsWasSetted = new EventEmitter<VehicleModel[]>()
 
-  lsVehicleTypesSelected: VehicleType[] = []
-  @Input('lsVehicleTypesSelected')
-  set setLsVehicleTypeSelected(lsTypes: VehicleType[]) {
-    this.lsVehicleTypesSelected =
-      lsTypes !== null && lsTypes !== undefined ? lsTypes : []
-    if (!(this.lsVehicleTypesSelected.length > 0)) {
-      this.clearDataForm()
-    }
-    this.enableAndDisableVehicleModels(this.lsVehicleTypesSelected)
-  }
+  @Output() onVehicleModelsWasSetted = new EventEmitter<VehicleModel[]>()
 
   lsVehicleModelsSelected: VehicleModel[] = []
   @Input('lsVehicleModelsSelected')
   set setLsVehicleModelsSelected(vehicleModels: VehicleModel[]) {
     this.lsVehicleModelsSelected =
-      vehicleModels !== null && vehicleModels !== undefined ? vehicleModels : []
-    if (this.lsVehicleModelsSelected.length > 0) {
-      this.setDataInForm(this.lsVehicleModelsSelected)
-    } else {
-      this.clearDataForm()
+      vehicleModels != null && vehicleModels != undefined ? vehicleModels : []
+    try {
+      if (this.lsVehicleModelsSelected.length > 0) {
+        let vehicleModelStatus: IVehicleModelStatus[] = []
+        this.lsVehicleModes$.subscribe((vmStatus) => {
+          this.lsVehicleModelsSelected.forEach((vm) => {
+            vehicleModelStatus = this.updateStatusByModel(vmStatus, vm, true)
+            this.contractStateService.addVehicleModelToList(vm)
+          })
+        })
+        this.lsVehicleModeslObserver.next(vehicleModelStatus)
+      }
+    } catch (error) {
+      console.info(error)
     }
-  }
-
-  countChanges!: number
-  @Input('countChanges')
-  set setCountChanges(value: number) {
-    this.countChanges = value
-    this.enableAndDisableVehicleModels(this.lsVehicleTypesSelected)
   }
 
   disableControls!: boolean
@@ -67,8 +57,54 @@ export class CheckListVehicleModelComponent implements OnInit {
     this.disableControls = value
   }
 
-  constructor(private vehicleService: VehicleService) {
+  constructor(
+    private vehicleService: VehicleService,
+    private contractStateService: ContractStateService
+  ) {
+    this.lsVehicleModes$.subscribe((vmStatus) => {
+      this.splitVehicleModelsByType(vmStatus)
+    })
     this.disableChecks = false
+  }
+
+  splitVehicleModelsByType(vehicleModelStatus: IVehicleModelStatus[]) {
+    vehicleModelStatus.forEach((vms) => {
+      let indexItem = -1
+      switch (vms.vehicleModel.type.id) {
+        case vehicleTypes.AUTOMOVIl:
+          indexItem = this.lsVehicleModelAutomovil.findIndex(
+            (vmsa) => vmsa.vehicleModel.id == vms.vehicleModel.id
+          )
+          if (indexItem >= 0) {
+            this.lsVehicleModelAutomovil[indexItem] = vms
+          } else {
+            this.lsVehicleModelAutomovil.push(vms)
+          }
+          break
+
+        case vehicleTypes.CAMIONETA:
+          indexItem = this.lsVehicleModelCamioneta.findIndex(
+            (vmsc) => vmsc.vehicleModel.id == vms.vehicleModel.id
+          )
+          if (indexItem >= 0) {
+            this.lsVehicleModelCamioneta[indexItem] = vms
+          } else {
+            this.lsVehicleModelCamioneta.push(vms)
+          }
+          break
+
+        case vehicleTypes.CARGA:
+          indexItem = this.lsVehicleModelCarga.findIndex(
+            (vmscg) => vmscg.vehicleModel.id == vms.vehicleModel.id
+          )
+          if (indexItem >= 0) {
+            this.lsVehicleModelCarga[indexItem] = vms
+          } else {
+            this.lsVehicleModelCarga.push(vms)
+          }
+          break
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -76,204 +112,42 @@ export class CheckListVehicleModelComponent implements OnInit {
   }
 
   initComponents() {
-    this.lsVehicleModels = []
-    this.getLsVehicleTypes()
     this.getLsVehicleModels()
-    this.disableCheckBox([])
-    // this.toggleChecks();
-  }
-
-  showVehicleModelsByContainer(last: boolean) {
-    this.validateContainerTypes()
   }
 
   getLsVehicleModels() {
-    try {
-      this.vehicleService
-        .getVehicleModelByBrandAndType(0, 0)
-        .subscribe((vehicleModels) => {
-          this.lsVehicleModels = vehicleModels
-        })
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  async getLsVehicleTypes() {
-    try {
-      this.vehicleService.getVehicleTypes().subscribe((vehicleTypes) => {
-        this.lsVehicleType = vehicleTypes
-      })
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  validateContainerTypes() {
-    try {
-      if (this.lsVehicleModels != null && this.lsVehicleModels != undefined) {
-        this.lsVehicleModels.forEach((element) => {
-          const idElement = `#${this.prefixContainerModel}${element.id}`
-          const idContainer = `#${this.prefixContainerType}${element.type.id}`
-          const divContainer: HTMLDivElement =
-            document.querySelector(idContainer)
-          const divElement: HTMLDivElement = document.querySelector(idElement)
-          divContainer.appendChild(divElement)
-        })
-      }
-    } catch (error) {
-      //console.warn(error);
-    }
-  }
-
-  getIdChk(id: number) {
-    return `chk_vehicle_model_${id}`
-  }
-
-  getContainerTypeId(id: number) {
-    return `${this.prefixContainerType}${id}`
-  }
-
-  getContainerModelId(id: number) {
-    return `${this.prefixContainerModel}${id}`
-  }
-
-  async enableAndDisableVehicleModels(pLsVehicleTypes: VehicleType[]) {
-    try {
-      const lsTypes =
-        pLsVehicleTypes !== null && pLsVehicleTypes !== undefined
-          ? pLsVehicleTypes
-          : []
-      this.disableCheckBox(pLsVehicleTypes)
-      if (lsTypes.length > 0) {
-        this.lsVehicleModelEnabled =
-          await this.vehicleService.getVehicleModelByTypes(pLsVehicleTypes)
-      } else {
-        this.lsVehicleModelEnabled = []
-      }
-      this.enableCheckBox(
-        this.lsVehicleTypesSelected,
-        this.lsVehicleModelEnabled
-      )
-    } catch (error) {
-      //console.warn(error);
-    }
-  }
-
-  setVehicleModel(event: any, pVehicleModel: VehicleModel) {
-    if (event.checked) {
-      if (
-        this.lsVehicleModelsSelected == null &&
-        this.lsVehicleModelsSelected == undefined
-      ) {
-        this.lsVehicleModelsSelected = []
-      }
-      this.lsVehicleModelsSelected.push(pVehicleModel)
-    } else {
-      const oVmTmp = this.lsVehicleModelsSelected.find(
-        (item) => item.id == pVehicleModel.id
-      )
-      const index = this.lsVehicleModelsSelected.indexOf(oVmTmp)
-      if (index != -1) {
-        this.lsVehicleModelsSelected.splice(index, 1)
-      }
-    }
-    this.onVehicleModelsWasSetted.emit(this.lsVehicleModelsSelected)
-  }
-
-  async setDataInForm(lsVehicleModel: VehicleModel[]) {
-    try {
-      setTimeout(() => {
-        lsVehicleModel.forEach((item) => {
-          const idCheck = `#${this.getIdChk(item.id)}`
-          const oCheckBox: HTMLInputElement = document.querySelector(idCheck)
-          oCheckBox.checked = true
-        })
-      }, 800)
-    } catch (error) {
-      console.warn('[Puede que no exista una lista de lineas actualmente]')
-    }
-  }
-
-  clearDataForm() {
-    try {
-      this.lsVehicleModels.forEach((item) => {
-        const idCheck = `#${this.getIdChk(item.id)}`
-        const oCheckBox: HTMLInputElement = document.querySelector(idCheck)
-        oCheckBox.checked = false
-      })
-    } catch (error) {
-      console.warn('[Puede que no exista una lista de lineas actualmente]')
-    }
-  }
-
-  enableCheckBox(lsVehicleType: VehicleType[], lsVehicleModel: VehicleModel[]) {
-    try {
-      lsVehicleType.forEach((vType) => {
-        const lsTempVM = lsVehicleModel.filter((vm) => vm.type.id == vType.id)
-        lsTempVM.forEach((item) => {
-          const idCheck = `#${this.getIdChk(item.id)}`
-          const checkVM: HTMLInputElement = document.querySelector(idCheck)
-          checkVM.disabled = false
-        })
-      })
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  disableCheckBox(lsTypesToAvoid: VehicleType[]) {
-    try {
-      this.lsVehicleModels.forEach((item) => {
-        const idCheck = `#${this.getIdChk(item.id)}`
-        const checkVM: HTMLInputElement = document.querySelector(idCheck)
-        checkVM.disabled = true
-
-        if (lsTypesToAvoid != null && lsTypesToAvoid != undefined) {
-          const itemHasVehicleType = lsTypesToAvoid.find(
-            (tp) => tp.id == item.type.id
-          )
-
-          if (!itemHasVehicleType) {
-            checkVM.checked = false
-            this.removeVehicleModelFromSelected(item)
+    this.vehicleService
+      .getVehicleModelByBrandAndType(0, 0)
+      .subscribe((vehicleModels) => {
+        let vehicleModelStatus: IVehicleModelStatus[] = vehicleModels.map(
+          (vm) => {
+            return {
+              vehicleModel: vm,
+              status: false,
+            } as IVehicleModelStatus
           }
-        }
-      })
-    } catch (error) {
-      // console.warn(error);
-    }
-  }
-
-  removeVehicleModelFromSelected(pVehicleModel: VehicleModel) {
-    if (
-      this.lsVehicleModelsSelected != null &&
-      this.lsVehicleTypesSelected != undefined
-    ) {
-      const oVmTmp = this.lsVehicleModelsSelected.find(
-        (item) => item.id == pVehicleModel.id
-      )
-      const index = this.lsVehicleModelsSelected.indexOf(oVmTmp)
-      if (index != -1) {
-        this.lsVehicleModelsSelected.splice(index, 1)
-        this.vehicleService.setListVehicleModelsSelected(
-          this.lsVehicleModelsSelected
         )
-      }
+
+        this.lsVehicleModeslObserver.next(vehicleModelStatus)
+      })
+  }
+
+  toogleItems(isChecked: boolean, vehicleModel: VehicleModel) {
+    if (isChecked) {
+      this.contractStateService.addVehicleModelToList(vehicleModel)
+    } else {
+      this.contractStateService.removeVehicleModelFromList(vehicleModel)
     }
   }
 
-  toggleChecks() {
-    try {
-      setTimeout(() => {
-        this.lsVehicleModels.forEach((vehicleModel) => {
-          const idCheck = `#${this.getIdChk(vehicleModel.id)}`
-          const checkVM: HTMLInputElement = document.querySelector(idCheck)
-          checkVM.disabled = this.disableChecks
-        })
-      }, 800)
-    } catch (error) {
-      console.warn('[toggleChecks VM]', error)
-    }
+  updateStatusByModel(
+    vehicleModelStatus: IVehicleModelStatus[],
+    vehicleModel: VehicleModel,
+    isChecked: boolean
+  ) {
+    vehicleModelStatus.find(
+      (vms) => vms.vehicleModel.id == vehicleModel.id
+    ).status = isChecked
+    return vehicleModelStatus
   }
 }

@@ -12,6 +12,7 @@ const routes: Routes = [
     children: [
       { path: '', component: TblContractComponent },
       { path: 'Contract', component: ContractComponent },
+      { path: 'Contract/:id', component: ContractComponent },
     ],
   },
 ]

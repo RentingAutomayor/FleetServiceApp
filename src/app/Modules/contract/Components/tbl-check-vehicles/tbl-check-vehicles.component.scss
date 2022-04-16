@@ -1,14 +1,16 @@
-.container__licensePlate{
-    display: grid;
-    grid-template-columns: 30px 1fr;
-    grid-template-rows: 1fr;
+.container__table {
+  margin-top: 20px;
 }
 
-.container__licensePlate label{
-    cursor: pointer;
+.container_licensePlate {
+  margin-top: -10px;
 }
 
-h6{
-    margin-top: 20px;
-    margin-bottom: 20px;
+.container__licensePlate label {
+  cursor: pointer;
+}
+
+h6 {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }

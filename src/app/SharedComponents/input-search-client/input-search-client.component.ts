@@ -31,6 +31,16 @@ export class InputSearchClientComponent implements OnInit, OnChanges {
   @Input() disableField: boolean
   @Output() clientWasSetted = new EventEmitter<boolean>()
 
+  @Input('client')
+  set setClientSelected(client: Client) {
+    this.clientSelected = client
+    if (this.clientSelected) {
+      this.setDataInForm(this.clientSelected)
+    } else {
+      this.frmSearchClient.reset()
+    }
+  }
+
   constructor(private clientService: ClientService) {
     this.frmSearchClient = new FormGroup({
       txtClient: new FormControl(''),

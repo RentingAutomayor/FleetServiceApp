@@ -105,27 +105,13 @@ export class TblContractComponent implements OnInit {
   }
 
   getDetailsContract(pContract: Contract) {
-    this.isAwaiting = true
-    this.contractService.getContractByID(pContract.id).subscribe((contract) => {
-      const oContractDetails = contract
-      this.isAwaiting = false
-      this.contractService.setAction(ActionType.READ)
-      this.contractService.setContract(oContractDetails)
-      this.isAwaiting = false
-      this.router.navigate(['/MasterContracts/Contract'])
-    })
+    this.contractService.setAction(ActionType.READ)
+    this.router.navigate([`/MasterContracts/Contract/${pContract.id}`])
   }
 
   updateContract(pContract: Contract) {
-    this.isAwaiting = true
-    this.contractService.getContractByID(pContract.id).subscribe((contract) => {
-      const oContractToUpdate = contract
-      this.isAwaiting = false
-      this.contractService.setAction(ActionType.UPDATE)
-      this.contractService.setContract(oContractToUpdate)
-      this.isAwaiting = false
-      this.router.navigate(['/MasterContracts/Contract'])
-    })
+    this.contractService.setAction(ActionType.UPDATE)
+    this.router.navigate([`/MasterContracts/Contract/${pContract.id}`])
   }
 
   deleteContract(pContract: Contract) {

@@ -27,8 +27,9 @@ import { CalculatePriceByAmountPipe } from './Pipes/calculate-price-by-amount.pi
 import { TblCheckItemsForRoutineComponent } from './tbl-check-items-for-routine/tbl-check-items-for-routine.component'
 import { CalculateDiscountPipe } from './Pipes/calculate-discount.pipe'
 import { CalculatePriceWithoutDiscountPipe } from './Pipes/calculate-price-without-discount.pipe'
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { ContactTypeComponent } from './contact-type/contact-type.component'
+import { InputCheckboxComponent } from './input-checkbox/input-checkbox.component'
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { ContactTypeComponent } from './contact-type/contact-type.component'
     CalculateDiscountPipe,
     CalculatePriceWithoutDiscountPipe,
     ContactTypeComponent,
+    InputCheckboxComponent,
   ],
   imports: [
     CommonModule,
@@ -89,6 +91,7 @@ import { ContactTypeComponent } from './contact-type/contact-type.component'
     TblCheckItemsForRoutineComponent,
     CalculateDiscountPipe,
     CalculatePriceWithoutDiscountPipe,
+    InputCheckboxComponent,
   ],
   providers: [CalculateTotalPricePipe],
 

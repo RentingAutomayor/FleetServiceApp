@@ -1,0 +1,14 @@
+<div class="container-checkbox">
+  <div class="checkmark" [class.active]="isActive">
+    <em class="material-icons" *ngIf="isActive">done</em>
+  </div>
+  <div>
+    <input
+      class="input-chk"
+      type="button"
+      [id]="option"
+      (click)="toogleCheck()"
+    />
+    <label [for]="option" class="lbl-check">{{ option }}</label>
+  </div>
+</div>

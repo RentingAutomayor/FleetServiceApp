@@ -66,18 +66,14 @@ export class ContractService {
     return this.http.get<Contract[]>(urlGetContractByClient).toPromise()
   }
 
-  async insert(pContract: Contract): Promise<ResponseApi> {
+  insert(pContract: Contract): Observable<ResponseApi> {
     const urlInsert = `${this.URL_API}/Insert`
-    return this.http
-      .post<ResponseApi>(urlInsert, pContract, this.HttpOptions)
-      .toPromise()
+    return this.http.post<ResponseApi>(urlInsert, pContract, this.HttpOptions)
   }
 
-  async update(pContract: Contract): Promise<ResponseApi> {
+  update(pContract: Contract): Observable<ResponseApi> {
     const urlUpdate = `${this.URL_API}/Update`
-    return this.http
-      .post<ResponseApi>(urlUpdate, pContract, this.HttpOptions)
-      .toPromise()
+    return this.http.post<ResponseApi>(urlUpdate, pContract, this.HttpOptions)
   }
 
   delete(pContract: Contract): Observable<ResponseApi> {

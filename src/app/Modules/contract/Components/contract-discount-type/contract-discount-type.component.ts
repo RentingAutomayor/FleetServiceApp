@@ -24,6 +24,16 @@ export class ContractDiscountTypeComponent implements OnInit, OnChanges {
   @Output() discountWasSelected = new EventEmitter<DiscountType>()
   @Input() disableField: boolean
 
+  @Input('discountType')
+  set setDiscountSelected(discount: DiscountType) {
+    this.discountSelected = discount
+    if (this.discountSelected) {
+      this.setDataInForm(this.discountSelected)
+    } else {
+      this.frmDiscountType.reset()
+    }
+  }
+
   constructor(private contractService: ContractService) {
     this.frmDiscountType = new FormGroup({
       cmbDiscount: new FormControl('Seleccione ...'),

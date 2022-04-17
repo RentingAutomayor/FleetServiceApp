@@ -41,6 +41,8 @@ export class PersonComponent implements OnInit {
   @Input()
   isFormContact: boolean = false
 
+  isContactTypeSelected: boolean = false
+
   personToUpdate: Person = {
     id: 0,
     document: '',
@@ -102,14 +104,6 @@ export class PersonComponent implements OnInit {
 
   selectedCity: City = null
 
-  // getInfoComponent:boolean = false;
-  // @Input('getInfoComponent')
-  // set setGetInfoComponent(value:boolean){
-  //   this.getInfoComponent = value;
-  //   if(this.getInfoComponent){
-  //     this.getInformationComponent()
-  //   }
-  // }
   configComponent: ConfigPersonComponent = null
   @Input('configComponent')
   set setConfigComponent(config: ConfigPersonComponent) {
@@ -198,6 +192,8 @@ export class PersonComponent implements OnInit {
           this.isErrorInNotifyValidation = false
         }
       })
+
+      this.formPerson.controls.mustNotify.disable()
 
       this.formPerson.controls.mustNotify.valueChanges.subscribe((value) => {
         console.log(`check notify: ${value}`)
@@ -340,5 +336,10 @@ export class PersonComponent implements OnInit {
 
   setContactType(type: IContactType) {
     this.contactType = type
+    if (this.contactType) {
+      this.formPerson.controls.mustNotify.enable()
+    } else {
+      this.formPerson.controls.mustNotify.disable()
+    }
   }
 }

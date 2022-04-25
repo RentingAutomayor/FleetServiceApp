@@ -38,6 +38,9 @@ import { ConstractStates } from 'src/app/Models/ContractState'
 import { MaintenanceItemManagerService } from 'src/app/SharedComponents/Services/MaintenanceItemManager/maintenance-item-manager.service'
 import { Router } from '@angular/router'
 import { ITransactionValues } from 'src/app/Models/transactionValues.model'
+import { NotificationService } from 'src/app/SharedComponents/Services/Notification/notification.service'
+import { EmailBody } from 'src/app/Models/Emailbody'
+import { Client } from 'src/app/Models/Client'
 
 @Component({
   selector: 'app-work-order',
@@ -90,6 +93,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     private branchService: BranchService,
     private maintenanceRoutineService: MaintenanceRoutineService,
     private maintenanceItemService: MaintenanceItemService,
+    private notificationService: NotificationService,
     private movementService: MovementService,
     private transactionService: TransactionService,
     private quotaService: QuotaService,
@@ -449,6 +453,35 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     return this.sharedFunctions.formatNumberToString(oNumber)
   }
 
+
+  async sendEmail(args? : Transaction) {
+
+    const {contacts} : Client = await this.ClientService.getClientById(this.contractSelected.client.id);
+
+    const trxresptmp : Transaction[] = await this.transactionService.getTransactionsByDealerOrClient(
+      args.headerDetails.dealer.id,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+      ).toPromise();
+
+    const emailBody : EmailBody = {
+      nameMessage: 'Fleet Service',
+      emailReceiver: contacts.filter (c => c.mustNotify == true).map (c => c.email),
+      typemessage: args.movement.id,
+      nOrderwork: trxresptmp[0].code,
+      nDealer: args.headerDetails.dealer.name
+    };
+
+    if(emailBody.emailReceiver.length > 0){
+      this.notificationService.sendMail(emailBody).subscribe((res) =>{
+      });
+    }
+  }
+
   async saveWorkOrder() {
     try {
       if (
@@ -473,6 +506,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
                 .subscribe((response) => {
                   const rta = response
                   if (rta.response) {
+                    this.sendEmail(trxWorkOrder);
                     alert(rta.message)
                     this.clearBufferForm()
                     this.isAwaiting = false

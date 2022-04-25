@@ -10,10 +10,13 @@ import { CompanyType } from 'src/app/Models/CompanyType'
 import { DatePipe } from '@angular/common'
 import { DealerService } from 'src/app/Modules/dealer/Services/Dealer/dealer.service'
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
+import { NotificationService } from 'src/app/SharedComponents/Services/Notification/notification.service'
 import { Movement, Movements } from 'src/app/Models/Movement'
 import { MovementService } from '../../../movement/Services/Movement/movement.service'
 import { TransactionDetail } from 'src/app/Models/TransactionDetail'
 import { TransactionObservation } from 'src/app/Models/TransactionObservation'
+import { Dealer } from 'src/app/Models/Dealer'
+import { EmailBody } from 'src/app/Models/Emailbody'
 
 @Component({
   selector: 'app-work-order-manager',
@@ -52,6 +55,7 @@ export class WorkOrderManagerComponent implements OnInit {
 
   constructor(
     private transactionService: TransactionService,
+    private notificationService: NotificationService,
     private datePipe: DatePipe,
     private dealerService: DealerService,
     private clientService: ClientService,
@@ -286,6 +290,27 @@ export class WorkOrderManagerComponent implements OnInit {
     }
   }
 
+  async sendEmail(args? : Transaction) {
+
+    const client_id = args.client.id;
+    const code_ordertx = args.headerDetails.relatedTransaction.code;
+
+    const {contacts} : Dealer = await this.clientService.getClientById(client_id);
+
+    const emailBody : EmailBody = {
+      nameMessage: 'Fleet Service',
+      emailReceiver: contacts.filter (c => c.mustNotify == true).map (c => c.email),
+      typemessage: args.movement.id,
+      nOrderwork: code_ordertx,
+    };
+
+    if(emailBody.emailReceiver.length > 0){
+      this.notificationService.sendMail(emailBody).subscribe((res) =>{
+        console.log(res);
+      });
+    }
+  }
+
   async finalizeWorkOrder() {
     try {
       this.isAwaiting = true
@@ -298,11 +323,12 @@ export class WorkOrderManagerComponent implements OnInit {
         movement,
         txtObservationApprobation.value
       )
-
+      this.sendEmail(trxApproveWorkOrder);
       this.transactionService
         .processTransaction(trxApproveWorkOrder)
         .subscribe((rta) => {
           if (rta.response) {
+            this.sendEmail(trxApproveWorkOrder);
             alert(rta.message)
             this.getDataTransactions()
             this.closePopUp('container__FinalizeWorkOrder')

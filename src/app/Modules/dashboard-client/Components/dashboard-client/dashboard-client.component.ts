@@ -6,10 +6,14 @@ import { SharedFunction } from 'src/app/Models/SharedFunctions'
 import { Transaction } from 'src/app/Models/Transaction'
 import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service'
 import { MovementService } from '../../../movement/Services/Movement/movement.service'
+import { DealerService } from 'src/app/Modules/dealer/Services/Dealer/dealer.service'
+import { NotificationService } from 'src/app/SharedComponents/Services/Notification/notification.service'
 import { TransactionDetail } from 'src/app/Models/TransactionDetail'
 import { TransactionObservation } from 'src/app/Models/TransactionObservation'
 import { SessionUser } from 'src/app/Models/SessionUser'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
+import { Dealer } from 'src/app/Models/Dealer'
+import { EmailBody } from 'src/app/Models/Emailbody'
 
 @Component({
   selector: 'app-dashboard-client',
@@ -31,6 +35,8 @@ export class DashboardClientComponent implements OnInit {
   transactionSelected: Transaction
 
   constructor(
+    private notificationService: NotificationService,
+    private dealerService: DealerService,
     private transactionService: TransactionService,
     private movementService: MovementService
   ) {
@@ -113,6 +119,25 @@ export class DashboardClientComponent implements OnInit {
     this.trx_id = trx.id
   }
 
+  async sendEmail(args? : Transaction) {
+
+    const dealer_id = args.headerDetails.relatedTransaction.headerDetails.dealer.id;
+    const code_ordertx = args.headerDetails.relatedTransaction.code;
+    const {contacts} : Dealer = await this.dealerService.getDealerById(dealer_id).toPromise();
+
+    const emailBody : EmailBody = {
+      nameMessage: 'Fleet Service',
+      emailReceiver: contacts.filter (c => c.mustNotify == true).map (c => c.email),
+      typemessage: args.movement.id,
+      nOrderwork: code_ordertx,
+    };
+
+    if(emailBody.emailReceiver.length > 0){
+      this.notificationService.sendMail(emailBody).subscribe((res) =>{
+      });
+    }
+  }
+
   approveWorkOrder() {
     this.isAwaiting = true
     const movement = this.lsMovements.find(
@@ -128,6 +153,7 @@ export class DashboardClientComponent implements OnInit {
       .processTransaction(trxApproveWorkOrder)
       .subscribe((rta) => {
         if (rta.response) {
+          this.sendEmail(trxApproveWorkOrder);
           alert(rta.message)
           this.getTransactionsToApprove(this.client.id)
           this.closePopUp('container__Approbation')
@@ -152,6 +178,7 @@ export class DashboardClientComponent implements OnInit {
         .processTransaction(trxApproveWorkOrder)
         .subscribe((rta) => {
           if (rta.response) {
+            this.sendEmail(trxApproveWorkOrder);
             alert(rta.message)
             this.getTransactionsToApprove(this.client.id)
             this.closePopUp('container__Cancelation')

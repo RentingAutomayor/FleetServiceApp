@@ -1,5 +1,6 @@
 
 <div class="container__menu" id="container__menu">
+  <div>
     <div class="container__user">
         <div class="container__user-img">
             <img src="assets/user.png" alt="user">
@@ -10,13 +11,22 @@
         </div>
     </div>
     <hr>
-    <a class="item-navigation" 
-        routerLink="/Home" 
-        routerLinkActive="item-nav-active">Inicio</a>    
-  
-    <a *ngFor="let module of moduleFathers" 
-        id="{{module.moduleDescription}}" 
-        class="item-navigation" 
-        routerLink="{{module.path}}" 
-        routerLinkActive="item-nav-active">{{ module.moduleName }}</a>
+
+      <div>
+        <a class="item-navigation"
+        routerLink="/Home"
+        routerLinkActive="item-nav-active">Inicio</a>
+
+        <a *ngFor="let module of moduleFathers"
+            id="{{module.moduleDescription}}"
+            class="item-navigation"
+            routerLink="{{module.path}}"
+            routerLinkActive="item-nav-active">{{ module.moduleName }}</a>
+      </div>
+  </div>
+
+    <div class="copyright_footer">
+      Desarrollado por sinapasis Tecnologies
+    </div>
+
 </div>

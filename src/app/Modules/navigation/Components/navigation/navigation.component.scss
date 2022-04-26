@@ -9,6 +9,9 @@
   overflow-x: hidden;
   padding-top: 70px;
   transition: 1s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
 }
 
 .container__menu a {
@@ -86,6 +89,13 @@
   cursor: pointer;
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.copyright_footer {
+
+    color: #ffff ;
+    font-size: 12px;
+    text-align: center;
 }
 
 // @media only screen and(max-width: 600px) {

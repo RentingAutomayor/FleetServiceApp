@@ -14,6 +14,7 @@ import { SessionUser } from 'src/app/Models/SessionUser'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { Dealer } from 'src/app/Models/Dealer'
 import { EmailBody } from 'src/app/Models/Emailbody'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-dashboard-client',
@@ -154,7 +155,12 @@ export class DashboardClientComponent implements OnInit {
       .subscribe((rta) => {
         if (rta.response) {
           this.sendEmail(trxApproveWorkOrder);
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.response,
+            showConfirmButton: true,
+          })
           this.getTransactionsToApprove(this.client.id)
           this.closePopUp('container__Approbation')
         }
@@ -179,7 +185,12 @@ export class DashboardClientComponent implements OnInit {
         .subscribe((rta) => {
           if (rta.response) {
             this.sendEmail(trxApproveWorkOrder);
-            alert(rta.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: rta.response,
+              showConfirmButton: true,
+            })
             this.getTransactionsToApprove(this.client.id)
             this.closePopUp('container__Cancelation')
           }

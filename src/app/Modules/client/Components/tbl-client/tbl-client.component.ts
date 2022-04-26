@@ -10,6 +10,7 @@ import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { ActionType } from 'src/app/Models/ActionType'
 import { saveInStorage } from 'src/app/Utils/storage'
 import { FormControl } from '@angular/forms'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-tbl-client',
@@ -64,7 +65,12 @@ export class TblClientComponent implements OnInit {
       })
     } catch (err) {
       console.error(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 
@@ -101,7 +107,12 @@ export class TblClientComponent implements OnInit {
       this.router.navigate(['/MasterClients/Client', pId])
     } catch (err) {
       console.error(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 
@@ -113,26 +124,52 @@ export class TblClientComponent implements OnInit {
       this.router.navigate(['/MasterClients/Client', pId])
     } catch (err) {
       console.error(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 
   deleteClient(pClient: Client) {
     try {
-      if (confirm('¿Está seguro que desea eliminar este cliente?')) {
-        this.isAwaiting = true
-        this.clientService.deleteClient(pClient).then((response) => {
-          const rta = response
-          this.isAwaiting = false
-          if (rta.response) {
-            alert(rta.message)
-            this.initComponents()
-          }
-        })
-      }
+
+      Swal.fire({
+        title: 'Estas Seguro?',
+        text: "No puedes revertir esto!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Si, Eliminar!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.isAwaiting = true
+          this.clientService.deleteClient(pClient).then((response) => {
+            const rta = response
+            this.isAwaiting = false
+            if (rta.response) {
+              Swal.fire(
+                'Deleted!',
+                rta.message,
+                'success'
+              )
+              this.initComponents()
+            }
+          })
+        }
+      })
     } catch (err) {
       console.error(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 

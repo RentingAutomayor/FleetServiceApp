@@ -13,6 +13,7 @@ import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenan
 import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit'
 import { PresentationUnits } from 'src/app/Models/enumPresentationUnit'
 import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-presentation-unit',
@@ -82,7 +83,12 @@ export class PresentationUnitComponent implements OnInit {
       this.getPresentationUnits()
     } catch (err) {
       console.error(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 

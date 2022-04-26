@@ -41,6 +41,7 @@ import { ITransactionValues } from 'src/app/Models/transactionValues.model'
 import { NotificationService } from 'src/app/SharedComponents/Services/Notification/notification.service'
 import { EmailBody } from 'src/app/Models/Emailbody'
 import { Client } from 'src/app/Models/Client'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-work-order',
@@ -507,7 +508,12 @@ export class WorkOrderComponent implements OnInit, OnChanges {
                   const rta = response
                   if (rta.response) {
                     this.sendEmail(trxWorkOrder);
-                    alert(rta.message)
+                    Swal.fire({
+                      position: 'center',
+                      icon: 'success',
+                      title: rta.message,
+                      showConfirmButton: true,
+                    })
                     this.clearBufferForm()
                     this.isAwaiting = false
                     this.workOrderWasSaved.emit(true)

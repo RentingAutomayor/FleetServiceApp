@@ -16,6 +16,7 @@ import { PersonService } from '../Services/Person/person.service'
 import { Dealer } from 'src/app/Models/Dealer'
 import { ActionType } from 'src/app/Models/ActionType'
 import { BranchService } from '../Services/Branch/branch.service'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-branch',
@@ -156,7 +157,12 @@ export class BranchComponent implements OnInit {
       }
     } catch (err) {
       console.warn(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 
@@ -242,7 +248,12 @@ export class BranchComponent implements OnInit {
       }
     } catch (err) {
       console.warn(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 

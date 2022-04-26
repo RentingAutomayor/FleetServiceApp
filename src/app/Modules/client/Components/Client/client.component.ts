@@ -20,6 +20,7 @@ import { Branch } from 'src/app/Models/Branch'
 import { Vehicle } from 'src/app/Models/Vehicle'
 import { ContractualInformation } from 'src/app/Models/ContractualInformation'
 import { MatVerticalStepper, MatStep } from '@angular/material/stepper'
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-client',
@@ -258,7 +259,12 @@ export class ClientComponent implements OnInit {
       this.clientService.insertClient(this.client).subscribe(
         (rta) => {
           if (rta.response) {
-            alert(rta.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: rta.message,
+              showConfirmButton: true,
+            })
             this.isAwaiting = false
             this.routerService.navigate([this.ROUTE_MASTER_CLIENT])
           }
@@ -274,7 +280,12 @@ export class ClientComponent implements OnInit {
       this.clientService.updateClient(this.client).subscribe(
         (rta) => {
           if (rta.response) {
-            alert(rta.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: rta.message,
+              showConfirmButton: true,
+            })
             this.isAwaiting = false
             this.routerService.navigate([this.ROUTE_MASTER_CLIENT])
           }

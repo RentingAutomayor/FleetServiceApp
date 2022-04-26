@@ -9,6 +9,7 @@ import { ActionType } from 'src/app/Models/ActionType'
 import { ContractStateService } from '../../Services/contract-state.service'
 import { saveInStorage } from 'src/app/Utils/storage'
 import { FormControl } from '@angular/forms'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-tbl-contract',
@@ -136,7 +137,12 @@ export class TblContractComponent implements OnInit {
       this.isAwaiting = true
       this.contractService.delete(pContract).subscribe((rta) => {
         if (rta.response) {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.getListContracts()
         }
         this.isAwaiting = false

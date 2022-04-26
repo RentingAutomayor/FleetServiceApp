@@ -10,6 +10,7 @@ import { FormGroup, FormControl } from '@angular/forms'
 import { Router } from '@angular/router'
 import { Movement } from 'src/app/Models/Movement'
 import { ResponseApi } from 'src/app/Models/ResponseApi'
+import Swal from 'sweetalert2'
 import { MovementService } from '../../Services/Movement/movement.service'
 
 @Component({
@@ -114,7 +115,12 @@ export class MovementComponent implements OnInit, OnChanges {
       this.isAwaiting = false
 
       if (rta.response) {
-        alert(rta.message)
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: rta.message,
+          showConfirmButton: true,
+        })
         this.router.navigate(['/MasterMovements'])
       }
     } catch (error) {

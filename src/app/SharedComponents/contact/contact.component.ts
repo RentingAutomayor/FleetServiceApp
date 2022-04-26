@@ -8,6 +8,7 @@ import { JobTitle } from 'src/app/Models/JobTitle'
 import { Dealer } from 'src/app/Models/Dealer'
 import { ActionType } from 'src/app/Models/ActionType'
 import { ContactService } from '../Services/Contact/contact.service'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-contact',
@@ -163,7 +164,12 @@ export class ContactComponent implements OnInit {
       }
     } catch (err) {
       console.error(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 
@@ -269,7 +275,12 @@ export class ContactComponent implements OnInit {
       }
     } catch (err) {
       console.error(err.error.Message)
-      alert(err.error.Message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.error.Message,
+        footer: '</a>Consulte con Soporte el problema</a>'
+      })
     }
   }
 

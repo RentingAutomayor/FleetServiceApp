@@ -5,6 +5,7 @@ import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
 import { MaintenanceRoutineManagerService } from 'src/app/SharedComponents/Services/MaintenanceRoutineManager/maintenance-routine-manager.service'
 import { MaintenanceItemManagerService } from 'src/app/SharedComponents/Services/MaintenanceItemManager/maintenance-item-manager.service'
 import { ITransactionValues } from 'src/app/Models/transactionValues.model'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-tbl-check-items-for-routine',
@@ -180,7 +181,11 @@ export class TblCheckItemsForRoutineComponent implements OnInit {
     if (amountValue < 0) {
       event.target.value = 0
       this.updateAmoutByItem(0, item)
-      alert('No se permiten cantidades negativas')
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'No se permiten cantidades negativas'
+      })
     }
     this.updateAmoutByItem(amountValue, item)
   }

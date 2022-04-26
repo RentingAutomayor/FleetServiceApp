@@ -7,6 +7,7 @@ import { Contract } from 'src/app/Models/Contract'
 import { ContractStateService } from '../../Services/contract-state.service'
 import { BehaviorSubject } from 'rxjs'
 import { IVehicleStatus } from 'src/app/Models/IVehicleStatus'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-tbl-check-vehicles',

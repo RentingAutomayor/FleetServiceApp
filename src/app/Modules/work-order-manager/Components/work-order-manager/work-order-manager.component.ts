@@ -17,6 +17,7 @@ import { TransactionDetail } from 'src/app/Models/TransactionDetail'
 import { TransactionObservation } from 'src/app/Models/TransactionObservation'
 import { Dealer } from 'src/app/Models/Dealer'
 import { EmailBody } from 'src/app/Models/Emailbody'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-work-order-manager',
@@ -329,7 +330,12 @@ export class WorkOrderManagerComponent implements OnInit {
         .subscribe((rta) => {
           if (rta.response) {
             this.sendEmail(trxApproveWorkOrder);
-            alert(rta.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: rta.message,
+              showConfirmButton: true,
+            })
             this.getDataTransactions()
             this.closePopUp('container__FinalizeWorkOrder')
           }
@@ -357,7 +363,12 @@ export class WorkOrderManagerComponent implements OnInit {
         .processTransaction(trxApproveWorkOrder)
         .subscribe((rta) => {
           if (rta.response) {
-            alert(rta.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: rta.message,
+              showConfirmButton: true,
+            })
             this.getDataTransactions()
             this.closePopUp('container__Cancelation')
           }

@@ -159,7 +159,8 @@ export class WorkOrderManagerComponent implements OnInit {
           this.state_to_filter
         )
         .subscribe((dataTrx) => {
-          this.lsWorkOrderByDealer = dataTrx
+
+          this.lsWorkOrderByDealer = dataTrx.filter( data => data.transactionState.id != 3 );
         })
       this.isAwaiting = false
     } catch (error) {
@@ -413,11 +414,22 @@ export class WorkOrderManagerComponent implements OnInit {
     this.frmCancelTrx.reset()
   }
 
-  validateContainerControls(workOrder: Transaction): boolean {
-    let response = false
+  validateContainerControls(workOrder: Transaction): number {
+    let response = 0
 
+    //type 1 info + edit + cancel
     if (workOrder.transactionState.name.toUpperCase() == 'APROBADA') {
-      response = true
+      response = 1
+    }
+
+    // type 2 info + edit
+    if(workOrder.transactionState.name.toUpperCase() == 'PENDIENTE'){
+      response = 2
+    }
+
+    // type 3 info + cancel
+    if(workOrder.transactionState.name.toUpperCase() == 'RECHAZADA'){
+      response = 3
     }
 
     return response

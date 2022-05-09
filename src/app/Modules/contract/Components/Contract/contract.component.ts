@@ -28,11 +28,8 @@ import { ContractStateService } from '../../Services/contract-state.service'
 import { Vehicle } from 'src/app/Models/Vehicle'
 import { getFromStorage } from 'src/app/Utils/storage'
 import { Action } from 'rxjs/internal/scheduler/Action'
-<<<<<<< HEAD
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast'
-=======
 import Swal from 'sweetalert2'
->>>>>>> fea-0001-alerts
 
 @Component({
   selector: 'app-contract',
@@ -459,7 +456,6 @@ export class ContractComponent implements OnInit, OnChanges {
         }
       }
     } catch (error) {
-<<<<<<< HEAD
       this.isErrorVisible = true
       this.errorTitle = `Se ha encontrado una inconsistencia dentro de la información del contrato.`
       this.errorDescription = `${error}`
@@ -473,7 +469,12 @@ export class ContractComponent implements OnInit, OnChanges {
     if (this.isToUpdate) {
       this.contractService.update(pContract).subscribe({
         next: (rta) => {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.isAwaiting = false
           this.contracStateService.resetContractInformation()
           this.router.navigate(['/MasterContracts'])
@@ -488,7 +489,12 @@ export class ContractComponent implements OnInit, OnChanges {
     } else {
       this.contractService.insert(pContract).subscribe({
         next: (rta) => {
-          alert(rta.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: rta.message,
+            showConfirmButton: true,
+          })
           this.isAwaiting = false
           this.contracStateService.resetContractInformation()
           this.router.navigate(['/MasterContracts'])
@@ -499,53 +505,6 @@ export class ContractComponent implements OnInit, OnChanges {
           this.errorTitle = `Error creando contrato`
           this.errorDescription = `Se ha producido un error intentando guardar el contrato en la base de datos.  ${err.error.Message}`
         },
-=======
-      console.warn(error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error,
-        footer: '</a>Consulte con Soporte el problema</a>'
-      })
-    }
-  }
-
-  async saveData(pContract: Contract) {
-    try {
-      console.warn('[saveData - Contract]', pContract)
-      this.isAwaiting = true
-      let rta = new ResponseApi()
-      if (this.isToUpdate) {
-        rta = await this.contractService.update(pContract)
-      } else {
-        rta = await this.contractService.insert(pContract)
-        const lastContract =
-          await this.contractService.getLastContractByClientAndDealer(
-            pContract.client.id,
-            pContract.dealer.id
-          )
-        this.contractService.setContract(lastContract)
-      }
-
-      if (rta.response) {
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: rta.message,
-          showConfirmButton: true,
-        })
-        this.router.navigate(['/MasterContracts'])
-        this.isAwaiting = false
-      }
-    } catch (error) {
-      this.isAwaiting = false
-      console.error(error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: `Se ha producido un error guardando el contrato: ${error}`,
-        footer: '</a>Consulte con Soporte el problema</a>'
->>>>>>> fea-0001-alerts
       })
     }
   }

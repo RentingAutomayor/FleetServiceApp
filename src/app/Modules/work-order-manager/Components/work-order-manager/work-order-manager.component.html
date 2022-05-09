@@ -139,23 +139,52 @@
 
             <div
               class="container__controls"
-              *ngIf="validateContainerControls(workOrder) && isDealer"
+              [ngSwitch]="validateContainerControls(workOrder)"
             >
-              <i
-                class="fas fa-check-circle text-success"
-                (click)="
-                  setTransaction(workOrder);
-                  openPopUp('container__FinalizeWorkOrder')
-                "
-                title="Finalizar"
-              ></i>
-              <i
-                class="fas fa-times-circle text-danger"
-                (click)="
-                  setTransaction(workOrder); openPopUp('container__Cancelation')
-                "
-                title="Anular"
-              ></i>
+            <!-- esto es para el aprobado -->
+             <div *ngIf="isDealer">
+                    <div *ngSwitchCase="1" >
+                      <i
+                      class="fas fa-check-circle text-success"
+                      (click)="
+                        setTransaction(workOrder);
+                        openPopUp('container__FinalizeWorkOrder')
+                      "
+                      title="Finalizar"
+                    ></i>
+                    <i
+                      class="fas fa-times-circle text-danger"
+                      (click)="
+                        setTransaction(workOrder); openPopUp('container__Cancelation')
+                      "
+                      title="Anular"
+                    ></i>
+                  </div>
+                </div>
+                <!-- esto es para el pendiente -->
+                <div *ngIf="isDealer">
+                  <div *ngSwitchCase="2" >
+                  <i
+                    class="fas fa-times-circle text-danger"
+                    (click)="
+                      setTransaction(workOrder); openPopUp('container__Cancelation')
+                    "
+                    title="Anular"
+                  ></i>
+                </div>
+              </div>
+              <!-- esto es para el Rechazado -->
+              <div *ngIf="isDealer">
+                <div *ngSwitchCase="3" >
+                <i
+                  class="far fa-edit"
+                  (click)="
+                    setTransaction(workOrder); openPopUp('container__Cancelation')
+                  "
+                  title="Editar"
+                ></i>
+              </div>
+             </div>
             </div>
             <!-- <i class="fas fa-trash-alt text-danger" title="Eliminar"></i> -->
           </td>

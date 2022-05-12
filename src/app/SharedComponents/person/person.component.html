@@ -8,7 +8,10 @@
           class="form-control"
           placeholder="Documento ..."
           formControlName="document"
-          (keypress)="validateTyping($event, 'numbers')"
+          appOnlyNumbers
+          (blur)="refactoryID($event)"
+          (click)="focusOnLenght"
+          [maxlength]="maxLength"
         />
         <div
           class="error"

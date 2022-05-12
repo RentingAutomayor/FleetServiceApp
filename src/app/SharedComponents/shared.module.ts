@@ -30,6 +30,7 @@ import { CalculatePriceWithoutDiscountPipe } from './Pipes/calculate-price-witho
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { ContactTypeComponent } from './contact-type/contact-type.component'
 import { InputCheckboxComponent } from './input-checkbox/input-checkbox.component'
+import { OnlyNumbersDirective } from './directivas/only-numbers.directive'
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { InputCheckboxComponent } from './input-checkbox/input-checkbox.componen
     CalculatePriceWithoutDiscountPipe,
     ContactTypeComponent,
     InputCheckboxComponent,
+    OnlyNumbersDirective,
   ],
   imports: [
     CommonModule,
@@ -92,6 +94,7 @@ import { InputCheckboxComponent } from './input-checkbox/input-checkbox.componen
     CalculateDiscountPipe,
     CalculatePriceWithoutDiscountPipe,
     InputCheckboxComponent,
+    OnlyNumbersDirective,
   ],
   providers: [CalculateTotalPricePipe],
 

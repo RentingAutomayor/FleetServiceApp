@@ -26,6 +26,7 @@ export class QuotaManagementComponent implements OnInit {
   lsClientsWithoutQuota: Client[] = []
   lsClientsWithQuota: FinancialInformation[] = []
   lsTodayTransactions: Transaction[] = []
+  lsTodayTransactionsFilter: Transaction[] = []
 
   lsMovements: Movement[] = []
   clientSelected: Client
@@ -33,6 +34,8 @@ export class QuotaManagementComponent implements OnInit {
   frmFreeUpQuota: FormGroup
   frmAddQuota: FormGroup
   frmCancelQuota: FormGroup
+
+  txtFilter: FormControl = new FormControl()
 
   CREACION_DE_CUPO = 1
   ADICION_DE_CUPO = 2
@@ -49,11 +52,19 @@ export class QuotaManagementComponent implements OnInit {
     private movementService: MovementService,
     private trxService: TransactionService
   ) {
+    this.txtFilter.valueChanges.subscribe((text) => {
+      let tempText : string
+      tempText = text
+      console.log("soy", text)
+      this.lsTodayTransactionsFilter =  this.lsTodayTransactions.filter(
+          (trx) => trx.client.name.toLocaleUpperCase().match(tempText.toLocaleUpperCase()) )
+    })
     this.frmApprovedQuota = new FormGroup({
       txtApprovedQuotaClient: new FormControl(''),
       txtApprovedQuota: new FormControl('', [Validators.required]),
       txtApprovedQuotaObservation: new FormControl(''),
-    })
+    }
+    )
 
     this.frmFreeUpQuota = new FormGroup({
       txtFreeUpQuotaClient: new FormControl(''),
@@ -93,6 +104,12 @@ export class QuotaManagementComponent implements OnInit {
     this.getLsMovements()
     this.isAwaiting = false
   }
+
+  cleanFilter(){
+    this.txtFilter.setValue("");
+    this.lsTodayTransactionsFilter = this.lsTodayTransactions
+  }
+
 
   getLsClientsWithoutQuota() {
     this.quotaService.getClientsWithoutQuota().subscribe((clients) => {

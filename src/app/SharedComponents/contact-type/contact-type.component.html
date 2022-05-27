@@ -1,13 +1,17 @@
 <div class="container-contact-type">
   <label>Tipo de contacto</label>
-  <select
-    class="browser-default custom-select"
-    [formControl]="cmbTypes"
-    [disabled]="isDisabled"
-  >
-    <option value="0">Seleccione ...</option>
-    <option *ngFor="let type of types" [value]="type.id">
-      {{ type.name }}
-    </option>
-  </select>
+
+  <span class="example-list-section">
+    <form [formGroup]="typemodel" (ngSubmit)="submit()" >
+      <ul>
+        <li *ngFor="let type of types">
+          <mat-checkbox [disabled]="isDisabled" (change)="onCheckboxChange(type.id, type.name, $event)"  formArrayName="selectedTypes">
+            {{type.name}}
+          </mat-checkbox  >
+        </li>
+        <button>test</button>
+      </ul>
+    </form>
+  </span>
+
 </div>

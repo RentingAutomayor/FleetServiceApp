@@ -1,6 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { ReactiveFormsModule } from '@angular/forms'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination'
 
 import { BranchComponent } from './branch/branch.component'
@@ -30,6 +30,9 @@ import { CalculatePriceWithoutDiscountPipe } from './Pipes/calculate-price-witho
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { ContactTypeComponent } from './contact-type/contact-type.component'
 import { InputCheckboxComponent } from './input-checkbox/input-checkbox.component'
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatListModule} from '@angular/material/list';
+
 
 @NgModule({
   declarations: [
@@ -62,9 +65,12 @@ import { InputCheckboxComponent } from './input-checkbox/input-checkbox.componen
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     NgxPaginationModule,
     MatButtonModule,
     MatSlideToggleModule,
+    MatCheckboxModule,
+    MatListModule
   ],
   exports: [
     BranchComponent,
@@ -92,6 +98,8 @@ import { InputCheckboxComponent } from './input-checkbox/input-checkbox.componen
     CalculateDiscountPipe,
     CalculatePriceWithoutDiscountPipe,
     InputCheckboxComponent,
+    MatCheckboxModule,
+    MatListModule
   ],
   providers: [CalculateTotalPricePipe],
 

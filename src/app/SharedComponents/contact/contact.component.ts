@@ -1,3 +1,6 @@
+import { variable } from '@angular/compiler/src/output/output_ast';
+import { ContactWithTypeDTO } from 'src/app/Models/ContactWithTypeDTO';
+import { ContactType } from './../../Models/ContactType';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { Client } from 'src/app/Models/Client'
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent'
@@ -9,6 +12,7 @@ import { Dealer } from 'src/app/Models/Dealer'
 import { ActionType } from 'src/app/Models/ActionType'
 import { ContactService } from '../Services/Contact/contact.service'
 import Swal from 'sweetalert2'
+import { ContactTypeService } from '../Services/ContactType/contacttype.service'
 
 @Component({
   selector: 'app-contact',
@@ -28,6 +32,7 @@ export class ContactComponent implements OnInit {
   buttonsAreVisibles = true
   // pagination
   p = 1
+  selectedContactTypes: ContactType[] = []
 
   @Input() disableActionButtons: boolean
 
@@ -68,7 +73,9 @@ export class ContactComponent implements OnInit {
 
   constructor(
     private personService: PersonService,
-    private contactService: ContactService
+    private contactService: ContactService,
+    private ContactTypeService : ContactTypeService
+
   ) {
     this.sOwnerName = ''
     this.disableActionButtons = false
@@ -78,6 +85,10 @@ export class ContactComponent implements OnInit {
 
   ngOnInit(): void {
     this.initComponents()
+    this.ContactTypeService.dispContactType.subscribe( data => {
+      console.log(data.selectedTypes.value)
+      this.selectedContactTypes = data.selectedTypes.value;
+    })
   }
 
   initComponents() {
@@ -188,6 +199,7 @@ export class ContactComponent implements OnInit {
           (newContact) => {
             this.lsContacts.unshift(newContact)
             this.isAwaiting = false
+            this.saveContactWithType(newContact, this.selectedContactTypes);
           },
           (err) => {
             this.isErrorVisible = true
@@ -226,6 +238,22 @@ export class ContactComponent implements OnInit {
     this.hidePopUp()
 
     this.onContactsWereModified.emit(this.lsContacts)
+  }
+
+  saveContactWithType(contact : CreateContactDTO, selectedContactTypes : ContactType[]) {
+
+    const tempContact = new ContactWithTypeDTO()
+    tempContact.contact = contact
+    tempContact.contactType = selectedContactTypes
+    console.log(JSON.stringify(tempContact))
+    this.contactService.insertContactWithType(tempContact).subscribe(
+       (newContact) => {
+         console.log(newContact)
+       }
+     ),(err: any) => {
+        console.log(err)
+     }
+
   }
 
   completeContactInformationWithOwner(
@@ -296,7 +324,6 @@ export class ContactComponent implements OnInit {
     oContact.city = oPerson.city != null ? oPerson.city : null
     oContact.Dealer_id = this.dealer != null ? this.dealer.id : null
     oContact.Client_id = this.client != null ? this.client.id : null
-    oContact.type = oPerson.type
     oContact.mustNotify = oPerson.mustNotify
 
     return oContact

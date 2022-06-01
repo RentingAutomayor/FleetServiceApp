@@ -14,6 +14,35 @@
         </app-person>
       </div>
     </mat-step>
+
+    <mat-step>
+      <ng-template matStepLabel>Sucursales</ng-template>
+      <app-branch
+        [dealer]="oDealerToUpdate"
+        [branchs]="lsBranches"
+        [action]="action"
+        [disableActionButtons]="blockFormDealer"
+        (onBranchsWereModified)="updateBranchesToDealer($event)">
+      </app-branch>
+      <div class="container-step-buttons">
+        <button
+          matStepperPrevious
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Atás
+        </button>
+        <button
+          matStepperNext
+          type="button"
+          mat-raised-button
+          color="primary"
+          class="btn-step">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
     <mat-step>
       <ng-template matStepLabel>Contactos</ng-template>
       <app-contact
@@ -42,34 +71,6 @@
         </button>
       </div>
 
-    </mat-step>
-    <mat-step>
-      <ng-template matStepLabel>Sucursales</ng-template>
-      <app-branch
-        [dealer]="oDealerToUpdate"
-        [branchs]="lsBranches"
-        [action]="action"
-        [disableActionButtons]="blockFormDealer"
-        (onBranchsWereModified)="updateBranchesToDealer($event)">
-      </app-branch>
-      <div class="container-step-buttons">
-        <button
-          matStepperPrevious
-          type="button"
-          mat-raised-button
-          color="primary"
-          class="btn-step">
-          Atás
-        </button>
-        <button
-          matStepperNext
-          type="button"
-          mat-raised-button
-          color="primary"
-          class="btn-step">
-          Siguiente
-        </button>
-      </div>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>Precios por insumo</ng-template>

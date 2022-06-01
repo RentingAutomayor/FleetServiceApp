@@ -33,6 +33,7 @@ import { InputCheckboxComponent } from './input-checkbox/input-checkbox.componen
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatListModule} from '@angular/material/list';
 
+import { OnlyNumbersDirective } from './directivas/only-numbers.directive'
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import {MatListModule} from '@angular/material/list';
     CalculatePriceWithoutDiscountPipe,
     ContactTypeComponent,
     InputCheckboxComponent,
+    OnlyNumbersDirective,
   ],
   imports: [
     CommonModule,
@@ -99,7 +101,8 @@ import {MatListModule} from '@angular/material/list';
     CalculatePriceWithoutDiscountPipe,
     InputCheckboxComponent,
     MatCheckboxModule,
-    MatListModule
+    MatListModule,
+    OnlyNumbersDirective,
   ],
   providers: [CalculateTotalPricePipe],
 

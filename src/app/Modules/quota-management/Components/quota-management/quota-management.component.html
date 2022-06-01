@@ -38,7 +38,7 @@
       >
         <span>Transacciones de hoy</span
         ><span class="quantity dark-yellow">{{
-          lsTodayTransactions.length
+          lsTodayTransactionsFilter.length
         }}</span>
       </div>
       <div
@@ -177,6 +177,17 @@
 
   <div id="container__transactions" class="element-to-hide container__tab">
     <h3>Transacciones del día</h3>
+    <div class="transactionstodayfilter">
+      <input
+      [formControl]="txtFilter"
+      type="text"
+      class="form-control"
+      placeholder="Cliente"
+      />
+      <button type="button" class="btn btn-danger" (click)="cleanFilter();" >
+        Borrar filtro
+      </button>
+    </div>
     <table class="table table-striped">
       <thead>
         <th class="col-number col-mobile-hide">#</th>
@@ -189,7 +200,7 @@
         <th class="col-mobile-hide">Acciones</th>
       </thead>
       <tbody>
-        <tr *ngFor="let index = index; let trx; of: lsTodayTransactions">
+        <tr *ngFor="let index = index; let trx; of: lsTodayTransactionsFilter">
           <td>{{ index + 1 }}</td>
           <td>{{ trx.code != null ? trx.code : trx.consecutive }}</td>
           <td>{{ trx.movement.name | titlecase }}</td>

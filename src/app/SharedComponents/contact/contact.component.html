@@ -12,7 +12,7 @@
       <th class="col-mobile-hide">Teléfono</th>
       <th class="col-mobile-hide">Celular</th>
       <th class="col-mobile-hide">Email</th>
-      <th class="col-mobile-hide">Dirección</th>
+      <!-- <th class="col-mobile-hide">Dirección</th> -->
       <th class="col-mobile-hide">Cargo</th>
       <th *ngIf="!disableActionButtons">Acciones</th>
     </thead>
@@ -30,7 +30,7 @@
         <td class="col-mobile-hide">{{ contact.phone }}</td>
         <td class="col-mobile-hide">{{ contact.cellphone }}</td>
         <td class="col-mobile-hide">{{ contact.email }}</td>
-        <td class="col-mobile-hide">{{ contact.address }}</td>
+        <!-- <td class="col-mobile-hide">{{ contact.address }}</td> -->
         <td class="col-mobile-hide">
           {{ validateJobTitle(contact.jobTitle) | titlecase }}
         </td>

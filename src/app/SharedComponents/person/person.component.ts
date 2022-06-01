@@ -7,7 +7,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core'
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup, MaxLengthValidator, NgModel, Validators } from '@angular/forms'
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent'
 import { Person } from 'src/app/Models/Person'
 import { PersonService } from '../Services/Person/person.service'
@@ -19,6 +19,8 @@ import { JobTitle } from 'src/app/Models/JobTitle'
 import { InputValidator } from 'src/app/Utils/InputValidator'
 import { ThemePalette } from '@angular/material/core'
 import { IContactType } from 'src/app/Models/IContactType'
+import { CalcDigitCheck } from 'src/app/Utils/calcDigitCheck'
+import { MAX_LENGTH_CLIENT_DOCUMENT_WHITHCHECK, MAX_LENGTH_CLIENT_DOCUMENT } from 'src/app/Utils/globalConst'
 
 @Component({
   selector: 'app-person',
@@ -144,8 +146,8 @@ export class PersonComponent implements OnInit {
             '',
             [
               Validators.required,
-              Validators.minLength(8),
-              Validators.maxLength(10),
+              Validators.minLength(9),
+              Validators.maxLength(11),
             ],
           ],
           name: ['', [Validators.required]],
@@ -330,10 +332,6 @@ export class PersonComponent implements OnInit {
     this.personWasCanceled.emit(true)
   }
 
-  validateTyping(event: any, type: string) {
-    InputValidator.validateTyping(event, type)
-  }
-
   setContactType(type: IContactType) {
     this.contactType = type
     if (this.contactType) {
@@ -342,4 +340,30 @@ export class PersonComponent implements OnInit {
       this.formPerson.controls.mustNotify.disable()
     }
   }
+
+
+  maxLength = MAX_LENGTH_CLIENT_DOCUMENT_WHITHCHECK;
+
+  focusOnLenght(){
+    this.maxLength = MAX_LENGTH_CLIENT_DOCUMENT;
+  }
+
+  refactoryID(event : Event) {
+
+    const value = (event.target as HTMLInputElement).value;
+    let tempdata = value.substring(0,9);
+
+    // si el valor es menor a 9 caracteres rellena con 0 al final
+    if (tempdata.length < 9) {
+      for (let i = tempdata.length; i < 9; i++) {
+        tempdata = tempdata + '0';
+      }
+    }
+
+    //calculo digito verificacion
+    const digitCheck = CalcDigitCheck(tempdata);
+    (event.target as HTMLInputElement).value = tempdata + "-" + digitCheck;
+
+  }
+
 }

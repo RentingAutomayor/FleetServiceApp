@@ -11,4 +11,24 @@ export class AlertService{
             confirmButtonText: 'Aceptar'
         });
     }
+
+    succes(text: string){
+        Swal.fire({
+            title: 'Exito',
+            text,
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+        });
+    }
+
+    confirmDelete(){
+        return Swal.fire({
+            title: 'Aviso',
+            text: '¿Esta seguro de realizar esta acción?',
+            icon: 'info',
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+            showCancelButton: true
+        });
+    }
 }

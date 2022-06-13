@@ -1,0 +1,105 @@
+<div id="container__content">
+  <mat-vertical-stepper [linear]="true">
+    <mat-step [completed]="true">
+      <ng-template matStepLabel>Datos básicos del usuario</ng-template>
+      <div class="card container pt-3 pb-3">
+        <form [formGroup]="userForm" (ngSubmit)="submit()">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Nombre:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Nombre"
+                  formControlName="name"
+                />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Apellido:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Apellido"
+                  formControlName="lastName"
+                />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Correo electronico</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Correo electronico"
+                  formControlName="email"
+                />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Empresa</label>
+                <select class="form-control" formControlName="companyId">
+                  <option value="">Seleccione...</option>
+                  <option *ngFor="let company of companies" [value]="company.id">
+                    {{ company.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                  <label>Nombre de usuario</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="userName"
+                  />
+                </div>
+              </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  formControlName="password"
+                />
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label>Rol</label>
+                <select formControlName="roleId" class="form-control">
+                  <option value="">Seleccione...</option>
+                  <option *ngFor="let rol of roles" [value]="rol.id">
+                    {{ rol.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="cotainer-buttons">
+            <button
+              type="button"
+              class="btn btn-danger"
+              routerLink="/MasterUsers"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success"
+              [disabled]="userForm.invalid"
+            >
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>
+<app-img-loading *ngIf="isLoading"></app-img-loading>

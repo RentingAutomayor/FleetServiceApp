@@ -1,0 +1,68 @@
+.card-body{
+    padding: 10px;
+}
+
+.container__titles{
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+.container__titles button{
+    background-color: inherit;
+    float: left;
+    border:none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 20px;
+}
+
+.container__titles button:hover{
+    background-color: #ddd;
+}
+
+.container__titles button.active{
+    background-color: #ccc;
+}
+
+
+.tab_content{
+    padding: 20px 50px;
+    border: solid 1px #ccc;
+    border-top: none;
+}
+
+
+#container__content{
+    transition: margin-left 1s;
+    padding: 20px;
+    margin-left: 250px;
+}
+
+#container__contact{
+    padding: 0;
+    margin:0 ;
+}
+.container__table__contact{
+    padding: 50px;
+}
+
+.btn-step{
+  width: 100px;
+  margin-left: 5px;
+}
+
+.container-step-buttons{
+  direction: ltr;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cotainer-buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+

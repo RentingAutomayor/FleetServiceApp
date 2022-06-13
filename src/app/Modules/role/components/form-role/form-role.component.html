@@ -1,0 +1,64 @@
+<div id="container__content">
+  <mat-vertical-stepper [linear]="true">
+    <mat-step [completed]="true">
+      <ng-template matStepLabel>Datos básicos del rol</ng-template>
+      <div class="card container pt-3 pb-3">
+        <form [formGroup]="roleForm" (ngSubmit)="submit()">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Nombre:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Nombre"
+                  formControlName="name"
+                />
+              </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                  <label>Modulos</label>
+                  <select
+                    multiple
+                    formControlName="modulesIds"
+                    class="form-control"
+                  >
+                    <option *ngFor="let module of modules" [value]="module.id">
+                      {{ module.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label>Description:</label>
+                <textarea
+                  class="form-control"
+                  formControlName="description"
+                  cols="4"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="cotainer-buttons">
+            <button
+              type="button"
+              class="btn btn-danger"
+              routerLink="/MasterRoles"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success"
+              [disabled]="roleForm.invalid"
+            >
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>

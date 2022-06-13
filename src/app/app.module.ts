@@ -12,13 +12,18 @@ import { LayoutComponent } from './layout/layout.component'
 import { LoginComponent } from './Modules/Login/Components/login/login.component'
 import { NavigationComponent } from './Modules/navigation/Components/navigation/navigation.component'
 import { SharedModule } from './SharedComponents/shared.module'
+import { AngularFireModule } from '@angular/fire'
+import { AngularFireAuthModule } from '@angular/fire/auth'
+import { environment } from 'src/environments/environment'
+import { MatDialogModule } from '@angular/material/dialog'
+import { RecoverPasswordComponent } from './Modules/Login/Components/recover-password/recover-password.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponent,
     LoginComponent,
-    LoginComponent,
+    RecoverPasswordComponent,
     LayoutComponent,
   ],
   imports: [
@@ -31,6 +36,9 @@ import { SharedModule } from './SharedComponents/shared.module'
     SharedModule,
     BrowserAnimationsModule,
     BsDatepickerModule.forRoot(),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    MatDialogModule,
   ],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

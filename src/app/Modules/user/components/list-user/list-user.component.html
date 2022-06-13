@@ -20,7 +20,6 @@
       <tr>
         <th>Nombre</th>
         <th>Apellido</th>
-        <th>Nombre de usuario</th>
         <th>Empresa</th>
         <th>Acciones</th>
       </tr>
@@ -33,7 +32,6 @@
       >
         <td>{{ user.name }}</td>
         <td>{{ user.lastName }}</td>
-        <td>{{ user.userName }}</td>
         <td>{{ user.company?.name }}</td>
         <td>
           <i class="fas fa-info-circle text-info" (click)="viewDetail(user)" title="Más información"></i>

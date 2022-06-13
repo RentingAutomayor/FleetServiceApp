@@ -1,29 +1,60 @@
-<div class="container__row" *ngIf="!Access">
-    <div class="container__img">
-        <img id="img-login" src="assets/background_login_3.jpg" alt="Fleet service App">
-    </div>
-    <div class="container__form">
-        <h1>Fleet Services</h1>
-        <p>Aplicación para gestión de cupos y mantenimientos.</p>
-        <div class="row align-items-center">
-            <div class="mx-auto box-form">
-                <div *ngIf="!Access" class=" border border-black">                   
-                    <form class="form p-4">
-                        <div class="form-group">
-                            <label for="user">User</label>
-                            <input [(ngModel)]="loginUserData.user" name="user" type="text" class="form-control"
-                                id="user" placeholder="user">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input [(ngModel)]="loginUserData.password" name="password" type="password"
-                                class="form-control" id="password" placeholder="Password">
-                        </div>
-                        <button (click)='loginUser()' class=" btn btn-outline-success my-2 my-sm-0 "
-                            type="button ">Login</button>
-                    </form>
-                </div>
+<div class="container__row">
+  <div class="container__img">
+    <img
+      id="img-login"
+      src="assets/background_login_3.jpg"
+      alt="Fleet service App"
+    />
+  </div>
+  <div class="container__form">
+    <h1>Fleet Services</h1>
+    <p>Aplicación para gestión de cupos y mantenimientos.</p>
+    <div class="row align-items-center">
+      <div class="mx-auto box-form">
+        <div class="border border-black">
+          <form class="form p-4">
+            <div class="form-group">
+              <label for="user">Correo electronico</label>
+              <input
+                [(ngModel)]="loginUserData.user"
+                name="user"
+                type="text"
+                class="form-control"
+                id="user"
+                placeholder="Correo electronico"
+              />
             </div>
+            <div class="form-group">
+              <label for="password">Contraseña</label>
+              <input
+                [(ngModel)]="loginUserData.password"
+                name="password"
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="Contraseña"
+              />
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+              <button
+                (click)="loginUser()"
+                class="btn btn-outline-success"
+                type="button "
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                (click)="recoverPassword()"
+              >
+                Cambiar Contraseña
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 </div>
+<app-img-loading *ngIf="isAwaiting"></app-img-loading>

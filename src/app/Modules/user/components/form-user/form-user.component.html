@@ -50,16 +50,6 @@
               </div>
             </div>
             <div class="col-6">
-                <div class="form-group">
-                  <label>Nombre de usuario</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="userName"
-                  />
-                </div>
-              </div>
-            <div class="col-6">
               <div class="form-group">
                 <label>Contraseña</label>
                 <input
@@ -69,7 +59,7 @@
                 />
               </div>
             </div>
-            <div class="col-12">
+            <div class="col-6">
               <div class="form-group">
                 <label>Rol</label>
                 <select formControlName="roleId" class="form-control">
@@ -77,6 +67,16 @@
                   <option *ngFor="let rol of roles" [value]="rol.id">
                     {{ rol.name }}
                   </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Estado</label>
+                <select formControlName="status" class="form-control">
+                  <option value="">Seleccione...</option>
+                  <option value="A">Activo</option>
+                  <option value="I">Inactivo</option>
                 </select>
               </div>
             </div>

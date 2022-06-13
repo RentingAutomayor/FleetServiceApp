@@ -1,14 +1,12 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { User } from '../models/user'
-// import { AngularFireAuth } from '@angular/fire/compat/auth'
-// import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
-
+import { AngularFireAuth } from '@angular/fire/auth'
 @Injectable()
 export class UserService {
   URL_API = '/API_FleetService/api/auth'
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private _auth: AngularFireAuth) {}
 
   getAll() {
     return this.http.get<User[]>(`${this.URL_API}/GetAll`)
@@ -30,12 +28,10 @@ export class UserService {
     return this.http.delete(`${this.URL_API}/DeleteById/${userId}`)
   }
 
-//   create(user: User) {
-//     const auth = getAuth()
-//     return createUserWithEmailAndPassword(
-//       auth,
-//       `${user.userName}@gmail.com`,
-//       user.password
-//     )
-//   }
+  async create(user: User) {
+    return await this._auth.createUserWithEmailAndPassword(
+      user.email,
+      user.password
+    )
+  }
 }

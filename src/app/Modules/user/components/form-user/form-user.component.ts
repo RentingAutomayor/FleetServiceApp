@@ -44,10 +44,10 @@ export class FormUser implements OnInit {
       name: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', Validators.required],
-      userName: ['', Validators.required],
       password: ['', Validators.required],
       companyId: ['', Validators.required],
       roleId: ['', Validators.required],
+      status: ['', Validators.required],
     })
   }
 
@@ -89,11 +89,18 @@ export class FormUser implements OnInit {
     const company = { id: companyId }
     this._user[isEdit ? 'save' : 'update']({ ...user, company }).subscribe(
       () => {
-        this._alert.succes(
-          `Usuario ${isEdit ? 'creado' : 'actualizado'} con exito`
-        )
-        this.isLoading = false
-        this.router.navigateByUrl('/MasterUsers')
+        if (isEdit) {
+          this._user
+            .create(this.userForm.value)
+            .then(() => {
+              this._alert.succes(
+                `Usuario ${isEdit ? 'creado' : 'actualizado'} con exito`
+              )
+              this.isLoading = false
+              this.router.navigateByUrl('/MasterUsers')
+            })
+            .catch((badRequest) => this._alert.error(badRequest.error))
+        }
       },
       (badRequest) => this._alert.error(badRequest.error.Message)
     )

@@ -34,4 +34,8 @@ export class UserService {
       user.password
     )
   }
+
+  async isExistsInFirebase(email: string){
+    return await this._auth.fetchSignInMethodsForEmail(email);
+  } 
 }

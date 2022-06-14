@@ -6,6 +6,7 @@ import { ParameterService } from 'src/app/Modules/role/services/parameter.servic
 import { RoleService } from 'src/app/Modules/role/services/role.service'
 import { AlertService } from 'src/app/services/alert.service'
 import { Company } from '../../models/company'
+import { User } from '../../models/user'
 import { UserService } from '../../services/user.service'
 
 @Component({
@@ -59,6 +60,8 @@ export class FormUser implements OnInit {
         const { company, ...user } = result
         const formUser = { companyId: company.id, ...user }
         this.userForm.setValue(formUser)
+        this.userForm.get('password').disable()
+        if (user.email) this.userForm.get('email').disable()
       },
       (badRequest) => this._alert.error(badRequest.error.Message)
     )
@@ -85,25 +88,30 @@ export class FormUser implements OnInit {
   submit(): void {
     this.isLoading = true
     const isEdit = this.userForm.get('id').value === 0
-    const { companyId, ...user } = this.userForm.value
+    const { companyId, ...user } = this.userForm.getRawValue();
     const company = { id: companyId }
     this._user[isEdit ? 'save' : 'update']({ ...user, company }).subscribe(
       () => {
-        if (isEdit) {
-          this._user
-            .create(this.userForm.value)
-            .then(() => {
-              this._alert.succes(
-                `Usuario ${isEdit ? 'creado' : 'actualizado'} con exito`
-              )
-              this.isLoading = false
-              this.router.navigateByUrl('/MasterUsers')
-            })
-            .catch((badRequest) => this._alert.error(badRequest.error))
-        }
+        this.createOnFirebase(user);
+        this._alert.succes(
+          `Usuario ${isEdit ? 'creado' : 'actualizado'} con exito`
+        )
+        this.isLoading = false
+        this.router.navigateByUrl('/MasterUsers')
       },
       (badRequest) => this._alert.error(badRequest.error.Message)
     )
+  }
+
+  createOnFirebase(user: User): void {
+    this._user
+      .isExistsInFirebase(user.email)
+      .then((result) => {
+        if(result.length == 0)
+          this._user.create(user)
+            .catch((badRequest) => this._alert.error(badRequest.message))
+      })
+      .catch((badRequest) => this._alert.error(badRequest.message))
   }
 
   getUserIdFromUrl(): void {

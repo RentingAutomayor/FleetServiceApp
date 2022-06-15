@@ -15,6 +15,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 export class LoginComponent {
   loginForm!: FormGroup
   isAwaiting: boolean = false
+  isVisibility: boolean = false
 
   constructor(
     private loginService: LoginService,
@@ -72,5 +73,9 @@ export class LoginComponent {
       (this.loginForm.get(key).dirty || this.loginForm.get(key).touched) &&
       this.loginForm.get(key).invalid
     )
+  }
+
+  toggleVisibility(): void {
+    this.isVisibility = !this.isVisibility
   }
 }

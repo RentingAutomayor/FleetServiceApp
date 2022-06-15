@@ -23,11 +23,24 @@
         <mat-form-field appearance="legacy" style="width: 100%">
           <mat-label>Contraseña</mat-label>
           <input
-            type="password"
+            [type]="isVisibility ? 'text' : 'password'"
             matInput
             formControlName="password"
             placeholder="Ingrese su contraseña"
           />
+          <button
+            type="button"
+            class="visibility"
+            mat-icon-button
+            matSuffix
+            (click)="toggleVisibility()"
+          >
+            <mat-icon
+              ><span class="material-symbols-outlined">
+                {{ isVisibility ? 'visibility_off' : 'visibility' }}
+              </span></mat-icon
+            >
+          </button>
           <mat-error *ngIf="isRequired('password')"
             >Este campo es obligatorio</mat-error
           >

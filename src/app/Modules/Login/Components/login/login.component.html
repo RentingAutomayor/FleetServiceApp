@@ -1,56 +1,51 @@
 <div class="container-login">
-  <div class="container-card shadow-lg">
-    <div class="container-form">
-      <div class="header">
-        <h1>Fleet Services</h1>
-        <p class="font">Aplicación para gestión de cupos y mantenimientos.</p>
-      </div>
-      <form [formGroup]="loginForm" (ngSubmit)="loginUser()">
-        <div class="col-12 mb-2">
-          <mat-form-field appearance="legacy" style="width: 100%">
-            <mat-label>Correo electronico</mat-label>
-            <input
-              type="text"
-              matInput
-              formControlName="user"
-              placeholder="Ingrese su correo electronico"
-            />
-            <mat-error *ngIf="isRequired('user')"
-              >Este campo es obligatorio</mat-error
-            >
-          </mat-form-field>
-        </div>
-        <div class="col-12 mb-2">
-          <mat-form-field appearance="legacy" style="width: 100%">
-            <mat-label>Contraseña</mat-label>
-            <input
-              type="password"
-              matInput
-              formControlName="password"
-              placeholder="Ingrese su contraseña"
-            />
-            <mat-error *ngIf="isRequired('password')"
-              >Este campo es obligatorio</mat-error
-            >
-          </mat-form-field>
-        </div>
-        <div class="col-12 forgot text-center font" (click)="recoverPassword()">
-          Olvido su contraseña?
-        </div>
-        <div class="col-12 text-center">
-          <button
-            class="btn btn-success font"
-            type="submit"
-            [disabled]="loginForm.invalid"
+  <div class="container-form shadow-lg">
+    <div class="header">
+      <h1>Fleet Services</h1>
+      <p class="font">Aplicación para gestión de cupos y mantenimientos.</p>
+    </div>
+    <form [formGroup]="loginForm" (ngSubmit)="loginUser()">
+      <div class="col-12 mb-2">
+        <mat-form-field appearance="legacy" style="width: 100%">
+          <mat-label>Correo electronico</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="user"
+            placeholder="Ingrese su correo electronico"
+          />
+          <mat-error *ngIf="isRequired('user')"
+            >Este campo es obligatorio</mat-error
           >
-            Iniciar sesion
-          </button>
-        </div>
-      </form>
-    </div>
-    <div class="container-img">
-      <img src="assets/background_login_3.jpg" alt="Fleet service App" />
-    </div>
+        </mat-form-field>
+      </div>
+      <div class="col-12 mb-2">
+        <mat-form-field appearance="legacy" style="width: 100%">
+          <mat-label>Contraseña</mat-label>
+          <input
+            type="password"
+            matInput
+            formControlName="password"
+            placeholder="Ingrese su contraseña"
+          />
+          <mat-error *ngIf="isRequired('password')"
+            >Este campo es obligatorio</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div class="col-12 forgot text-center font" (click)="recoverPassword()">
+        Olvido su contraseña?
+      </div>
+      <div class="col-12 text-center">
+        <button
+          class="btn btn-success font"
+          type="submit"
+          [disabled]="loginForm.invalid"
+        >
+          Iniciar sesion
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

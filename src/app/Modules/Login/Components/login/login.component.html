@@ -1,59 +1,55 @@
-<div class="container__row">
-  <div class="container__img">
-    <img
-      id="img-login"
-      src="assets/background_login_3.jpg"
-      alt="Fleet service App"
-    />
-  </div>
-  <div class="container__form">
-    <h1>Fleet Services</h1>
-    <p>Aplicación para gestión de cupos y mantenimientos.</p>
-    <div class="row align-items-center">
-      <div class="mx-auto box-form">
-        <div class="border border-black">
-          <form class="form p-4">
-            <div class="form-group">
-              <label for="user">Correo electronico</label>
-              <input
-                [(ngModel)]="loginUserData.user"
-                name="user"
-                type="text"
-                class="form-control"
-                id="user"
-                placeholder="Correo electronico"
-              />
-            </div>
-            <div class="form-group">
-              <label for="password">Contraseña</label>
-              <input
-                [(ngModel)]="loginUserData.password"
-                name="password"
-                type="password"
-                class="form-control"
-                id="password"
-                placeholder="Contraseña"
-              />
-            </div>
-            <div class="d-flex align-items-center justify-content-between">
-              <button
-                (click)="loginUser()"
-                class="btn btn-outline-success"
-                type="button "
-              >
-                Login
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                (click)="recoverPassword()"
-              >
-                Cambiar Contraseña
-              </button>
-            </div>
-          </form>
-        </div>
+<div class="container-login">
+  <div class="container-card shadow-lg">
+    <div class="container-form">
+      <div class="header">
+        <h1>Fleet Services</h1>
+        <p class="font">Aplicación para gestión de cupos y mantenimientos.</p>
       </div>
+      <form [formGroup]="loginForm" (ngSubmit)="loginUser()">
+        <div class="col-12 mb-2">
+          <mat-form-field appearance="legacy" style="width: 100%">
+            <mat-label>Correo electronico</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="user"
+              placeholder="Ingrese su correo electronico"
+            />
+            <mat-error *ngIf="isRequired('user')"
+              >Este campo es obligatorio</mat-error
+            >
+          </mat-form-field>
+        </div>
+        <div class="col-12 mb-2">
+          <mat-form-field appearance="legacy" style="width: 100%">
+            <mat-label>Contraseña</mat-label>
+            <input
+              type="password"
+              matInput
+              formControlName="password"
+              placeholder="Ingrese su contraseña"
+            />
+            <mat-error *ngIf="isRequired('password')"
+              >Este campo es obligatorio</mat-error
+            >
+          </mat-form-field>
+        </div>
+        <div class="col-12 forgot text-center font" (click)="recoverPassword()">
+          Olvido su contraseña?
+        </div>
+        <div class="col-12 text-center">
+          <button
+            class="btn btn-success font"
+            type="submit"
+            [disabled]="loginForm.invalid"
+          >
+            Iniciar sesion
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="container-img">
+      <img src="assets/background_login_3.jpg" alt="Fleet service App" />
     </div>
   </div>
 </div>

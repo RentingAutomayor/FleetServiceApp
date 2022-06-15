@@ -17,7 +17,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth'
 import { environment } from 'src/environments/environment'
 import { MatDialogModule } from '@angular/material/dialog'
 import { RecoverPasswordComponent } from './Modules/Login/Components/recover-password/recover-password.component'
-
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,6 +40,8 @@ import { RecoverPasswordComponent } from './Modules/Login/Components/recover-pas
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

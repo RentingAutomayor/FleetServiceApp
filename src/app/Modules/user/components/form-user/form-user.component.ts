@@ -88,11 +88,11 @@ export class FormUser implements OnInit {
   submit(): void {
     this.isLoading = true
     const isEdit = this.userForm.get('id').value === 0
-    const { companyId, ...user } = this.userForm.getRawValue();
+    const { companyId, ...user } = this.userForm.getRawValue()
     const company = { id: companyId }
     this._user[isEdit ? 'save' : 'update']({ ...user, company }).subscribe(
       () => {
-        this.createOnFirebase(user);
+        this.createOnFirebase(user)
         this._alert.succes(
           `Usuario ${isEdit ? 'creado' : 'actualizado'} con exito`
         )
@@ -107,8 +107,9 @@ export class FormUser implements OnInit {
     this._user
       .isExistsInFirebase(user.email)
       .then((result) => {
-        if(result.length == 0)
-          this._user.create(user)
+        if (result.length == 0)
+          this._user
+            .create(user)
             .catch((badRequest) => this._alert.error(badRequest.message))
       })
       .catch((badRequest) => this._alert.error(badRequest.message))

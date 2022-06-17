@@ -134,6 +134,30 @@ export class CheckListVehicleModelComponent implements OnInit {
     }
   }
 
+  selectAll(isChecked: boolean, category: string): void {
+    const items =
+      category === 'car'
+        ? this.lsVehicleModelAutomovil
+        : category === 'camper'
+        ? this.lsVehicleModelCamioneta
+        : this.lsVehicleModelCarga
+    if (isChecked) {
+      this.forAttributes('add', items)
+    } else {
+      this.forAttributes('delete', items)
+    }
+  }
+
+  forAttributes(action: string, items: IVehicleModelStatus[]): void {
+    items.map((item) =>
+      this.contractStateService[
+        action === 'add'
+          ? 'addVehicleModelToList'
+          : 'removeVehicleModelFromList'
+      ](item.vehicleModel)
+    )
+  }
+
   updateVehicleModelsSelected() {
     let vehicleModelStatus: IVehicleModelStatus[] = this.lsAllVehicleModelStatus
     this.contractStateService.vehicleModel$.subscribe(

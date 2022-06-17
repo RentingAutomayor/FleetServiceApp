@@ -3,6 +3,15 @@
   <div class="container__vehicleModels">
     <div class="container__type">
       <h6>Automóvil</h6>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="car"
+          (click)="selectAll($event.target.checked, 'car')"
+        />
+        <label class="form-check-label" for="car">Seleccionar todos </label>
+      </div>
       <app-input-checkbox
         *ngFor="let vehicleStatus of lsVehicleModelAutomovil"
         [option]="vehicleStatus.vehicleModel.shortName"
@@ -14,6 +23,15 @@
 
     <div class="container__type">
       <h6>Camioneta</h6>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="camper"
+          (click)="selectAll($event.target.checked, 'camper')"
+        />
+        <label class="form-check-label" for="camper"> Seleccionar todos </label>
+      </div>
       <app-input-checkbox
         *ngFor="let vehicleStatus of lsVehicleModelCamioneta"
         [option]="vehicleStatus.vehicleModel.shortName"
@@ -25,6 +43,15 @@
 
     <div class="container__type">
       <h6>Carga</h6>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="carge"
+          (click)="selectAll($event.target.checked, 'carge')"
+        />
+        <label class="form-check-label" for="carge"> Seleccionar todos </label>
+      </div>
       <app-input-checkbox
         *ngFor="let vehicleStatus of lsVehicleModelCarga"
         [option]="vehicleStatus.vehicleModel.shortName"

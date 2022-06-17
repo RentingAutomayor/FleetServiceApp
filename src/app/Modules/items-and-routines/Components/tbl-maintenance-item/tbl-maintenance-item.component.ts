@@ -1,16 +1,12 @@
 import { Component, OnInit } from '@angular/core'
-import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
-import { ResponseApi } from 'src/app/Models/ResponseApi'
-import { VehicleModel } from 'src/app/Models/VehicleModel'
-import { MaintenanceItemService } from 'src/app/Modules/items-and-routines/Services/MaintenanceItem/maintenance-item.service'
-import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.service'
-import { CompanyType } from 'src/app/Models/CompanyType'
-import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
-import { findLastIndex } from 'lodash'
 import { FormControl } from '@angular/forms'
-import { retry } from 'rxjs/operators'
-import { DealerComponent } from 'src/app/Modules/dealer/Componets/dealer/dealer.component'
+import { CompanyType } from 'src/app/Models/CompanyType'
 import { Dealer } from 'src/app/Models/Dealer'
+import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
+import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
+import { VehicleModel } from 'src/app/Models/VehicleModel'
+import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.service'
+import { MaintenanceItemService } from 'src/app/Modules/items-and-routines/Services/MaintenanceItem/maintenance-item.service'
 import Swal from 'sweetalert2'
 
 @Component({
@@ -215,7 +211,7 @@ export class TblMaintenanceItemComponent implements OnInit {
         icon: 'error',
         title: 'Oops...',
         text: err.error.Message,
-        footer: '</a>Consulte con Soporte el problema</a>'
+        footer: '</a>Consulte con Soporte el problema</a>',
       })
       this.isAwaiting = false
     }

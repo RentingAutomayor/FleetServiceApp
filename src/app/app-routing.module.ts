@@ -79,6 +79,16 @@ const routes: Routes = [
         (m) => m.DashboardClientModule
       ),
   },
+  {
+    path: 'MasterUsers',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./Modules/user/user.module').then(u => u.UserModule)
+  },
+  {
+    path: 'MasterRoles',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./Modules/role/role.module').then(r => r.RoleModule)
+  }
 ]
 
 @NgModule({

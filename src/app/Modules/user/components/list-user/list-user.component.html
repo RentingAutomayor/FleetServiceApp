@@ -1,0 +1,57 @@
+<div id="container__content">
+  <h1>Usuarios</h1>
+  <div class="container-filter">
+    <input
+      type="text"
+      [(ngModel)]="email"
+      (keyup)="filter()"
+      class="form-control"
+      placeholder="Correo electronico..."
+    />
+    <button type="button" (click)="clearFilter()" class="btn btn-danger">
+      Borrar filtro
+    </button>
+  </div>
+  <button class="btn-add btn-info" routerLink="/MasterUsers/form">
+    <i class="fas fa-plus"></i>
+  </button>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Empresa</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let user of users | paginate: { itemsPerPage: 10, currentPage: p }
+        "
+      >
+        <td>{{ user.name }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>{{ user.company?.name }}</td>
+        <td>
+          <i class="fas fa-info-circle text-info" (click)="viewDetail(user)" title="Más información"></i>
+          <i
+            class="fas fa-edit text-warning"
+            title="Modificar"
+            routerLink="/MasterUsers/form"
+            [queryParams]="{ userId: user.id }"
+          ></i>
+          <i
+            class="fas fa-trash-alt text-danger"
+            title="Eliminar"
+            (click)="delete(user.id)"
+          ></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="paginationContainer">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+</div>
+<app-img-loading *ngIf="isLoading"></app-img-loading>

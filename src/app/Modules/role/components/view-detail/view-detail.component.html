@@ -1,0 +1,26 @@
+<div>
+  <h2 mat-dialog-title>Detalle de rol</h2>
+  <div mat-dialog-content>
+    <div class="row">
+      <div class="col-12 mt-2">
+        <label>Nombre</label>
+        <div class="form-control">{{ role.name }}</div>
+      </div>
+      <div class="col-12 mt-2">
+        <label>Modulos</label>
+        <div class="form-control" style="height: auto;">
+            <span *ngFor="let module of modules; let i = index">
+                {{ module.name }} {{ i === modules.length - 1 ? '' : '-' }}
+            </span>
+        </div>
+      </div>
+      <div class="col-12 mt-2">
+        <label>Descripcion</label>
+        <div class="form-control">{{ role.description }}</div>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions class="mt-3">
+    <button class="btn btn-danger" (click)="closeDialog()">Salir</button>
+  </div>
+</div>

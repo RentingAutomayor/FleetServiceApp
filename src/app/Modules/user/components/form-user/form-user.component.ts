@@ -5,6 +5,7 @@ import { Role } from 'src/app/Modules/role/models/role'
 import { ParameterService } from 'src/app/Modules/role/services/parameter.service'
 import { RoleService } from 'src/app/Modules/role/services/role.service'
 import { AlertService } from 'src/app/services/alert.service'
+import { Basic } from '../../models/basic'
 import { Company } from '../../models/company'
 import { User } from '../../models/user'
 import { UserService } from '../../services/user.service'
@@ -15,10 +16,12 @@ import { UserService } from '../../services/user.service'
   styleUrls: ['./form-user.component.scss'],
 })
 export class FormUser implements OnInit {
+  isVisibility: boolean = false
   userForm!: FormGroup
 
   roles: Role[] = []
   companies: Company[] = []
+  users: Basic[] = []
   isLoading = false
 
   constructor(
@@ -49,6 +52,7 @@ export class FormUser implements OnInit {
       companyId: ['', Validators.required],
       roleId: ['', Validators.required],
       status: ['', Validators.required],
+      typeUser: ['', Validators.required],
     })
   }
 
@@ -57,11 +61,21 @@ export class FormUser implements OnInit {
     this._user.getById(userId).subscribe(
       (result) => {
         this.isLoading = false
-        const { company, ...user } = result
-        const formUser = { companyId: company.id, ...user }
+        const { company, dealerId, clientId, ...user } = result
+        const typeUser = !dealerId ? clientId : dealerId
+        const formUser = { companyId: company.id, ...user, typeUser }
         this.userForm.setValue(formUser)
         this.userForm.get('password').disable()
         if (user.email) this.userForm.get('email').disable()
+        if (clientId || dealerId) {
+          if (clientId) {
+            this.getClientOrDealer('client')
+            document.getElementById('client')['checked'] = true
+          } else {
+            this.getClientOrDealer('dealer')
+            document.getElementById('dealer')['checked'] = true
+          }
+        }
       },
       (badRequest) => this._alert.error(badRequest.error.Message)
     )
@@ -71,6 +85,17 @@ export class FormUser implements OnInit {
     this._parameter.getCompanies().subscribe(
       (result) => {
         this.companies = result
+      },
+      (badRequest) => this._alert.error(badRequest.error.Message)
+    )
+  }
+
+  getClientOrDealer(typeUser: string): void {
+    this._parameter[
+      typeUser === 'client' ? 'getClient' : 'getDealer'
+    ]().subscribe(
+      (result) => {
+        this.users = result
       },
       (badRequest) => this._alert.error(badRequest.error.Message)
     )
@@ -90,7 +115,8 @@ export class FormUser implements OnInit {
     const isEdit = this.userForm.get('id').value === 0
     const { companyId, ...user } = this.userForm.getRawValue()
     const company = { id: companyId }
-    this._user[isEdit ? 'save' : 'update']({ ...user, company }).subscribe(
+    const userBody = this.buildUser(user, company)
+    this._user[isEdit ? 'save' : 'update'](userBody).subscribe(
       () => {
         this.createOnFirebase(user)
         this._alert.succes(
@@ -101,6 +127,20 @@ export class FormUser implements OnInit {
       },
       (badRequest) => this._alert.error(badRequest.error.Message)
     )
+  }
+
+  buildUser(user: any, company: Company | any): User {
+    const isClient = document.getElementById('client')['checked']
+    return {
+      ...user,
+      company,
+      clientId: isClient ? user.typeUser : null,
+      dealerId: !isClient ? user.typeUser : null,
+    }
+  }
+
+  toggleVisibility(): void {
+    this.isVisibility = !this.isVisibility
   }
 
   createOnFirebase(user: User): void {

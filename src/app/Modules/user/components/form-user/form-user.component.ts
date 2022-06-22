@@ -68,13 +68,9 @@ export class FormUser implements OnInit {
         this.userForm.get('password').disable()
         if (user.email) this.userForm.get('email').disable()
         if (clientId || dealerId) {
-          if (clientId) {
-            this.getClientOrDealer('client')
-            document.getElementById('client')['checked'] = true
-          } else {
-            this.getClientOrDealer('dealer')
-            document.getElementById('dealer')['checked'] = true
-          }
+          const typeUser = !clientId ? 'dealer' : 'client'
+          this.getClientOrDealer(typeUser)
+          document.getElementById(typeUser)['checked'] = true
         }
       },
       (badRequest) => this._alert.error(badRequest.error.Message)

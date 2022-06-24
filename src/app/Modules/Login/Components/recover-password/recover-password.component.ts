@@ -28,6 +28,6 @@ export class RecoverPasswordComponent {
         )
         this.closeDialog()
       })
-      .catch((badRequest) => this._alert.error(badRequest.message))
+      .catch(() => this._alert.error('Hemos presentado incovenientes'))
   }
 }

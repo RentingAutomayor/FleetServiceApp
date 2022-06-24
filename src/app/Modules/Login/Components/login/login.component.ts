@@ -56,8 +56,8 @@ export class LoginComponent {
           }
         })
       })
-      .catch((badRequest) => {
-        this._alert.error(badRequest.message)
+      .catch(() => {
+        this._alert.error('El correo electronico o la contraseña es incorrecta')
         this.isAwaiting = false
       })
   }

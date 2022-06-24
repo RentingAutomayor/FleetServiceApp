@@ -102,13 +102,15 @@
                     name="typeUser"
                     (click)="getClientOrDealer('dealer')"
                   />
-                  <label class="form-check-label" for="dealer"> Dealer </label>
+                  <label class="form-check-label" for="dealer">
+                    Concesionarios
+                  </label>
                 </div>
               </div>
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label>Cliente / Dealer</label>
+                <label>Cliente / Concesionarios</label>
                 <select class="form-control" formControlName="typeUser">
                   <option value="">Seleccione...</option>
                   <option *ngFor="let user of users" [value]="user.id">

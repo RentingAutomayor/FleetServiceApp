@@ -1,0 +1,174 @@
+<!--FILTRO (!DEBERIA SER UN COMPONENTE)-->
+<div [formGroup]="txtfilter" class="container__filter">
+
+  <div class="container__col">
+    <label>Código Factura</label>
+    <input
+    type="text"
+    class="form-control"
+    formControlName="code"
+    />
+  </div>
+
+  <!-- <div class="container__col">
+    <label>Código Orden Trabajo</label>
+    <input
+    type="text"
+    class="form-control"
+    formControlName="code"
+
+    />
+  </div> -->
+
+  <div class="container__col">
+    <label>Fecha inicio:</label>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="fecha inicio ..."
+
+      [bsConfig]="{
+        dateInputFormat: 'YYYY/MM/DD',
+        containerClass: 'theme-dark-blue'
+      }"
+      bsDatepicker
+      formControlName="date_init"
+      disabled="true"
+    />
+  </div>
+
+  <div class="container__col">
+    <label>Fecha fin:</label>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="fecha fin ..."
+
+      [bsConfig]="{
+        dateInputFormat: 'YYYY/MM/DD',
+        containerClass: 'theme-dark-blue'
+      }"
+      bsDatepicker
+      formControlName="date_end"
+      disabled="true"
+    />
+  </div>
+
+  <div class="container__col">
+    <label>Estado</label>
+    <input
+      type="text"
+      class="form-control"
+      formControlName="txtState"
+    />
+  </div>
+
+  <div class="container__col">
+    <label>Cliente</label>
+    <input
+      type="text"
+      class="form-control"
+      formControlName="txtCliente"
+    />
+  </div>
+<!--
+  <div class="container__col">
+    <label>Concesionario</label>
+    <input
+      type="text"
+      class="form-control"
+      formControlName="Concesionario"
+    />
+  </div> -->
+
+
+  <div class="container__buttons">
+    <button
+      class="btn btn-info"
+      (click)="resetFilter()"
+    >
+      Reset Filtros
+    </button>
+  </div>
+</div>
+
+
+
+<div class="tableopc">
+  <button (click)="payBill()" mat-fab class="btnAdd"  >
+    <mat-icon>assignment</mat-icon>
+  </button>
+
+  <!--   TABLA ORDEN DE TRABAJO -->
+  <table class="table table-striped">
+    <thead>
+      <th>
+        <div class="selectAllchecbox">
+          <label for="checkAll"></label>
+          <input type="checkbox" id="checkAll" [checked]="isAllChecked" (click)="toogleAll()" />
+        </div>
+      </th>
+      <th>#</th>
+      <th>Código Fac Concesionario</th>
+      <th>Código Ord Trabajo</th>
+      <th>Cliente</th>
+      <th>Placa</th>
+      <th>Concesionario</th>
+      <th>Fecha Factura</th>
+      <th>Valor Servicio</th>
+      <th>Estado</th>
+      <th>Acciones </th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let bill of lsbill | tableFilterBill: txtfilter.value; let i = index">
+        <td>
+          <input
+          type="checkbox"
+          [checked]="bill.isChecked"
+          [name]="bill.name_client"
+          [id]="bill.bill_id"
+          (click)="checkBill(bill)"
+          />
+        </td>
+        <td>{{ i + 1 }}</td>
+        <td>{{ bill.bill_id != null ? bill.bill_code : '' }}</td>
+        <td>{{ bill.Order_work.trx_code}}</td>
+        <td>{{ bill.Order_work.cli_name }}</td>
+        <td>{{ bill.Order_work.veh_licensePlate}}</td>
+        <td>{{ bill.Order_work.deal_name}}</td>
+        <td>
+          {{
+            bill.bill_updateDate != null
+            ? (bill.bill_updateDate | date: 'yyyy/MM/dd')
+            : (bill.bill_registrationDate | date: 'yyyy/MM/dd')
+          }}
+        </td>
+        <td>{{ bill.bill_value | currency: 'USD':'symbol':'1.0-0' }}</td>
+        <td>
+           <span
+            [ngClass]="getClass(bill.bill_state.name)"
+            >
+              {{bill.bill_state.name}}
+          </span>
+        </td>
+        <td class="table_options">
+          <div class="opc">
+            <i
+              class="fas fa-times-circle text-danger"
+              title="Más información"
+              (click)="deletebill(bill)"
+            >
+            </i>
+            <!-- <i
+              class="fas fa-check-circle text-success"
+              title="Finalizar"
+              (click)="payBill(bill.bill_id)"
+            ></i> -->
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+

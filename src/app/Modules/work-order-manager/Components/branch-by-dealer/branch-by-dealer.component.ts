@@ -33,7 +33,7 @@ export class BranchByDealerComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     for (const change in changes) {
       if (change == 'dealer') {
-        this.getListBranchByDealer(this.dealer.id)
+        this.getListBranchByDealer(this.dealer?.id)
       }
     }
   }
@@ -43,7 +43,7 @@ export class BranchByDealerComponent implements OnInit, OnChanges {
   }
 
   initComponents() {
-    this.getListBranchByDealer(this.dealer.id)
+    this.getListBranchByDealer(this.dealer?.id)
   }
 
   async getListBranchByDealer(dealer_id: number) {

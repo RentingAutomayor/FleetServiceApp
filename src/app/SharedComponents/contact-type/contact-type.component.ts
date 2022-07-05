@@ -13,13 +13,39 @@ import { ContactTypeService } from '../Services/ContactType/contacttype.service'
   styleUrls: ['./contact-type.component.scss'],
 })
 export class ContactTypeComponent implements OnInit {
+  
   isDisabled: boolean = false
-
+  contactTypeSelected: IContactType | undefined 
+  types: IContactType[] = [] // todos los tipos de contacto de la base de datos
+  cmbTypes: FormControl = new FormControl()
   typemodel : FormGroup;
+  
+  constructor(
+    private contactService: ContactService,
+    private ContactTypeService : ContactTypeService,
+    fb : FormBuilder)
+  {
+    this.cmbTypes.valueChanges.subscribe((value) => {
+      const contacType: IContactType = this.types?.find((ct) => ct.id == value)
+      this.onTypeChanged.emit(contacType)
+      //console.log("valuechanges",value);
+      //console.log("contactypevaluechanges",contacType);
+    })
+    
+    this.typemodel = fb.group({
+      selectedTypes : new FormArray([])      
+    });
+  }
 
 
+  ngOnInit(): void {
+    this.contactService.getContactTypes().subscribe((data) => {
+      this.types = data
+      this.resetCheck();
+    })
+  }
 
-
+  
 
   @Input('isDisabled')
   set setIsDidabled(value: boolean) {
@@ -30,9 +56,28 @@ export class ContactTypeComponent implements OnInit {
       this.cmbTypes.enable()
     }
   }
+  
+  
+  @Input('persontype')
+  set setPersontype(type: IContactType[]) {
+    this.resetCheck();
+    for(let i = 0; i < type.length; i++){
+      if(this.types[i].id == type[i].id){
+        this.types[i].Bcheked = true;
+      }else{
+        this.types[i].Bcheked = false;
+      }
+    }
+  }
 
-  contactTypeSelected: IContactType | undefined = undefined
+  resetCheck(){
+    for(let i=0; i < this.types.length; i++){
+      this.types[i].Bcheked = false;
+    }
+  }
 
+  
+  
   @Input('contactTypeSelected')
   set setContactTypeSelected(type: IContactType) {
     this.contactTypeSelected = type
@@ -43,29 +88,9 @@ export class ContactTypeComponent implements OnInit {
     }
   }
 
-  cmbTypes: FormControl = new FormControl()
-
-  types: IContactType[] = []
-
+  
   @Output()
   onTypeChanged = new EventEmitter<IContactType>()
-
-  constructor(
-    private contactService: ContactService,
-    private ContactTypeService : ContactTypeService,
-    fb : FormBuilder)
-  {
-    this.cmbTypes.valueChanges.subscribe((value) => {
-      const contacType: IContactType = this.types.find((ct) => ct.id == value)
-      this.onTypeChanged.emit(contacType)
-    })
-
-    this.typemodel = fb.group({
-      selectedTypes : new FormArray([])
-    });
-
-
-  }
 
   onCheckboxChange(id: number, name: string, event: any) {
     const selectedTypes = (this.typemodel.controls.selectedTypes as FormArray);
@@ -75,15 +100,14 @@ export class ContactTypeComponent implements OnInit {
         "name": name,
         "checked": true
       }));
-      this.sendData(selectedTypes);
     } else {
       const index = selectedTypes.controls
       .findIndex(x => x.value === name);
       selectedTypes.removeAt(index);
-      this.sendData(selectedTypes);
     }
+    this.sendData(selectedTypes);
   }
-
+  
   sendData(selectedTypes : FormArray) {
     this.ContactTypeService.dispContactType.emit({selectedTypes});
   }
@@ -92,16 +116,7 @@ export class ContactTypeComponent implements OnInit {
     this.isDisabled = !this.isDisabled
   }
 
-  ngOnInit(): void {
-    this.contactService.getContactTypes().subscribe((data) => {
-      this.types = data
-      console.log(this.types)
-    })
-  }
 
-  updateAllComplete(){
-
-  }
 
 
 }

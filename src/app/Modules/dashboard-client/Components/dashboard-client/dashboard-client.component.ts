@@ -23,13 +23,13 @@ import Swal from 'sweetalert2'
 })
 export class DashboardClientComponent implements OnInit {
   isAwaiting: boolean
-  lsTransactionsToApprove: Transaction[]
+  lsTransactionsToApprove: Transaction[] = []
   client: Client
   sharedFunctions: SharedFunction
   frmApprovedTrx: FormGroup
   frmCancelTrx: FormGroup
 
-  lsMovements: Movement[]
+  lsMovements: Movement[] = []
   APROBACION_ORDEN_DE_TRABAJO = 5
   CANCELACION_ORDEN_DE_TRABAJO = 6
   trx_id: number

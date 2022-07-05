@@ -145,7 +145,7 @@ export class ReportTrxByVehicleComponent implements OnInit, OnChanges {
   }
 
   initDataToGetReport() {
-    switch (this.company.type) {
+    switch (this.company?.type) {
       case CompanyType.CLIENT:
         this.typeOfReport = 'dealer'
         this.isMainCompanyLogged = false

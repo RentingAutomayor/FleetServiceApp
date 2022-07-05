@@ -1,0 +1,58 @@
+<h3>RESUMEN ORDEN</h3>
+<div mat-dialog-content>
+    <div class="formdata" [formGroup]="txtForm">
+      <mat-form-field appearance="outline" >
+        <mat-label>Estado Factura</mat-label>
+        <div class="formdata__fac">
+          <input readonly formControlName="state"  matInput placeholder="Estado de la factura" for >
+        </div>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha Orden De Trabajo</mat-label>
+        <div class="formdata__fac">
+          <input readonly  matInput placeholder="Fecha Factura" for formControlName="fecha">
+        </div>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Codigo Orden De Trabajo</mat-label>
+        <div class="formdata__fac">
+          <input readonly matInput placeholder="Codigo Factura" for formControlName="code" >
+        </div>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Valor Antes De IVA</mat-label>
+        <div class="formdata__fac">
+          <input readonly appOnlyNumbers matInput placeholder="Valor Antes De Iva" for formControlName="valuebeforeIva" >
+        </div>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Valor Iva</mat-label>
+        <div class="formdata__fac">
+          <input readonly appOnlyNumbers matInput placeholder="Iva" for formControlName="valueiva" >
+        </div>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Valor Total</mat-label>
+        <div class="formdata__fac">
+          <input readonly  appOnlyNumbers matInput placeholder="Valor Total" for formControlName="value" >
+        </div>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Codigo Factura</mat-label>
+        <div class="formdata__fac">
+          <input  matInput placeholder="Ingrese El Codigo Factura" for formControlName="codfac" >
+        </div>
+      </mat-form-field>
+
+    </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button class="cancelBtn"   (click)="onNoClick()">   Cancelar</button>
+  <button mat-raised-button class="registerBtn" (click)="registerFac()"> Asociar Factura</button>
+</div>

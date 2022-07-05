@@ -21,6 +21,7 @@ import { ThemePalette } from '@angular/material/core'
 import { IContactType } from 'src/app/Models/IContactType'
 import { CalcDigitCheck } from 'src/app/Utils/calcDigitCheck'
 import { MAX_LENGTH_CLIENT_DOCUMENT_WHITHCHECK, MAX_LENGTH_CLIENT_DOCUMENT } from 'src/app/Utils/globalConst'
+import { ContactService } from '../Services/Contact/contact.service'
 
 @Component({
   selector: 'app-person',
@@ -61,7 +62,7 @@ export class PersonComponent implements OnInit {
     registrationDate: new Date(),
     updateDate: new Date(),
     deleteDate: new Date(),
-    type: undefined,
+    types: [],
     mustNotify: false,
   }
 
@@ -78,10 +79,10 @@ export class PersonComponent implements OnInit {
   set setPersonToUpdate(person: Person) {
     if (person) {
       this.personToUpdate = person
-      console.log(this.personToUpdate)
+      console.log("persona a actualizar: ",this.personToUpdate)
       this.jobTitleSelected = this.personToUpdate.jobTitle
       this.selectedCity = this.personToUpdate.city
-      this.contactTypeSelected = person.type
+      this.contactTypeSelected = person.types
       console.log('Type selected')
       console.log(this.contactTypeSelected)
       this.setDataInForm(this.personToUpdate)
@@ -119,16 +120,16 @@ export class PersonComponent implements OnInit {
   checked = false
   disabled = false
 
-  contactType: IContactType | undefined = undefined
+  contactType: IContactType | undefined 
 
-  contactTypeSelected: IContactType | undefined = undefined
+  contactTypeSelected: IContactType [] | undefined 
 
   isErrorInNotifyValidation: boolean = false
 
   constructor(
     private personService: PersonService,
-    private cityService: CityService,
     private jobTitleService: JobTitleService,
+    private contactService : ContactService,
     private router: Router,
     private formBuilder: FormBuilder
   ) {
@@ -202,6 +203,7 @@ export class PersonComponent implements OnInit {
         musNotifyValue = value
         if (value) {
           if (email.trim() == '') {
+            console.log(email.trim())
             this.isErrorInNotifyValidation = true
           } else {
             this.isErrorInNotifyValidation = false
@@ -220,9 +222,9 @@ export class PersonComponent implements OnInit {
   enableDisableForm(formIsBlocked: boolean) {
     try {
       if (formIsBlocked) {
-        this.formPerson.disable()
+        this.formPerson?.disable()
       } else {
-        this.formPerson.enable()
+        this.formPerson?.enable()
       }
     } catch (error) {
       console.log(error)
@@ -306,13 +308,6 @@ export class PersonComponent implements OnInit {
       }
     }
 
-    if (this.isFormContact) {
-      objPerson.mustNotify = this.formPerson.controls.mustNotify.value
-      objPerson.type = this.contactType
-    } else {
-      objPerson.mustNotify = false
-      objPerson.type = undefined
-    }
 
     return objPerson
   }

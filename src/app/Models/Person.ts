@@ -18,6 +18,6 @@ export interface Person {
   registrationDate: Date
   updateDate: Date
   deleteDate: Date
-  type?: IContactType | undefined
+  types?: IContactType[] | undefined
   mustNotify?: boolean | undefined
 }

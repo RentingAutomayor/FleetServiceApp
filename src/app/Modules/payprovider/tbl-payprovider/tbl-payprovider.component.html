@@ -1,0 +1,142 @@
+<!--FILTRO (!DEBERIA SER UN COMPONENTE)-->
+  <div [formGroup]="txtfilter" class="container__filter">
+
+    <div class="container__col">
+      <label>Código</label>
+      <input
+      type="text"
+      class="form-control"
+      formControlName="code"
+
+      />
+    </div>
+
+    <div class="container__col">
+      <label>Fecha inicio:</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="fecha inicio ..."
+        [bsValue]="init_date"
+        [bsConfig]="{
+          dateInputFormat: 'YYYY/MM/DD',
+          containerClass: 'theme-dark-blue'
+        }"
+        bsDatepicker
+        formControlName="txtdate_init"
+        disabled="true"
+      />
+    </div>
+
+    <div class="container__col">
+      <label>Fecha fin:</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="fecha fin ..."
+        [bsValue]="end_date"
+        [bsConfig]="{
+          dateInputFormat: 'YYYY/MM/DD',
+          containerClass: 'theme-dark-blue'
+        }"
+        bsDatepicker
+        formControlName="txtdate_end"
+        disabled="true"
+      />
+    </div>
+
+    <div class="container__col">
+      <label>Cliente</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="txtCliente"
+      />
+    </div>
+
+    <div class="container__col">
+      <label>Concesionario</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="txtConcesionario"
+      />
+    </div>
+
+    <div class="container__col">
+      <label>Placa</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="txtPlaca"
+      />
+    </div>
+
+    <div class="container__buttons">
+      <button
+        class="btn btn-info"
+        (click)="resetFilter()"
+      >
+        Reset Filtros
+      </button>
+    </div>
+  </div>
+
+
+  <!--   Boton Crear Factura -->
+  <div class="mastertable">
+    <!--   TABLA ORDEN DE TRABAJO -->
+    <table class="table table-striped">
+      <thead>
+        <th>#</th>
+        <th>Código</th>
+        <th>Cliente</th>
+        <th>Placa</th>
+        <th>Concesionario</th>
+        <th>Fecha</th>
+        <th>Valor Servicio</th>
+        <th>Estado</th>
+        <th>Acciones </th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let workOrder of lsOrderWork | tableFilter: txtfilter.value; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ workOrder.trx_code != null ? workOrder.trx_code : '' }}</td>
+          <td>{{ workOrder.cli_name }}</td>
+          <td>{{ workOrder.veh_licensePlate }}</td>
+          <td>{{ workOrder.deal_name  }}</td>
+
+          <td>
+            {{
+              workOrder.trx_updateDate != null
+                ? (workOrder.trx_updateDate | date: 'yyyy/MM/dd')
+                : (workOrder.trx_registrationDate | date: 'yyyy/MM/dd')
+            }}
+          </td>
+          <td>{{ workOrder.trx_value | currency: 'USD':'symbol':'1.0-0' }}</td>
+          <td>
+            <span [ngClass]="getClass(workOrder.order_state.name)">
+            {{workOrder.order_state.name}}
+          </span>
+          </td>
+          <td class="table_options">
+            <div class="opc">
+              <i
+                class="fas fa-solid fa-registered"
+                title="Más información"
+                (click)="openDialog(workOrder)"
+              >
+              </i>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+
+
+
+

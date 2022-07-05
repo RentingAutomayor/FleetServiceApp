@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common'
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { HttpClientModule } from '@angular/common/http'
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -11,7 +11,6 @@ import { AppComponent } from './app.component'
 import { LayoutComponent } from './layout/layout.component'
 import { LoginComponent } from './Modules/Login/Components/login/login.component'
 import { NavigationComponent } from './Modules/navigation/Components/navigation/navigation.component'
-import { SharedModule } from './SharedComponents/shared.module'
 import { AngularFireModule } from '@angular/fire'
 import { AngularFireAuthModule } from '@angular/fire/auth'
 import { environment } from 'src/environments/environment'
@@ -19,6 +18,8 @@ import { MatDialogModule } from '@angular/material/dialog'
 import { RecoverPasswordComponent } from './Modules/Login/Components/recover-password/recover-password.component'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
+import { SharedModule } from './SharedComponents/shared.module';
+
 @NgModule({
   declarations: [
     AppComponent,

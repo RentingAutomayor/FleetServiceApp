@@ -31,4 +31,23 @@ export class AlertService{
             showCancelButton: true
         });
     }
+
+    confirm(text: string, callback: () => void){
+      Swal.fire({
+        title: 'Confirmar Accion?',
+        text: text,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Continuar',
+        cancelButtonText: 'No, Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          callback();
+          this.succes("Accion realizada con exito");
+        }
+      })
+    }
+
 }

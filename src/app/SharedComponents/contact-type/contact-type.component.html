@@ -2,14 +2,13 @@
   <label>Tipo de contacto</label>
 
   <span class="example-list-section">
-    <form [formGroup]="typemodel" (ngSubmit)="submit()" >
+    <form  [formGroup]="typemodel" (ngSubmit)="submit()">
       <ul>
         <li *ngFor="let type of types">
-          <mat-checkbox [disabled]="isDisabled" (change)="onCheckboxChange(type.id, type.name, $event)"  formArrayName="selectedTypes">
+          <mat-checkbox [disabled]="isDisabled"  [checked]="type.Bcheked" (change)="onCheckboxChange(type.id, type.name, $event)" formArrayName="selectedTypes">
             {{type.name}}
           </mat-checkbox  >
         </li>
-        <button>test</button>
       </ul>
     </form>
   </span>

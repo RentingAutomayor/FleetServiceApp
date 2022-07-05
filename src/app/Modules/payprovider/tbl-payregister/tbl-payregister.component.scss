@@ -1,0 +1,57 @@
+.container__filter{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+
+  div{
+    padding: 10px 20px;
+    width: 250px;
+  }
+}
+
+.table-options{
+  display: inline;
+  align-items: center;
+}
+
+.selectAllchecbox{
+  > input{
+    margin-left: 5px;
+  }
+}
+.table thead th {
+vertical-align: inherit;
+}
+
+.opc {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  justify-content: space-evenly;
+}
+
+.tag-pending{
+  display: flex;
+  flex-direction: row;
+  background-color: #ff4f03;
+  padding: 8px 20px;
+  color: #fff;
+  border-radius: 20px;
+  width: 150px;
+  align-items: center;
+  justify-content: center;
+}
+.tag-ending{
+  display: flex;
+  flex-direction: row;
+  background-color: #469627;
+  padding: 8px 40px;
+  color: #fff;
+  border-radius: 20px;
+  width: 150px;
+  align-items: center;
+  justify-content: center;
+}

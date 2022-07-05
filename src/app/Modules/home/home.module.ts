@@ -9,6 +9,11 @@ import { ReportTrxByVehicleComponent } from './Components/report-trx-by-vehicle/
 import { ReportWorkordersValueByMonthComponent } from './Components/report-workorders-value-by-month/report-workorders-value-by-month.component'
 import { ReportAmountWorkordersByClientOrByDealerComponent } from './Components/report-amount-workorders-by-client-or-by-dealer/report-amount-workorders-by-client-or-by-dealer.component'
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker'
+import {MatDatepickerModule, } from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material/core'
+
 
 @NgModule({
   declarations: [
@@ -17,12 +22,17 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker'
     ReportTrxByVehicleComponent,
     ReportWorkordersValueByMonthComponent,
     ReportAmountWorkordersByClientOrByDealerComponent,
+
   ],
   imports: [
     CommonModule,
     ChartsModule,
     HomeRoutingModule,
     SharedModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
   ],
 })

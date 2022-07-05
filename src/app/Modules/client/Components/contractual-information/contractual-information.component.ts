@@ -150,7 +150,7 @@ export class ContractualInformationComponent implements OnInit {
     if (info) {
       this.frmContractualInformation.patchValue(info)
       this.frmContractualInformation.controls.quotaTypeId.setValue(
-        info.quotaType.id
+        info.quotaType?.id
       )
       this.serviceInitDateTmp = info.serviceInitDate
       this.serviceEndDateTmp = info.serviceEndDate
@@ -212,7 +212,7 @@ export class ContractualInformationComponent implements OnInit {
     const min = new Date(minDateFormat)
     const end = new Date(maxDateFormat)
 
-    console.log(`${min} - ${end}`)
+    
 
     if (min > end) {
       return true
@@ -228,7 +228,7 @@ export class ContractualInformationComponent implements OnInit {
     const min = new Date(minDateFormat)
     const max = new Date(maxDateFormat)
 
-    console.log(`${min} - ${max}`)
+    
 
     if (max < min) {
       return true
@@ -240,7 +240,7 @@ export class ContractualInformationComponent implements OnInit {
   validateServiceEndDate(initDate: Date, endDate: Date) {
     try {
       const isInitDateGreater = this.validateMinDate(initDate, endDate)
-      console.log(`isInitDateGrather ${isInitDateGreater}`)
+      
       if (isInitDateGreater) {
         this.serviceInitDateField.setErrors({ minDateIsGrather: true })
       } else {
@@ -267,7 +267,7 @@ export class ContractualInformationComponent implements OnInit {
   validateQuotaEndDate(initDate: Date, endDate: Date) {
     try {
       const isInitDateGreater = this.validateMinDate(initDate, endDate)
-      console.log(`isInitDateGrather ${isInitDateGreater}`)
+      
       if (isInitDateGreater) {
         this.quotaApprovalDateField.setErrors({ minDateIsGrather: true })
       } else {

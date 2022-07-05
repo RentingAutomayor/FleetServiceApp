@@ -75,7 +75,7 @@ export class ReportWorkordersValueByMonthComponent
 
   initDataToGetReport() {
     console.warn('[initDataToGetReport]', this.company)
-    switch (this.company.type) {
+    switch (this.company?.type) {
       case CompanyType.CLIENT:
         this.typeOfReport = 'dealer'
         this.isMainCompanyLogged = false

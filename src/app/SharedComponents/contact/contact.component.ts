@@ -74,7 +74,8 @@ export class ContactComponent implements OnInit {
   constructor(
     private personService: PersonService,
     private contactService: ContactService,
-    private ContactTypeService : ContactTypeService
+    private ContactTypeService : ContactTypeService,
+
 
   ) {
     this.sOwnerName = ''
@@ -129,16 +130,22 @@ export class ContactComponent implements OnInit {
     this.showPopUp()
   }
 
-  getDetailsOfContant(contactId: number) {
+   getDetailsOfContant(contactId: number) {
     this.oPersonToUpdate = this.lsContacts.find(
       (contact) => contact.id === contactId
     )
+    this.contactService.ContacTypeEvent.next("updt");
+
+    // Buena practica seria hacer un servicio 
+    // aqui se recuperara los tipos de contacto por contacto
+
     this.isFormBlocked = true
-    console.log(this.oPersonToUpdate)
+    console.log("persona buscada",this.oPersonToUpdate)
     this.showPopUp()
   }
 
   updateContact(contactId: number) {
+    this.contactService.ContacTypeEvent.next("updt");
     this.isToInsert = false
     this.oPersonToUpdate = this.lsContacts.find(
       (contact) => contact.id === contactId
@@ -198,8 +205,8 @@ export class ContactComponent implements OnInit {
         this.contactService.insert(contactToDB).subscribe(
           (newContact) => {
             this.lsContacts.unshift(newContact)
-            this.isAwaiting = false
             this.saveContactWithType(newContact, this.selectedContactTypes);
+            this.isAwaiting = false
           },
           (err) => {
             this.isErrorVisible = true

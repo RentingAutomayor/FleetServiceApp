@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { ContactWithTypeDTO } from 'src/app/Models/ContactWithTypeDTO'
 import { IContactType } from 'src/app/Models/IContactType'
+import { BehaviorSubject } from 'rxjs'
 import {
   Contact,
   CreateContactDTO,
@@ -20,6 +21,10 @@ export class ContactService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   }
   constructor(private http: HttpClient) {}
+
+  ContacTypeEvent = new BehaviorSubject<string>("")
+
+
 
   async getContacts(
     pOwner_id: number,
@@ -50,7 +55,7 @@ export class ContactService {
   }
 
   getContactTypes(): Observable<IContactType[]> {
-    const urlGEtTypes = `${this.URL_API}/getContactTypes`
-    return this.http.get<IContactType[]>(urlGEtTypes)
+    const urlGetTypes = `${this.URL_API}/getContactTypes`
+    return this.http.get<IContactType[]>(urlGetTypes)
   }
 }

@@ -199,6 +199,8 @@ export class VehicleComponent implements OnInit {
   }
 
   setDataInForm(vehicle: Vehicle): void {
+    debugger;
+    if (vehicle != null){
     this.frmVehicle.patchValue(vehicle)
     this.vehicleStateSelected = vehicle.vehicleState
     this.brandSelected = vehicle.vehicleModel.brand
@@ -207,6 +209,7 @@ export class VehicleComponent implements OnInit {
     //this initLicensePlate is to identify if the license plata has changes to avoid
     //ser error of vehicle exists with the same license plate
     this.initLicensePlate = vehicle.licensePlate
+  }
   }
 
   cleanFormData(): void {

@@ -5,4 +5,5 @@ export interface IContactType {
   registrationDate: Date | undefined
   updateDate: Date | undefined
   deleteDate: Date | undefined
+  Bcheked : boolean | false
 }

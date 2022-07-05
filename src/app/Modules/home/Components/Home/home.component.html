@@ -1,7 +1,7 @@
 <div id="container__content">
   <div class="container__filter">
     <div class="container__row">
-      <div class="container__col">
+      <!-- <div class="container__col">
           <label>Fecha inicio:</label>
           <input
               type="text"
@@ -29,8 +29,22 @@
               [bsValue]="dtEndingDate"
               [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
               bsDatepicker>
+      </div> -->
+      <div class="formdates">
+        <mat-form-field appearance="outline">
+          <mat-label>Ingrese El Rango De Fecha</mat-label>
+          <mat-date-range-input [rangePicker]="picker" [formGroup]="datefilter">
+            <input matStartDate formControlName="date_init" placeholder="Start date">
+            <input matEndDate formControlName="date_end" placeholder="End date">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+
+        </mat-form-field>
       </div>
-      <div class="container__col">
+
+      <div class="container__row__btnfind">
         <input
           type="button"
           value="Buscar"
@@ -48,7 +62,7 @@
                 [init_date]="filterInitDate"
                 [end_date]="filterEndDate"
                 [company]="company"
-                (dataWasLoad)="dataWasLoadReportAmmountWorkOrdersByClientOrDealer($event)">
+                >
             </app-report-amount-workorders-by-client-or-by-dealer>
         </div>
         <div class="report-three report-bigger">
@@ -56,7 +70,7 @@
                 [init_date]="filterInitDate"
                 [end_date]="filterEndDate"
                 [company]="company"
-                (dataWasLoad)="dataWasLoadReportValuesByMonth($event)">
+                >
             </app-report-workorders-value-by-month>
         </div>
         <div class="report-two   report-bigger">
@@ -64,7 +78,7 @@
                 [init_date]="filterInitDate"
                 [end_date]="filterEndDate"
                 [company]="company"
-                (dataWasLoad)="dataWasLoadReportTrxByState($event)">
+                >
             </app-report-trx-by-state>
         </div>
 
@@ -73,7 +87,7 @@
                 [init_date]="filterInitDate"
                 [end_date]="filterEndDate"
                 [company]="company"
-                (dataWasLoad)="dataWasLoadReportTrxByVehicle($event)">
+                >
             </app-report-trx-by-vehicle>
         </div>
 

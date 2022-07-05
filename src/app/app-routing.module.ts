@@ -88,7 +88,15 @@ const routes: Routes = [
     path: 'MasterRoles',
     canActivate: [AuthGuard],
     loadChildren: () => import('./Modules/role/role.module').then(r => r.RoleModule)
-  }
+  },
+  {
+    path: 'Payproviders',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('../app/Modules/payprovider/payprovider.module').then(
+        (m) => m.PayproviderModule
+      ),
+  },
 ]
 
 @NgModule({

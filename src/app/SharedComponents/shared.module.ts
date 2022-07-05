@@ -33,7 +33,7 @@ import { InputCheckboxComponent } from './input-checkbox/input-checkbox.componen
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatListModule} from '@angular/material/list';
 
-import { OnlyNumbersDirective } from './directivas/only-numbers.directive'
+import { OnlyNumbersDirective } from './directivas/only-numbers.directive';
 
 @NgModule({
   declarations: [

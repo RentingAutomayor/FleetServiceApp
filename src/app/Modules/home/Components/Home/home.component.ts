@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { Company } from 'src/app/Models/Company'
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast'
+import { FormGroup, FormControl, Validators } from '@angular/forms'
 
 @Component({
   selector: 'app-home',
@@ -20,87 +19,38 @@ export class HomeComponent implements OnInit {
   filterEndDate: Date
 
   isAwaiting: boolean
-  constructor(private formBuilder: FormBuilder) {
-    const now = new Date()
+  constructor() {
     this.dtStartingDate = null
     this.dtEndingDate = null
-    this.buildFormFilter()
     this.btnSearchIsDisabled = true
     this.datesAreInvalid = false
-  }
-
-  get startingDateField() {
-    return this.frmFilter.get('startingDate')
-  }
-
-  get endingDateField() {
-    return this.frmFilter.get('endingDate')
-  }
-
-  ngOnInit(): void {
-    this.company = this.validateCompany()
-  }
-
-  buildFormFilter(): void {
-    this.frmFilter = this.formBuilder.group({
-      startingDate: [, [Validators.required]],
-      endingDate: [, [Validators.required]],
+    this.datefilter.valueChanges.subscribe(() => {
+      if (this.datefilter.valid) {
+        this.btnSearchIsDisabled = false
+      }
+      else {
+        this.btnSearchIsDisabled = true
+      }
     })
   }
 
-  validateCompany(): Company {
-    return SecurityValidators.validateUserAndCompany()
+
+  ngOnInit(): void {
+
   }
 
-  validateInputDate(event: any) {
-    event.preventDefault()
-    return null
-  }
-
-  validateInitDate(initDate: any): void {
-    this.dtStartingDate = initDate.toISOString()
-    this.validateDates(this.dtStartingDate, this.dtEndingDate)
-    const initDateIsValid = this.validateDates(
-      this.dtStartingDate,
-      this.dtEndingDate
-    )
-    if (!initDateIsValid) {
-      this.datesAreInvalid = true
-      this.btnSearchIsDisabled = true
-    } else {
-      this.datesAreInvalid = false
-      this.btnSearchIsDisabled = false
+  datefilter = new FormGroup(
+    {
+      date_init      : new FormControl('', Validators.required),
+      date_end       : new FormControl('', Validators.required),
     }
-  }
-
-  validateEndDate(endDate: any): void {
-    this.dtEndingDate = endDate.toISOString()
-    const endDateIsValid = this.validateDates(
-      this.dtStartingDate,
-      this.dtEndingDate
-    )
-    if (!endDateIsValid) {
-      this.datesAreInvalid = true
-      this.btnSearchIsDisabled = true
-    } else {
-      this.datesAreInvalid = false
-      this.btnSearchIsDisabled = false
-    }
-  }
-
-  validateDates(initDate, endDate): boolean {
-    console.log(`${initDate} - ${endDate}`)
-    if (initDate > endDate || initDate == null || endDate == null) {
-      return false
-    } else {
-      return true
-    }
-  }
+  )
 
   filterData() {
-    this.filterInitDate = this.dtStartingDate
-    this.filterEndDate = this.dtEndingDate
+    this.filterInitDate = this.datefilter.value.date_init
+    this.filterEndDate = this.datefilter.value.date_end
   }
+
 
   dataWasLoadReportAmmountWorkOrdersByClientOrDealer(dataWasLoad: boolean) {
     if (!dataWasLoad) {

@@ -44,6 +44,11 @@ export class TransactionService {
     return this.http.get<Transaction[]>(urlGetTransactions)
   }
 
+  getTransactionsByDealerOrClientwtp(): Observable<Transaction[]> {
+    const urlGetTransactions = `${this.URL_API}/GetTransactionsByDealerOrClient`
+    return this.http.get<Transaction[]>(urlGetTransactions)
+  }
+
   async getTransactionsByClient(client_id: number): Promise<LogTransaction[]> {
     const urlGetTransactions = `${this.URL_API}/GetTransactionsByClient?client_id=${client_id}`
     return this.http.get<LogTransaction[]>(urlGetTransactions).toPromise()

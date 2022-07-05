@@ -41,11 +41,19 @@
             <div class="col-6">
               <div class="form-group">
                 <label>Contraseña</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  formControlName="password"
-                />
+                <div class="input-group mb-3">
+                  <input
+                    [type]="isVisibility ? 'text' : 'password'"
+                    class="form-control"
+                    formControlName="password"
+                  />
+                  <span
+                    (click)="toggleVisibility()"
+                    class="input-group-text material-symbols-outlined pointer"
+                  >
+                    {{ isVisibility ? 'visibility_off' : 'visibility' }}
+                  </span>
+                </div>
               </div>
             </div>
             <div class="col-6">
@@ -53,7 +61,10 @@
                 <label>Empresa</label>
                 <select class="form-control" formControlName="companyId">
                   <option value="">Seleccione...</option>
-                  <option *ngFor="let company of companies" [value]="company.id">
+                  <option
+                    *ngFor="let company of companies"
+                    [value]="company.id"
+                  >
                     {{ company.name }}
                   </option>
                 </select>
@@ -66,6 +77,44 @@
                   <option value="">Seleccione...</option>
                   <option *ngFor="let rol of roles" [value]="rol.id">
                     {{ rol.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Tipo de usuario</label>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="client"
+                    name="typeUser"
+                    (click)="getClientOrDealer('client')"
+                  />
+                  <label class="form-check-label mr-5" for="client">
+                    Cliente
+                  </label>
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="dealer"
+                    name="typeUser"
+                    (click)="getClientOrDealer('dealer')"
+                  />
+                  <label class="form-check-label" for="dealer">
+                    Concesionarios
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Cliente / Concesionarios</label>
+                <select class="form-control" formControlName="typeUser">
+                  <option value="">Seleccione...</option>
+                  <option *ngFor="let user of users" [value]="user.id">
+                    {{ user.name }}
                   </option>
                 </select>
               </div>

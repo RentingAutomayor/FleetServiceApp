@@ -8,6 +8,7 @@ import { NavigationService } from 'src/app/SharedComponents/Services/navigation.
 import { FormControl } from '@angular/forms'
 import { saveInStorage } from 'src/app/Utils/storage'
 import Swal from 'sweetalert2'
+import { Excel } from 'src/app/Utils/excel'
 
 @Component({
   selector: 'app-tbl-dealer',
@@ -124,5 +125,15 @@ export class TblDealerComponent implements OnInit {
 
   closeErrorMessage() {
     this.isErrorVisible = false
+  }
+
+  downloadExcel(): void {
+    const data = this.lsDealer.map((dealer) => {
+      return {
+        Documento: dealer.document,
+        RazonSocial: dealer.name,
+      }
+    })
+    Excel.convertArrayToFile(data, 'Concesionarios')
   }
 }

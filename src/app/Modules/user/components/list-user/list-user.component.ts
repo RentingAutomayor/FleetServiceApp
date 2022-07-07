@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog'
 import { AlertService } from 'src/app/services/alert.service'
+import { Excel } from 'src/app/Utils/excel'
 import { User } from '../../models/user'
 import { UserService } from '../../services/user.service'
 import { ViewDetailComponent } from '../view-detail/view-detail.component'
@@ -17,7 +18,7 @@ export class ListUser implements OnInit {
   p = 1
   isLoading: boolean = false
   constructor(
-    private _user: UserService, 
+    private _user: UserService,
     private _alert: AlertService,
     private dialog: MatDialog
   ) {}
@@ -65,10 +66,21 @@ export class ListUser implements OnInit {
     })
   }
 
+  downloadExcel(): void {
+    const users = this.users.map((user) => {
+      return {
+        Nombre: user.name,
+        Apellido: user.lastName,
+        Empresa: user.company.name,
+      }
+    })
+    Excel.convertArrayToFile(users, 'Usuarios')
+  }
+
   viewDetail(user: User): void {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = user;
-    this.dialog.open(ViewDetailComponent, dialogConfig);
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.data = user
+    this.dialog.open(ViewDetailComponent, dialogConfig)
   }
 
   clearFilter(): void {

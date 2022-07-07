@@ -1,6 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule, CurrencyPipe } from '@angular/common'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { NgxPaginationModule } from 'ngx-pagination'
 
 import { BranchComponent } from './branch/branch.component'
@@ -30,8 +30,8 @@ import { CalculatePriceWithoutDiscountPipe } from './Pipes/calculate-price-witho
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { ContactTypeComponent } from './contact-type/contact-type.component'
 import { InputCheckboxComponent } from './input-checkbox/input-checkbox.component'
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatListModule} from '@angular/material/list';
+import { MatCheckboxModule } from '@angular/material/checkbox'
+import { MatListModule } from '@angular/material/list'
 
 import { OnlyNumbersDirective } from './directivas/only-numbers.directive';
 
@@ -72,7 +72,7 @@ import { OnlyNumbersDirective } from './directivas/only-numbers.directive';
     MatButtonModule,
     MatSlideToggleModule,
     MatCheckboxModule,
-    MatListModule
+    MatListModule,
   ],
   exports: [
     BranchComponent,
@@ -103,8 +103,16 @@ import { OnlyNumbersDirective } from './directivas/only-numbers.directive';
     MatCheckboxModule,
     MatListModule,
     OnlyNumbersDirective,
+    CurrencyPipe,
+    CalculateTaxesPipe,
+    CalculateTotalPricePipe,
   ],
-  providers: [CalculateTotalPricePipe],
+  providers: [
+    CalculateTotalPricePipe,
+    CurrencyPipe,
+    CalculateTaxesPipe,
+    CalculateTotalPricePipe,
+  ],
 
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

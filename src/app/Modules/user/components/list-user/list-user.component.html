@@ -11,6 +11,9 @@
     <button type="button" (click)="clearFilter()" class="btn btn-danger">
       Borrar filtro
     </button>
+    <button class="btn btn-primary" (click)="downloadExcel()">
+      Descargar Excel
+    </button>
   </div>
   <button class="btn-add btn-info" routerLink="/MasterUsers/form">
     <i class="fas fa-plus"></i>
@@ -34,7 +37,11 @@
         <td>{{ user.lastName }}</td>
         <td>{{ user.company?.name }}</td>
         <td>
-          <i class="fas fa-info-circle text-info" (click)="viewDetail(user)" title="Más información"></i>
+          <i
+            class="fas fa-info-circle text-info"
+            (click)="viewDetail(user)"
+            title="Más información"
+          ></i>
           <i
             class="fas fa-edit text-warning"
             title="Modificar"

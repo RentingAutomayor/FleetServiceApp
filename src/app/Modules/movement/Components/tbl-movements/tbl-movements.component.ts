@@ -3,6 +3,7 @@ import { Movement } from 'src/app/Models/Movement'
 import { MovementService } from '../../Services/Movement/movement.service'
 import { Router } from '@angular/router'
 import Swal from 'sweetalert2'
+import { Excel } from 'src/app/Utils/excel'
 
 @Component({
   selector: 'app-tbl-movements',
@@ -76,5 +77,16 @@ export class TblMovementsComponent implements OnInit {
     } catch (error) {
       console.warn(error)
     }
+  }
+
+  downloadExcel(): void {
+    const data = this.lsMovements.map((movement) => {
+      return {
+        Nombre: movement.name,
+        Descripcion: movement.description,
+        Tipo: movement.type?.name,
+      }
+    })
+    Excel.convertArrayToFile(data, 'Movimientos')
   }
 }

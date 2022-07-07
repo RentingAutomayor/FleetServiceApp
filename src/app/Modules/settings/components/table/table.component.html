@@ -1,0 +1,24 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th *ngFor="let column of table.columns">{{ column }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="
+        let row of table.rows | paginate: { itemsPerPage: 10, currentPage: p }
+      "
+    >
+      <td>{{ row.id }}</td>
+      <td>{{ row.name }}</td>
+      <td>
+        <i
+          class="fas fa-trash-alt text-danger pointer"
+          (click)="delete(row.id)"
+          title="Eliminar"
+        ></i>
+      </td>
+    </tr>
+  </tbody>
+</table>

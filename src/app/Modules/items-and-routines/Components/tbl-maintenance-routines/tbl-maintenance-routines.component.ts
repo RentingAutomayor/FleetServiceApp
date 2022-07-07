@@ -1,8 +1,9 @@
+import { CurrencyPipe } from '@angular/common'
 import { Component, OnInit } from '@angular/core'
 import { Frequency } from 'src/app/Models/Frequency'
 import { MaintenanceRoutine } from 'src/app/Models/MaintenanceRoutine'
-import { ResponseApi } from 'src/app/Models/ResponseApi'
 import { VehicleModel } from 'src/app/Models/VehicleModel'
+import { Excel } from 'src/app/Utils/excel'
 import Swal from 'sweetalert2'
 import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/maintenance-routine.service'
 
@@ -39,7 +40,10 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   errorTitle = ''
   errorMessageApi = ''
 
-  constructor(private maintenanceRoutineService: MaintenanceRoutineService) {
+  constructor(
+    private maintenanceRoutineService: MaintenanceRoutineService,
+    private currency: CurrencyPipe
+  ) {
     this.frequency_id = 0
     this.vehicleModel_id = 0
   }
@@ -247,5 +251,19 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
 
   closeErrorMessage() {
     this.isErrorVisible = false
+  }
+
+  downloaExcel(): void {
+    const data = this.lsMaintenanceRoutinesFiltered.map((maintenceRoutine) => {
+      return {
+        Nombre: maintenceRoutine.name,
+        Linea: maintenceRoutine.vehicleModel.shortName,
+        KilometrajeDeLaRutina: maintenceRoutine.frequency.name,
+        PrecioDeLaFrecuenciaConImpuestos: this.currency.transform(
+          maintenceRoutine.referencePrice
+        ),
+      }
+    })
+    Excel.convertArrayToFile(data, 'Rutinas de mantenimiento')
   }
 }

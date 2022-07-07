@@ -1,0 +1,14 @@
+<div class="mt-2 d-flex justify-content-between align-items-center">
+  <h1>{{ item }}</h1>
+  <button class="btn btn-success" (click)="file.click()">
+    Cargar {{ item }}
+  </button>
+  <input
+    type="file"
+    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+    #file
+    (change)="loadData($event)"
+    hidden
+  />
+</div>
+<app-table [item]="item"></app-table>

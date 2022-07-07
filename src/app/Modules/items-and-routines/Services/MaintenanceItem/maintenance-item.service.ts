@@ -9,6 +9,7 @@ import { PricesByDealer } from '../../../../Models/PricesByDealer'
 import { PricesByContract } from '../../../../Models/PricesByContract'
 import { Tax } from 'src/app/Models/Tax'
 import { Observable } from 'rxjs'
+import { Settings } from 'src/app/Modules/settings/models/settings'
 
 @Injectable({
   providedIn: 'root',
@@ -169,5 +170,9 @@ export class MaintenanceItemService {
     const typeAdminRA = 3
     const url = `${this.URL_API}/GetByTypeId?typeId=${typeAdminRA}`
     return this.http.get<MaintenanceItem>(url)
+  }
+
+  updateMaintence(settings: Settings) {
+    return this.http.post(`${this.URL_API}/Update`, settings)
   }
 }

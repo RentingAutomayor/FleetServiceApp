@@ -16,7 +16,8 @@ import { SharedModule } from 'src/app/SharedComponents/shared.module'
 import { ItemsAndRoutinesRoutingModule } from './items-and-routines-routing.module'
 import { TaxesListComponent } from './Components/taxes-list/taxes-list.component'
 import { MatTabsModule } from '@angular/material/tabs'
-
+import { DialogLoadComponent } from './Components/dialog-load/dialog-load.component'
+import { MatDialogModule } from '@angular/material/dialog'
 @NgModule({
   declarations: [
     FrequencyComponent,
@@ -30,6 +31,7 @@ import { MatTabsModule } from '@angular/material/tabs'
     TblMaintenanceRoutinesComponent,
     TypeOfMaintenanceItemComponent,
     TaxesListComponent,
+    DialogLoadComponent,
   ],
   imports: [
     CommonModule,
@@ -38,6 +40,7 @@ import { MatTabsModule } from '@angular/material/tabs'
     SharedModule,
     ItemsAndRoutinesRoutingModule,
     MatTabsModule,
+    MatDialogModule,
   ],
 })
 export class ItemsAndRoutinesModule {}

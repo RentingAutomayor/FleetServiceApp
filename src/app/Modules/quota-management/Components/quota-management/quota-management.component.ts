@@ -15,6 +15,8 @@ import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { ContractualInformation } from 'src/app/Models/ContractualInformation'
 import { InputValidator } from 'src/app/Utils/InputValidator'
 import Swal from 'sweetalert2'
+import { Excel } from 'src/app/Utils/excel'
+import { CurrencyPipe } from '@angular/common'
 
 @Component({
   selector: 'app-quota-management',
@@ -50,21 +52,22 @@ export class QuotaManagementComponent implements OnInit {
   constructor(
     private quotaService: QuotaService,
     private movementService: MovementService,
-    private trxService: TransactionService
+    private trxService: TransactionService,
+    private currency: CurrencyPipe
   ) {
     this.txtFilter.valueChanges.subscribe((text) => {
-      let tempText : string
+      let tempText: string
       tempText = text
-      console.log("soy", text)
-      this.lsTodayTransactionsFilter =  this.lsTodayTransactions.filter(
-          (trx) => trx.client.name.toLocaleUpperCase().match(tempText.toLocaleUpperCase()) )
+      console.log('soy', text)
+      this.lsTodayTransactionsFilter = this.lsTodayTransactions.filter((trx) =>
+        trx.client.name.toLocaleUpperCase().match(tempText.toLocaleUpperCase())
+      )
     })
     this.frmApprovedQuota = new FormGroup({
       txtApprovedQuotaClient: new FormControl(''),
       txtApprovedQuota: new FormControl('', [Validators.required]),
       txtApprovedQuotaObservation: new FormControl(''),
-    }
-    )
+    })
 
     this.frmFreeUpQuota = new FormGroup({
       txtFreeUpQuotaClient: new FormControl(''),
@@ -105,11 +108,10 @@ export class QuotaManagementComponent implements OnInit {
     this.isAwaiting = false
   }
 
-  cleanFilter(){
-    this.txtFilter.setValue("");
+  cleanFilter() {
+    this.txtFilter.setValue('')
     this.lsTodayTransactionsFilter = this.lsTodayTransactions
   }
-
 
   getLsClientsWithoutQuota() {
     this.quotaService.getClientsWithoutQuota().subscribe((clients) => {
@@ -512,5 +514,50 @@ export class QuotaManagementComponent implements OnInit {
   setTransaction(trx: Transaction) {
     this.transactionSelected = trx
     this.trx_id = trx.id
+  }
+
+  downloadExcel(type: string): void {
+    let data = []
+    let fileName = ''
+    if (type === 'clientWithQuota') {
+      fileName = 'Clientes con cupo'
+      data = this.lsClientsWithQuota.map((item) => {
+        return {
+          Nombre: item.client.name,
+          CupoAprobado: this.getCurrency(item.approvedQuota),
+          CupoDisponible: this.getCurrency(item.currentQuota),
+          CupoConsumido: this.getCurrency(item.consumedQuota),
+          CupoEnTransito: this.getCurrency(item.inTransitQuota),
+        }
+      })
+    } else if (type === 'clientWithOutQuota') {
+      fileName = 'Clientes sin cupo'
+      data = this.lsClientsWithoutQuota.map((item) => {
+        return {
+          Documento: item.document,
+          RazonSocial: item.name,
+          Telefono: item.phone,
+          Celular: item.cellphone,
+          Direccion: item.address,
+        }
+      })
+    } else {
+      fileName = 'Transacciones'
+      data = this.lsTodayTransactionsFilter.map((item) => {
+        return {
+          Codigo: item.code,
+          Movimiento: item.movement,
+          Cliente: item.client?.name,
+          Valor: this.getCurrency(item.value),
+          Hora: '',
+          Usuario: `${item.user?.name} ${item.user?.lastName}`,
+        }
+      })
+    }
+    Excel.convertArrayToFile(data, fileName)
+  }
+
+  getCurrency(value: string | number): string {
+    return this.currency.transform(value)
   }
 }

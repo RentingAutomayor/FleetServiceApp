@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router'
 import { AuthGuard } from './Guardians/auth/auth.guard'
 import { LoginComponent } from './Modules/Login/Components/login/login.component'
 
-
 const routes: Routes = [
   {
     path: '',
@@ -82,12 +81,14 @@ const routes: Routes = [
   {
     path: 'MasterUsers',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./Modules/user/user.module').then(u => u.UserModule)
+    loadChildren: () =>
+      import('./Modules/user/user.module').then((u) => u.UserModule),
   },
   {
     path: 'MasterRoles',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./Modules/role/role.module').then(r => r.RoleModule)
+    loadChildren: () =>
+      import('./Modules/role/role.module').then((r) => r.RoleModule),
   },
   {
     path: 'Payproviders',
@@ -95,6 +96,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('../app/Modules/payprovider/payprovider.module').then(
         (m) => m.PayproviderModule
+      ),
+  },
+  {
+    path: 'MasterSettings',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./Modules/settings/settings.module').then(
+        (s) => s.SettingsModule
       ),
   },
 ]

@@ -10,6 +10,7 @@ import { ContractStateService } from '../../Services/contract-state.service'
 import { saveInStorage } from 'src/app/Utils/storage'
 import { FormControl } from '@angular/forms'
 import Swal from 'sweetalert2'
+import { Excel } from 'src/app/Utils/excel'
 
 @Component({
   selector: 'app-tbl-contract',
@@ -181,5 +182,20 @@ export class TblContractComponent implements OnInit {
   removeFilter() {
     this.txtFilter.setValue(null)
     this.lsContractsFiltered = this.lsContracts
+  }
+
+  downloadExcel(): void {
+    const data = this.lsContractsFiltered.map((contract) => {
+      return {
+        CodigoInterno: contract.code,
+        CodigoReferencia: contract.name,
+        Cliente: contract.client?.name,
+        Concesionario: contract.dealer?.name,
+        PlazoEnMeses: contract.duration,
+        VehiculosContratados: contract.amountVehicles,
+        Estado: contract.contractState.name,
+      }
+    })
+    Excel.convertArrayToFile(data, 'Contratos')
   }
 }

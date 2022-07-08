@@ -1,30 +1,25 @@
 import {
   Component,
   EventEmitter,
+  Input,
+  OnDestroy,
   OnInit,
   Output,
-  OnChanges,
-  SimpleChange,
-  Input,
-  SimpleChanges,
-  OnDestroy,
 } from '@angular/core'
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Brand } from 'src/app/Models/Brand'
-import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
-import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service'
-import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service'
-import { Tax } from 'src/app/Models/Tax'
-import { CompanyType } from 'src/app/Models/CompanyType'
-import { Dealer } from 'src/app/Models/Dealer'
-import { SharedFunction } from 'src/app/Models/SharedFunctions'
-import { ItemHandleTaxes } from 'src/app/Models/ItemHandleTaxes'
-import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
-import { PresentationUnit } from 'src/app/Models/PresentationUnit'
 import { Category } from 'src/app/Models/Category'
 import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit'
-import { VehicleType } from 'src/app/Models/VehicleType'
+import { ItemHandleTaxes } from 'src/app/Models/ItemHandleTaxes'
+import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
+import { PresentationUnit } from 'src/app/Models/PresentationUnit'
+import { SharedFunction } from 'src/app/Models/SharedFunctions'
+import { Tax } from 'src/app/Models/Tax'
+import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
 import { VehicleModel } from 'src/app/Models/VehicleModel'
+import { VehicleType } from 'src/app/Models/VehicleType'
+import { VehicleService } from '../../../client/Services/Vehicle/vehicle.service'
+import { MaintenanceItemService } from '../../Services/MaintenanceItem/maintenance-item.service'
 
 @Component({
   selector: 'app-maintenance-item',

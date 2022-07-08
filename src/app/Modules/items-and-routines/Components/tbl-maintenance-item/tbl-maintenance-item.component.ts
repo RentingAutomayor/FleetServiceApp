@@ -7,7 +7,14 @@ import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
 import { VehicleModel } from 'src/app/Models/VehicleModel'
 import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.service'
 import { MaintenanceItemService } from 'src/app/Modules/items-and-routines/Services/MaintenanceItem/maintenance-item.service'
+import { Excel } from '../../../../Utils/excel'
 import Swal from 'sweetalert2'
+import { AlertService } from 'src/app/services/alert.service'
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog'
+import { DialogLoadComponent } from '../dialog-load/dialog-load.component'
+import { CurrencyPipe } from '@angular/common'
+import { CalculateTaxesPipe } from 'src/app/SharedComponents/Pipes/calculate-taxes.pipe'
+import { CalculateTotalPricePipe } from 'src/app/SharedComponents/Pipes/calculate-total-price.pipe'
 
 @Component({
   selector: 'app-tbl-maintenance-item',
@@ -46,7 +53,12 @@ export class TblMaintenanceItemComponent implements OnInit {
 
   constructor(
     private vehicleService: VehicleService,
-    private maintenanceItemService: MaintenanceItemService
+    private maintenanceItemService: MaintenanceItemService,
+    private _alert: AlertService,
+    private dialog: MatDialog,
+    private currency: CurrencyPipe,
+    private taxesPipe: CalculateTaxesPipe,
+    private calculatePipe: CalculateTotalPricePipe
   ) {
     this.maintenanceItemSelected = {
       id: 0,
@@ -330,5 +342,49 @@ export class TblMaintenanceItemComponent implements OnInit {
     }
     oItem.dealer = dealerTmp
     return oItem
+  }
+
+  getFile(e): void {
+    const dialogConfig = new MatDialogConfig()
+    const file = e.target.files[0]
+    Excel.convertExcelToArray(file, (result) => {
+      dialogConfig.data = result
+      dialogConfig.width = '800px'
+      this.dialog
+        .open(DialogLoadComponent, dialogConfig)
+        .beforeClosed()
+        .subscribe(() => this.showTableItems())
+    })
+  }
+
+  downloaExcel(): void {
+    const data = this.lsMaintenanceItems.map((maintenceItem) => {
+      return {
+        Codigo: maintenceItem.code,
+        Nombre: maintenceItem.name,
+        Tipo: maintenceItem.type['name'],
+        Presentacion: maintenceItem.presentationUnit.longName,
+        ValorSinImpuestos: this.getCurrency(maintenceItem.referencePrice),
+        ValorImpuestos: this.getCurrency(
+          this.taxesPipe.transform(
+            maintenceItem,
+            maintenceItem.referencePrice,
+            1
+          )
+        ),
+        ValorConImpuestos: this.getCurrency(
+          this.calculatePipe.transform(
+            maintenceItem,
+            maintenceItem.referencePrice,
+            1
+          )
+        ),
+      }
+    })
+    Excel.convertArrayToFile(data, 'Articulos de mantenimiento')
+  }
+
+  getCurrency(value: number | string): string {
+    return this.currency.transform(value)
   }
 }

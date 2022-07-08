@@ -1,0 +1,23 @@
+<h1 class="mt-2">Reportes</h1>
+<div>
+  <form [formGroup]="fieldForm" (ngSubmit)="downloadReport()">
+    <div class="text-right">
+      <button
+        type="submit"
+        [disabled]="fieldForm.invalid"
+        class="btn btn-success"
+      >
+        Descargar excel
+      </button>
+    </div>
+    <div class="form-group">
+      <label>Reporte</label>
+      <select class="form-control" formControlName="name">
+        <option value="">Seleccione...</option>
+        <option *ngFor="let report of reports" [value]="report.id">
+          {{ report.name }}
+        </option>
+      </select>
+    </div>
+  </form>
+</div>

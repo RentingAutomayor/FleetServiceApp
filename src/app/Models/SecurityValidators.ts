@@ -11,7 +11,7 @@ export class SecurityValidators {
     try {
       const companyStorage = new Company()
       const userSession = JSON.parse(sessionStorage.getItem('sessionUser'))
-
+      console.log(userSession)
       companyStorage.type = userSession.company.type
 
       if (

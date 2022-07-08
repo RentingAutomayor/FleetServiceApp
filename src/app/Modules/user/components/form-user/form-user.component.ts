@@ -37,9 +37,9 @@ export class FormUser implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getRoles()
     this.getUserIdFromUrl()
     this.getCompanies()
-    this.getRoles()
   }
 
   initForm(): void {
@@ -49,10 +49,10 @@ export class FormUser implements OnInit {
       lastName: ['', Validators.required],
       email: ['', Validators.required],
       password: ['', Validators.required],
-      companyId: ['', Validators.required],
+      companyId: [{ value: '', disabled: true }],
       roleId: ['', Validators.required],
       status: ['', Validators.required],
-      typeUser: ['', Validators.required],
+      typeUser: [{ value: '', disabled: true }],
     })
   }
 
@@ -62,16 +62,20 @@ export class FormUser implements OnInit {
       (result) => {
         this.isLoading = false
         const { company, dealerId, clientId, ...user } = result
-        const typeUser = !dealerId ? clientId : dealerId
-        const formUser = { companyId: company.id, ...user, typeUser }
+        const role = this.roles.find((r) => r.id === +user.roleId)
+        const formUser = {
+          ...user,
+          companyId: role.name === UserRoles.RENTING ? company.id : '',
+          typeUser:
+            role.name === UserRoles.DEALER
+              ? dealerId
+              : role.name === UserRoles.CLIENT
+              ? clientId
+              : '',
+        }
         this.userForm.setValue(formUser)
         this.userForm.get('password').disable()
         if (user.email) this.userForm.get('email').disable()
-        if (clientId || dealerId) {
-          const typeUser = !clientId ? 'dealer' : 'client'
-          this.getClientOrDealer(typeUser)
-          document.getElementById(typeUser)['checked'] = true
-        }
       },
       (badRequest) => this._alert.error(badRequest.error.Message)
     )
@@ -106,6 +110,36 @@ export class FormUser implements OnInit {
     )
   }
 
+  validRole(): void {
+    const companyKey = 'companyId'
+    const typeKey = 'typeUser'
+    const roleId = +this.userForm.get('roleId').value
+    const role = this.roles.find((r) => r.id === roleId)
+    if (role.name !== UserRoles.RENTING) {
+      this.userForm.get(companyKey).disable()
+      this.userForm.get(companyKey).setValue('')
+    } else {
+      this.enableField(companyKey)
+      this.userForm.get(companyKey).setValidators(Validators.required)
+    }
+    if (role.name === UserRoles.CLIENT || role.name === UserRoles.DEALER)
+      this.enableField(typeKey)
+    else {
+      this.disableField(typeKey)
+      this.userForm.get(typeKey).setValue('')
+    }
+    if (role.name === UserRoles.CLIENT) this.getClientOrDealer('client')
+    if (role.name === UserRoles.DEALER) this.getClientOrDealer('dealer')
+  }
+
+  enableField(key: string): void {
+    this.userForm.get(key).enable()
+  }
+
+  disableField(key: string): void {
+    this.userForm.get(key).disable()
+  }
+
   submit(): void {
     this.isLoading = true
     const isEdit = this.userForm.get('id').value === 0
@@ -121,17 +155,23 @@ export class FormUser implements OnInit {
         this.isLoading = false
         this.router.navigateByUrl('/MasterUsers')
       },
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      (badRequest) => {
+        this._alert.error(badRequest.error.Message)
+        this.isLoading = false
+      }
     )
   }
 
   buildUser(user: any, company: Company | any): User {
-    const isClient = document.getElementById('client')['checked']
+    const role = this.roles.find((r) => r.id === +user.roleId)
+    const isRenting = role.name === UserRoles.RENTING
+    const isDealer = role.name === UserRoles.DEALER
+    const isClient = role.name === UserRoles.CLIENT
     return {
       ...user,
-      company,
+      company: isRenting ? company : null,
       clientId: isClient ? user.typeUser : null,
-      dealerId: !isClient ? user.typeUser : null,
+      dealerId: isDealer ? user.typeUser : null,
     }
   }
 
@@ -157,4 +197,11 @@ export class FormUser implements OnInit {
       if (userId) this.getUserById(userId)
     })
   }
+}
+
+enum UserRoles {
+  ADMIN = 'TEC-SOP',
+  CLIENT = 'USU-CLIENT',
+  DEALER = 'USU-DEALER',
+  RENTING = 'USU-RENTING',
 }

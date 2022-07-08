@@ -49,7 +49,15 @@
   </div>
 
   <div id="container__clientsWithQuota" class="element-to-hide container__tab">
-    <h3>Clientes con cupo</h3>
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <h3>Clientes con cupo</h3>
+      <button
+        class="btn btn-primary"
+        (click)="downloadExcel('clientWithQuota')"
+      >
+        Descargar Excel
+      </button>
+    </div>
     <table class="table table-striped">
       <thead>
         <th>#</th>
@@ -139,7 +147,15 @@
     id="container__clientsWithoutQuota"
     class="element-to-hide container__tab"
   >
-    <h3>Clientes sin cupo</h3>
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <h3>Clientes con cupo</h3>
+      <button
+        class="btn btn-primary"
+        (click)="downloadExcel('clientWithOutQuota')"
+      >
+        Descargar Excel
+      </button>
+    </div>
     <table class="table table-striped">
       <thead>
         <th class="col-number col-mobile-hide">#</th>
@@ -176,15 +192,20 @@
   </div>
 
   <div id="container__transactions" class="element-to-hide container__tab">
-    <h3>Transacciones del día</h3>
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <h3>Transacciones del día</h3>
+      <button class="btn btn-primary" (click)="downloadExcel('')">
+        Descargar Excel
+      </button>
+    </div>
     <div class="transactionstodayfilter">
       <input
-      [formControl]="txtFilter"
-      type="text"
-      class="form-control"
-      placeholder="Cliente"
+        [formControl]="txtFilter"
+        type="text"
+        class="form-control"
+        placeholder="Cliente"
       />
-      <button type="button" class="btn btn-danger" (click)="cleanFilter();" >
+      <button type="button" class="btn btn-danger" (click)="cleanFilter()">
         Borrar filtro
       </button>
     </div>

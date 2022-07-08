@@ -1,0 +1,55 @@
+<div class="mt-2 d-flex justify-content-between align-items-center">
+  <h1>Lineas de vehiculos</h1>
+  <button
+    class="btn btn-success"
+    [disabled]="modelsForm.invalid"
+    (click)="file.click()"
+  >
+    Cargar modelos
+  </button>
+  <input
+    type="file"
+    #file
+    hidden
+    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+    (change)="loadData($event)"
+  />
+</div>
+<form [formGroup]="modelsForm" (ngSubmit)="search()">
+  <div class="row">
+    <div class="col-lg-8 row">
+      <div class="col-6">
+        <div class="form-group">
+          <label>Marcas</label>
+          <select class="form-control" formControlName="brandId">
+            <option value="">Seleccione...</option>
+            <option *ngFor="let brand of brands" [value]="brand.id">
+              {{ brand.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label>Tipos</label>
+          <select class="form-control" formControlName="typeId">
+            <option value="">Seleccione...</option>
+            <option *ngFor="let type of types" [value]="type.id">
+              {{ type.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-4 text-center mt-4">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="modelsForm.invalid"
+      >
+        Buscar
+      </button>
+    </div>
+  </div>
+</form>
+<app-table item="models"></app-table>

@@ -1,0 +1,43 @@
+<h1 class="mt-3">Notificaciones</h1>
+<form
+  class="container-fluid"
+  [formGroup]="notificacionsForm"
+  (ngSubmit)="update()"
+>
+  <div class="row">
+    <div class="col-lg-10 row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label>Correo electronico</label>
+          <input type="text" class="form-control" formControlName="email" />
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label>Contraseña</label>
+          <div class="input-group mb-3">
+            <input
+              [type]="isVisibility ? 'text' : 'password'"
+              class="form-control"
+              formControlName="password"
+            />
+            <span
+              (click)="toggleVisibility()"
+              class="input-group-text material-symbols-outlined pointer"
+              >{{ isVisibility ? 'visibility_off' : 'visibility' }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 text-center">
+      <button
+        type="submit"
+        class="btn btn-success mt-4"
+        [disabled]="notificacionsForm.invalid"
+      >
+        Actualizar
+      </button>
+    </div>
+  </div>
+</form>

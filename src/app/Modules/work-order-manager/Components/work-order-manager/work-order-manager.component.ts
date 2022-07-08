@@ -7,7 +7,7 @@ import { SessionUser } from 'src/app/Models/SessionUser'
 import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { Company } from 'src/app/Models/Company'
 import { CompanyType } from 'src/app/Models/CompanyType'
-import { DatePipe } from '@angular/common'
+import { CurrencyPipe, DatePipe } from '@angular/common'
 import { DealerService } from 'src/app/Modules/dealer/Services/Dealer/dealer.service'
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
 import { NotificationService } from 'src/app/SharedComponents/Services/Notification/notification.service'
@@ -18,6 +18,7 @@ import { TransactionObservation } from 'src/app/Models/TransactionObservation'
 import { Dealer } from 'src/app/Models/Dealer'
 import { EmailBody } from 'src/app/Models/Emailbody'
 import Swal from 'sweetalert2'
+import { Excel } from 'src/app/Utils/excel'
 
 @Component({
   selector: 'app-work-order-manager',
@@ -60,7 +61,8 @@ export class WorkOrderManagerComponent implements OnInit {
     private datePipe: DatePipe,
     private dealerService: DealerService,
     private clientService: ClientService,
-    private movementService: MovementService
+    private movementService: MovementService,
+    private currency: CurrencyPipe
   ) {
     this.transactionSelected = new Transaction()
     this.trx_id = 0
@@ -119,6 +121,7 @@ export class WorkOrderManagerComponent implements OnInit {
 
   async initDataToGetReport() {
     console.warn('[initDataToGetReport]', this.company)
+    console.log(this.company)
     switch (this.company.type) {
       case CompanyType.CLIENT:
         this.typeOfReport = 'dealer'
@@ -159,8 +162,9 @@ export class WorkOrderManagerComponent implements OnInit {
           this.state_to_filter
         )
         .subscribe((dataTrx) => {
-
-          this.lsWorkOrderByDealer = dataTrx.filter( data => data.transactionState.id != 3 );
+          this.lsWorkOrderByDealer = dataTrx.filter(
+            (data) => data.transactionState.id != 3
+          )
         })
       this.isAwaiting = false
     } catch (error) {
@@ -292,24 +296,27 @@ export class WorkOrderManagerComponent implements OnInit {
     }
   }
 
-  async sendEmail(args? : Transaction) {
+  async sendEmail(args?: Transaction) {
+    const client_id = args.client.id
+    const code_ordertx = args.headerDetails.relatedTransaction.code
 
-    const client_id = args.client.id;
-    const code_ordertx = args.headerDetails.relatedTransaction.code;
+    const { contacts }: Dealer = await this.clientService.getClientById(
+      client_id
+    )
 
-    const {contacts} : Dealer = await this.clientService.getClientById(client_id);
-
-    const emailBody : EmailBody = {
+    const emailBody: EmailBody = {
       nameMessage: 'Fleet Service',
-      emailReceiver: contacts.filter (c => c.mustNotify == true).map (c => c.email),
+      emailReceiver: contacts
+        .filter((c) => c.mustNotify == true)
+        .map((c) => c.email),
       typemessage: args.movement.id,
       nOrderwork: code_ordertx,
-    };
+    }
 
-    if(emailBody.emailReceiver.length > 0){
-      this.notificationService.sendMail(emailBody).subscribe((res) =>{
-        console.log(res);
-      });
+    if (emailBody.emailReceiver.length > 0) {
+      this.notificationService.sendMail(emailBody).subscribe((res) => {
+        console.log(res)
+      })
     }
   }
 
@@ -325,12 +332,12 @@ export class WorkOrderManagerComponent implements OnInit {
         movement,
         txtObservationApprobation.value
       )
-      this.sendEmail(trxApproveWorkOrder);
+      this.sendEmail(trxApproveWorkOrder)
       this.transactionService
         .processTransaction(trxApproveWorkOrder)
         .subscribe((rta) => {
           if (rta.response) {
-            this.sendEmail(trxApproveWorkOrder);
+            this.sendEmail(trxApproveWorkOrder)
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -423,15 +430,31 @@ export class WorkOrderManagerComponent implements OnInit {
     }
 
     // type 2 info + edit
-    if(workOrder.transactionState.name.toUpperCase() == 'PENDIENTE'){
+    if (workOrder.transactionState.name.toUpperCase() == 'PENDIENTE') {
       response = 2
     }
 
     // type 3 info + cancel
-    if(workOrder.transactionState.name.toUpperCase() == 'RECHAZADA'){
+    if (workOrder.transactionState.name.toUpperCase() == 'RECHAZADA') {
       response = 3
     }
 
     return response
+  }
+
+  downloadExcel(): void {
+    const data: any[] = this.lsWorkOrderByDealer.map((workOrder) => {
+      return {
+        Codigo: workOrder.code,
+        Placa: workOrder.headerDetails.vehicle.licensePlate,
+        Cliente: workOrder.client.name,
+        Mantenimiento: workOrder.headerDetails.maintenanceRoutine.name,
+        Sucursal: workOrder.headerDetails.branch.name,
+        Fecha: new Date(workOrder.registrationDate).toLocaleDateString(),
+        Valor: this.currency.transform(workOrder.value),
+        Estado: workOrder.transactionState.name,
+      }
+    })
+    Excel.convertArrayToFile(data, 'Ordenes de trabajo')
   }
 }

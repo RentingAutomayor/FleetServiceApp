@@ -11,6 +11,7 @@ import { ActionType } from 'src/app/Models/ActionType'
 import { saveInStorage } from 'src/app/Utils/storage'
 import { FormControl } from '@angular/forms'
 import Swal from 'sweetalert2'
+import { Excel } from 'src/app/Utils/excel'
 
 @Component({
   selector: 'app-tbl-client',
@@ -69,7 +70,7 @@ export class TblClientComponent implements OnInit {
         icon: 'error',
         title: 'Oops...',
         text: err.error.Message,
-        footer: '</a>Consulte con Soporte el problema</a>'
+        footer: '</a>Consulte con Soporte el problema</a>',
       })
     }
   }
@@ -111,7 +112,7 @@ export class TblClientComponent implements OnInit {
         icon: 'error',
         title: 'Oops...',
         text: err.error.Message,
-        footer: '</a>Consulte con Soporte el problema</a>'
+        footer: '</a>Consulte con Soporte el problema</a>',
       })
     }
   }
@@ -128,23 +129,22 @@ export class TblClientComponent implements OnInit {
         icon: 'error',
         title: 'Oops...',
         text: err.error.Message,
-        footer: '</a>Consulte con Soporte el problema</a>'
+        footer: '</a>Consulte con Soporte el problema</a>',
       })
     }
   }
 
   deleteClient(pClient: Client) {
     try {
-
       Swal.fire({
         title: 'Estas Seguro?',
-        text: "No puedes revertir esto!",
+        text: 'No puedes revertir esto!',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         cancelButtonText: 'Cancelar',
-        confirmButtonText: 'Si, Eliminar!'
+        confirmButtonText: 'Si, Eliminar!',
       }).then((result) => {
         if (result.isConfirmed) {
           this.isAwaiting = true
@@ -152,11 +152,7 @@ export class TblClientComponent implements OnInit {
             const rta = response
             this.isAwaiting = false
             if (rta.response) {
-              Swal.fire(
-                'Deleted!',
-                rta.message,
-                'success'
-              )
+              Swal.fire('Deleted!', rta.message, 'success')
               this.initComponents()
             }
           })
@@ -168,7 +164,7 @@ export class TblClientComponent implements OnInit {
         icon: 'error',
         title: 'Oops...',
         text: err.error.Message,
-        footer: '</a>Consulte con Soporte el problema</a>'
+        footer: '</a>Consulte con Soporte el problema</a>',
       })
     }
   }
@@ -194,5 +190,19 @@ export class TblClientComponent implements OnInit {
   removeFilter() {
     this.txtFilter.setValue(null)
     this.lsClientFiltered = this.lsClient
+  }
+
+  downloadExcel(): void {
+    const data = this.lsClient.map((client) => {
+      return {
+        Documento: client.document,
+        RazonSocial: client.name,
+        Telefono: client.phone,
+        Celular: client.cellphone,
+        Direccion: client.address,
+        Ciudad: client.city?.name,
+      }
+    })
+    Excel.convertArrayToFile(data, 'Clientes')
   }
 }

@@ -1,0 +1,56 @@
+<h1 mat-dialog-title>Carga de mantenimientos</h1>
+<div mat-dialog-content>
+  <table class="table table-striped" id="table">
+    <thead>
+      <tr>
+        <th>Codigo</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Tipo</th>
+        <th>Unidad de presentacion</th>
+        <th>Categoria</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let maintance of maintances">
+        <td>{{ maintance.code }}</td>
+        <td>{{ maintance.name }}</td>
+        <td>{{ maintance.price | currency }}</td>
+        <td>
+          <select class="form-control types">
+            <option value="">Seleccione...</option>
+            <option *ngFor="let type of types" [value]="type.id">
+              {{ type.name }}
+            </option>
+          </select>
+        </td>
+        <td>
+          <select class="form-control presentations">
+            <option value="">Seleccione...</option>
+            <option
+              *ngFor="let presentation of presentations"
+              [value]="presentation.id"
+            >
+              {{ presentation.longName }}
+            </option>
+          </select>
+        </td>
+        <td>
+          <select class="form-control categories">
+            <option value="">Seleccione...</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div
+  mat-dialog-actions
+  class="d-flex align-items-center justify-content-between"
+>
+  <button class="btn btn-danger" (click)="closeDialog()">Salir</button>
+  <button class="btn btn-success" (click)="updateTable()">Aceptar</button>
+</div>

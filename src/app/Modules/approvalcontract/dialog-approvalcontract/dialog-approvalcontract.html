@@ -1,0 +1,61 @@
+<div class="content">
+    <div class="title">
+        <h1 mat-dialog-title>Informacion del Contrato</h1>
+    </div>
+    <div class="content-data">
+        <div class="img">
+            <img mat-card-image src="../../../../assets/images/contract.svg" alt="Contract">
+        </div>
+        <div class="info">
+            <div mat-dialog-content >
+                <ul>
+                    <li>
+                        <b>Codigo Interno: </b> <span>{{data.code}}</span>
+                    </li>
+                    <li>
+                        <b>Código referencia: </b> <span>{{data.name}}</span>
+                    </li>
+                    <li>
+                        <b>Cliente: </b> <span>{{data.client.name}}</span>
+                    </li>
+                    <li>
+                        <b>Concesionario: </b> <span>{{data.dealer.name}}</span>
+                    </li>
+                    <li>
+                        <b>Plazo en meses: </b> <span>{{data.duration}}</span>
+                    </li>
+                    <li>
+                        <b>Veh. contratados: </b> <span>{{data.amountVehicles}}</span>
+                    </li>
+                    <li>
+                        <b>Estado: </b> <span>{{data.contractState.name }}</span>
+                    </li>
+                    <li>
+                        <b>Tipo De Descuento: </b> <span>{{data.discountType.name}}</span>
+                    </li>
+                    <li>
+                        <b>Valor Del Descuento: </b> <span>{{data.discountValue}}</span>
+                    </li>
+                    <li>
+                        <b>Fecha Registro Contrato: </b> <span>{{data.registrationDate}}</span>
+                    </li>
+                    <li>
+                        <b>Fecha Inicio Contrato: </b> <span>{{data.startingDate}}</span>
+                    </li>
+                    <li>
+                        <b>Fecha Fin Contrato: </b> <span>{{data.endingDate}}</span>
+                    </li>
+                    <li>
+                        <mat-label><b>Observaciones Del Contrato:</b> </mat-label>
+                        <br>
+                        <textarea matInput [disabled]="true" [value]="data.observation"></textarea>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div mat-dialog-actions align="center">
+        <button mat-raised-button mat-dialog-close color="warn" (click)="onNoClick()">Cancelar</button>
+    </div>
+</div>
+

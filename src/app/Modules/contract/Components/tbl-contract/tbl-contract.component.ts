@@ -11,6 +11,7 @@ import { saveInStorage } from 'src/app/Utils/storage'
 import { FormControl } from '@angular/forms'
 import Swal from 'sweetalert2'
 import { Excel } from 'src/app/Utils/excel'
+import { getClassState } from 'src/app/Utils/getClassState'
 
 @Component({
   selector: 'app-tbl-contract',
@@ -58,6 +59,10 @@ export class TblContractComponent implements OnInit {
     this.isToUpdate = false
     this.isAwaiting = false
     this.getListContracts()
+  }
+
+  getClass(name: string){
+    return getClassState(name);
   }
 
   getListContracts() {

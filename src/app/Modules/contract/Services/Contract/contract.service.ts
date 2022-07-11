@@ -35,6 +35,16 @@ export class ContractService {
     return this.http.get<DiscountType[]>(urlGetDiscounts).toPromise()
   }
 
+  getContractinitState(){
+    const urlGetStates = `${this.URL_API}/GetinitContract`
+    return this.http.get<ContractState>(urlGetStates);
+  }
+
+  getContractPending(deal_id: number){
+    const urlGetContractPending = `${this.URL_API}/GetContractPending?deal_id=${deal_id}`
+    return this.http.get<Contract[]>(urlGetContractPending)
+  }
+
   getContracts(
     dealer_id: number = 0,
     client_id: number = 0

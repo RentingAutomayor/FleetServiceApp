@@ -73,7 +73,7 @@ export class ContractComponent implements OnInit, OnChanges {
 
   client: Client | undefined = undefined
   dealer: Dealer | undefined = undefined
-  contractState: ContractState | undefined = undefined
+  contractState: ContractState 
   discountType: DiscountType | undefined = undefined
   discountValue: number = 0
   vehicles: Vehicle[] = []
@@ -179,6 +179,7 @@ export class ContractComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.extractParamsFromURL()
+    this.getInitContractState();
     this.initComponents()
   }
 
@@ -216,9 +217,6 @@ export class ContractComponent implements OnInit, OnChanges {
             this.contractToUpdate.dealer
           )
 
-          this.contracStateService.setContractState(
-            this.contractToUpdate.contractState
-          )
 
           this.contracStateService.setDiscountType(
             this.contractToUpdate.discountType
@@ -287,6 +285,14 @@ export class ContractComponent implements OnInit, OnChanges {
     this.contract = new Contract()
 
     this.enableOrDisableForm()
+  }
+
+  async getInitContractState(){
+    //malisima practica - cambiar
+    this.contractService.getContractinitState().subscribe(data => {
+      this.contractState = data
+      console.log(this.contractState)
+    })
   }
 
   async validateCompanyLogged() {
@@ -526,15 +532,6 @@ export class ContractComponent implements OnInit, OnChanges {
     return InputValidator.validateTyping(event, 'numbers')
   }
 
-  setContractState(contractState: ContractState) {
-    if (contractState == null || contractState == undefined) {
-      this.contracStateFieldIsInvalid = true
-    } else {
-      this.disableContract(contractState)
-      this.contracStateFieldIsInvalid = false
-    }
-    this.contracStateService.setContractState(contractState)
-  }
 
   validateInputDate(event: any) {
     event.preventDefault()

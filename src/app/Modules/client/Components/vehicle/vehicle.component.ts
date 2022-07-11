@@ -199,7 +199,7 @@ export class VehicleComponent implements OnInit {
   }
 
   setDataInForm(vehicle: Vehicle): void {
-    debugger;
+    // debugger;
     if (vehicle != null){
     this.frmVehicle.patchValue(vehicle)
     this.vehicleStateSelected = vehicle.vehicleState

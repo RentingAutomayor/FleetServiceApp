@@ -38,17 +38,6 @@
               placeholder="Código de referencia del contrato ..."
             />
           </div>
-          <div class="container__col">
-            <app-contract-state
-              [contractState]="contractState"
-              [cmbStateIsDisable]="disableCmbState"
-              (contractStateWasSelected)="setContractState($event)"
-            ></app-contract-state>
-
-            <div class="error" *ngIf="contracStateFieldIsInvalid">
-              <p>* El estado es requerido para guardar el contrato</p>
-            </div>
-          </div>
         </div>
         <div class="container__row">
           <div class="container__col">

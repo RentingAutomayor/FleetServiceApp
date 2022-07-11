@@ -55,3 +55,50 @@ table {
   cursor: pointer;
   margin-left: 10px;
 }
+
+.tag-pending{
+  display: flex;
+  flex-direction: row;
+  background-color: #ff4f03;
+  padding: 8px 20px;
+  color: #fff;
+  border-radius: 20px;
+  width: 150px;
+  align-items: center;
+  justify-content: center;
+}
+.tag-ending{
+  display: flex;
+  flex-direction: row;
+  background-color: #469627;
+  padding: 8px 40px;
+  color: #fff;
+  border-radius: 20px;
+  width: 180px;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-canceled{ 
+  display: flex;
+  flex-direction: row;
+  background-color: #7e0c2c;
+  padding: 8px 40px;
+  color: #fff;
+  border-radius: 20px;
+  width: 180px;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-waiting{
+  display: flex;
+  flex-direction: row;
+  background-color: #0F4A7E;
+  padding: 8px 40px;
+  color: #fff;
+  border-radius: 20px;
+  width: 180px;
+  align-items: center;
+  justify-content: center;
+}

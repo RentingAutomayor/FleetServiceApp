@@ -106,6 +106,22 @@ const routes: Routes = [
         (s) => s.SettingsModule
       ),
   },
+  {
+    path: 'CheckContract',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./Modules/approvalcontract/approvalcontract.module').then(
+        (m) => m.ApprovalcontractModule
+      ),
+  },
+  {
+    path: 'CustomerBilling',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./Modules/customerbilling/customerbilling.module').then(
+        (m) => m.CustomerbillingModule
+      ),
+  },
 ]
 
 @NgModule({

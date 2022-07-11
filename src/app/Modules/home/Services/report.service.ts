@@ -1,31 +1,22 @@
+import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { NullTemplateVisitor } from '@angular/compiler'
+import { BehaviorSubject } from 'rxjs'
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReportService {
   private URL_API = '/API_FleetService/api/Report'
-  private HttpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-  }
-
+  public filterDate: BehaviorSubject<any> = new BehaviorSubject({})
   constructor(private http: HttpClient) {}
 
   public GetTotalCountWorkOrdersByDealerAndClient(
     client_id: number = null,
     dealer_id: number = null,
-    init_date: Date = null,
-    end_date: Date = null
+    init_date: string = null,
+    end_date: string = null
   ): Promise<any> {
-    const initDateFormatted =
-      init_date !== null
-        ? new Date(init_date).toISOString().split('T')[0]
-        : null
-    const endDateFormatted =
-      end_date !== null ? new Date(end_date).toISOString().split('T')[0] : null
-    const urlReport = `${this.URL_API}/getTotalWorkOrderByDealerAndClient?dealer_id=${dealer_id}&client_id=${client_id}&init_date=${initDateFormatted}&end_date=${endDateFormatted}`
+    const urlReport = `${this.URL_API}/getTotalWorkOrderByDealerAndClient?dealer_id=${dealer_id}&client_id=${client_id}&init_date=${init_date}&end_date=${end_date}`
     return this.http.get<any>(urlReport).toPromise()
   }
 
@@ -34,7 +25,8 @@ export class ReportService {
     dealer_id: number = null,
     license_plate: string = null,
     init_date: Date = null,
-    end_date: Date = null
+    end_date: Date = null,
+    status: number = 0
   ): Promise<any> {
     const initDateFormatted =
       init_date !== null
@@ -42,7 +34,7 @@ export class ReportService {
         : null
     const endDateFormatted =
       end_date !== null ? new Date(end_date).toISOString().split('T')[0] : null
-    const urlReport = `${this.URL_API}/getWorkOrderApprovedByVehicle?client_id=${client_id}&dealer_id=${dealer_id}&license_plate=${license_plate}&init_date=${initDateFormatted}&end_date=${endDateFormatted}`
+    const urlReport = `${this.URL_API}/getWorkOrderApprovedByVehicle?client_id=${client_id}&dealer_id=${dealer_id}&license_plate=${license_plate}&init_date=${initDateFormatted}&end_date=${endDateFormatted}&status=${status}`
     return this.http.get<any>(urlReport).toPromise()
   }
 

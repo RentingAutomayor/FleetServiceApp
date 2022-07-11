@@ -7,13 +7,12 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core'
-import { ChartType, ChartDataSets, ChartOptions, ChartColor } from 'chart.js'
-import { Label } from 'ng2-charts'
 import * as pluginDataLabels from 'chart.js'
-import { ReportService } from '../../Services/report.service'
-import { Color } from 'angular-bootstrap-md'
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js'
+import { Label } from 'ng2-charts'
 import { Company } from 'src/app/Models/Company'
 import { CompanyType } from 'src/app/Models/CompanyType'
+import { ReportService } from '../../Services/report.service'
 
 @Component({
   selector: 'app-report-amount-workorders-by-client-or-by-dealer',
@@ -55,21 +54,26 @@ export class ReportAmountWorkordersByClientOrByDealerComponent
   public chartPlugin = [pluginDataLabels]
   public chartData: ChartDataSets[] = []
   public typeOfReport: string
+  formData: any = null
 
   @Input() company: Company
   isMainCompanyLogged: boolean
   dealer_to_filter: number
   client_to_filter: number
-  @Input() init_date: Date
-  @Input() end_date: Date
   @Output() dataWasLoad = new EventEmitter<boolean>()
 
   constructor(private reportService: ReportService) {
     this.isMainCompanyLogged = false
     this.dealer_to_filter = null
     this.client_to_filter = null
-    this.init_date = null
-    this.end_date = null
+    this.formData = { startDate: null, endDate: null }
+  }
+
+  getDataToFilter(): void {
+    this.reportService.filterDate.subscribe((data) => {
+      this.formData = data
+      this.getDataToReport()
+    })
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -78,6 +82,7 @@ export class ReportAmountWorkordersByClientOrByDealerComponent
   }
 
   ngOnInit(): void {
+    this.getDataToFilter()
     this.initDataToGetReport()
     this.getDataToReport()
   }
@@ -110,16 +115,16 @@ export class ReportAmountWorkordersByClientOrByDealerComponent
       '[getDataToReport]',
       this.client_to_filter,
       this.dealer_to_filter,
-      this.init_date,
-      this.end_date
+      this.formData.startDate,
+      this.formData.endDate
     )
     if (this.typeOfReport == 'client') {
       await this.reportService
         .GetAmountWorkOrdersByClientAndMonth(
           this.client_to_filter,
           this.dealer_to_filter,
-          this.init_date,
-          this.end_date
+          this.formData.startDate,
+          this.formData.endDate
         )
         .then((data) => {
           let aLabels = []
@@ -135,8 +140,8 @@ export class ReportAmountWorkordersByClientOrByDealerComponent
         .GetAmountWorkOrdersByDealerAndMonth(
           this.client_to_filter,
           this.dealer_to_filter,
-          this.init_date,
-          this.end_date
+          this.formData.startDate,
+          this.formData.endDate
         )
         .then((data) => {
           let aLabels = []

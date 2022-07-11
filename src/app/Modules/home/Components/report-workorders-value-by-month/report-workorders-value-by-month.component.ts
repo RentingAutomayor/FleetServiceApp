@@ -58,8 +58,7 @@ export class ReportWorkordersValueByMonthComponent
   isMainCompanyLogged: boolean
   dealer_to_filter: number
   client_to_filter: number
-  @Input() init_date: Date
-  @Input() end_date: Date
+  filterData: any = { startDate: null, endDate: null }
   @Output() dataWasLoad = new EventEmitter<boolean>()
 
   constructor(private reportService: ReportService) {}
@@ -68,7 +67,15 @@ export class ReportWorkordersValueByMonthComponent
     this.getDataToReport()
   }
 
+  getDataToFilter(): void {
+    this.reportService.filterDate.subscribe((data) => {
+      this.filterData = data
+      this.getDataToReport()
+    })
+  }
+
   ngOnInit(): void {
+    this.getDataToFilter()
     this.initDataToGetReport()
     this.getDataToReport()
   }
@@ -101,15 +108,15 @@ export class ReportWorkordersValueByMonthComponent
     console.warn(
       this.client_to_filter,
       this.dealer_to_filter,
-      this.init_date,
-      this.end_date
+      this.filterData.startDate,
+      this.filterData.endDate
     )
     await this.reportService
       .GetWorkOrdersValueByMonth(
         this.client_to_filter,
         this.dealer_to_filter,
-        this.init_date,
-        this.end_date
+        this.filterData.startDate,
+        this.filterData.endDate
       )
       .then((data) => {
         let aLabels = []

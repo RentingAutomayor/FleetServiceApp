@@ -1,18 +1,18 @@
+import { DatePipe } from '@angular/common'
 import {
   Component,
+  EventEmitter,
   Input,
-  Output,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
-  EventEmitter,
 } from '@angular/core'
-import { ReportService } from '../../Services/report.service'
+import { ChartType } from 'chart.js'
 import { Label, SingleDataSet } from 'ng2-charts'
-import { ChartColor, ChartType } from 'chart.js'
-import { Color } from 'angular-bootstrap-md'
 import { Company } from 'src/app/Models/Company'
 import { CompanyType } from 'src/app/Models/CompanyType'
+import { ReportService } from '../../Services/report.service'
 
 @Component({
   selector: 'app-report-trx-by-state',
@@ -40,11 +40,13 @@ export class ReportTrxByStateComponent implements OnInit, OnChanges {
   isMainCompanyLogged: boolean
   dealer_to_filter: number
   client_to_filter: number
-  @Input() init_date: Date
-  @Input() end_date: Date
+  filterData: any = { startDate: null, endDate: null, status: 0 }
   @Output() dataWasLoad = new EventEmitter<boolean>()
 
-  constructor(private reportService: ReportService) {}
+  constructor(
+    private reportService: ReportService,
+    private datePipe: DatePipe
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.dataWasLoad.emit(false)
@@ -52,7 +54,15 @@ export class ReportTrxByStateComponent implements OnInit, OnChanges {
     this.chartDataset = this.getData()
   }
 
+  getDataToFilter(): void {
+    this.reportService.filterDate.subscribe((data) => {
+      this.filterData = data
+      this.chartDataset = this.getData()
+    })
+  }
+
   ngOnInit(): void {
+    this.getDataToFilter()
     this.initDataToGetReport()
     this.chartDataset = this.getData()
   }
@@ -97,8 +107,8 @@ export class ReportTrxByStateComponent implements OnInit, OnChanges {
       .GetTotalCountWorkOrdersByDealerAndClient(
         this.client_to_filter,
         this.dealer_to_filter,
-        this.init_date,
-        this.end_date
+        this.datePipe.transform(this.filterData.startDate, 'yyyy/MM/dd'),
+        this.datePipe.transform(this.filterData.endDate, 'yyyy/MM/dd')
       )
       .then((data) => {
         data.forEach((item) => {

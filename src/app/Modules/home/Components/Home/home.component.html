@@ -1,98 +1,138 @@
 <div id="container__content">
   <div class="container__filter">
     <div class="container__row">
-      <!-- <div class="container__col">
-          <label>Fecha inicio:</label>
-          <input
-              type="text"
-              class="form-control"
-              formControlName="startingDate"
-              [bsValue]="dtStartingDate"
-              (bsValueChange)="validateInitDate($event)"
-              [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
-              placeholder="fecha inicio ..."
-              bsDatepicker>
-
-          <div class="error" *ngIf="datesAreInvalid">
-              <p *ngIf="startingDateField.hasError('required')">* La fecha inicial no puede ser mayor a la final</p>
+      <form [formGroup]="formFilter">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label>Codigo</label>
+              <input type="text" class="form-control" formControlName="code" />
+            </div>
           </div>
-      </div>
-      <div class="container__col">
-          <label>Fecha fin:</label>
-          <input
-              type="text"
-              class="form-control"
-              formControlName="endingDate"
-              placeholder="fecha fin ..."
-              (keypress)="validateInputDate($event)"
-              (bsValueChange)="validateEndDate($event)"
-              [bsValue]="dtEndingDate"
-              [bsConfig]="{ dateInputFormat: 'YYYY/MM/DD', containerClass: 'theme-dark-blue' }"
-              bsDatepicker>
-      </div> -->
-      <div class="formdates">
-        <mat-form-field appearance="outline">
-          <mat-label>Ingrese El Rango De Fecha</mat-label>
-          <mat-date-range-input [rangePicker]="picker" [formGroup]="datefilter">
-            <input matStartDate formControlName="date_init" placeholder="Start date">
-            <input matEndDate formControlName="date_end" placeholder="End date">
-          </mat-date-range-input>
-          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-
-        </mat-form-field>
-      </div>
-
-      <div class="container__row__btnfind">
-        <input
-          type="button"
-          value="Buscar"
-          class="form-control btn-primary btn-search"
-          (click)="filterData()"
-          [disabled]="btnSearchIsDisabled">
-      </div>
-  </div>
-
-  </div>
-    <div class="container__reports">
-
-        <div class="report-one report-bigger">
-            <app-report-amount-workorders-by-client-or-by-dealer
-                [init_date]="filterInitDate"
-                [end_date]="filterEndDate"
-                [company]="company"
-                >
-            </app-report-amount-workorders-by-client-or-by-dealer>
+          <div class="col-4">
+            <div class="form-group">
+              <label>Placa</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="licencePlate"
+              />
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="formdates">
+              <mat-form-field appearance="outline">
+                <mat-label>Ingrese El Rango De Fecha</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input
+                    matStartDate
+                    formControlName="startDate"
+                    placeholder="Start date"
+                  />
+                  <input
+                    matEndDate
+                    formControlName="endDate"
+                    placeholder="End date"
+                  />
+                </mat-date-range-input>
+                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label>Estado</label>
+              <select class="form-control" formControlName="status">
+                <option value="">Selecccione...</option>
+                <option *ngFor="let statu of status" [value]="statu.id">
+                  {{ statu.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-4" *ngIf="!isDealer || isMainCompany">
+            <div class="form-group">
+              <app-input-search-dealer
+                [countChanges]="countChanges"
+                (dealerWasSetted)="setDealerToFilter()"
+              >
+              </app-input-search-dealer>
+            </div>
+          </div>
+          <div class="col-12 row">
+            <div class="col-6 text-right">
+              <button
+                class="btn btn-success"
+                (click)="filterData()"
+                [disabled]="formFilter.invalid"
+              >
+                Buscar
+              </button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-danger">Borrar filtros</button>
+            </div>
+          </div>
         </div>
-        <div class="report-three report-bigger">
-            <app-report-workorders-value-by-month
-                [init_date]="filterInitDate"
-                [end_date]="filterEndDate"
-                [company]="company"
-                >
-            </app-report-workorders-value-by-month>
-        </div>
-        <div class="report-two   report-bigger">
-            <app-report-trx-by-state
-                [init_date]="filterInitDate"
-                [end_date]="filterEndDate"
-                [company]="company"
-                >
-            </app-report-trx-by-state>
-        </div>
-
-        <div class="report-four">
-            <app-report-trx-by-vehicle
-                [init_date]="filterInitDate"
-                [end_date]="filterEndDate"
-                [company]="company"
-                >
-            </app-report-trx-by-vehicle>
-        </div>
-
-
+      </form>
     </div>
+  </div>
+  <div class="row">
+    <div class="col-12 mb-2">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Placa</th>
+            <th>Cliente</th>
+            <th>Mateniminento</th>
+            <th>Sucursal</th>
+            <th>Fecha</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let workOrder of transactions">
+            <td>{{ workOrder.headerDetails.vehicle.licensePlate }}</td>
+            <td>{{ workOrder.client.name }}</td>
+            <td>{{ workOrder.headerDetails.maintenanceRoutine.name }}</td>
+            <td>{{ workOrder.headerDetails.branch.name | uppercase }}</td>
+            <td>
+              {{
+                workOrder.updateDate != null
+                  ? (workOrder.updateDate | date: 'yyyy/MM/dd')
+                  : (workOrder.registrationDate | date: 'yyyy/MM/dd')
+              }}
+            </td>
+            <td>{{ workOrder.value | currency: 'USD':'symbol':'1.0-0' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-6 mb-2">
+      <div class="report-one report-bigger">
+        <app-report-amount-workorders-by-client-or-by-dealer
+          [company]="company"
+        >
+        </app-report-amount-workorders-by-client-or-by-dealer>
+      </div>
+    </div>
+    <div class="col-6 mb-2">
+      <div class="report-three report-bigger">
+        <app-report-workorders-value-by-month [company]="company">
+        </app-report-workorders-value-by-month>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="report-two report-bigger">
+        <app-report-trx-by-state [company]="company"> </app-report-trx-by-state>
+      </div>
+    </div>
+  </div>
 </div>
 
 <app-img-loading *ngIf="isAwaiting"></app-img-loading>

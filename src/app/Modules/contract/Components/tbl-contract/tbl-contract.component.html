@@ -51,7 +51,13 @@
         <td>{{ contract.dealer.name | titlecase }}</td>
         <td>{{ contract.duration }}</td>
         <td>{{ contract.amountVehicles }}</td>
-        <td>{{ contract.contractState.name | titlecase }}</td>
+        <td>
+          <span
+          [ngClass]="getClass(contract.contractState.name)"
+          >
+            {{contract.contractState.name | titlecase}}
+        </span>
+        </td>
         <td>
           <i
             class="fas fa-info-circle text-info"

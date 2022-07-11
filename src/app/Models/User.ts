@@ -4,4 +4,5 @@ export class User {
   public lastName: string
   public user: string
   public id_group: number
+  public dealerid: number
 }

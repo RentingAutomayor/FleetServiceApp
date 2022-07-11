@@ -1,0 +1,28 @@
+#container__content{
+    transition: margin-left 1s;
+    padding: 20px;
+    margin-left: 250px;
+    
+    h1{
+      text-align: center;
+    }
+}
+
+.cards{
+  display: grid;  // show grid in row 
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.contract-card{
+  max-width: 250px;
+  margin-top: 10px;
+}
+
+.infobtn{
+  background-image: url('../../../../assets/images/info.svg');
+  background-size: cover;
+}
+
+li{
+  list-style: none;
+}

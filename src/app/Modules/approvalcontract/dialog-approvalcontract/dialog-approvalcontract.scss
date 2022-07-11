@@ -1,0 +1,33 @@
+.content{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    // width: 900px;
+    // height: 500px;
+
+    .title{
+        height: 100%;
+        font-weight: bold;
+    }
+
+    .content-data{
+
+        >div{
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .img img{
+            padding: 5px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+            border-radius: 20px ;
+            width: 400px;
+        }
+
+        //divide in two columns
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}

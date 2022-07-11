@@ -1,0 +1,32 @@
+<div id="container__content">
+  <h1>APROBACION DE CONTRATOS</h1>
+  <mat-divider inset></mat-divider>
+  <div class="cards" >
+      <mat-card *ngFor="let ctp of contractsToApprove" class="contract-card">
+          <mat-card-header>
+            <div mat-card-avatar class="infobtn" (click)="openDialog(ctp.id)"></div>
+            <mat-card-title>{{ctp.code}}</mat-card-title>
+            <mat-card-subtitle>{{ctp.name}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-divider inset></mat-divider>
+          <br>
+          <mat-card-content>
+            <ul>
+              <li>
+                  <b>Cliente: </b> <span>{{ctp.client.name}}</span>
+              </li>
+              <li>
+                  <b>Concesionario: </b> <span>{{ctp.dealer.name}}</span>
+              </li>
+            </ul>
+          </mat-card-content>
+          <mat-card-actions  align="center">
+            <button mat-raised-button color="primary" (click)="approveContract(ctp.id)">Aceptar</button>
+            <button mat-raised-button color="warn" (click)="declineContract(ctp.id)">Cancelar</button>
+          </mat-card-actions>
+          <mat-card-footer>
+              <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
+          </mat-card-footer>
+      </mat-card>
+  </div>
+</div>

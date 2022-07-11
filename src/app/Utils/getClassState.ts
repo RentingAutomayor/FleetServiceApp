@@ -9,6 +9,15 @@ export function getClassState(nameState: string) : string {
         case 'POR RECAUDAR':
           return 'tag-pending'
 
+        case 'ACTIVO':
+          return 'tag-ending'
+
+        case 'EN NEGOCIACIÓN':
+          return 'tag-waiting'
+
+        case 'CANCELADO':
+          return 'tag-canceled'
+
         default:
           return 'tag-pending'
       }

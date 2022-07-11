@@ -136,10 +136,6 @@ export class ContractStateService {
     this.maintenanceItemsObserver.next(this.maintenanceItems)
   }
 
-  setContractState(state: ContractState) {
-    this.contractState = state
-    this.contractStateObserver.next(this.contractState)
-  }
 
   resetMaintenanceItems() {
     this.maintenanceItems = []

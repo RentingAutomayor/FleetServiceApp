@@ -138,7 +138,6 @@ export class TblPricesMaintenanceItemsComponent implements OnInit {
       (itm) => itm.id == item.id
     )
     itemToUpdate.referencePrice = this.formatStringToNumber(event.target.value)
-
     const indexItemToUpdate = this.lsMaintenanceItems.findIndex(
       (itm) => itm.id == itemToUpdate.id
     )

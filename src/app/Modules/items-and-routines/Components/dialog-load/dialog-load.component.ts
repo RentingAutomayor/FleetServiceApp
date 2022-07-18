@@ -51,6 +51,8 @@ export class DialogLoadComponent implements OnInit {
   }
 
   updateTable(): void {
+    const dealerId = JSON.parse(sessionStorage.getItem('sessionUser')).company
+      ?.id
     const categories = this.getValues(
       document.getElementsByClassName('categories')
     )
@@ -66,7 +68,7 @@ export class DialogLoadComponent implements OnInit {
         typeId: types[index],
       }
     })
-    this._maintance.updateMaintence({ rows }).subscribe(
+    this._maintance.updateMaintence({ rows, brandId: dealerId }).subscribe(
       () => {
         this._alert.succes('Articulos de mantemiento cargados con exito')
         this.closeDialog()

@@ -1,18 +1,17 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core'
-import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent'
-import { Dealer, DealerDTO } from 'src/app/Models/Dealer'
-import { ResponseApi } from '../../../../Models/ResponseApi'
-import { DealerService } from '../../Services/Dealer/dealer.service'
-import { PersonService } from '../../../../SharedComponents/Services/Person/person.service'
-import { Router, ActivatedRoute } from '@angular/router'
+import { Component, OnInit, ViewChild } from '@angular/core'
+import { MatVerticalStepper } from '@angular/material/stepper'
+import { ActivatedRoute, Router } from '@angular/router'
 import { ActionType } from 'src/app/Models/ActionType'
-import { NavigationService } from 'src/app/SharedComponents/Services/navigation.service'
-import { MatVerticalStepper, MatStep } from '@angular/material/stepper'
-import { Contact } from 'src/app/Models/Contact'
 import { Branch } from 'src/app/Models/Branch'
-import { getFromStorage } from 'src/app/Utils/storage'
+import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent'
+import { Contact } from 'src/app/Models/Contact'
+import { Dealer } from 'src/app/Models/Dealer'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
+import { NavigationService } from 'src/app/SharedComponents/Services/navigation.service'
+import { getFromStorage } from 'src/app/Utils/storage'
 import Swal from 'sweetalert2'
+import { PersonService } from '../../../../SharedComponents/Services/Person/person.service'
+import { DealerService } from '../../Services/Dealer/dealer.service'
 
 @Component({
   selector: 'app-dealer',
@@ -35,6 +34,7 @@ export class DealerComponent implements OnInit {
   lsContacts: Contact[] = []
   lsBranches: Branch[] = []
   lsMaintenanceItems: MaintenanceItem[] = []
+  maintenceItems: MaintenanceItem[] = []
   dealerID = ''
   blockFormDealer = false
 
@@ -140,7 +140,15 @@ export class DealerComponent implements OnInit {
   }
 
   setMaintenanceItemsByDealer(maintenanceItems: MaintenanceItem[]) {
-    this.lsMaintenanceItems = maintenanceItems
+    this.maintenceItems = maintenanceItems
+      .map((maintenanceItem) => {
+        const item = this.lsMaintenanceItems.find(
+          (data) => data.code === maintenanceItem.code
+        )
+        if (item?.referencePrice !== maintenanceItem?.referencePrice)
+          return maintenanceItem
+      })
+      .filter((item) => item)
   }
 
   async setPersonInfo() {
@@ -170,7 +178,7 @@ export class DealerComponent implements OnInit {
     const dealer = this.oDealerToUpdate
     dealer.contacts = this.lsContacts
     dealer.branches = this.lsBranches
-    dealer.maintenanceItems = this.lsMaintenanceItems
+    dealer.maintenanceItems = this.maintenceItems
     if (this.action == ActionType.CREATE) {
       this.dealerService.insertDealer(dealer).subscribe(
         (newDealer) => {

@@ -48,7 +48,7 @@ export class FormUser implements OnInit {
       name: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(5)]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       companyId: [{ value: '', disabled: true }],
       roleId: ['', Validators.required],
       status: ['', Validators.required],

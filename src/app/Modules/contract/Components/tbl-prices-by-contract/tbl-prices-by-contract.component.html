@@ -3,14 +3,20 @@
     Precios por artículo de mantenimiento del concesionario:
     {{ dealerSelected != null ? dealerSelected.name : ('' | titlecase) }}
   </h2>
+  <div class="text-right mb-3">
+    <span class="alert alert-primary"
+      >Tipo de descuento: {{ getTypeDiscount() }}</span
+    >
+  </div>
   <table class="table table-striped">
     <thead>
+      <th *ngIf="isCheckboxVisible">Valor del descuento</th>
       <th class="col-number col-mobile-hide">#</th>
       <th>Código</th>
       <th>Nombre</th>
       <th class="col-mobile-hide">Presentación</th>
       <th class="col-mobile-hide">Valor sin impuestos del concesionario</th>
-      <th>Valor del descuento</th>
+      <th>Descuento</th>
       <th>Valor sin descuento</th>
       <th>Valor impuestos</th>
       <th>Valor final</th>
@@ -24,6 +30,14 @@
             | paginate: { itemsPerPage: 10, currentPage: p }
         "
       >
+        <td *ngIf="isCheckboxVisible">
+          <input
+            type="text"
+            class="form-control"
+            [value]="getValueDiscount(item)"
+            (blur)="savePersonalized($event, item)"
+          />
+        </td>
         <td>{{ i + 1 }}</td>
         <td>{{ item.code }}</td>
         <td>{{ item.name | titlecase | slice: 0:40 }}</td>
@@ -38,7 +52,6 @@
               | currency
           }}
         </td>
-        <td></td>
       </tr>
     </tbody>
   </table>

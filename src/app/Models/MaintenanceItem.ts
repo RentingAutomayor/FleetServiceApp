@@ -29,4 +29,5 @@ export class MaintenanceItem {
   public registrationDate?: Date
   public updateDate?: Date
   public deleteDate?: Date
+  public valueDiscount?: number
 }

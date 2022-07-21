@@ -54,6 +54,7 @@ export class MaintenanceItemManagerService {
     try {
       if (item.type.id != TypeOfMaintenanceItems.ADMIN_RA) {
         if (contract) {
+          console.log(contract)
           switch (contract.discountType.id) {
             case DiscountTypes.PORCENTAJE_POR_REPUESTOS:
               totalDiscount = Math.round(
@@ -62,6 +63,14 @@ export class MaintenanceItemManagerService {
               break
             case DiscountTypes.VALOR_FIJO_POR_REPUESTOS:
               totalDiscount = Math.round(item.valueDiscount)
+              break
+            case DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO:
+              totalDiscount = Math.round(
+                totalWithoutTaxes * (contract.discountValue / 100)
+              )
+              break
+            case DiscountTypes.VALOR_FIJO_POR_TOTAL_MANTENIMIENTO:
+              totalDiscount = Math.round(contract.discountValue)
               break
           }
         }

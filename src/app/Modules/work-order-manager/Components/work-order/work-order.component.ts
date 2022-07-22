@@ -35,11 +35,13 @@ import { MaintenanceItemService } from 'src/app/Modules/items-and-routines/Servi
 import { BranchService } from 'src/app/SharedComponents/Services/Branch/branch.service'
 import { MaintenanceItemManagerService } from 'src/app/SharedComponents/Services/MaintenanceItemManager/maintenance-item-manager.service'
 import { NotificationService } from 'src/app/SharedComponents/Services/Notification/notification.service'
-import Swal from 'sweetalert2'
 import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service'
 import { MaintenanceRoutineService } from '../../../items-and-routines/Services/MaintenanceRoutine/maintenance-routine.service'
 import { MovementService } from '../../../movement/Services/Movement/movement.service'
 import { QuotaService } from '../../../quota-management/Services/Quota/quota.service'
+import { EmailBody } from 'src/app/Models/Emailbody'
+import { Client } from 'src/app/Models/Client'
+import { AlertService } from 'src/app/services/alert.service'
 
 @Component({
   selector: 'app-work-order',
@@ -98,7 +100,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     private quotaService: QuotaService,
     private dealerService: DealerService,
     private maintenanceItemManagerService: MaintenanceItemManagerService,
-    private router: Router
+    private router: Router,
+    private alertService: AlertService
   ) {
     this.frmWorkOrder = new FormGroup({
       txtYear: new FormControl(''),
@@ -486,9 +489,7 @@ export class WorkOrderComponent implements OnInit, OnChanges {
 
   async saveWorkOrder() {
     try {
-      if (
-        confirm('¿Está seguro de guardar los datos de esta órden de trabajo?')
-      ) {
+      this.alertService.confirm('¿Está seguro de guardar los datos de esta Orden de trabajo?',() =>{
         const trxWorkOrder = this.setDataToWorkOrder()
 
         this.isAwaiting = true
@@ -508,13 +509,8 @@ export class WorkOrderComponent implements OnInit, OnChanges {
                 .subscribe((response) => {
                   const rta = response
                   if (rta.response) {
-                    this.sendEmail(trxWorkOrder)
-                    Swal.fire({
-                      position: 'center',
-                      icon: 'success',
-                      title: rta.message,
-                      showConfirmButton: true,
-                    })
+                    this.sendEmail(trxWorkOrder);
+                    this.alertService.succes(rta.message);
                     this.clearBufferForm()
                     this.isAwaiting = false
                     this.workOrderWasSaved.emit(true)
@@ -528,9 +524,9 @@ export class WorkOrderComponent implements OnInit, OnChanges {
                 '¡No se puede procesar esta órden de trabajo puesto que el cliente no cuenta con el suficiente cupo disponible!'
             }
           })
-      }
+        })
     } catch (error) {
-      console.warn(error)
+      this.alertService.error(error)
       this.isErrorVisible = true
       this.errorTitle = 'Error intentando procesar la órden de trabajo'
       this.errorMessageApi = error

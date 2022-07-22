@@ -39,8 +39,6 @@ import { TransactionService } from '../../../../SharedComponents/Services/Transa
 import { MaintenanceRoutineService } from '../../../items-and-routines/Services/MaintenanceRoutine/maintenance-routine.service'
 import { MovementService } from '../../../movement/Services/Movement/movement.service'
 import { QuotaService } from '../../../quota-management/Services/Quota/quota.service'
-import { EmailBody } from 'src/app/Models/Emailbody'
-import { Client } from 'src/app/Models/Client'
 import { AlertService } from 'src/app/services/alert.service'
 
 @Component({

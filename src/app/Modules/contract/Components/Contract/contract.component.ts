@@ -2,34 +2,32 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
-  OnChanges,
   SimpleChanges,
 } from '@angular/core'
-import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { Client } from 'src/app/Models/Client'
-import { Contract } from 'src/app/Models/Contract'
-import { ContractState, ConstractStates } from 'src/app/Models/ContractState'
-import { VehicleModel } from 'src/app/Models/VehicleModel'
-import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
-import { Dealer } from 'src/app/Models/Dealer'
-import { DealerService } from '../../../dealer/Services/Dealer/dealer.service'
-import { ContractService } from '../../Services/Contract/contract.service'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { SecurityValidators } from 'src/app/Models/SecurityValidators'
+import { ActionType } from 'src/app/Models/ActionType'
+import { Client } from 'src/app/Models/Client'
 import { Company } from 'src/app/Models/Company'
 import { CompanyType } from 'src/app/Models/CompanyType'
-import { InputValidator } from 'src/app/Utils/InputValidator'
+import { Contract } from 'src/app/Models/Contract'
+import { ConstractStates, ContractState } from 'src/app/Models/ContractState'
+import { Dealer } from 'src/app/Models/Dealer'
 import { DiscountType, DiscountTypes } from 'src/app/Models/DiscountType'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
-import { ActionType } from 'src/app/Models/ActionType'
-import { ContractStateService } from '../../Services/contract-state.service'
+import { SecurityValidators } from 'src/app/Models/SecurityValidators'
 import { Vehicle } from 'src/app/Models/Vehicle'
+import { VehicleModel } from 'src/app/Models/VehicleModel'
+import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
+import { InputValidator } from 'src/app/Utils/InputValidator'
 import { getFromStorage } from 'src/app/Utils/storage'
-import { Action } from 'rxjs/internal/scheduler/Action'
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast'
 import Swal from 'sweetalert2'
+import { DealerService } from '../../../dealer/Services/Dealer/dealer.service'
+import { ContractStateService } from '../../Services/contract-state.service'
+import { ContractService } from '../../Services/Contract/contract.service'
 
 @Component({
   selector: 'app-contract',
@@ -73,7 +71,7 @@ export class ContractComponent implements OnInit, OnChanges {
 
   client: Client | undefined = undefined
   dealer: Dealer | undefined = undefined
-  contractState: ContractState 
+  contractState: ContractState
   discountType: DiscountType | undefined = undefined
   discountValue: number = 0
   vehicles: Vehicle[] = []
@@ -179,7 +177,7 @@ export class ContractComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.extractParamsFromURL()
-    this.getInitContractState();
+    this.getInitContractState()
     this.initComponents()
   }
 
@@ -205,6 +203,7 @@ export class ContractComponent implements OnInit, OnChanges {
     this.isAwaiting = true
     this.contractService.getContractByID(contractID).subscribe({
       next: (contractData) => {
+        this.contractService.setContract(contractData)
         this.contractToUpdate = contractData
         console.log(`getContractByID`)
         console.log(this.contractToUpdate)
@@ -216,7 +215,6 @@ export class ContractComponent implements OnInit, OnChanges {
           this.contracStateService.setDealerToContract(
             this.contractToUpdate.dealer
           )
-
 
           this.contracStateService.setDiscountType(
             this.contractToUpdate.discountType
@@ -287,9 +285,9 @@ export class ContractComponent implements OnInit, OnChanges {
     this.enableOrDisableForm()
   }
 
-  async getInitContractState(){
+  async getInitContractState() {
     //malisima practica - cambiar
-    this.contractService.getContractinitState().subscribe(data => {
+    this.contractService.getContractinitState().subscribe((data) => {
       this.contractState = data
       console.log(this.contractState)
     })
@@ -456,6 +454,7 @@ export class ContractComponent implements OnInit, OnChanges {
           }
 
           this.contract.lsMaintenanceItems = this.maintenanceItems
+          console.log(this.maintenanceItems)
 
           //console.log(this.contract)
           this.saveData(this.contract)
@@ -531,7 +530,6 @@ export class ContractComponent implements OnInit, OnChanges {
   validateNumbers(event: any) {
     return InputValidator.validateTyping(event, 'numbers')
   }
-
 
   validateInputDate(event: any) {
     event.preventDefault()

@@ -1,44 +1,44 @@
 import {
   Component,
   EventEmitter,
+  OnChanges,
   OnInit,
   Output,
-  OnChanges,
   SimpleChanges,
 } from '@angular/core'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { Router } from '@angular/router'
+import { Branch } from 'src/app/Models/Branch'
+import { Client } from 'src/app/Models/Client'
+import { Contract } from 'src/app/Models/Contract'
+import { ConstractStates } from 'src/app/Models/ContractState'
+import { Dealer } from 'src/app/Models/Dealer'
+import { EmailBody } from 'src/app/Models/Emailbody'
+import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
+import { MaintenanceRoutine } from 'src/app/Models/MaintenanceRoutine'
+import { Movement } from 'src/app/Models/Movement'
+import { PricesByContract } from 'src/app/Models/PricesByContract'
+import { SecurityValidators } from 'src/app/Models/SecurityValidators'
+import { SessionUser } from 'src/app/Models/SessionUser'
+import { SharedFunction } from 'src/app/Models/SharedFunctions'
+import { Transaction } from 'src/app/Models/Transaction'
+import { TransactionDetail } from 'src/app/Models/TransactionDetail'
+import { TransactionObservation } from 'src/app/Models/TransactionObservation'
+import { ITransactionValues } from 'src/app/Models/transactionValues.model'
+import { Vehicle } from 'src/app/Models/Vehicle'
+import { VehicleModel } from 'src/app/Models/VehicleModel'
 import { ClientService } from 'src/app/Modules/client/Services/Client/client.service'
 import { VehicleService } from 'src/app/Modules/client/Services/Vehicle/vehicle.service'
 import { ContractService } from 'src/app/Modules/contract/Services/Contract/contract.service'
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
-import { Dealer } from 'src/app/Models/Dealer'
-import { Branch } from 'src/app/Models/Branch'
-import { BranchService } from 'src/app/SharedComponents/Services/Branch/branch.service'
-import { VehicleModel } from 'src/app/Models/VehicleModel'
-import { MaintenanceRoutine } from 'src/app/Models/MaintenanceRoutine'
-import { MaintenanceRoutineService } from '../../../items-and-routines/Services/MaintenanceRoutine/maintenance-routine.service'
-import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
-import { PricesByContract } from 'src/app/Models/PricesByContract'
-import { MaintenanceItemService } from 'src/app/Modules/items-and-routines/Services/MaintenanceItem/maintenance-item.service'
-import { Contract } from 'src/app/Models/Contract'
-import { SharedFunction } from 'src/app/Models/SharedFunctions'
-import { Transaction } from 'src/app/Models/Transaction'
-import { MovementService } from '../../../movement/Services/Movement/movement.service'
-import { Movement } from 'src/app/Models/Movement'
-import { TransactionDetail } from 'src/app/Models/TransactionDetail'
-import { Vehicle } from 'src/app/Models/Vehicle'
-import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service'
-import { TransactionObservation } from 'src/app/Models/TransactionObservation'
-import { QuotaService } from '../../../quota-management/Services/Quota/quota.service'
-import { SessionUser } from 'src/app/Models/SessionUser'
 import { DealerService } from 'src/app/Modules/dealer/Services/Dealer/dealer.service'
-import { Tax } from 'src/app/Models/Tax'
-import { SecurityValidators } from 'src/app/Models/SecurityValidators'
-import { DiscountType, DiscountTypes } from 'src/app/Models/DiscountType'
-import { ConstractStates } from 'src/app/Models/ContractState'
+import { MaintenanceItemService } from 'src/app/Modules/items-and-routines/Services/MaintenanceItem/maintenance-item.service'
+import { BranchService } from 'src/app/SharedComponents/Services/Branch/branch.service'
 import { MaintenanceItemManagerService } from 'src/app/SharedComponents/Services/MaintenanceItemManager/maintenance-item-manager.service'
-import { Router } from '@angular/router'
-import { ITransactionValues } from 'src/app/Models/transactionValues.model'
 import { NotificationService } from 'src/app/SharedComponents/Services/Notification/notification.service'
+import { TransactionService } from '../../../../SharedComponents/Services/Transaction/transaction.service'
+import { MaintenanceRoutineService } from '../../../items-and-routines/Services/MaintenanceRoutine/maintenance-routine.service'
+import { MovementService } from '../../../movement/Services/Movement/movement.service'
+import { QuotaService } from '../../../quota-management/Services/Quota/quota.service'
 import { EmailBody } from 'src/app/Models/Emailbody'
 import { Client } from 'src/app/Models/Client'
 import { AlertService } from 'src/app/services/alert.service'
@@ -455,32 +455,35 @@ export class WorkOrderComponent implements OnInit, OnChanges {
     return this.sharedFunctions.formatNumberToString(oNumber)
   }
 
+  async sendEmail(args?: Transaction) {
+    const { contacts }: Client = await this.ClientService.getClientById(
+      this.contractSelected.client.id
+    )
 
-  async sendEmail(args? : Transaction) {
+    const trxresptmp: Transaction[] = await this.transactionService
+      .getTransactionsByDealerOrClient(
+        args.headerDetails.dealer.id,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      )
+      .toPromise()
 
-    const {contacts} : Client = await this.ClientService.getClientById(this.contractSelected.client.id);
-
-    const trxresptmp : Transaction[] = await this.transactionService.getTransactionsByDealerOrClient(
-      args.headerDetails.dealer.id,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-      ).toPromise();
-
-    const emailBody : EmailBody = {
+    const emailBody: EmailBody = {
       nameMessage: 'Fleet Service',
-      emailReceiver: contacts.filter (c => c.mustNotify == true).map (c => c.email),
+      emailReceiver: contacts
+        .filter((c) => c.mustNotify == true)
+        .map((c) => c.email),
       typemessage: args.movement.id,
       nOrderwork: trxresptmp[0].code,
-      nDealer: args.headerDetails.dealer.name
-    };
+      nDealer: args.headerDetails.dealer.name,
+    }
 
-    if(emailBody.emailReceiver.length > 0){
-      this.notificationService.sendMail(emailBody).subscribe((res) =>{
-      });
+    if (emailBody.emailReceiver.length > 0) {
+      this.notificationService.sendMail(emailBody).subscribe((res) => {})
     }
   }
 
@@ -508,7 +511,6 @@ export class WorkOrderComponent implements OnInit, OnChanges {
                   if (rta.response) {
                     this.sendEmail(trxWorkOrder);
                     this.alertService.succes(rta.message);
-                    
                     this.clearBufferForm()
                     this.isAwaiting = false
                     this.workOrderWasSaved.emit(true)

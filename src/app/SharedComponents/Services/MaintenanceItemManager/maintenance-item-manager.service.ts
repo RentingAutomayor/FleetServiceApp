@@ -1,10 +1,8 @@
-import { Injectable, Type } from '@angular/core'
+import { Injectable } from '@angular/core'
 import { Contract } from 'src/app/Models/Contract'
 import { DiscountTypes } from 'src/app/Models/DiscountType'
 import { TypeOfMaintenanceItems } from 'src/app/Models/enumPresentationUnit'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
-import { TypeOfMaintenanceItem } from 'src/app/Models/TypeOfMaintenanceItem'
-import { RoutinesByVehicleModelComponent } from 'src/app/Modules/work-order-manager/Components/routines-by-vehicle-model/routines-by-vehicle-model.component'
 
 @Injectable({
   providedIn: 'root',
@@ -28,12 +26,10 @@ export class MaintenanceItemManagerService {
           lsMaintenanceItemsReferece[indexItem].referencePrice = Math.round(
             itemNew.referencePrice
           )
+          lsMaintenanceItemsReferece[indexItem].valueDiscount =
+            itemNew.valueDiscount
         } catch (err) {
-          //console.log(itemNew)
           if (itemNew != null && itemNew != undefined) {
-            // console.log(
-            //   `No se encontro item: ${itemNew.name} - ${itemNew.code} - se agregara a la lista`
-            // )
             lsMaintenanceItemsReferece.push(itemNew)
           }
         }
@@ -58,13 +54,22 @@ export class MaintenanceItemManagerService {
     try {
       if (item.type.id != TypeOfMaintenanceItems.ADMIN_RA) {
         if (contract) {
+          console.log(contract)
           switch (contract.discountType.id) {
             case DiscountTypes.PORCENTAJE_POR_REPUESTOS:
+              totalDiscount = Math.round(
+                totalWithoutTaxes * (item.valueDiscount / 100)
+              )
+              break
+            case DiscountTypes.VALOR_FIJO_POR_REPUESTOS:
+              totalDiscount = Math.round(item.valueDiscount)
+              break
+            case DiscountTypes.PORCENTAJE_POR__TOTAL_MANTENIMIENTO:
               totalDiscount = Math.round(
                 totalWithoutTaxes * (contract.discountValue / 100)
               )
               break
-            case DiscountTypes.VALOR_FIJO_POR_REPUESTOS:
+            case DiscountTypes.VALOR_FIJO_POR_TOTAL_MANTENIMIENTO:
               totalDiscount = Math.round(contract.discountValue)
               break
           }

@@ -7,9 +7,6 @@ import { MaintenanceItemManagerService } from '../Services/MaintenanceItemManage
   name: 'calculateDiscount',
 })
 export class CalculateDiscountPipe implements PipeTransform {
-  /**
-   *
-   */
   constructor(
     private maintenanceItemManagerService: MaintenanceItemManagerService
   ) {}

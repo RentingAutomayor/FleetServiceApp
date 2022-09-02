@@ -17,6 +17,7 @@ import { InputValidator } from 'src/app/Utils/InputValidator'
 import Swal from 'sweetalert2'
 import { Excel } from 'src/app/Utils/excel'
 import { CurrencyPipe } from '@angular/common'
+import { AlertService } from 'src/app/services/alert.service'
 
 @Component({
   selector: 'app-quota-management',
@@ -53,7 +54,8 @@ export class QuotaManagementComponent implements OnInit {
     private quotaService: QuotaService,
     private movementService: MovementService,
     private trxService: TransactionService,
-    private currency: CurrencyPipe
+    private currency: CurrencyPipe,
+    private alertService : AlertService
   ) {
     this.txtFilter.valueChanges.subscribe((text) => {
       let tempText: string
@@ -377,41 +379,50 @@ export class QuotaManagementComponent implements OnInit {
   }
 
   saveFreeUpQuota() {
+
     const { txtFreeUpQuota, txtFreeUpQuotaObservation } =
       this.frmFreeUpQuota.controls
-    let trxFreeUpQuota = new Transaction()
 
-    const oClient = this.clientSelected
-    let value = txtFreeUpQuota.value
-    value = value.toString().replace(/\,/g, '')
+    if(txtFreeUpQuota.value == ''){
+      this.alertService.error('Debe ingresar una cantidad')
+      this.closePopUp('container__freeUpQuota')
+    }else{
 
-    const observation = txtFreeUpQuotaObservation.value
-    const movement = this.lsMovements.find(
-      (mv) => mv.id == this.LIBERACION_DE_CUPO
-    )
-    const lsObs: TransactionObservation[] = []
-
-    this.validatePayment(oClient, value).then((response) => {
-      if (response) {
-        if (observation != '') {
-          const trxObservation = new TransactionObservation()
-          trxObservation.description = observation
-          lsObs.push(trxObservation)
+      let trxFreeUpQuota = new Transaction()
+  
+      const oClient = this.clientSelected
+      let value = txtFreeUpQuota.value
+      value = value.toString().replace(/\,/g, '')
+  
+      const observation = txtFreeUpQuotaObservation.value
+      const movement = this.lsMovements.find(
+        (mv) => mv.id == this.LIBERACION_DE_CUPO
+      )
+      const lsObs: TransactionObservation[] = []
+  
+      this.validatePayment(oClient, value).then((response) => {
+        if (response) {
+          if (observation != '') {
+            const trxObservation = new TransactionObservation()
+            trxObservation.description = observation
+            lsObs.push(trxObservation)
+          }
+  
+          trxFreeUpQuota = this.setDataTransaction(
+            oClient,
+            movement,
+            value,
+            null,
+            null,
+            lsObs,
+            null
+          )
+  
+          this.saveTransaction(trxFreeUpQuota)
         }
+      })
+    }
 
-        trxFreeUpQuota = this.setDataTransaction(
-          oClient,
-          movement,
-          value,
-          null,
-          null,
-          lsObs,
-          null
-        )
-
-        this.saveTransaction(trxFreeUpQuota)
-      }
-    })
   }
 
   saveAddQuota() {

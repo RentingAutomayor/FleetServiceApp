@@ -1,0 +1,42 @@
+<h1 mat-dialog-title>Subir archivo</h1>
+<div mat-dialog-content>
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btnFile" (click)="file.click()">
+        Adjuntar archivo
+      </button>
+      <input
+        type="file"
+        #file
+        hidden
+        (change)="getFile($event.target.files[0])"
+      />
+    </div>
+    <div class="col-12 mt-3">
+      <label>Archivo</label>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tamaño</th>
+            <th>Extension</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ fileUpload?.name }}</td>
+            <td>{{ fileUpload?.size }}</td>
+            <td>{{ fileUpload?.name.split('.')[1] }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div
+  mat-dialog-actions
+  class="d-flex align-items-center justify-content-between"
+>
+  <button class="btn btn-danger" (click)="closeDialog()">Cancelar</button>
+  <button class="btn btn-success">Guardar</button>
+</div>

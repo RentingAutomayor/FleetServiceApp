@@ -122,6 +122,13 @@ const routes: Routes = [
         (m) => m.CustomerbillingModule
       ),
   },
+  {
+    path: 'MasterFiles',
+    loadChildren: () =>
+      import('./Modules/management-drive/management-drive.module').then(
+        (d) => d.ManagementDriveModule
+      ),
+  },
 ]
 
 @NgModule({

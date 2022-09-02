@@ -12,7 +12,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker'
 import {MatDatepickerModule, } from '@angular/material/datepicker';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatNativeDateModule } from '@angular/material/core'
+import { MatNativeDateModule } from '@angular/material/core';
+import { DriveComponent } from './Components/drive/drive.component'
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { MatNativeDateModule } from '@angular/material/core'
     ReportTrxByVehicleComponent,
     ReportWorkordersValueByMonthComponent,
     ReportAmountWorkordersByClientOrByDealerComponent,
+    DriveComponent,
 
   ],
   imports: [

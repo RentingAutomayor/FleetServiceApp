@@ -7,7 +7,14 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core'
-import { FormBuilder, FormControl, FormGroup, MaxLengthValidator, NgModel, Validators } from '@angular/forms'
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  MaxLengthValidator,
+  NgModel,
+  Validators,
+} from '@angular/forms'
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent'
 import { Person } from 'src/app/Models/Person'
 import { PersonService } from '../Services/Person/person.service'
@@ -20,8 +27,12 @@ import { InputValidator } from 'src/app/Utils/InputValidator'
 import { ThemePalette } from '@angular/material/core'
 import { IContactType } from 'src/app/Models/IContactType'
 import { CalcDigitCheck } from 'src/app/Utils/calcDigitCheck'
-import { MAX_LENGTH_CLIENT_DOCUMENT_WHITHCHECK, MAX_LENGTH_CLIENT_DOCUMENT } from 'src/app/Utils/globalConst'
+import {
+  MAX_LENGTH_CLIENT_DOCUMENT_WHITHCHECK,
+  MAX_LENGTH_CLIENT_DOCUMENT,
+} from 'src/app/Utils/globalConst'
 import { ContactService } from '../Services/Contact/contact.service'
+import { RegExp } from 'src/app/Utils/reg-exp'
 
 @Component({
   selector: 'app-person',
@@ -79,7 +90,7 @@ export class PersonComponent implements OnInit {
   set setPersonToUpdate(person: Person) {
     if (person) {
       this.personToUpdate = person
-      console.log("persona a actualizar: ",this.personToUpdate)
+      console.log('persona a actualizar: ', this.personToUpdate)
       this.jobTitleSelected = this.personToUpdate.jobTitle
       this.selectedCity = this.personToUpdate.city
       this.contactTypeSelected = person.types
@@ -120,16 +131,16 @@ export class PersonComponent implements OnInit {
   checked = false
   disabled = false
 
-  contactType: IContactType | undefined 
+  contactType: IContactType | undefined
 
-  contactTypeSelected: IContactType [] | undefined 
+  contactTypeSelected: IContactType[] | undefined
 
   isErrorInNotifyValidation: boolean = false
 
   constructor(
     private personService: PersonService,
     private jobTitleService: JobTitleService,
-    private contactService : ContactService,
+    private contactService: ContactService,
     private router: Router,
     private formBuilder: FormBuilder
   ) {
@@ -151,13 +162,16 @@ export class PersonComponent implements OnInit {
               Validators.maxLength(11),
             ],
           ],
-          name: ['', [Validators.required]],
-          lastname: [''],
+          name: [
+            '',
+            [Validators.required, Validators.pattern(RegExp.uppercase)],
+          ],
+          lastname: ['', Validators.pattern(RegExp.uppercase)],
           phone: [''],
           cellphone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
           email: ['', [Validators.email]],
-          website: [''],
-          address: [''],
+          website: ['', Validators.pattern(RegExp.website)],
+          address: ['', Validators.pattern(RegExp.uppercase)],
           mustNotify: [false],
         })
 
@@ -308,7 +322,6 @@ export class PersonComponent implements OnInit {
       }
     }
 
-
     return objPerson
   }
 
@@ -336,29 +349,25 @@ export class PersonComponent implements OnInit {
     }
   }
 
+  maxLength = MAX_LENGTH_CLIENT_DOCUMENT_WHITHCHECK
 
-  maxLength = MAX_LENGTH_CLIENT_DOCUMENT_WHITHCHECK;
-
-  focusOnLenght(){
-    this.maxLength = MAX_LENGTH_CLIENT_DOCUMENT;
+  focusOnLenght() {
+    this.maxLength = MAX_LENGTH_CLIENT_DOCUMENT
   }
 
-  refactoryID(event : Event) {
-
-    const value = (event.target as HTMLInputElement).value;
-    let tempdata = value.substring(0,9);
+  refactoryID(event: Event) {
+    const value = (event.target as HTMLInputElement).value
+    let tempdata = value.substring(0, 9)
 
     // si el valor es menor a 9 caracteres rellena con 0 al final
     if (tempdata.length < 9) {
       for (let i = tempdata.length; i < 9; i++) {
-        tempdata = tempdata + '0';
+        tempdata = tempdata + '0'
       }
     }
 
     //calculo digito verificacion
-    const digitCheck = CalcDigitCheck(tempdata);
-    (event.target as HTMLInputElement).value = tempdata + "-" + digitCheck;
-
+    const digitCheck = CalcDigitCheck(tempdata)
+    ;(event.target as HTMLInputElement).value = tempdata + '-' + digitCheck
   }
-
 }

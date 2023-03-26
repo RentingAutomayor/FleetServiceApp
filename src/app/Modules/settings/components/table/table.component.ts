@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core'
 import { AlertService } from 'src/app/services/alert.service'
+import { BAD_REQUEST } from 'src/app/Utils/general-error'
 import { Table } from '../../models/table'
 import { SettingsService } from '../../services/settings.service'
 
@@ -48,7 +49,7 @@ export class TableComponent implements OnInit {
             this._alert.succes('Elemento eliminado con exito')
             this.table.rows = this.table.rows.filter((row) => row.id !== rowId)
           },
-          (badRequest) => this._alert.error(badRequest.error.Message)
+          () => this._alert.error(BAD_REQUEST)
         )
       }
     })

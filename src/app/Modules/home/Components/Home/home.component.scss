@@ -1,76 +1,93 @@
-.card-report{
-    width: 500px;
+.card-report {
+  width: 500px;
 }
 
-.container__reports{
-    display: grid;
-    grid-template-columns: repeat(6,1fr);
-    grid-template-rows: repeat(2,1fr);
-    gap: 15px 10px;
+.container__reports {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 15px 10px;
 }
 
-.container__row{
+::ng-deep {
+  .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+.formdates {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+  height: 100%;
+}
+
+.container__row {
   display: flex !important;
   margin-bottom: 20px;
 
-  .formdates{
-    width: 70%;
+  .formdates {
     display: flex;
-    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    height: 100%;
 
-    >div{
+    > div {
       width: 50%;
       margin-right: 10px;
     }
   }
 
-  &__btnfind{
+  &__btnfind {
     width: 30%;
     display: flex;
     align-items: flex-end;
-    >input{
+    > input {
       margin-top: 0 !important;
     }
   }
 }
 
-.report-one{
-    grid-column-start: 1;
-    grid-column-end: 4;
-    grid-row-start: 1;
-    grid-row-end: 2;
+.report-one {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
 }
 
-.report-two{
-    grid-column-start: 1;
-    grid-column-end: 4;
-    grid-row-start: 2;
-    grid-row-end: 3;
+.report-two {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
 }
 
-.report-three{
-    grid-column-start: 4;
-    grid-column-end: 7;
-    grid-row-start: 1;
-    grid-row-end: 2;
+.report-three {
+  grid-column-start: 4;
+  grid-column-end: 7;
+  grid-row-start: 1;
+  grid-row-end: 2;
 }
 
-.report-four{
-    grid-column-start: 4;
-    grid-column-end: 7;
-    grid-row-start: 2;
-    grid-row-end: 3;
+.report-four {
+  grid-column-start: 4;
+  grid-column-end: 7;
+  grid-row-start: 2;
+  grid-row-end: 3;
 }
 
-.btn-search{
+.btn-search {
   margin-top: 32px;
 }
 
-.btn-search:disabled{
+.btn-search:disabled {
   background-color: #ccc;
 }
 
-.error{
+.error {
   color: red;
   margin-top: 16px;
 }

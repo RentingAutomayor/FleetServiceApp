@@ -7,12 +7,13 @@ import { Contract } from '../../../../Models/Contract'
 import { MaintenanceItem } from 'src/app/Models/MaintenanceItem'
 import { ActionType } from 'src/app/Models/ActionType'
 import { Observable } from 'rxjs'
+import { environment } from 'src/environments/environment'
 
 @Injectable({
   providedIn: 'root',
 })
 export class ContractService {
-  private URL_API = '/API_FleetService/api/Contract'
+  private URL_API = `${environment.apiUrl}/Contract`
   private HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   }
@@ -35,12 +36,12 @@ export class ContractService {
     return this.http.get<DiscountType[]>(urlGetDiscounts).toPromise()
   }
 
-  getContractinitState(){
+  getContractinitState() {
     const urlGetStates = `${this.URL_API}/GetinitContract`
-    return this.http.get<ContractState>(urlGetStates);
+    return this.http.get<ContractState>(urlGetStates)
   }
 
-  getContractPending(deal_id: number){
+  getContractPending(deal_id: number) {
     const urlGetContractPending = `${this.URL_API}/GetContractPending?deal_id=${deal_id}`
     return this.http.get<Contract[]>(urlGetContractPending)
   }

@@ -5,6 +5,7 @@ import { Role } from 'src/app/Modules/role/models/role'
 import { ParameterService } from 'src/app/Modules/role/services/parameter.service'
 import { RoleService } from 'src/app/Modules/role/services/role.service'
 import { AlertService } from 'src/app/services/alert.service'
+import { BAD_REQUEST } from 'src/app/Utils/general-error'
 import { Basic } from '../../models/basic'
 import { Company } from '../../models/company'
 import { User } from '../../models/user'
@@ -77,7 +78,11 @@ export class FormUser implements OnInit {
         this.userForm.get('password').disable()
         if (user.email) this.userForm.get('email').disable()
       },
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      (badRequest) => {
+        let error = badRequest.error.Message
+        if (!error) error = BAD_REQUEST
+        this._alert.error(error)
+      }
     )
   }
 
@@ -86,7 +91,11 @@ export class FormUser implements OnInit {
       (result) => {
         this.companies = result
       },
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      (badRequest) => {
+        let error = badRequest.error.Message
+        if (!error) error = BAD_REQUEST
+        this._alert.error(error)
+      }
     )
   }
 
@@ -97,7 +106,11 @@ export class FormUser implements OnInit {
       (result) => {
         this.users = result
       },
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      (badRequest) => {
+        let error = badRequest.error.Message
+        if (!error) error = BAD_REQUEST
+        this._alert.error(error)
+      }
     )
   }
 
@@ -106,7 +119,11 @@ export class FormUser implements OnInit {
       (result) => {
         this.roles = result
       },
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      (badRequest) => {
+        let error = badRequest.error.Message
+        if (!error) error = BAD_REQUEST
+        this._alert.error(error)
+      }
     )
   }
 
@@ -150,13 +167,15 @@ export class FormUser implements OnInit {
       () => {
         this.createOnFirebase(user)
         this._alert.succes(
-          `Usuario ${isEdit ? 'creado' : 'actualizado'} con exito`
+          `Usuario ${isEdit ? 'creado' : 'actualizado'} con éxito`
         )
         this.isLoading = false
         this.router.navigateByUrl('/MasterUsers')
       },
       (badRequest) => {
-        this._alert.error(badRequest.error.Message)
+        let error = badRequest.error.Message
+        if (!error) error = BAD_REQUEST
+        this._alert.error(error)
         this.isLoading = false
       }
     )

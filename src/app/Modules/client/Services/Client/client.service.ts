@@ -5,12 +5,13 @@ import { Client } from '../../../../Models/Client'
 import { Observable, of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 import { ActionType } from 'src/app/Models/ActionType'
+import { environment } from 'src/environments/environment'
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClientService {
-  private URL_API = '/API_FleetService/api/Client/'
+  private URL_API = `${environment.apiUrl}/Client`
   private HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   }

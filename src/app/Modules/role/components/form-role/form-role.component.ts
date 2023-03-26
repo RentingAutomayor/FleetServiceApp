@@ -13,7 +13,7 @@ import { RoleService } from '../../services/role.service'
 })
 export class FormRoleComponent implements OnInit {
   roleForm!: FormGroup
-  modules: Module[] = [];
+  modules: Module[] = []
   constructor(
     private fb: FormBuilder,
     private _alert: AlertService,
@@ -26,8 +26,8 @@ export class FormRoleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getRoleFromUrl();
-    this.getModules();
+    this.getRoleFromUrl()
+    this.getModules()
   }
 
   initForm(): void {
@@ -65,11 +65,10 @@ export class FormRoleComponent implements OnInit {
   }
 
   submit(): void {
-    
     const isEdit = this.roleForm.get('id').value == 0
     this._role[isEdit ? 'save' : 'update'](this.roleForm.value).subscribe(
       () => {
-        this._alert.succes(`Rol ${isEdit ? 'creado' : 'actualizado'} con exito`)
+        this._alert.succes(`Rol ${isEdit ? 'creado' : 'actualizado'} con éxito`)
         this.router.navigateByUrl('/MasterRoles')
       },
       (badRequest) => this._alert.error(badRequest.error.Message)

@@ -1,6 +1,6 @@
-import { variable } from '@angular/compiler/src/output/output_ast';
-import { ContactWithTypeDTO } from 'src/app/Models/ContactWithTypeDTO';
-import { ContactType } from './../../Models/ContactType';
+import { variable } from '@angular/compiler/src/output/output_ast'
+import { ContactWithTypeDTO } from 'src/app/Models/ContactWithTypeDTO'
+import { ContactType } from './../../Models/ContactType'
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { Client } from 'src/app/Models/Client'
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent'
@@ -13,6 +13,8 @@ import { ActionType } from 'src/app/Models/ActionType'
 import { ContactService } from '../Services/Contact/contact.service'
 import Swal from 'sweetalert2'
 import { ContactTypeService } from '../Services/ContactType/contacttype.service'
+import { BAD_REQUEST } from 'src/app/Utils/general-error'
+import { AlertService } from 'src/app/services/alert.service'
 
 @Component({
   selector: 'app-contact',
@@ -74,9 +76,8 @@ export class ContactComponent implements OnInit {
   constructor(
     private personService: PersonService,
     private contactService: ContactService,
-    private ContactTypeService : ContactTypeService,
-
-
+    private ContactTypeService: ContactTypeService,
+    private _alert: AlertService
   ) {
     this.sOwnerName = ''
     this.disableActionButtons = false
@@ -86,9 +87,9 @@ export class ContactComponent implements OnInit {
 
   ngOnInit(): void {
     this.initComponents()
-    this.ContactTypeService.dispContactType.subscribe( data => {
+    this.ContactTypeService.dispContactType.subscribe((data) => {
       console.log(data.selectedTypes.value)
-      this.selectedContactTypes = data.selectedTypes.value;
+      this.selectedContactTypes = data.selectedTypes.value
     })
   }
 
@@ -130,22 +131,22 @@ export class ContactComponent implements OnInit {
     this.showPopUp()
   }
 
-   getDetailsOfContant(contactId: number) {
+  getDetailsOfContant(contactId: number) {
     this.oPersonToUpdate = this.lsContacts.find(
       (contact) => contact.id === contactId
     )
-    this.contactService.ContacTypeEvent.next("updt");
+    this.contactService.ContacTypeEvent.next('updt')
 
-    // Buena practica seria hacer un servicio 
+    // Buena practica seria hacer un servicio
     // aqui se recuperara los tipos de contacto por contacto
 
     this.isFormBlocked = true
-    console.log("persona buscada",this.oPersonToUpdate)
+    console.log('persona buscada', this.oPersonToUpdate)
     this.showPopUp()
   }
 
   updateContact(contactId: number) {
-    this.contactService.ContacTypeEvent.next("updt");
+    this.contactService.ContacTypeEvent.next('updt')
     this.isToInsert = false
     this.oPersonToUpdate = this.lsContacts.find(
       (contact) => contact.id === contactId
@@ -182,12 +183,7 @@ export class ContactComponent implements OnInit {
       }
     } catch (err) {
       console.error(err.error.Message)
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.error.Message,
-        footer: '</a>Consulte con Soporte el problema</a>'
-      })
+      this._alert.error(BAD_REQUEST)
     }
   }
 
@@ -199,14 +195,16 @@ export class ContactComponent implements OnInit {
       //this case happens when is a new client or dealer
       if (contactToDB.Client_id == 0 || contactToDB.Dealer_id == 0) {
         this.lsContacts.unshift(oContact)
+        this._alert.succes('Contacto agregado con éxito')
       } else {
         this.isAwaiting = true
         //This case happens when exist a client or a dealer
         this.contactService.insert(contactToDB).subscribe(
           (newContact) => {
             this.lsContacts.unshift(newContact)
-            this.saveContactWithType(newContact, this.selectedContactTypes);
+            this.saveContactWithType(newContact, this.selectedContactTypes)
             this.isAwaiting = false
+            this._alert.succes('Contacto agregado con éxito')
           },
           (err) => {
             this.isErrorVisible = true
@@ -223,6 +221,7 @@ export class ContactComponent implements OnInit {
           (cnt) => cnt.id == oContact.id
         )
         this.lsContacts[contactIndex] = oContact
+        this._alert.succes('Contacto actualizado con éxito')
       } else {
         this.contactService.update(contactToDB).subscribe(
           (contactUpdated) => {
@@ -231,6 +230,7 @@ export class ContactComponent implements OnInit {
             )
             this.lsContacts[contactIndex] = contactUpdated
             this.isAwaiting = false
+            this._alert.succes('Contacto actualizado con éxito')
           },
           (err) => {
             this.isErrorVisible = true
@@ -247,20 +247,22 @@ export class ContactComponent implements OnInit {
     this.onContactsWereModified.emit(this.lsContacts)
   }
 
-  saveContactWithType(contact : CreateContactDTO, selectedContactTypes : ContactType[]) {
-
+  saveContactWithType(
+    contact: CreateContactDTO,
+    selectedContactTypes: ContactType[]
+  ) {
     const tempContact = new ContactWithTypeDTO()
     tempContact.contact = contact
     tempContact.contactType = selectedContactTypes
     console.log(JSON.stringify(tempContact))
-    this.contactService.insertContactWithType(tempContact).subscribe(
-       (newContact) => {
-         console.log(newContact)
-       }
-     ),(err: any) => {
+    this.contactService
+      .insertContactWithType(tempContact)
+      .subscribe((newContact) => {
+        console.log(newContact)
+      }),
+      (err: any) => {
         console.log(err)
-     }
-
+      }
   }
 
   completeContactInformationWithOwner(
@@ -279,6 +281,7 @@ export class ContactComponent implements OnInit {
 
   deleteContact(pContact: Contact) {
     try {
+      const DELETE_MESSAGE = 'Contacto eliminado con éxito'
       if (confirm('¿Está seguro que desea eliminar este contacto?')) {
         this.isAwaiting = true
         const contactToDB = this.completeContactInformationWithOwner(pContact)
@@ -287,6 +290,7 @@ export class ContactComponent implements OnInit {
             (cnt) => cnt.id == pContact.id
           )
           this.lsContacts.splice(contactIndex, 1)
+          this._alert.succes(DELETE_MESSAGE)
         } else {
           this.contactService.delete(pContact.id).subscribe(
             (rta) => {
@@ -294,6 +298,7 @@ export class ContactComponent implements OnInit {
                 (cnt) => cnt.id == pContact.id
               )
               this.lsContacts.splice(contactIndex, 1)
+              this._alert.succes(DELETE_MESSAGE)
             },
             (err) => {
               this.isErrorVisible = true
@@ -309,13 +314,7 @@ export class ContactComponent implements OnInit {
         this.onContactsWereModified.emit(this.lsContacts)
       }
     } catch (err) {
-      console.error(err.error.Message)
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.error.Message,
-        footer: '</a>Consulte con Soporte el problema</a>'
-      })
+      this._alert.error(BAD_REQUEST)
     }
   }
 

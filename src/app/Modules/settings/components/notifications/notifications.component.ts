@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { AlertService } from 'src/app/services/alert.service'
+import { BAD_REQUEST } from 'src/app/Utils/general-error'
 import { SettingsService } from '../../services/settings.service'
 
 @Component({
@@ -39,14 +40,14 @@ export class NotificationsComponent implements OnInit {
   update(): void {
     this._settings.updateEmail(this.notificacionsForm.value).subscribe(
       () => this._alert.succes('Parametros actualizados con exito'),
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      () => this._alert.error(BAD_REQUEST)
     )
   }
 
   getSettings(): void {
     this._settings.getSettings().subscribe(
       (result) => this.notificacionsForm.setValue(result),
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      () => this._alert.error(BAD_REQUEST)
     )
   }
 }

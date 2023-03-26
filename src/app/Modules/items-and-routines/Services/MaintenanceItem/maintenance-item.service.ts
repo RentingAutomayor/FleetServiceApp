@@ -10,12 +10,13 @@ import { PricesByContract } from '../../../../Models/PricesByContract'
 import { Tax } from 'src/app/Models/Tax'
 import { Observable } from 'rxjs'
 import { Settings } from 'src/app/Modules/settings/models/settings'
+import { environment } from 'src/environments/environment'
 
 @Injectable({
   providedIn: 'root',
 })
 export class MaintenanceItemService {
-  private URL_API = '/API_FleetService/api/MaintenanceItem'
+  private URL_API = `${environment.apiUrl}/MaintenanceItem`
   private HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   }

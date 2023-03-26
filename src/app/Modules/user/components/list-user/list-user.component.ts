@@ -56,7 +56,7 @@ export class ListUser implements OnInit {
         this._user.deleteById(userId).subscribe(
           () => {
             this.users = this.users.filter((user) => user.id !== userId)
-            this._alert.succes('Usuario ha sido eliminado con exito')
+            this._alert.succes('Usuario ha sido eliminado con éxito')
           },
           (badRequest) => {
             this._alert.error(badRequest.error.Message)

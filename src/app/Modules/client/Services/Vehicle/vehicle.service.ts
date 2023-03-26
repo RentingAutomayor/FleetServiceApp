@@ -8,12 +8,13 @@ import { ResponseApi } from '../../../../Models/ResponseApi'
 import { Vehicle } from '../../../../Models/Vehicle'
 import { Observable, of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
+import { environment } from 'src/environments/environment'
 
 @Injectable({
   providedIn: 'root',
 })
 export class VehicleService {
-  private URL_API = '/API_FleetService/api/Vehicle'
+  private URL_API = `${environment.apiUrl}/Vehicle`
   private brandSelected: Brand
   private vehicleTypeSelected: VehicleType
   private lsVehicleTypeSelected: VehicleType[]

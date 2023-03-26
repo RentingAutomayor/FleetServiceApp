@@ -4,11 +4,12 @@ import { Frequency } from '../../../../Models/Frequency'
 import { ResponseApi } from '../../../../Models/ResponseApi'
 import { MaintenanceRoutine } from '../../../../Models/MaintenanceRoutine'
 import { Observable } from 'rxjs'
+import { environment } from 'src/environments/environment'
 @Injectable({
   providedIn: 'root',
 })
 export class MaintenanceRoutineService {
-  private URL_API = '/API_FleetService/api/MaintenanceRoutine'
+  private URL_API = `${environment.apiUrl}/MaintenanceRoutine`
   private HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   }

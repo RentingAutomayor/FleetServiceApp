@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
+import { environment } from 'src/environments/environment'
 import { Report } from '../../settings/models/report'
 import { Basic } from '../../user/models/basic'
 import { Company } from '../../user/models/company'
@@ -7,7 +8,7 @@ import { Module } from '../models/module'
 
 @Injectable({ providedIn: 'root' })
 export class ParameterService {
-  URL_API = '/API_FleetService/api/parameter'
+  URL_API = `${environment.apiUrl}/parameter`
   constructor(private http: HttpClient) {}
 
   getCompanies() {

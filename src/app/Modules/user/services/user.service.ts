@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { User } from '../models/user'
 import { AngularFireAuth } from '@angular/fire/auth'
+import { environment } from 'src/environments/environment'
 @Injectable()
 export class UserService {
-  URL_API = '/API_FleetService/api/auth'
+  URL_API = `${environment.apiUrl}/auth`
 
   constructor(private http: HttpClient, private _auth: AngularFireAuth) {}
 
@@ -35,7 +36,7 @@ export class UserService {
     )
   }
 
-  async isExistsInFirebase(email: string){
-    return await this._auth.fetchSignInMethodsForEmail(email);
-  } 
+  async isExistsInFirebase(email: string) {
+    return await this._auth.fetchSignInMethodsForEmail(email)
+  }
 }

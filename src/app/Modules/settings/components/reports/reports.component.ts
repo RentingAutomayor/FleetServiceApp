@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs'
 import { ParameterService } from 'src/app/Modules/role/services/parameter.service'
 import { AlertService } from 'src/app/services/alert.service'
 import { Excel } from 'src/app/Utils/excel'
+import { BAD_REQUEST } from 'src/app/Utils/general-error'
 import { Report } from '../../models/report'
 import { SettingsService } from '../../services/settings.service'
 
@@ -86,7 +87,7 @@ export class ReportsComponent implements OnInit {
   getArrayForExcel(url: string): Observable<any[]> {
     this._settings.getDataForReport(url).subscribe(
       (result) => this.subject.next(result),
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      () => this._alert.error(BAD_REQUEST)
     )
     return this.subject.asObservable()
   }

@@ -10,7 +10,7 @@
           formControlName="document"
           appOnlyNumbers
           (blur)="refactoryID($event)"
-          (click)="focusOnLenght"
+          (click)="(focusOnLenght)"
           [maxlength]="maxLength"
         />
         <div
@@ -52,6 +52,9 @@
           *ngIf="(nameField.dirty || nameField.touched) && nameField.errors"
         >
           <p *ngIf="nameField.hasError('required')">* El nombre es requerido</p>
+          <p *ngIf="nameField.hasError('pattern')">
+            El nombre debe ir en mayúsculas
+          </p>
         </div>
       </div>
       <div class="col" *ngIf="configComponent.lastNameIsVisible">
@@ -62,6 +65,12 @@
           placeholder="Apellido..."
           formControlName="lastname"
         />
+        <div
+          class="error"
+          *ngIf="formPerson.get('lastname').hasError('pattern')"
+        >
+          El apellido debe estar en mayúsculas
+        </div>
       </div>
     </div>
     <div class="row__container" id="container__phone">
@@ -72,6 +81,7 @@
           class="form-control"
           placeholder="Teléfono ..."
           formControlName="phone"
+          maxlength="10"
         />
       </div>
       <div class="col" *ngIf="configComponent.cellphoneIsVisible">
@@ -122,9 +132,15 @@
         <input
           type="text"
           class="form-control"
-          placeholder="Sitio web..."
+          placeholder="http://google.com"
           formControlName="website"
         />
+        <div
+          class="error"
+          *ngIf="formPerson.get('website').hasError('pattern')"
+        >
+          El sitio web es incorrecto.
+        </div>
       </div>
     </div>
     <div
@@ -142,6 +158,12 @@
           placeholder="Dirección ..."
           formControlName="address"
         />
+        <div
+          *ngIf="formPerson.get('address').hasError('pattern')"
+          class="error"
+        >
+          La dirección debe ir en mayúsculas
+        </div>
       </div>
       <div class="col" *ngIf="configComponent.jobTitleIsVisible">
         <app-job-title

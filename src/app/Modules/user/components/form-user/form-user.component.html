@@ -7,7 +7,7 @@
           <div class="row">
             <div class="col-6">
               <div class="form-group">
-                <label>Nombre:</label>
+                <label>Nombre*:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -18,7 +18,7 @@
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label>Apellido:</label>
+                <label>Apellido*:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -29,7 +29,7 @@
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label>Correo electronico</label>
+                <label>Correo electrónico*:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -40,7 +40,7 @@
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label>Contraseña</label>
+                <label>Contraseña*:</label>
                 <div class="input-group mb-3">
                   <input
                     [type]="isVisibility ? 'text' : 'password'"
@@ -61,7 +61,7 @@
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label>Rol</label>
+                <label>Rol*:</label>
                 <select
                   formControlName="roleId"
                   class="form-control"
@@ -76,7 +76,7 @@
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label>Empresa</label>
+                <label>Empresa*:</label>
                 <select class="form-control" formControlName="companyId">
                   <option value="">Seleccione...</option>
                   <option
@@ -90,7 +90,7 @@
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label>Cliente / Concesionarios</label>
+                <label>Cliente / Concesionario</label>
                 <select class="form-control" formControlName="typeUser">
                   <option value="">Seleccione...</option>
                   <option *ngFor="let user of users" [value]="user.id">
@@ -101,7 +101,7 @@
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label>Estado</label>
+                <label>Estado*:</label>
                 <select formControlName="status" class="form-control">
                   <option value="">Seleccione...</option>
                   <option value="A">Activo</option>
@@ -126,6 +126,7 @@
               Guardar
             </button>
           </div>
+          <div class="col-12 text-center">Campos obligatorios *</div>
         </form>
       </div>
     </mat-step>

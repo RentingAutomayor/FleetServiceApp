@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
+import { environment } from 'src/environments/environment'
 import { Basic } from '../../user/models/basic'
 import { Email } from '../models/email'
 import { Settings } from '../models/settings'
@@ -11,8 +12,8 @@ export class SettingsService {
   public types: BehaviorSubject<Basic[]> = new BehaviorSubject([])
   public models: BehaviorSubject<Basic[]> = new BehaviorSubject([])
 
-  URL_API = '/API_FleetService/api/settings'
-  URL = '/API_FleetService/api'
+  URL_API = `${environment.apiUrl}/settings`
+  URL = environment.apiUrl
 
   constructor(private http: HttpClient) {}
 

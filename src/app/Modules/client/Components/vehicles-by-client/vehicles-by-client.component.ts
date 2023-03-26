@@ -5,6 +5,7 @@ import { VehicleService } from '../../Services/Vehicle/vehicle.service'
 import { ClientService } from '../../Services//Client/client.service'
 import { Client } from 'src/app/Models/Client'
 import { ActionType } from 'src/app/Models/ActionType'
+import { AlertService } from 'src/app/services/alert.service'
 
 @Component({
   selector: 'app-vehicles-by-client',
@@ -52,7 +53,10 @@ export class VehiclesByCLientComponent implements OnInit {
   // tslint:disable-next-line: no-output-on-prefix
   @Output() onVehiclesWereModified = new EventEmitter<Vehicle[]>()
 
-  constructor(private vehicleService: VehicleService) {
+  constructor(
+    private vehicleService: VehicleService,
+    private _alert: AlertService
+  ) {
     this.disableActionButtons = false
     this.buttonAddIsVisible = false
   }
@@ -91,12 +95,14 @@ export class VehiclesByCLientComponent implements OnInit {
   }
 
   deleteVehicle(vehicle: Vehicle): void {
+    const DELETE_MESSAGE = 'Vehículo eliminado con éxito'
     if (confirm('¿Está seguro que desea eliminar este vehículo?')) {
       if (this.client.id == 0) {
         const vehicleIndex = this.lsVehicles.findIndex(
           (veh) => veh.id === vehicle.id
         )
         this.lsVehicles.splice(vehicleIndex, 1)
+        this._alert.error(DELETE_MESSAGE)
       } else {
         this.vehicleService.Delete(vehicle).subscribe(
           (rta) => {
@@ -104,6 +110,7 @@ export class VehiclesByCLientComponent implements OnInit {
               (veh) => veh.id === vehicle.id
             )
             this.lsVehicles.splice(vehicleIndex, 1)
+            this._alert.error(DELETE_MESSAGE)
           },
           (err) => {
             this.isErrorVisible = true
@@ -121,15 +128,19 @@ export class VehiclesByCLientComponent implements OnInit {
   }
 
   saveVehicle(vehicle: Vehicle): void {
+    const SAVED = 'Vehículo creado con éxito'
+    const UPDATED = 'Vehículo actualizado con éxito'
     if (this.isToInsert) {
       vehicle.id = this.idTemp
       if (this.client.id == 0) {
         this.lsVehicles.unshift(vehicle)
+        this._alert.succes(SAVED)
       } else {
         vehicle.Client_id = this.client.id
         this.vehicleService.Insert(vehicle).subscribe(
           (newVehicle) => {
             this.lsVehicles.unshift(newVehicle)
+            this._alert.succes(SAVED)
           },
           (err) => {
             this.isErrorVisible = true
@@ -147,6 +158,7 @@ export class VehiclesByCLientComponent implements OnInit {
           (veh) => veh.id === vehicle.id
         )
         this.lsVehicles[vehicleIndex] = vehicle
+        this._alert.succes(UPDATED)
       } else {
         vehicle.Client_id = this.client.id
         this.vehicleService.Update(vehicle).subscribe(
@@ -155,6 +167,7 @@ export class VehiclesByCLientComponent implements OnInit {
               (veh) => veh.id === vehicle.id
             )
             this.lsVehicles[vehicleIndex] = vehicleUpdated
+            this._alert.succes(UPDATED)
           },
           (err) => {
             this.isErrorVisible = true

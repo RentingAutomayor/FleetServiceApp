@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core'
 import { ParameterService } from 'src/app/Modules/role/services/parameter.service'
 import { AlertService } from 'src/app/services/alert.service'
+import { BAD_REQUEST } from 'src/app/Utils/general-error'
 import { Excel } from '../../../../Utils/excel'
 import { SettingsService } from '../../services/settings.service'
 
@@ -29,7 +30,7 @@ export class UniqueSettingComponent {
           else this.getTypes()
           this._alert.succes(`${this.item} cargados con exito`)
         },
-        (badRequest) => this._alert.error(badRequest.error.Message)
+        () => this._alert.error(BAD_REQUEST)
       )
     })
   }
@@ -39,7 +40,7 @@ export class UniqueSettingComponent {
       (brands) => {
         this._settings.brands.next(brands)
       },
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      () => this._alert.error(BAD_REQUEST)
     )
   }
   getTypes(): void {
@@ -47,7 +48,7 @@ export class UniqueSettingComponent {
       (types) => {
         this._settings.types.next(types)
       },
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      () => this._alert.error(BAD_REQUEST)
     )
   }
 }

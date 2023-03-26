@@ -17,6 +17,8 @@ import { Dealer } from 'src/app/Models/Dealer'
 import { ActionType } from 'src/app/Models/ActionType'
 import { BranchService } from '../Services/Branch/branch.service'
 import Swal from 'sweetalert2'
+import { AlertService } from 'src/app/services/alert.service'
+import { BAD_REQUEST } from 'src/app/Utils/general-error'
 
 @Component({
   selector: 'app-branch',
@@ -74,7 +76,8 @@ export class BranchComponent implements OnInit {
 
   constructor(
     private personService: PersonService,
-    private branchService: BranchService
+    private branchService: BranchService,
+    private _alert: AlertService
   ) {
     this.disableActionButtons = false
     this.buttonAddIsVisible = false
@@ -156,27 +159,25 @@ export class BranchComponent implements OnInit {
         this.saveData(oBranch)
       }
     } catch (err) {
-      console.warn(err.error.Message)
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.error.Message,
-        footer: '</a>Consulte con Soporte el problema</a>'
-      })
+      this._alert.error(BAD_REQUEST)
     }
   }
 
   saveData(branch: Branch) {
+    const SAVE_BRANCH = 'Sucursal creada con éxito'
+    const UPDATE_BRANCH = 'Sucursal acutalizada con éxito'
     const branchDB = this.completeBranchInformationWithOwner(branch)
     if (this.isToInsert) {
       if (branchDB.Client_id == 0 || branchDB.Dealer_id == 0) {
         this.lsBranchs.unshift(branchDB)
+        this._alert.succes(SAVE_BRANCH)
       } else {
         this.isAwaiting = true
         this.branchService.insert(branchDB).subscribe(
           (newBranch) => {
             this.lsBranchs.unshift(newBranch)
             this.isAwaiting = false
+            this._alert.succes(SAVE_BRANCH)
           },
           (err) => {
             this.isErrorVisible = true
@@ -190,6 +191,7 @@ export class BranchComponent implements OnInit {
       if (branchDB.Client_id == 0 || branchDB.Dealer_id == 0) {
         const branchIndex = this.lsBranchs.findIndex((br) => br.id == branch.id)
         this.lsBranchs[branchIndex] = branch
+        this._alert.succes(UPDATE_BRANCH)
       } else {
         this.isAwaiting = true
         this.branchService.update(branchDB).subscribe(
@@ -199,6 +201,7 @@ export class BranchComponent implements OnInit {
             )
             this.lsBranchs[branchIndex] = branchUpdated
             this.isAwaiting = false
+            this._alert.succes(UPDATE_BRANCH)
           },
           (err) => {
             this.isErrorVisible = true
@@ -215,6 +218,7 @@ export class BranchComponent implements OnInit {
   }
 
   deleteBranch(branchId: number) {
+    const DELETE_MESSAGE = 'Sucursal eliminada con éxito'
     try {
       if (confirm('¿Está seguro que desea eliminar esta sucursal?')) {
         this.isAwaiting = true
@@ -226,6 +230,7 @@ export class BranchComponent implements OnInit {
             (branch) => branch.id == branchId
           )
           this.lsBranchs.splice(branchIndex, 1)
+          this._alert.succes(DELETE_MESSAGE)
         } else {
           this.branchService.delete(branchToDelete).subscribe(
             (rta) => {
@@ -234,6 +239,7 @@ export class BranchComponent implements OnInit {
               )
               this.lsBranchs.splice(branchIndex, 1)
               this.isAwaiting = false
+              this._alert.succes(DELETE_MESSAGE)
             },
             (err) => {
               this.isErrorVisible = true
@@ -247,13 +253,7 @@ export class BranchComponent implements OnInit {
         this.onBranchsWereModified.emit(this.lsBranchs)
       }
     } catch (err) {
-      console.warn(err.error.Message)
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.error.Message,
-        footer: '</a>Consulte con Soporte el problema</a>'
-      })
+      this._alert.error(BAD_REQUEST)
     }
   }
 

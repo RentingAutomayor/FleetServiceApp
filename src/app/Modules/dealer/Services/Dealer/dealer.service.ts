@@ -4,12 +4,13 @@ import { Dealer } from '../../../../Models/Dealer'
 import { ResponseApi } from '../../../../Models/ResponseApi'
 import { Observable, of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
+import { environment } from 'src/environments/environment'
 
 @Injectable({
   providedIn: 'root',
 })
 export class DealerService {
-  private URL_API = '/API_FleetService/api/Dealer/'
+  private URL_API = `${environment.apiUrl}/Dealer/`
   private HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   }

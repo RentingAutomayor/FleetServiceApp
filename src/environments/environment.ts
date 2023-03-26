@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  apiUrl: '/API_FleetService/api',
   firebase: {
     apiKey: 'AIzaSyBPNTdzVyliUcAkVsUkAI9ZMAMFicx6Z_w',
     authDomain: 'fec-ra.firebaseapp.com',

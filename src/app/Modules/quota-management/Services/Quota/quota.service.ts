@@ -4,12 +4,13 @@ import { Client } from '../../../../Models/Client'
 import { FinancialInformation } from '../../../../Models/FinancialInformation'
 import { ResponseApi } from '../../../../Models/ResponseApi'
 import { Observable } from 'rxjs'
+import { environment } from 'src/environments/environment'
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuotaService {
-  private URL_API = '/API_FleetService/api/FinancialInformation'
+  private URL_API = `${environment.apiUrl}/FinancialInformation`
   private HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   }

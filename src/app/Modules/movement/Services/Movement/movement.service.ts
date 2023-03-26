@@ -1,5 +1,6 @@
 import { HttpHeaders, HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
+import { environment } from 'src/environments/environment'
 import { Movement } from '../../../../Models/Movement'
 import { MovementType } from '../../../../Models/MovementType'
 import { ResponseApi } from '../../../../Models/ResponseApi'
@@ -8,7 +9,7 @@ import { ResponseApi } from '../../../../Models/ResponseApi'
   providedIn: 'root',
 })
 export class MovementService {
-  private URL_API = '/API_FleetService/api/Movement'
+  private URL_API = `${environment.apiUrl}/Movement`
   private HttpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   }

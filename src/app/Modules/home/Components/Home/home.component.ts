@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
     this.dtEndingDate = null
     this.btnSearchIsDisabled = true
     this.datesAreInvalid = false
-    this.company = JSON.parse(sessionStorage.getItem('sessionUser')).company
+    this.company = JSON.parse(sessionStorage.getItem('sessionUser'))?.company
     this.initForm()
   }
 

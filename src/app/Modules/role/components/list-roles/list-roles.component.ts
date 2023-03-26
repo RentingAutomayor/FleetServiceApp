@@ -53,7 +53,7 @@ export class ListRolesComponent implements OnInit {
       if (result.isConfirmed) {
         this._role.deleteById(roleId).subscribe(
           () => {
-            this._alert.succes('Rol eliminado con exito')
+            this._alert.succes('Rol eliminado con éxito')
             this.roles = this.roles.filter((role) => role.id !== roleId)
           },
           (badRequest) => this._alert.error(badRequest.error.Message)

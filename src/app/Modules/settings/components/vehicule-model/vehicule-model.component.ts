@@ -4,6 +4,7 @@ import { ParameterService } from 'src/app/Modules/role/services/parameter.servic
 import { Basic } from 'src/app/Modules/user/models/basic'
 import { AlertService } from 'src/app/services/alert.service'
 import { Excel } from 'src/app/Utils/excel'
+import { BAD_REQUEST } from 'src/app/Utils/general-error'
 import { SettingsService } from '../../services/settings.service'
 
 @Component({
@@ -46,7 +47,7 @@ export class VehiculeModelComponent implements OnInit {
       (models) => {
         this._settings.models.next(models)
       },
-      (badRequest) => this._alert.error(badRequest.error.Message)
+      () => this._alert.error(BAD_REQUEST)
     )
   }
 
@@ -63,7 +64,7 @@ export class VehiculeModelComponent implements OnInit {
           this._alert.succes('Modelos cargados con exito')
           this.search()
         },
-        (badRequest) => this._alert.error(badRequest.error.Message)
+        () => this._alert.error(BAD_REQUEST)
       )
     })
   }

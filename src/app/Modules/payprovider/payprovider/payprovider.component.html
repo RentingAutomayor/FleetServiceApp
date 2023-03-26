@@ -1,23 +1,19 @@
-  <div id="container__content">
-    <mat-tab-group mat-align-tabs="start">
+<div id="container__content">
+  <mat-tab-group mat-align-tabs="start">
+    <mat-tab label="Resumen De Facturas">
+      <div class="resfactura">
+        <app-tbl-bill></app-tbl-bill>
+      </div>
+    </mat-tab>
 
-      <mat-tab label="Resumen De Facturas">
-        <div class="resfactura">
-          <app-tbl-bill></app-tbl-bill>
-        </div>
-      </mat-tab>
+    <mat-tab label="Asociación De Facturas">
+      <div class="ascfactura">
+        <app-tbl-payprovider></app-tbl-payprovider>
+      </div>
+    </mat-tab>
 
-
-      <mat-tab label="Asociacion De Facturas">
-        <div class="ascfactura">
-          <app-tbl-payprovider></app-tbl-payprovider>
-        </div>
-      </mat-tab>
-
-      <mat-tab label="Registro De Pago">
-         <app-tbl-payregister></app-tbl-payregister>
-      </mat-tab>
-    </mat-tab-group>
+    <mat-tab label="Registro De Pago">
+      <app-tbl-payregister></app-tbl-payregister>
+    </mat-tab>
+  </mat-tab-group>
 </div>
-
-

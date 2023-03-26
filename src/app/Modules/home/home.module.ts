@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { HomeComponent } from './Components/home/home.component'
+import { HomeComponent } from './Components/Home/home.component'
 import { HomeRoutingModule } from './home-routing.module'
 import { SharedModule } from 'src/app/SharedComponents/shared.module'
 import { ChartsModule } from 'ng2-charts'
@@ -9,11 +9,10 @@ import { ReportTrxByVehicleComponent } from './Components/report-trx-by-vehicle/
 import { ReportWorkordersValueByMonthComponent } from './Components/report-workorders-value-by-month/report-workorders-value-by-month.component'
 import { ReportAmountWorkordersByClientOrByDealerComponent } from './Components/report-amount-workorders-by-client-or-by-dealer/report-amount-workorders-by-client-or-by-dealer.component'
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker'
-import {MatDatepickerModule, } from '@angular/material/datepicker';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { ReactiveFormsModule } from '@angular/forms'
 import { MatNativeDateModule } from '@angular/material/core'
-
 
 @NgModule({
   declarations: [
@@ -22,7 +21,6 @@ import { MatNativeDateModule } from '@angular/material/core'
     ReportTrxByVehicleComponent,
     ReportWorkordersValueByMonthComponent,
     ReportAmountWorkordersByClientOrByDealerComponent,
-
   ],
   imports: [
     CommonModule,

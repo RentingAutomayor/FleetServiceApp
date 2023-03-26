@@ -1,6 +1,6 @@
 {
   "/API_FleetService/api/*": {
-    "target": "http://localhost",
+    "target": "http://fleetservices.com.co/API_FleetService/api",
     "secure": true,
     "changeOrigin": true
   }

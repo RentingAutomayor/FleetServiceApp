@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core'
 import { Frequency } from 'src/app/Models/Frequency'
 import { MaintenanceRoutine } from 'src/app/Models/MaintenanceRoutine'
 import { VehicleModel } from 'src/app/Models/VehicleModel'
+import { AlertService } from 'src/app/services/alert.service'
 import { Excel } from 'src/app/Utils/excel'
 import Swal from 'sweetalert2'
 import { MaintenanceRoutineService } from '../../Services/MaintenanceRoutine/maintenance-routine.service'
@@ -42,7 +43,8 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
 
   constructor(
     private maintenanceRoutineService: MaintenanceRoutineService,
-    private currency: CurrencyPipe
+    private currency: CurrencyPipe,
+    private _alert: AlertService
   ) {
     this.frequency_id = 0
     this.vehicleModel_id = 0
@@ -104,12 +106,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     if (this.isToUpdate) {
       this.maintenanceRoutineService.update(routine).subscribe(
         (rta) => {
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: rta.message,
-            showConfirmButton: true,
-          })
+          this._alert.succes(rta.message)
           this.isAwaiting = false
           const indexRoutine = this.lsMaintenanceRoutinesFiltered.findIndex(
             (mr) => mr.id == routine.id
@@ -126,12 +123,7 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
     } else {
       this.maintenanceRoutineService.insert(routine).subscribe(
         (rta) => {
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: rta.message,
-            showConfirmButton: true,
-          })
+          this._alert.succes(rta.message)
           this.isAwaiting = false
           try {
             this.lsMaintenanceRoutinesFiltered.push(routine)
@@ -192,12 +184,14 @@ export class TblMaintenanceRoutinesComponent implements OnInit {
   }
 
   deleteRoutine(pRoutine: MaintenanceRoutine) {
+    const DELETE_MESSAGE = 'Rutina de mantenimiento eliminada con éxito'
     if (
       confirm('¿Está seguro que desea eliminar esta rutina de mantenimiento?')
     ) {
       this.isAwaiting = true
       this.maintenanceRoutineService.delete(pRoutine).subscribe((rta) => {
         this.isAwaiting = false
+        this._alert.succes(DELETE_MESSAGE)
         this.showTableRoutines()
       })
     }

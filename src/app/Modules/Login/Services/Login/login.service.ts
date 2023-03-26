@@ -1,13 +1,12 @@
+import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http'
-import { Observable } from 'rxjs'
-import { variable } from '@angular/compiler/src/output/output_ast'
+import { environment } from 'src/environments/environment'
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
-  private URL_API = '/API_FleetService/api/Users/GetAuthenticate'
+  private URL_API = `${environment.apiUrl}/Users/GetAuthenticate`
 
   constructor(private http: HttpClient) {}
 

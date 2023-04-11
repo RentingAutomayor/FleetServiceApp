@@ -1,5 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import { NavigationService } from '../../Services/Navigation/navigation.service'
+import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { Router } from '@angular/router'
 
 @Component({
@@ -8,10 +7,7 @@ import { Router } from '@angular/router'
   styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit {
-  constructor(
-    private navigationService: NavigationService,
-    private router: Router
-  ) {
+  constructor(private router: Router) {
     this.loadApp()
   }
   containerMenu: HTMLDivElement
@@ -23,6 +19,7 @@ export class NavigationComponent implements OnInit {
   ngOnInit(): void {
     this.initComponents()
   }
+
   loadApp() {
     this.session = JSON.parse(sessionStorage.getItem('sessionUser'))
     if (this.session == null) {

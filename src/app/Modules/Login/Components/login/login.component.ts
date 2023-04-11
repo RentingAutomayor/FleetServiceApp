@@ -50,6 +50,7 @@ export class LoginComponent {
                 'sessionFire',
                 JSON.stringify(userCredential.user)
               )
+              this._alert.succes(`Bienvenid@ ${user.name}`)
               this.router.navigate(['/Home'])
             } else {
               this.isAwaiting = false

@@ -1,26 +1,19 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core'
+import { Component, OnInit, ViewChild } from '@angular/core'
+import { MatVerticalStepper } from '@angular/material/stepper'
+import { ActivatedRoute, Router } from '@angular/router'
+import { ActionType } from 'src/app/Models/ActionType'
+import { Branch } from 'src/app/Models/Branch'
 import { Client } from 'src/app/Models/Client'
 import { ConfigPersonComponent } from 'src/app/Models/ConfigPersonComponent'
+import { Contact } from 'src/app/Models/Contact'
+import { ContractualInformation } from 'src/app/Models/ContractualInformation'
+import { Person } from 'src/app/Models/Person'
+import { Vehicle } from 'src/app/Models/Vehicle'
+import { getFromStorage } from 'src/app/Utils/storage'
+import { AlertService } from 'src/app/services/alert.service'
+import Swal from 'sweetalert2'
 import { PersonService } from '../../../../SharedComponents/Services/Person/person.service'
 import { ClientService } from '../../Services/Client/client.service'
-import { Person } from 'src/app/Models/Person'
-import { ActivatedRoute, Router } from '@angular/router'
-import { CityService } from '../../../../SharedComponents/Services/City/city.service'
-import { ActionType } from 'src/app/Models/ActionType'
-import { Contact } from 'src/app/Models/Contact'
-import { getFromStorage } from 'src/app/Utils/storage'
-import { Branch } from 'src/app/Models/Branch'
-import { Vehicle } from 'src/app/Models/Vehicle'
-import { ContractualInformation } from 'src/app/Models/ContractualInformation'
-import { MatVerticalStepper, MatStep } from '@angular/material/stepper'
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-client',
@@ -97,7 +90,7 @@ export class ClientComponent implements OnInit {
   constructor(
     private personService: PersonService,
     private clientService: ClientService,
-    private cityService: CityService,
+    private _alert: AlertService,
     private router: ActivatedRoute,
     private routerService: Router
   ) {
@@ -259,43 +252,25 @@ export class ClientComponent implements OnInit {
       this.clientService.insertClient(this.client).subscribe(
         (rta) => {
           if (rta.response) {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: rta.message,
-              showConfirmButton: true,
-            })
+            this._alert.succes('Cliente creado con éxito')
             this.isAwaiting = false
             this.routerService.navigate([this.ROUTE_MASTER_CLIENT])
           }
         },
-        (err) => {
-          this.isErrorVisible = true
-          this.isAwaiting = false
-          this.errorTitle = 'Ocurrió un error intentando Insertar el cliente'
-          this.errorMessageApi = err.error.Message
-        }
+        () =>
+          this._alert.error('Ocurrió un error intentando Insertar el cliente')
       )
     } else if (this.action == ActionType.UPDATE) {
       this.clientService.updateClient(this.client).subscribe(
         (rta) => {
           if (rta.response) {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: rta.message,
-              showConfirmButton: true,
-            })
+            this._alert.succes('Ciente actualizado con éxito')
             this.isAwaiting = false
             this.routerService.navigate([this.ROUTE_MASTER_CLIENT])
           }
         },
-        (err) => {
-          this.isErrorVisible = true
-          this.isAwaiting = false
-          this.errorTitle = 'Ocurrió un error intentando Actualizar el cliente'
-          this.errorMessageApi = err.error.Message
-        }
+        () =>
+          this._alert.error('Ocurrió un error intentando Actualizar el cliente')
       )
     }
   }

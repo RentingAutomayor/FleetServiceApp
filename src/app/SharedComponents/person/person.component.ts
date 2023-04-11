@@ -167,28 +167,38 @@ export class PersonComponent implements OnInit {
             [Validators.required, Validators.pattern(RegExp.uppercase)],
           ],
           lastname: ['', Validators.pattern(RegExp.uppercase)],
-          phone: [''],
-          cellphone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
-          email: ['', [Validators.email]],
+          phone: [
+            '',
+            [Validators.pattern(RegExp.numbers), Validators.minLength(10)],
+          ],
+          cellphone: [
+            '',
+            [Validators.pattern(RegExp.numbers), Validators.minLength(10)],
+          ],
+          email: ['', [Validators.pattern(RegExp.email)]],
           website: ['', Validators.pattern(RegExp.website)],
           address: ['', Validators.pattern(RegExp.uppercase)],
           mustNotify: [false],
         })
-
-        this.formPerson.get('document').valueChanges.subscribe((val) => {
-          // console.log(val)
-          // console.log(this.documentField.errors);
-        })
       } else {
         this.formPerson = this.formBuilder.group({
           document: [''],
-          name: ['', [Validators.required]],
-          lastname: [''],
-          phone: [''],
-          cellphone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
-          email: ['', [Validators.email]],
-          website: [''],
-          address: [''],
+          name: [
+            '',
+            [Validators.required, Validators.pattern(RegExp.uppercase)],
+          ],
+          lastname: ['', Validators.pattern(RegExp.uppercase)],
+          phone: [
+            '',
+            [Validators.pattern(RegExp.numbers), Validators.minLength(10)],
+          ],
+          cellphone: [
+            '',
+            [Validators.pattern(RegExp.numbers), Validators.minLength(10)],
+          ],
+          email: ['', [Validators.pattern(RegExp.email)]],
+          website: ['', Validators.pattern(RegExp.website)],
+          address: ['', Validators.pattern(RegExp.uppercase)],
           mustNotify: [false],
         })
       }

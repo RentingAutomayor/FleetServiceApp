@@ -10,6 +10,7 @@ import { Basic } from '../../models/basic'
 import { Company } from '../../models/company'
 import { User } from '../../models/user'
 import { UserService } from '../../services/user.service'
+import { RegExp } from 'src/app/Utils/reg-exp'
 
 @Component({
   selector: 'app-user-form',
@@ -46,9 +47,9 @@ export class FormUser implements OnInit {
   initForm(): void {
     this.userForm = this.fb.group({
       id: 0,
-      name: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', Validators.required],
+      name: ['', [Validators.required, Validators.pattern(RegExp.letters)]],
+      lastName: ['', [Validators.required, Validators.pattern(RegExp.letters)]],
+      email: ['', [Validators.required, Validators.pattern(RegExp.email)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       companyId: [{ value: '', disabled: true }],
       roleId: ['', Validators.required],

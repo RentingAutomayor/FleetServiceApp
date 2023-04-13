@@ -1,0 +1,91 @@
+select{
+    cursor: pointer;
+}
+
+.container__row{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+i{
+    margin: 0 3px;
+    cursor: pointer;
+}
+
+.col-number{
+    max-width: 50px;
+    width: 50px;
+}
+
+table{
+    cursor: pointer;
+}
+
+.btn-add{
+    border-radius: 50%;
+     width: 50px;
+     height: 50px;     
+    cursor: pointer;
+    position: relative;
+    left: 93%;
+    margin-bottom: 20px;
+    top: 30px;
+    outline: none;
+    text-align: center;
+    font-size: 24px;
+    border: none;
+    z-index: 55;
+}
+
+#container__content{
+    transition: margin-left 1s;
+    padding: 20px;
+    margin-left: 250px;
+}
+
+.container__row_buttons{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: right;
+    margin-top: 30px;
+
+}
+
+.container__row_buttons button{
+    margin-left: 10px;
+}
+
+.overlay{
+    display: grid;
+    grid-template-columns: repeat(3fr);
+    grid-template-rows: repeat(3fr);
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(6, 129, 230, 0.1);    
+    border-radius: 15px;
+    align-items: center;
+    justify-items: center;
+    z-index: 5000;
+    width: 100%;
+    height: 100%;
+}
+
+.container__buttonClose{
+    display: flex;
+    flex-direction: row-reverse;
+    margin-bottom: 20px;
+}
+
+@media only screen and (max-width:600px){
+    .col-mobile-hide{
+        display: none;
+    }
+
+    .btn-add{
+        left: 80vw;
+    }
+}
